@@ -858,67 +858,46 @@ def render_portfolios():
 
         # Summary Header with gradient
         pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
-        st.markdown(f"""
-        <div style="
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%);
-            border-radius: 20px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #333;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-        ">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                    <div style="font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px;">Total Value (AUM)</div>
-                    <div style="font-size: 2.5rem; font-weight: bold; color: white;">${total_aum:,.0f}</div>
-                    <div style="font-size: 1rem; color: {pnl_color};">{overall_pnl_pct:+.2f}% all-time</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 0.9rem; color: #888;">P&L</div>
-                    <div style="font-size: 2rem; font-weight: bold; color: {pnl_color};">${total_pnl:+,.0f}</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 0.9rem; color: #888;">Win Rate</div>
-                    <div style="font-size: 2rem; font-weight: bold; color: {'#00ff88' if win_rate >= 50 else '#ff4444'};">{win_rate:.0f}%</div>
-                    <div style="font-size: 0.8rem; color: #666;">{winning_count}/{len(portfolios)} profitable</div>
-                </div>
-                <div style="text-align: center;">
-                    <div style="font-size: 0.9rem; color: #888;">Portfolios</div>
-                    <div style="font-size: 2rem; font-weight: bold; color: #00aaff;">{len(portfolios)}</div>
-                    <div style="font-size: 0.8rem; color: #666;">{total_positions} positions</div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        win_color = '#00ff88' if win_rate >= 50 else '#ff4444'
+
+        summary_html = f'''<div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f1a 100%); border-radius: 20px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.4);">
+<div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<div>
+<div style="font-size: 0.9rem; color: #888; text-transform: uppercase; letter-spacing: 1px;">Total Value (AUM)</div>
+<div style="font-size: 2.5rem; font-weight: bold; color: white;">${total_aum:,.0f}</div>
+<div style="font-size: 1rem; color: {pnl_color};">{overall_pnl_pct:+.2f}% all-time</div>
+</div>
+<div style="text-align: center;">
+<div style="font-size: 0.9rem; color: #888;">P&L</div>
+<div style="font-size: 2rem; font-weight: bold; color: {pnl_color};">${total_pnl:+,.0f}</div>
+</div>
+<div style="text-align: center;">
+<div style="font-size: 0.9rem; color: #888;">Win Rate</div>
+<div style="font-size: 2rem; font-weight: bold; color: {win_color};">{win_rate:.0f}%</div>
+<div style="font-size: 0.8rem; color: #666;">{winning_count}/{len(portfolios)} profitable</div>
+</div>
+<div style="text-align: center;">
+<div style="font-size: 0.9rem; color: #888;">Portfolios</div>
+<div style="font-size: 2rem; font-weight: bold; color: #00aaff;">{len(portfolios)}</div>
+<div style="font-size: 0.8rem; color: #666;">{total_positions} positions</div>
+</div>
+</div>
+</div>'''
+        st.markdown(summary_html, unsafe_allow_html=True)
 
         # Best & Worst performers row
         col_best, col_worst, col_trades = st.columns(3)
         with col_best:
             if best_pf:
-                st.markdown(f"""
-                <div style="background: rgba(0,255,136,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #00ff88;">
-                    <div style="font-size: 0.8rem; color: #888;">Best Performer</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; color: white;">{best_pf[0][:20]}</div>
-                    <div style="font-size: 1.5rem; color: #00ff88; font-weight: bold;">{best_pf[1]:+.1f}%</div>
-                </div>
-                """, unsafe_allow_html=True)
+                best_html = f'<div style="background: rgba(0,255,136,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #00ff88;"><div style="font-size: 0.8rem; color: #888;">Best Performer</div><div style="font-size: 1.2rem; font-weight: bold; color: white;">{best_pf[0][:20]}</div><div style="font-size: 1.5rem; color: #00ff88; font-weight: bold;">{best_pf[1]:+.1f}%</div></div>'
+                st.markdown(best_html, unsafe_allow_html=True)
         with col_worst:
             if worst_pf:
-                st.markdown(f"""
-                <div style="background: rgba(255,68,68,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #ff4444;">
-                    <div style="font-size: 0.8rem; color: #888;">Worst Performer</div>
-                    <div style="font-size: 1.2rem; font-weight: bold; color: white;">{worst_pf[0][:20]}</div>
-                    <div style="font-size: 1.5rem; color: #ff4444; font-weight: bold;">{worst_pf[1]:+.1f}%</div>
-                </div>
-                """, unsafe_allow_html=True)
+                worst_html = f'<div style="background: rgba(255,68,68,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #ff4444;"><div style="font-size: 0.8rem; color: #888;">Worst Performer</div><div style="font-size: 1.2rem; font-weight: bold; color: white;">{worst_pf[0][:20]}</div><div style="font-size: 1.5rem; color: #ff4444; font-weight: bold;">{worst_pf[1]:+.1f}%</div></div>'
+                st.markdown(worst_html, unsafe_allow_html=True)
         with col_trades:
-            st.markdown(f"""
-            <div style="background: rgba(0,170,255,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #00aaff;">
-                <div style="font-size: 0.8rem; color: #888;">Total Activity</div>
-                <div style="font-size: 1.2rem; font-weight: bold; color: white;">{total_trades} trades</div>
-                <div style="font-size: 1rem; color: #00aaff;">{total_positions} open positions</div>
-            </div>
-            """, unsafe_allow_html=True)
+            activity_html = f'<div style="background: rgba(0,170,255,0.1); border-radius: 12px; padding: 1rem; border-left: 4px solid #00aaff;"><div style="font-size: 0.8rem; color: #888;">Total Activity</div><div style="font-size: 1.2rem; font-weight: bold; color: white;">{total_trades} trades</div><div style="font-size: 1rem; color: #00aaff;">{total_positions} open positions</div></div>'
+            st.markdown(activity_html, unsafe_allow_html=True)
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -985,13 +964,7 @@ def render_portfolios():
                     st.rerun()
 
     if not portfolios:
-        st.markdown("""
-        <div style="text-align: center; padding: 3rem; color: #888;">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">📈</div>
-            <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">No Portfolios Yet</div>
-            <div>Click the <b>➕ New</b> button above to create your first portfolio</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; padding: 3rem; color: #888;"><div style="font-size: 4rem; margin-bottom: 1rem;">📈</div><div style="font-size: 1.5rem; margin-bottom: 0.5rem;">No Portfolios Yet</div><div>Click the <b>➕ New</b> button above to create your first portfolio</div></div>', unsafe_allow_html=True)
         return
 
     # Strategy icons
@@ -2025,12 +1998,7 @@ Moins de trades mais meilleure qualité."""
 
     # No results message
     if not page_portfolios:
-        st.markdown("""
-        <div style="text-align: center; padding: 2rem; color: #888;">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
-            <div>No portfolios match your search criteria</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div style="text-align: center; padding: 2rem; color: #888;"><div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div><div>No portfolios match your search criteria</div></div>', unsafe_allow_html=True)
         return
 
     st.markdown("<br>", unsafe_allow_html=True)
@@ -2070,87 +2038,55 @@ Moins de trades mais meilleure qualité."""
                     pnl_bar_width = min(max(abs(pnl_pct), 0), 50) * 2  # 0-100% width
                     pnl_bar_dir = 'right' if pnl_pct >= 0 else 'left'
 
-                    # Card HTML with visual P&L bar
-                    st.markdown(f"""
-                    <div style="
-                        background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
-                        border-radius: 16px;
-                        padding: 1.2rem;
-                        margin-bottom: 0.5rem;
-                        border-left: 4px solid {pnl_color};
-                        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                        position: relative;
-                        overflow: hidden;
-                    ">
-                        <!-- P&L Background Bar -->
-                        <div style="
-                            position: absolute;
-                            top: 0;
-                            {pnl_bar_dir}: 0;
-                            width: {pnl_bar_width}%;
-                            height: 100%;
-                            background: linear-gradient(90deg, {'rgba(0,255,136,0.08)' if pnl_pct >= 0 else 'rgba(255,68,68,0.08)'} 0%, transparent 100%);
-                            pointer-events: none;
-                        "></div>
+                    # Build coins HTML separately
+                    coins_html = ''.join([
+                        f'<span style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.65rem; color: #aaa;">{c.replace("/USDT","")}</span>'
+                        for c in cryptos[:6]
+                    ])
+                    if len(cryptos) > 6:
+                        coins_html += f'<span style="color: #666; font-size: 0.65rem; margin-left: 4px;">+{len(cryptos)-6}</span>'
 
-                        <!-- Content -->
-                        <div style="position: relative; z-index: 1;">
-                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
-                                        <span style="font-size: 1.8rem;">{icon}</span>
-                                        <div>
-                                            <div style="font-size: 1.1rem; font-weight: bold; color: white;">{p['name'][:25]}{'...' if len(p['name']) > 25 else ''}</div>
-                                            <div style="color: #666; font-size: 0.75rem;">{strategy}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="color: {pnl_color}; font-size: 1.8rem; font-weight: bold; line-height: 1;">{pnl_pct:+.1f}%</div>
-                                    <div style="color: {pnl_color}; font-size: 0.85rem;">${total_pnl:+,.0f}</div>
-                                </div>
-                            </div>
+                    # Precompute colors
+                    bar_bg = 'rgba(0,255,136,0.08)' if pnl_pct >= 0 else 'rgba(255,68,68,0.08)'
+                    pos_color = '#00aaff' if positions_count > 0 else '#666'
+                    name_display = p['name'][:25] + ('...' if len(p['name']) > 25 else '')
 
-                            <!-- Stats Row -->
-                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: white;">${total_value:,.0f}</div>
-                                    <div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Value</div>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: #888;">${initial:,.0f}</div>
-                                    <div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Initial</div>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: white;">{trades_count}</div>
-                                    <div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Trades</div>
-                                </div>
-                                <div style="text-align: center;">
-                                    <div style="font-size: 1.1rem; font-weight: bold; color: {'#00aaff' if positions_count > 0 else '#666'};">{positions_count}</div>
-                                    <div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Open</div>
-                                </div>
-                            </div>
+                    # Card HTML
+                    card_html = f'''<div style="background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 16px; padding: 1.2rem; margin-bottom: 0.5rem; border-left: 4px solid {pnl_color}; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
+<div style="position: absolute; top: 0; {pnl_bar_dir}: 0; width: {pnl_bar_width}%; height: 100%; background: linear-gradient(90deg, {bar_bg} 0%, transparent 100%); pointer-events: none;"></div>
+<div style="position: relative; z-index: 1;">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
+<div style="flex: 1;">
+<div style="display: flex; align-items: center; gap: 0.5rem;">
+<span style="font-size: 1.8rem;">{icon}</span>
+<div>
+<div style="font-size: 1.1rem; font-weight: bold; color: white;">{name_display}</div>
+<div style="color: #666; font-size: 0.75rem;">{strategy}</div>
+</div>
+</div>
+</div>
+<div style="text-align: right;">
+<div style="color: {pnl_color}; font-size: 1.8rem; font-weight: bold; line-height: 1;">{pnl_pct:+.1f}%</div>
+<div style="color: {pnl_color}; font-size: 0.85rem;">${total_pnl:+,.0f}</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; padding-top: 0.8rem; border-top: 1px solid rgba(255,255,255,0.1);">
+<div style="text-align: center;"><div style="font-size: 1.1rem; font-weight: bold; color: white;">${total_value:,.0f}</div><div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Value</div></div>
+<div style="text-align: center;"><div style="font-size: 1.1rem; font-weight: bold; color: #888;">${initial:,.0f}</div><div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Initial</div></div>
+<div style="text-align: center;"><div style="font-size: 1.1rem; font-weight: bold; color: white;">{trades_count}</div><div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Trades</div></div>
+<div style="text-align: center;"><div style="font-size: 1.1rem; font-weight: bold; color: {pos_color};">{positions_count}</div><div style="font-size: 0.65rem; color: #666; text-transform: uppercase;">Open</div></div>
+</div>
+<div style="margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
+<div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">{coins_html}</div>
+</div>
+</div>
+</div>'''
+                    st.markdown(card_html, unsafe_allow_html=True)
 
-                            <!-- Coins -->
-                            <div style="margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05);">
-                                <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
-                                    {''.join([f'<span style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; color: #aaa;">{c.replace("/USDT","")}</span>' for c in cryptos[:6]])}
-                                    {f'<span style="color: #666; font-size: 0.65rem;">+{len(cryptos)-6}</span>' if len(cryptos) > 6 else ''}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    """, unsafe_allow_html=True)
-
-                    # Position breakdown (collapsed by default, more compact)
+                    # Position breakdown
                     if positions_count > 0:
-                        st.markdown(f"""
-                        <div style="background: rgba(0,170,255,0.05); padding: 0.4rem 1rem; margin-top: -0.5rem; margin-bottom: 0.5rem; border-radius: 0 0 12px 12px; font-size: 0.7rem; display: flex; justify-content: space-between;">
-                            <span style="color: #888;">💵 ${usdt_balance:,.0f} cash</span>
-                            <span style="color: #888;">📊 ${positions_value:,.0f} invested</span>
-                            <span style="color: {unrealized_color};">📈 ${unrealized_pnl:+,.0f} unrealized</span>
-                        </div>
-                        """, unsafe_allow_html=True)
+                        pos_html = f'<div style="background: rgba(0,170,255,0.05); padding: 0.4rem 1rem; margin-top: -0.5rem; margin-bottom: 0.5rem; border-radius: 0 0 12px 12px; font-size: 0.7rem; display: flex; justify-content: space-between;"><span style="color: #888;">💵 ${usdt_balance:,.0f} cash</span><span style="color: #888;">📊 ${positions_value:,.0f} invested</span><span style="color: {unrealized_color};">📈 ${unrealized_pnl:+,.0f} unrealized</span></div>'
+                        st.markdown(pos_html, unsafe_allow_html=True)
 
                     # Action buttons
                     btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6, btn_col7 = st.columns(7)
