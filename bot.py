@@ -17,6 +17,11 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
+# Fix Windows console encoding for emojis
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 # Config
 PORTFOLIOS_FILE = "data/portfolios.json"
 LOG_FILE = "data/bot_log.txt"
