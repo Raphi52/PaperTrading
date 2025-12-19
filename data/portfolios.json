@@ -466,7 +466,79 @@
       "trades": [],
       "created_at": "2025-12-19T12:00:00",
       "active": true
+    },
+    "portfolio_11": {
+      "id": "portfolio_11",
+      "name": "Sniper Safe",
+      "strategy_id": "sniper_safe",
+      "strategy_name": "Sniper Safe",
+      "icon": "🎯",
+      "color": "#00ff88",
+      "config": {
+        "cryptos": ["NEW_TOKENS"],
+        "allocation_percent": 5,
+        "max_risk": 50,
+        "min_liquidity": 50000,
+        "max_positions": 10,
+        "auto_trade": true,
+        "take_profit": 100,
+        "stop_loss": 30
+      },
+      "balance": {"USDT": 5000},
+      "initial_capital": 5000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_12": {
+      "id": "portfolio_12",
+      "name": "Sniper Degen",
+      "strategy_id": "sniper_degen",
+      "strategy_name": "Sniper Degen",
+      "icon": "🔫",
+      "color": "#feca57",
+      "config": {
+        "cryptos": ["NEW_TOKENS"],
+        "allocation_percent": 10,
+        "max_risk": 75,
+        "min_liquidity": 10000,
+        "max_positions": 20,
+        "auto_trade": true,
+        "take_profit": 200,
+        "stop_loss": 50
+      },
+      "balance": {"USDT": 3000},
+      "initial_capital": 3000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_13": {
+      "id": "portfolio_13",
+      "name": "Sniper YOLO",
+      "strategy_id": "sniper_yolo",
+      "strategy_name": "Sniper YOLO",
+      "icon": "💀",
+      "color": "#ff0000",
+      "config": {
+        "cryptos": ["NEW_TOKENS"],
+        "allocation_percent": 20,
+        "max_risk": 90,
+        "min_liquidity": 5000,
+        "max_positions": 30,
+        "auto_trade": true,
+        "take_profit": 500,
+        "stop_loss": 80
+      },
+      "balance": {"USDT": 2000},
+      "initial_capital": 2000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
     }
   },
-  "counter": 10
+  "counter": 13
 }

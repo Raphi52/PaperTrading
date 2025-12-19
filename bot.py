@@ -46,6 +46,11 @@ STRATEGIES = {
     "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum"},
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid"},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20},
+
+    # SNIPER STRATEGIES - New token hunting
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 50, "min_liquidity": 50000},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 75, "min_liquidity": 10000},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 90, "min_liquidity": 5000},
 }
 
 
