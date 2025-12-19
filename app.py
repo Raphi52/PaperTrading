@@ -745,7 +745,7 @@ def render_portfolios():
                                 <span style="font-size: 2rem; margin-right: 0.5rem;">{icon}</span>
                                 <span style="font-size: 1.3rem; font-weight: bold; color: white;">{p['name']}</span>
                                 <div style="color: #888; font-size: 0.8rem; margin-top: 0.3rem;">
-                                    <span class="tooltip-container">ℹ️ {strategy}<span class="tooltip-text">{tooltip}</span></span> • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
+                                    {strategy} • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
                                 </div>
                             </div>
                             <div style="text-align: right;">
@@ -775,7 +775,7 @@ def render_portfolios():
                     """, unsafe_allow_html=True)
 
                     # Action buttons
-                    btn_col1, btn_col2, btn_col3, btn_col4 = st.columns(4)
+                    btn_col1, btn_col2, btn_col3, btn_col4, btn_col5 = st.columns(5)
                     with btn_col1:
                         btn_label = "⏸️" if is_active else "▶️"
                         if st.button(btn_label, key=f"toggle_{pid}", use_container_width=True):
@@ -783,21 +783,29 @@ def render_portfolios():
                             save_portfolios(data)
                             st.rerun()
                     with btn_col2:
-                        if st.button("📜", key=f"history_{pid}", use_container_width=True, help="Historique"):
-                            st.session_state[f'show_history_{pid}'] = not st.session_state.get(f'show_history_{pid}', False)
+                        if st.button("ℹ️", key=f"info_{pid}", use_container_width=True):
+                            st.session_state[f'show_info_{pid}'] = not st.session_state.get(f'show_info_{pid}', False)
                             st.rerun()
                     with btn_col3:
-                        if st.button("🔄", key=f"reset_{pid}", use_container_width=True, help="Reset"):
+                        if st.button("📜", key=f"history_{pid}", use_container_width=True):
+                            st.session_state[f'show_history_{pid}'] = not st.session_state.get(f'show_history_{pid}', False)
+                            st.rerun()
+                    with btn_col4:
+                        if st.button("🔄", key=f"reset_{pid}", use_container_width=True):
                             data['portfolios'][pid]['balance'] = {'USDT': initial}
                             data['portfolios'][pid]['positions'] = {}
                             data['portfolios'][pid]['trades'] = []
                             save_portfolios(data)
                             st.rerun()
-                    with btn_col4:
-                        if st.button("🗑️", key=f"del_{pid}", use_container_width=True, help="Supprimer"):
+                    with btn_col5:
+                        if st.button("🗑️", key=f"del_{pid}", use_container_width=True):
                             del data['portfolios'][pid]
                             save_portfolios(data)
                             st.rerun()
+
+                    # Show strategy info if toggled
+                    if st.session_state.get(f'show_info_{pid}', False):
+                        st.info(f"**{strategy}**: {tooltip}")
 
                     # Show history if toggled
                     if st.session_state.get(f'show_history_{pid}', False):
