@@ -10,6 +10,8 @@ import os
 import time
 import requests
 import pandas as pd
+import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -298,12 +300,32 @@ def run_engine(portfolios: dict) -> list:
     return results
 
 
+def start_dashboard():
+    """Start Streamlit dashboard in background"""
+    try:
+        log("Starting Streamlit dashboard on port 8501...")
+        subprocess.Popen(
+            [sys.executable, "-m", "streamlit", "run", "dashboard.py",
+             "--server.address", "0.0.0.0",
+             "--server.port", "8501",
+             "--server.headless", "true"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+        log("Dashboard started: http://localhost:8501")
+    except Exception as e:
+        log(f"Could not start dashboard: {e}")
+
+
 def main():
     """Main bot loop"""
     print("=" * 60)
     print("  PAPER TRADING BOT")
     print("  Ctrl+C to stop")
     print("=" * 60)
+
+    # Start dashboard
+    start_dashboard()
 
     # Load portfolios
     portfolios, counter = load_portfolios()
