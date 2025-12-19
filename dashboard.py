@@ -1057,22 +1057,55 @@ def main():
             st.markdown(f"**{len(st.session_state.portfolios)} portfolios** | Capital total: **${sum(p['initial_capital'] for p in st.session_state.portfolios.values()):,.0f}**")
 
         with ctrl_col2:
-            if st.button("▶️ Play All", type="primary", use_container_width=True):
+            if st.button("▶️ Play All", type="primary", use_container_width=True, key="btn_play_all"):
                 for pid in st.session_state.portfolios:
                     st.session_state.portfolios[pid]['active'] = True
                 save_portfolios()
                 st.rerun()
 
         with ctrl_col3:
-            if st.button("⏸️ Pause All", use_container_width=True):
+            if st.button("⏸️ Pause All", use_container_width=True, key="btn_pause_all"):
                 for pid in st.session_state.portfolios:
                     st.session_state.portfolios[pid]['active'] = False
                 save_portfolios()
                 st.rerun()
 
         with ctrl_col4:
-            if st.button("➕ Nouveau", use_container_width=True):
-                st.session_state.show_create_portfolio = True
+            if st.button("➕ Nouveau", use_container_width=True, key="btn_new_portfolio"):
+                st.session_state.show_create_portfolio = not st.session_state.get('show_create_portfolio', False)
+                st.rerun()
+
+        # Quick create portfolio form
+        if st.session_state.get('show_create_portfolio', False):
+            with st.container():
+                st.markdown("#### ➕ Créer un Portfolio Rapide")
+                qc_col1, qc_col2, qc_col3, qc_col4 = st.columns([2, 2, 1, 1])
+
+                with qc_col1:
+                    quick_name = st.text_input("Nom", value=f"Portfolio {st.session_state.portfolio_counter + 1}", key="quick_name")
+
+                with qc_col2:
+                    quick_strategy = st.selectbox(
+                        "Stratégie",
+                        list(STRATEGIES.keys()),
+                        format_func=lambda x: f"{STRATEGIES[x]['icon']} {STRATEGIES[x]['name']}",
+                        key="quick_strategy"
+                    )
+
+                with qc_col3:
+                    quick_capital = st.number_input("Capital $", min_value=100, value=10000, step=1000, key="quick_capital")
+
+                with qc_col4:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    if st.button("✅ Créer", type="primary", use_container_width=True, key="btn_quick_create"):
+                        create_portfolio(quick_name, quick_strategy, float(quick_capital))
+                        st.session_state.show_create_portfolio = False
+                        st.success(f"Portfolio '{quick_name}' créé!")
+                        st.rerun()
+
+                if st.button("❌ Annuler", use_container_width=True, key="btn_cancel_create"):
+                    st.session_state.show_create_portfolio = False
+                    st.rerun()
 
         # Portfolio cards grid (4 per row)
         portfolios_list = list(st.session_state.portfolios.items())
