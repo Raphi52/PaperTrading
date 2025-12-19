@@ -1617,15 +1617,18 @@ Paper trading uniquement pour expérimenter."""
                                 <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Pos.</div>
                             </div>
                         </div>
-                        {"" if positions_count == 0 else f'''
-                        <div style="padding: 0.5rem 0; border-top: 1px solid #333; font-size: 0.75rem;">
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    # Show position breakdown if there are positions
+                    if positions_count > 0:
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%); padding: 0.5rem 1.2rem; margin-top: -1rem; margin-bottom: 1rem; border-radius: 0 0 16px 16px; font-size: 0.75rem; border-top: 1px solid #333;">
                             <span style="color: #888;">💵 Cash: ${usdt_balance:,.0f}</span>
                             <span style="color: #888; margin-left: 1rem;">📊 In positions: ${positions_value:,.0f}</span>
                             <span style="color: {unrealized_color}; margin-left: 1rem;">📈 Unrealized: ${unrealized_pnl:+,.0f}</span>
                         </div>
-                        '''}
-                    </div>
-                    """, unsafe_allow_html=True)
+                        """, unsafe_allow_html=True)
 
                     # Action buttons
                     btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6 = st.columns(6)
