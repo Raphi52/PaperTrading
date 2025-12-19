@@ -371,31 +371,52 @@ def main():
 
         st.divider()
 
-        # Bot status - Control ALL portfolios
-        st.markdown("### 🤖 All Portfolios")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("▶️ All ON", use_container_width=True):
-                pf_data = load_portfolios()
-                for pid in pf_data.get('portfolios', {}):
-                    pf_data['portfolios'][pid]['active'] = True
-                save_portfolios(pf_data)
-                st.toast("All portfolios activated!")
-                st.rerun()
-        with col2:
-            if st.button("⏹️ All OFF", use_container_width=True):
-                pf_data = load_portfolios()
-                for pid in pf_data.get('portfolios', {}):
-                    pf_data['portfolios'][pid]['active'] = False
-                save_portfolios(pf_data)
-                st.toast("All portfolios paused!")
-                st.rerun()
-
-        # Count active
+        # Portfolios count
         pf_data = load_portfolios()
-        active_count = sum(1 for p in pf_data.get('portfolios', {}).values() if p.get('active', True))
         total_count = len(pf_data.get('portfolios', {}))
-        st.markdown(f"Active: **{active_count}/{total_count}**")
+        st.markdown(f"### 🤖 {total_count} Portfolios")
+
+        # Take Profit ALL button
+        if st.button("💰 Take Profit ALL", use_container_width=True, type="primary"):
+            pf_data = load_portfolios()
+            symbols_to_price = set()
+            # Collect all symbols
+            for pid, p in pf_data.get('portfolios', {}).items():
+                for symbol in p.get('positions', {}).keys():
+                    symbols_to_price.add(symbol)
+
+            # Get current prices
+            if symbols_to_price:
+                current_prices = get_current_prices(list(symbols_to_price))
+
+                # Sell all positions in all portfolios
+                for pid, p in pf_data.get('portfolios', {}).items():
+                    for symbol, pos in list(p.get('positions', {}).items()):
+                        asset = symbol.split('/')[0]
+                        qty = pos.get('quantity', 0)
+                        entry = pos.get('entry_price', 0)
+                        current = current_prices.get(symbol, entry)
+                        value = qty * current
+                        pnl = value - (qty * entry)
+
+                        pf_data['portfolios'][pid]['balance']['USDT'] += value
+                        pf_data['portfolios'][pid]['balance'][asset] = 0
+                        del pf_data['portfolios'][pid]['positions'][symbol]
+
+                        pf_data['portfolios'][pid]['trades'].append({
+                            'timestamp': datetime.now().isoformat(),
+                            'action': 'SELL',
+                            'symbol': symbol,
+                            'price': current,
+                            'quantity': qty,
+                            'amount_usdt': value,
+                            'pnl': pnl,
+                            'reason': 'TAKE PROFIT ALL (manual)'
+                        })
+
+                save_portfolios(pf_data)
+                st.toast("All positions sold!")
+                st.rerun()
 
     # Main content based on page
     if page == "📊 Dashboard":
@@ -1545,17 +1566,15 @@ Paper trading uniquement pour expérimenter."""
 
                     trades_count = len(p.get('trades', []))
                     positions_count = len(p.get('positions', {}))
-                    is_active = p.get('active', True)
                     strategy = p.get('strategy_id', 'manual')
                     icon = strat_icons.get(strategy, '📈')
                     tooltip = strat_tooltips.get(strategy, 'No description available')
                     cryptos = p['config'].get('cryptos', [])
 
-                    # Colors
+                    # Colors - green border if profit, red if loss
                     pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
                     unrealized_color = '#00ff88' if unrealized_pnl >= 0 else '#ff4444'
-                    border_color = '#00ff88' if is_active else '#ff4444'
-                    status_text = '▶️ Active' if is_active else '⏸️ Paused'
+                    border_color = pnl_color  # Border reflects P&L status
 
                     # Card HTML
                     st.markdown(f"""
@@ -1577,7 +1596,7 @@ Paper trading uniquement pour expérimenter."""
                             </div>
                             <div style="text-align: right;">
                                 <div style="color: {pnl_color}; font-size: 1.5rem; font-weight: bold;">{pnl_pct:+.1f}%</div>
-                                <div style="color: #666; font-size: 0.75rem;">{status_text}</div>
+                                <div style="color: #666; font-size: 0.75rem;">{positions_count} position{'s' if positions_count != 1 else ''}</div>
                             </div>
                         </div>
                         <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-top: 1px solid #333;">
@@ -1611,11 +1630,40 @@ Paper trading uniquement pour expérimenter."""
                     # Action buttons
                     btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6 = st.columns(6)
                     with btn_col1:
-                        btn_label = "⏸️" if is_active else "▶️"
-                        if st.button(btn_label, key=f"toggle_{pid}", use_container_width=True):
-                            data['portfolios'][pid]['active'] = not is_active
-                            save_portfolios(data)
-                            st.rerun()
+                        # Take Profit button - sells all positions and converts to USDT
+                        if positions_count > 0:
+                            if st.button("💰", key=f"tp_{pid}", use_container_width=True, help="Take Profit - Sell all"):
+                                # Sell all positions at current prices
+                                for pos_detail in pf_value['positions_details']:
+                                    symbol = pos_detail['symbol']
+                                    asset = symbol.split('/')[0]
+                                    current_value = pos_detail['current_value']
+                                    pnl = pos_detail['pnl']
+
+                                    # Add to USDT balance
+                                    data['portfolios'][pid]['balance']['USDT'] += current_value
+                                    data['portfolios'][pid]['balance'][asset] = 0
+
+                                    # Remove position
+                                    if symbol in data['portfolios'][pid]['positions']:
+                                        del data['portfolios'][pid]['positions'][symbol]
+
+                                    # Record trade
+                                    data['portfolios'][pid]['trades'].append({
+                                        'timestamp': datetime.now().isoformat(),
+                                        'action': 'SELL',
+                                        'symbol': symbol,
+                                        'price': pos_detail['current_price'],
+                                        'quantity': pos_detail['quantity'],
+                                        'amount_usdt': current_value,
+                                        'pnl': pnl,
+                                        'reason': 'TAKE PROFIT (manual)'
+                                    })
+
+                                save_portfolios(data)
+                                st.rerun()
+                        else:
+                            st.button("💰", key=f"tp_{pid}", use_container_width=True, disabled=True, help="No positions to sell")
                     with btn_col2:
                         if st.button("ℹ️", key=f"info_{pid}", use_container_width=True):
                             st.session_state[f'show_info_{pid}'] = not st.session_state.get(f'show_info_{pid}', False)
