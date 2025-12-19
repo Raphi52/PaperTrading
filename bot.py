@@ -206,6 +206,18 @@ STRATEGIES = {
     # Martingale - Double down on losses (HIGH RISK!)
     "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4},
     "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3},
+
+    # ============ FUNDING RATE STRATEGIES ============
+    # Funding Rate Arbitrage - Trade against crowded positions
+    "funding_contrarian": {"auto": True, "use_funding": True, "mode": "contrarian"},
+    "funding_extreme": {"auto": True, "use_funding": True, "mode": "extreme"},
+
+    # Open Interest Strategies - Follow the smart money
+    "oi_breakout": {"auto": True, "use_oi": True, "mode": "breakout"},
+    "oi_divergence": {"auto": True, "use_oi": True, "mode": "divergence"},
+
+    # Combined Funding + OI
+    "funding_oi_combo": {"auto": True, "use_funding": True, "use_oi": True, "mode": "combo"},
 }
 
 # Timeframes per strategy type - optimized for each trading style
@@ -250,6 +262,13 @@ STRATEGY_TIMEFRAMES = {
     "dca_aggressive": "4h",
     "hodl": "4h",
     "god_mode_only": "4h",
+
+    # Funding rate strategies - 1H (funding updates every 8h)
+    "funding_contrarian": "1h",
+    "funding_extreme": "1h",
+    "oi_breakout": "1h",
+    "oi_divergence": "1h",
+    "funding_oi_combo": "1h",
 }
 
 DEFAULT_TIMEFRAME = "1h"
@@ -279,6 +298,70 @@ def get_fear_greed_index() -> dict:
     except Exception as e:
         debug_log('API', 'Fear&Greed API failed', {'url': url}, error=e)
     return {'value': 50, 'classification': 'Neutral'}  # Default neutral
+
+
+def get_funding_rate(symbol: str) -> dict:
+    """Fetch funding rate from Binance Futures API"""
+    try:
+        # Convert symbol format: BTC/USDT -> BTCUSDT
+        futures_symbol = symbol.replace('/', '')
+        url = f"https://fapi.binance.com/fapi/v1/fundingRate?symbol={futures_symbol}&limit=1"
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data and len(data) > 0:
+                rate = float(data[0].get('fundingRate', 0))
+                return {
+                    'rate': rate * 100,  # Convert to percentage
+                    'raw': rate,
+                    'timestamp': data[0].get('fundingTime')
+                }
+    except Exception as e:
+        pass  # Silently fail for non-futures pairs
+    return {'rate': 0, 'raw': 0, 'timestamp': None}
+
+
+def get_open_interest(symbol: str) -> dict:
+    """Fetch open interest from Binance Futures API"""
+    try:
+        futures_symbol = symbol.replace('/', '')
+        url = f"https://fapi.binance.com/fapi/v1/openInterest?symbol={futures_symbol}"
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data:
+                return {
+                    'oi': float(data.get('openInterest', 0)),
+                    'symbol': data.get('symbol')
+                }
+    except Exception as e:
+        pass  # Silently fail for non-futures pairs
+    return {'oi': 0, 'symbol': None}
+
+
+def get_funding_and_oi(symbol: str) -> dict:
+    """Get both funding rate and open interest for a symbol"""
+    funding = get_funding_rate(symbol)
+    oi = get_open_interest(symbol)
+
+    # Interpret funding rate
+    rate = funding['rate']
+    if rate > 0.1:
+        funding_signal = 'very_positive'  # Many longs, potential dump
+    elif rate > 0.05:
+        funding_signal = 'positive'
+    elif rate < -0.1:
+        funding_signal = 'very_negative'  # Many shorts, potential squeeze
+    elif rate < -0.05:
+        funding_signal = 'negative'
+    else:
+        funding_signal = 'neutral'
+
+    return {
+        'funding_rate': rate,
+        'funding_signal': funding_signal,
+        'open_interest': oi['oi'],
+    }
 
 
 def log(message: str):
@@ -600,6 +683,17 @@ def analyze_crypto(symbol: str, timeframe: str = "1h") -> dict:
             'trend': 'bullish' if indicators['ema_12'] > indicators['ema_26'] else 'bearish'
         }
         result.update(indicators)
+
+        # Add funding rate and open interest data (for futures-enabled pairs)
+        try:
+            funding_oi = get_funding_and_oi(symbol)
+            result['funding_rate'] = funding_oi['funding_rate']
+            result['funding_signal'] = funding_oi['funding_signal']
+            result['open_interest'] = funding_oi['open_interest']
+        except:
+            result['funding_rate'] = 0
+            result['funding_signal'] = 'neutral'
+            result['open_interest'] = 0
 
         return result
 
@@ -962,6 +1056,68 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         elif analysis.get('god_mode_sell') and has_position:
             return ('SELL', f"GOD MODE SELL: RSI={rsi:.0f}>80 + Vol spike + Above mean + Dropping!")
         return (None, f"GOD MODE: Waiting for extreme conditions | RSI={rsi:.0f}")
+
+    # ============ FUNDING RATE & OPEN INTEREST STRATEGIES ============
+
+    # Funding Rate Contrarian - Trade against crowded positions
+    if strategy.get('use_funding'):
+        funding_rate = analysis.get('funding_rate', 0)
+        funding_signal = analysis.get('funding_signal', 'neutral')
+        mode = strategy.get('mode', 'contrarian')
+
+        if mode == 'extreme':
+            # Only trade on extreme funding rates
+            if funding_rate < -0.1 and has_cash:
+                return ('BUY', f"FUNDING EXTREME: Rate={funding_rate:.3f}% very negative (shorts crowded)")
+            elif funding_rate > 0.1 and has_position:
+                return ('SELL', f"FUNDING EXTREME: Rate={funding_rate:.3f}% very positive (longs crowded)")
+            return (None, f"FUNDING EXTREME: Rate={funding_rate:.3f}% waiting for extreme")
+
+        elif mode == 'contrarian':
+            # Trade against the crowd
+            if funding_signal == 'very_negative' and has_cash:
+                return ('BUY', f"FUNDING: Rate={funding_rate:.3f}% shorts crowded, expecting squeeze")
+            elif funding_signal == 'negative' and has_cash and rsi < 40:
+                return ('BUY', f"FUNDING: Rate={funding_rate:.3f}% negative + RSI={rsi:.0f}")
+            elif funding_signal == 'very_positive' and has_position:
+                return ('SELL', f"FUNDING: Rate={funding_rate:.3f}% longs crowded, expecting dump")
+            elif funding_signal == 'positive' and has_position and rsi > 60:
+                return ('SELL', f"FUNDING: Rate={funding_rate:.3f}% positive + RSI={rsi:.0f}")
+            return (None, f"FUNDING: Rate={funding_rate:.3f}% ({funding_signal}) | RSI={rsi:.0f}")
+
+        elif mode == 'combo':
+            # Combined with OI for stronger signals
+            oi = analysis.get('open_interest', 0)
+            trend = analysis.get('trend', 'neutral')
+
+            if funding_rate < -0.05 and trend == 'bullish' and has_cash:
+                return ('BUY', f"FUNDING+OI: Negative funding + bullish trend")
+            elif funding_rate > 0.05 and trend == 'bearish' and has_position:
+                return ('SELL', f"FUNDING+OI: Positive funding + bearish trend")
+            return (None, f"FUNDING+OI: Rate={funding_rate:.3f}% | Trend={trend}")
+
+    # Open Interest Strategies
+    if strategy.get('use_oi'):
+        oi = analysis.get('open_interest', 0)
+        trend = analysis.get('trend', 'neutral')
+        mode = strategy.get('mode', 'breakout')
+
+        if mode == 'breakout':
+            # Rising OI + bullish = new money entering longs
+            if oi > 0 and trend == 'bullish' and has_cash and rsi < 65:
+                return ('BUY', f"OI BREAKOUT: Rising OI + bullish trend | RSI={rsi:.0f}")
+            elif trend == 'bearish' and has_position:
+                return ('SELL', f"OI BREAKOUT: Bearish trend detected")
+            return (None, f"OI: Waiting for trend + OI confirmation | Trend={trend}")
+
+        elif mode == 'divergence':
+            # Price up but OI down = potential reversal
+            change_1h = analysis.get('change_1h', 0)
+            if change_1h < -2 and has_cash and rsi < 35:
+                return ('BUY', f"OI DIVERGENCE: Price dropped {change_1h:.1f}% | RSI={rsi:.0f}")
+            elif change_1h > 2 and has_position and rsi > 70:
+                return ('SELL', f"OI DIVERGENCE: Price up {change_1h:.1f}% + overbought")
+            return (None, f"OI DIVERGENCE: Change={change_1h:.1f}% | RSI={rsi:.0f}")
 
     # Signal-based strategies (confluence, conservative, aggressive, etc.)
     buy_signals = strategy.get('buy_on', [])

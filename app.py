@@ -1615,7 +1615,120 @@ Pour les investisseurs contrarians qui achètent quand le marché panique.
 Stratégie long terme qui achète les crashs.
 
 📊 OÙ VOIR L'INDEX ?
-alternative.me/crypto/fear-and-greed-index/"""
+alternative.me/crypto/fear-and-greed-index/""",
+
+        "funding_contrarian": """📊 FUNDING CONTRARIAN - Trade Contre la Foule
+
+🎓 C'EST QUOI ?
+Le "Funding Rate" est le taux que les longs paient aux shorts (ou vice versa)
+sur les marchés futures. Il indique qui est "crowded" (trop nombreux).
+
+• Funding positif élevé = beaucoup de longs = risque de dump
+• Funding négatif élevé = beaucoup de shorts = risque de squeeze
+
+📈 QUAND J'ACHÈTE ?
+• Funding Rate très négatif (< -0.05%)
+• → Les shorts sont crowded, potentiel short squeeze !
+
+📉 QUAND JE VENDS ?
+• Funding Rate très positif (> 0.05%)
+• → Les longs sont crowded, potentiel dump
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse
+
+💡 POUR QUI ?
+Traders contrarians qui aiment aller contre le consensus.
+Fonctionne bien pendant les périodes de forte spéculation.""",
+
+        "funding_extreme": """🔥 FUNDING EXTREME - Positions Extrêmes Uniquement
+
+🎓 C'EST QUOI ?
+Comme Funding Contrarian mais n'agit QUE sur les extrêmes.
+Attend des funding rates vraiment anormaux avant de trader.
+
+📈 QUAND J'ACHÈTE ?
+• Funding Rate < -0.1% (extrêmement négatif)
+• → Short squeeze quasi-certain !
+
+📉 QUAND JE VENDS ?
+• Funding Rate > 0.1% (extrêmement positif)
+• → Liquidations de longs imminentes
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Très Basse (rare)
+
+💡 POUR QUI ?
+Pour ceux qui veulent des signaux rares mais puissants.
+Très efficace pendant les périodes de FOMO/panique.""",
+
+        "oi_breakout": """📈 OI BREAKOUT - Open Interest Breakout
+
+🎓 C'EST QUOI ?
+L'Open Interest = nombre total de contrats futures ouverts.
+• OI qui monte + prix qui monte = nouveaux acheteurs (bullish)
+• OI qui monte + prix qui baisse = nouveaux vendeurs (bearish)
+
+📈 QUAND J'ACHÈTE ?
+• OI en hausse + tendance haussière (EMA)
+• → De l'argent frais entre sur le marché
+
+📉 QUAND JE VENDS ?
+• Tendance devient baissière
+• → Les acheteurs partent
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Pour suivre les flux de capitaux sur les futures.
+Confirme les breakouts avec de l'argent réel.""",
+
+        "oi_divergence": """🔄 OI DIVERGENCE - Divergences Prix/OI
+
+🎓 C'EST QUOI ?
+Cherche les divergences entre le prix et l'open interest.
+Quand ils divergent, un retournement est possible.
+
+📈 QUAND J'ACHÈTE ?
+• Prix a chuté fortement (-2% ou plus)
+• RSI < 35 (survendu)
+• → Potentiel rebond
+
+📉 QUAND JE VENDS ?
+• Prix a monté fortement (+2% ou plus)
+• RSI > 70 (suracheté)
+• → Potentiel retournement
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Traders qui cherchent les retournements.
+Combine analyse technique et données futures.""",
+
+        "funding_oi_combo": """🎯 FUNDING + OI COMBO - Double Confirmation
+
+🎓 C'EST QUOI ?
+Combine Funding Rate ET Open Interest pour des signaux plus fiables.
+Deux confirmations valent mieux qu'une !
+
+📈 QUAND J'ACHÈTE ?
+• Funding négatif (shorts crowded)
+• ET tendance haussière (EMA bullish)
+• → Double confirmation d'achat
+
+📉 QUAND JE VENDS ?
+• Funding positif (longs crowded)
+• ET tendance baissière
+• → Double confirmation de vente
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse
+
+💡 POUR QUI ?
+Pour ceux qui veulent des signaux très fiables.
+Moins de trades mais meilleure qualité."""
     }
 
     # Display portfolios as cards (2 per row)
