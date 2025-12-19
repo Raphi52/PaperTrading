@@ -45,6 +45,51 @@ st.set_page_config(
 # Appliquer le theme
 apply_theme()
 
+# Custom CSS for tooltips
+st.markdown("""
+<style>
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+.tooltip-container .tooltip-text {
+    visibility: hidden;
+    opacity: 0;
+    width: 280px;
+    background: linear-gradient(145deg, #2a2a4a 0%, #1a1a2e 100%);
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 10px 12px;
+    position: absolute;
+    z-index: 9999;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: opacity 0.3s;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border: 1px solid #444;
+}
+.tooltip-container .tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #1a1a2e transparent transparent transparent;
+}
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # ==================== DATA LOADING ====================
 
 @st.cache_data(ttl=60)
@@ -658,7 +703,7 @@ def render_portfolios():
                                 <span style="font-size: 2rem; margin-right: 0.5rem;">{icon}</span>
                                 <span style="font-size: 1.3rem; font-weight: bold; color: white;">{p['name']}</span>
                                 <div style="color: #888; font-size: 0.8rem; margin-top: 0.3rem;">
-                                    <span style="cursor: help; border-bottom: 1px dotted #888;" title="{tooltip}">ℹ️ {strategy}</span> • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
+                                    <span class="tooltip-container">ℹ️ {strategy}<span class="tooltip-text">{tooltip}</span></span> • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
                                 </div>
                             </div>
                             <div style="text-align: right;">
