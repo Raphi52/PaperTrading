@@ -671,46 +671,325 @@ def render_portfolios():
         "martingale": "🎰", "martingale_safe": "🎲"
     }
 
-    # Strategy descriptions for tooltips
+    # Strategy descriptions for tooltips - DETAILED
     strat_tooltips = {
         # Original strategies
-        "confluence_normal": "RSI + MACD + Bollinger Bands. Buys when RSI<35 + MACD crossover + price near lower band. Safe, medium frequency.",
-        "confluence_strict": "Same as normal but stricter: RSI<30 + confirmed MACD + price below lower band. Fewer trades, higher precision.",
-        "conservative": "Only trades on STRONG signals (RSI<30 + bullish trend). Low frequency, high precision.",
-        "aggressive": "Trades on regular + strong signals. Higher frequency, more opportunities.",
-        "degen_hybrid": "Combines scalping + momentum. Aggressive entries on volume spikes and RSI extremes. High risk, high reward.",
-        "degen_scalp": "Ultra-fast scalping on 1m charts. Targets 0.5-1% gains. Very high frequency, small position sizes.",
-        "degen_momentum": "Rides momentum waves. Enters on volume spikes and price acceleration.",
-        "degen_full": "Maximum degen mode. All signals, high allocation, aggressive entries.",
-        "god_mode_only": "Only trades on God Mode signals (RSI<20 oversold + volume spike + momentum reversal). Rare but powerful.",
-        "hodl": "Buy and hold strategy. Buys on major dips (RSI<25), never sells. Long-term accumulation.",
-        "rsi_strategy": "Pure RSI strategy. Buy when RSI<30 (oversold), sell when RSI>70 (overbought).",
-        "manual": "Manual trading only. No automated signals.",
-        "sniper_safe": "Scans new DEX tokens. Risk score <50, min $50k liquidity. Conservative sniper.",
-        "sniper_degen": "Scans new DEX tokens. Risk score <75, min $10k liquidity. Aggressive sniper.",
-        "sniper_yolo": "Scans new DEX tokens. Risk score <90, min $5k liquidity. Maximum degen mode.",
+        "confluence_normal": """📊 CONFLUENCE NORMAL
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 35 (oversold) + signal BUY ou STRONG_BUY
+SELL: RSI > 65 (overbought) + signal SELL ou STRONG_SELL
+
+Combine plusieurs indicateurs pour confirmer.
+Fréquence moyenne, bon équilibre risque/reward.
+Idéal pour: Marchés avec tendances claires.""",
+
+        "confluence_strict": """🎯 CONFLUENCE STRICT
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 30 (très oversold) + signal STRONG_BUY uniquement
+SELL: RSI > 70 (très overbought) + signal STRONG_SELL uniquement
+
+Version stricte - attend des conditions parfaites.
+Moins de trades mais plus précis.
+Idéal pour: Réduire les faux signaux.""",
+
+        "conservative": """🛡️ CONSERVATIVE
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 30 + EMA12 > EMA26 (trend bullish confirmé)
+SELL: RSI > 70 + EMA12 < EMA26 (trend bearish confirmé)
+
+Attend la confluence trend + RSI extrême.
+Très peu de trades, haute précision.
+Idéal pour: Capital important, aversion au risque.""",
+
+        "aggressive": """🔥 AGGRESSIVE
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 35 (légèrement oversold suffit)
+SELL: RSI > 65 (légèrement overbought suffit)
+
+Entre plus tôt, sort plus tôt.
+Plus de trades, capture plus de mouvements.
+Idéal pour: Marchés volatils, petites positions.""",
+
+        "rsi_strategy": """📈 RSI PURE
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 30 (zone oversold classique)
+SELL: RSI > 70 (zone overbought classique)
+
+Stratégie RSI classique sans autres filtres.
+Simple et efficace sur marchés cycliques.
+Idéal pour: Altcoins avec cycles réguliers.""",
+
+        "hodl": """💎 HODL (Diamond Hands)
+━━━━━━━━━━━━━━━━━━━━
+BUY: Premier trade seulement (une seule fois)
+SELL: JAMAIS
+
+Achète une fois et garde pour toujours.
+Accumulation long terme style Bitcoin maxi.
+Idéal pour: BTC, ETH, conviction long terme.""",
+
+        "god_mode_only": """🚨 GOD MODE ONLY
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 20 (extrême) + Volume 2x moyenne + Prix commence à rebondir + Plus de 2σ sous la moyenne
+SELL: RSI > 80 + Volume spike + Prix commence à chuter
+
+Conditions TRÈS rares mais puissantes.
+Peut-être 1-2 trades par mois.
+Idéal pour: Gros capitaux, patience extrême.""",
+
+        "degen_scalp": """⚡ DEGEN SCALP
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 25 + Momentum positif > 0.3%
+SELL: RSI > 75 + Momentum négatif < -0.3% OU RSI > 55 (quick exit)
+
+Scalping ultra-rapide, petits gains répétés.
+Sort vite même en profit pour sécuriser.
+Idéal pour: Trading actif, petites positions.""",
+
+        "degen_momentum": """🚀 DEGEN MOMENTUM
+━━━━━━━━━━━━━━━━━━━━
+BUY: Volume > 2x moyenne + Momentum 1h > 1% + RSI < 65
+SELL: Volume spike + Momentum négatif OU Momentum < -0.5%
+
+Surfe les vagues de momentum.
+Entre sur volume + mouvement, sort sur essoufflement.
+Idéal pour: Pumps, news, mouvements forts.""",
+
+        "degen_hybrid": """🎯 DEGEN HYBRID
+━━━━━━━━━━━━━━━━━━━━
+BUY: Signal scalp OU signal momentum (l'un ou l'autre)
+SELL: Signal scalp OU signal momentum OU RSI > 70
+
+Combine scalping + momentum pour max opportunités.
+Plus de trades, plus de risque, plus de potentiel.
+Idéal pour: Degen assumé, gestion du risque active.""",
+
+        "degen_full": """💀 FULL DEGEN
+━━━━━━━━━━━━━━━━━━━━
+BUY: Comme hybrid mais allocation 10% au lieu de 5%
+SELL: Comme hybrid
+
+Version amplifiée du hybrid avec plus gros sizing.
+Maximum risque, maximum reward potentiel.
+Idéal pour: YOLO, petits capitaux, moon or rekt.""",
+
+        "manual": """🎮 MANUAL
+━━━━━━━━━━━━━━━━━━━━
+Aucun trade automatique.
+Utilisé pour le paper trading manuel uniquement.""",
+
+        "sniper_safe": """🎯 SNIPER SAFE
+━━━━━━━━━━━━━━━━━━━━
+SCAN: DexScreener + Pump.fun (nouveaux tokens Solana < 24h)
+BUY: Risk score < 50 + Liquidité > $50,000
+SELL: Take Profit +100% OU Stop Loss -30%
+
+Snipe conservateur sur nouveaux tokens.
+Filtre strict: que les tokens "safe" (relativement).
+Idéal pour: Exposition aux memecoins avec limites.""",
+
+        "sniper_degen": """🔫 SNIPER DEGEN
+━━━━━━━━━━━━━━━━━━━━
+SCAN: DexScreener + Pump.fun (nouveaux tokens Solana < 24h)
+BUY: Risk score < 75 + Liquidité > $10,000
+SELL: Take Profit +200% OU Stop Loss -50%
+
+Snipe agressif, accepte plus de risque.
+Plus de tokens scannés, plus volatil.
+Idéal pour: Degen memecoin hunter.""",
+
+        "sniper_yolo": """💀 SNIPER YOLO
+━━━━━━━━━━━━━━━━━━━━
+SCAN: DexScreener + Pump.fun (nouveaux tokens Solana < 12h)
+BUY: Risk score < 90 + Liquidité > $5,000
+SELL: Take Profit +500% OU Stop Loss -80%
+
+Maximum degen sniper. Achète presque tout.
+La plupart vont à 0, mais les winners font x5-x100.
+Idéal pour: Petit capital, lottery tickets.""",
 
         # NEW STRATEGIES
-        "ema_crossover": "Classic 9/21 EMA crossover. Buy when fast EMA crosses above slow. Reliable trend following.",
-        "ema_crossover_slow": "Slower 12/26 EMA crossover. Fewer signals, stronger trends. Good for swing trading.",
-        "vwap_bounce": "Mean reversion on VWAP. Buys when price is 1.5% below VWAP, sells above. Great for ranging markets.",
-        "vwap_trend": "Trend following on VWAP. Buys above VWAP (bullish), sells below. Follows institutional flow.",
-        "supertrend": "Dynamic support/resistance indicator. Buys in uptrend, sells when trend flips. Period=10, Mult=3.",
-        "supertrend_fast": "Faster Supertrend settings. More signals, quicker reactions. Period=7, Mult=2.",
-        "stoch_rsi": "Stochastic RSI for precise entries. Buy <20 oversold, sell >80 overbought. Very accurate.",
-        "stoch_rsi_aggressive": "Aggressive Stoch RSI. Buy <25, sell >75. More trades, slightly lower precision.",
-        "breakout": "Breakout trading. Buys when price breaks 20-period high with volume. Catches big moves.",
-        "breakout_tight": "Tight breakout. 10-period range, 2x volume required. Faster entries, more signals.",
-        "mean_reversion": "Statistical mean reversion. Buys 2 std dev below mean, sells 2 std above. Works in ranges.",
-        "mean_reversion_tight": "Tighter mean reversion. 1.5 std dev threshold. More frequent trades.",
-        "grid_trading": "Grid bot strategy. Buys at range bottom, sells at top. Perfect for sideways markets.",
-        "grid_tight": "Tight grid. 1% grid size, 10 levels. Very active in consolidation.",
-        "dca_accumulator": "DCA on 3%+ dips only. Never sells. Long-term accumulation strategy.",
-        "dca_aggressive": "Aggressive DCA. Buys on 2%+ dips. Faster accumulation, more entries.",
-        "ichimoku": "Japanese Ichimoku Cloud. Buys above cloud + bullish crossover. Classic trend system.",
-        "ichimoku_fast": "Faster Ichimoku settings. Quicker signals, more trades. Good for crypto volatility.",
-        "martingale": "Double down on losses. 2x multiplier, max 4 levels. HIGH RISK - can blow up!",
-        "martingale_safe": "Safer Martingale. 1.5x multiplier, max 3 levels. Still risky but more controlled."
+        "ema_crossover": """📈 EMA CROSSOVER (9/21)
+━━━━━━━━━━━━━━━━━━━━
+BUY: EMA 9 croise AU-DESSUS de EMA 21 (golden cross rapide)
+SELL: EMA 9 croise EN-DESSOUS de EMA 21 (death cross)
+
+Stratégie trend-following classique.
+Réactif, bon pour crypto volatile.
+Idéal pour: Swing trading 1-7 jours.""",
+
+        "ema_crossover_slow": """🐢 EMA CROSSOVER SLOW (12/26)
+━━━━━━━━━━━━━━━━━━━━
+BUY: EMA 12 croise AU-DESSUS de EMA 26
+SELL: EMA 12 croise EN-DESSOUS de EMA 26
+
+Version plus lente, filtre le bruit.
+Moins de faux signaux, retard à l'entrée.
+Idéal pour: Tendances plus longues, moins de trades.""",
+
+        "vwap_bounce": """🎯 VWAP BOUNCE (Mean Reversion)
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix 1.5% EN-DESSOUS du VWAP (sous-évalué)
+SELL: Prix 1.5% AU-DESSUS du VWAP (sur-évalué)
+
+VWAP = prix moyen pondéré par volume (référence institutionnelle).
+Achète sous la "fair value", vend au-dessus.
+Idéal pour: Marchés range, intraday.""",
+
+        "vwap_trend": """📊 VWAP TREND (Trend Following)
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix > VWAP + 0.5% (momentum bullish confirmé)
+SELL: Prix < VWAP - 0.5% (momentum bearish)
+
+Suit le flux institutionnel.
+Au-dessus du VWAP = acheteurs en contrôle.
+Idéal pour: Jours de tendance, breakouts.""",
+
+        "supertrend": """🚀 SUPERTREND
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix passe AU-DESSUS de la ligne Supertrend + RSI < 70
+SELL: Prix passe EN-DESSOUS de la ligne Supertrend
+
+Indicateur dynamique: support en uptrend, résistance en downtrend.
+Period=10, Multiplier=3 (settings classiques).
+Idéal pour: Trend following, éviter les ranges.""",
+
+        "supertrend_fast": """⚡ SUPERTREND FAST
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix > Supertrend + RSI < 70
+SELL: Prix < Supertrend
+
+Settings rapides: Period=7, Multiplier=2.
+Plus réactif, plus de signaux, plus de bruit.
+Idéal pour: Scalping, marchés très volatils.""",
+
+        "stoch_rsi": """📉 STOCHASTIC RSI
+━━━━━━━━━━━━━━━━━━━━
+BUY: StochRSI < 20 (RSI de RSI = extrême oversold)
+SELL: StochRSI > 80 (extrême overbought)
+
+Plus sensible que le RSI normal.
+Détecte les retournements plus tôt.
+Idéal pour: Timing précis des entrées.""",
+
+        "stoch_rsi_aggressive": """🔥 STOCHASTIC RSI AGGRESSIVE
+━━━━━━━━━━━━━━━━━━━━
+BUY: StochRSI < 25 (entre plus tôt)
+SELL: StochRSI > 75 (sort plus tôt)
+
+Seuils élargis = plus de trades.
+Moins précis mais capture plus de mouvements.
+Idéal pour: Trading actif, petites positions.""",
+
+        "breakout": """💥 BREAKOUT
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix casse le HIGH des 20 dernières périodes + Volume > 1.5x moyenne
+SELL: Prix casse le LOW des 20 dernières périodes + Volume élevé
+
+Trade les cassures de range avec confirmation volume.
+Capture les gros mouvements directionnels.
+Idéal pour: Après consolidation, avant pump.""",
+
+        "breakout_tight": """🎯 BREAKOUT TIGHT
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix casse le HIGH des 10 dernières périodes + Volume > 2x moyenne
+SELL: Prix casse le LOW des 10 périodes
+
+Range plus court = signaux plus fréquents.
+Volume 2x requis = meilleure confirmation.
+Idéal pour: Scalping de breakouts.""",
+
+        "mean_reversion": """🔄 MEAN REVERSION
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix 2 écarts-types EN-DESSOUS de la moyenne mobile 20
+SELL: Prix 2 écarts-types AU-DESSUS de la moyenne
+
+Statistiquement, le prix revient vers la moyenne.
+Achète les extrêmes, vend le retour à la normale.
+Idéal pour: Altcoins en range, corrections.""",
+
+        "mean_reversion_tight": """🎢 MEAN REVERSION TIGHT
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix 1.5σ sous la moyenne
+SELL: Prix 1.5σ au-dessus
+
+Seuil réduit = entre plus tôt sur les dips.
+Plus de trades, moins de marge de sécurité.
+Idéal pour: Marchés moins volatils.""",
+
+        "grid_trading": """📏 GRID TRADING
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix dans les 20% bas du range Bollinger
+SELL: Prix dans les 20% haut du range Bollinger
+
+Divise le range en grille, achète bas vend haut.
+Fonctionne en range, perd en tendance.
+Idéal pour: Marchés latéraux, BTC stable.""",
+
+        "grid_tight": """📐 GRID TIGHT
+━━━━━━━━━━━━━━━━━━━━
+BUY: Bottom 20% du range
+SELL: Top 80% du range
+
+Grille plus serrée, trades plus fréquents.
+Grid size 1%, 10 niveaux.
+Idéal pour: Consolidation, petits profits répétés.""",
+
+        "dca_accumulator": """💰 DCA ACCUMULATOR
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix a chuté de 3%+ en 24h
+SELL: JAMAIS (accumulation pure)
+
+Dollar Cost Averaging sur les dips.
+Accumule pendant les corrections, garde tout.
+Idéal pour: Long terme, conviction forte.""",
+
+        "dca_aggressive": """💸 DCA AGGRESSIVE
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix a chuté de 2%+ en 24h
+SELL: JAMAIS
+
+DCA plus agressif, achète plus souvent.
+Entre sur des dips plus petits.
+Idéal pour: Accumulation rapide, bull market.""",
+
+        "ichimoku": """☁️ ICHIMOKU CLOUD
+━━━━━━━━━━━━━━━━━━━━
+BUY: Prix > Tenkan (9) > Kijun (26) + Prix au-dessus du nuage
+SELL: Prix < Tenkan < Kijun (bearish cross)
+
+Système japonais complet: trend + momentum + support/résistance.
+Très respecté, utilisé par les pros.
+Idéal pour: Swing trading, confirmation multi-facteurs.""",
+
+        "ichimoku_fast": """⛅ ICHIMOKU FAST
+━━━━━━━━━━━━━━━━━━━━
+BUY: Tenkan(7) > Kijun(22) + above cloud
+SELL: Bearish cross
+
+Périodes raccourcies pour crypto.
+Plus réactif aux mouvements rapides.
+Idéal pour: Crypto volatile, timeframes courts.""",
+
+        "martingale": """🎰 MARTINGALE (DANGER!)
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 35 (entrée normale) OU après une perte: RSI < 40 avec DOUBLE de la position précédente
+SELL: RSI > 65
+
+Double la mise après chaque perte pour récupérer.
+Multiplier: 2x, Maximum: 4 niveaux.
+⚠️ PEUT EXPLOSER LE COMPTE - très risqué!
+Idéal pour: Jamais vraiment, mais fun à tester.""",
+
+        "martingale_safe": """🎲 MARTINGALE SAFE
+━━━━━━━━━━━━━━━━━━━━
+BUY: RSI < 35 OU après perte: 1.5x la position précédente
+SELL: RSI > 65
+
+Version "moins dangereuse" du Martingale.
+Multiplier: 1.5x, Maximum: 3 niveaux.
+⚠️ Toujours risqué mais plus contrôlé.
+Idéal pour: Test paper trading uniquement."""
     }
 
     # Display portfolios as cards (2 per row)
