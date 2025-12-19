@@ -520,7 +520,6 @@ def render_page_prix():
 
 def render_page_portfolios():
     """Page: Liste des portfolios avec pagination - OPTIMISE pour 100+ portfolios"""
-    prices = fetch_all_live_prices()
     total = len(st.session_state.portfolios)
     per_page = 10
 
@@ -537,58 +536,54 @@ def render_page_portfolios():
         st.session_state.portfolio_page = 0
         st.session_state.last_sort = sort_option
 
-    # Calcul PnL% rapide (utilise seulement USDT, ignore les positions pour le tri)
-    def quick_pnl_pct(item):
-        port_id, portfolio = item
-        # Approximation rapide: USDT + positions estimees
-        usdt = portfolio['balance'].get('USDT', 0)
-        positions_value = sum(
-            portfolio['balance'].get(sym.split('/')[0], 0) * prices.get(sym, {}).get('price', 0)
-            for sym in ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT']
-        )
-        value = usdt + positions_value
-        init = portfolio['initial_capital']
-        return ((value - init) / init * 100) if init > 0 else 0
-
-    # Tri rapide
+    # Tri par USDT seulement (instantane, pas besoin de prix)
     portfolios_list = list(st.session_state.portfolios.items())
-    if sort_option == "% Profit ↓":
-        portfolios_list.sort(key=quick_pnl_pct, reverse=True)
-    elif sort_option == "% Profit ↑":
-        portfolios_list.sort(key=quick_pnl_pct)
+    if sort_option == "% Profit ↓" or sort_option == "% Profit ↑":
+        # Tri par USDT restant vs initial (approximation sans API)
+        def usdt_pnl(item):
+            p = item[1]
+            return (p['balance'].get('USDT', 0) - p['initial_capital']) / p['initial_capital'] * 100 if p['initial_capital'] > 0 else 0
+        portfolios_list.sort(key=usdt_pnl, reverse=(sort_option == "% Profit ↓"))
     elif sort_option == "Valeur":
         portfolios_list.sort(key=lambda x: x[1]['balance'].get('USDT', 0), reverse=True)
     elif sort_option == "Nom":
         portfolios_list.sort(key=lambda x: x[1]['name'])
 
     total_pages = max(1, (total + per_page - 1) // per_page)
-
-    # Seulement les portfolios de la page actuelle
     start = st.session_state.portfolio_page * per_page
     end = min(start + per_page, total)
     page_portfolios = portfolios_list[start:end]
 
-    # Calcul des valeurs SEULEMENT pour les portfolios affiches
-    for port_id, portfolio in page_portfolios:
-        value = get_portfolio_value(portfolio, prices)
-        pnl = value - portfolio['initial_capital']
-        pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
-        is_active = portfolio.get('active', True)
-        n_trades = len(portfolio.get('trades', []))
+    # Affichage INSTANTANE avec placeholders
+    price_placeholder = st.empty()
+    portfolio_containers = []
 
-        # Rendu ultra-simplifie
+    for port_id, portfolio in page_portfolios:
+        is_active = portfolio.get('active', True)
         c1, c2, c3 = st.columns([3, 2, 1])
         with c1:
             status = "🟢" if is_active else "⏸️"
             st.markdown(f"{status} **{portfolio['icon']} {portfolio['name'][:12]}**")
         with c2:
-            color = "green" if pnl >= 0 else "red"
-            st.markdown(f"${value:,.0f} | :{color}[{pnl_pct:+.1f}%]")
+            # Placeholder avec USDT seulement
+            usdt = portfolio['balance'].get('USDT', 0)
+            container = st.empty()
+            container.markdown(f"${usdt:,.0f} | ⏳")
+            portfolio_containers.append((container, port_id, portfolio))
         with c3:
             if st.button("📊", key=f"v_{port_id}"):
                 st.session_state.selected_portfolio = port_id
                 st.session_state.page = 'detail'
                 st.rerun()
+
+    # Charge les prix en arriere-plan et met a jour
+    prices = fetch_all_live_prices()
+    for container, port_id, portfolio in portfolio_containers:
+        value = get_portfolio_value(portfolio, prices)
+        pnl = value - portfolio['initial_capital']
+        pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
+        color = "green" if pnl >= 0 else "red"
+        container.markdown(f"${value:,.0f} | :{color}[{pnl_pct:+.1f}%]")
 
     # Pagination
     if total_pages > 1:
