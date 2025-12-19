@@ -128,6 +128,43 @@ def log(message: str):
         pass
 
 
+def log_decision(portfolio: dict, symbol: str, analysis: dict, action: str, reason: str):
+    """Log a decision to the portfolio's decision log"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Initialize logs array if needed
+    if 'decision_logs' not in portfolio:
+        portfolio['decision_logs'] = []
+
+    # Create log entry with key indicators
+    log_entry = {
+        'timestamp': timestamp,
+        'symbol': symbol.replace('/USDT', ''),
+        'action': action,  # BUY, SELL, HOLD, SKIP
+        'reason': reason,
+        'price': analysis.get('price', 0),
+        'rsi': round(analysis.get('rsi', 50), 1),
+        'signal': analysis.get('signal', 'HOLD'),
+        'trend': analysis.get('trend', 'unknown')
+    }
+
+    # Add relevant indicator based on strategy
+    if analysis.get('ema_cross_up') or analysis.get('ema_cross_down'):
+        log_entry['ema_cross'] = 'UP' if analysis.get('ema_cross_up') else 'DOWN'
+    if analysis.get('stoch_rsi'):
+        log_entry['stoch_rsi'] = round(analysis.get('stoch_rsi', 50), 1)
+    if analysis.get('vwap_deviation'):
+        log_entry['vwap_dev'] = round(analysis.get('vwap_deviation', 0), 2)
+    if analysis.get('bb_position'):
+        log_entry['bb_pos'] = round(analysis.get('bb_position', 0.5), 2)
+
+    portfolio['decision_logs'].append(log_entry)
+
+    # Keep only last 100 logs per portfolio
+    if len(portfolio['decision_logs']) > 100:
+        portfolio['decision_logs'] = portfolio['decision_logs'][-100:]
+
+
 def load_portfolios() -> dict:
     """Load portfolios from JSON"""
     try:
@@ -440,17 +477,20 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
     return {'success': False, 'message': "No action"}
 
 
-def should_trade(portfolio: dict, analysis: dict) -> str:
-    """Determine if we should trade based on strategy"""
+def should_trade(portfolio: dict, analysis: dict) -> tuple:
+    """
+    Determine if we should trade based on strategy.
+    Returns: (action, reason) tuple where action is 'BUY', 'SELL', or None
+    """
     strategy_id = portfolio.get('strategy_id', 'manuel')
     strategy = STRATEGIES.get(strategy_id, {})
     config = portfolio['config']
 
     if not strategy.get('auto', False):
-        return None
+        return (None, "Manual strategy - no auto-trade")
 
     if not config.get('auto_trade', True):
-        return None
+        return (None, "Auto-trade disabled in config")
 
     symbol = analysis['symbol']
     asset = symbol.split('/')[0]
@@ -458,10 +498,11 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
     # Check max positions
     if len(portfolio['positions']) >= config.get('max_positions', 3):
         if symbol not in portfolio['positions']:
-            return None
+            return (None, f"Max positions ({config.get('max_positions', 3)}) reached")
 
     has_position = portfolio['balance'].get(asset, 0) > 0
     has_cash = portfolio['balance']['USDT'] > 100
+    rsi = analysis.get('rsi', 50)
 
     # ============ NEW STRATEGIES ============
 
@@ -471,53 +512,50 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         # Use slow crossover (12/26) if specified
         if fast == 12:
             if analysis.get('ema_cross_up_slow') and has_cash:
-                return 'BUY'
+                return ('BUY', f"EMA 12/26 crossover UP | RSI={rsi:.0f}")
             elif analysis.get('ema_cross_down_slow') and has_position:
-                return 'SELL'
+                return ('SELL', f"EMA 12/26 crossover DOWN | RSI={rsi:.0f}")
         else:
             # Default fast crossover (9/21)
             if analysis.get('ema_cross_up') and has_cash:
-                return 'BUY'
+                return ('BUY', f"EMA 9/21 crossover UP | RSI={rsi:.0f}")
             elif analysis.get('ema_cross_down') and has_position:
-                return 'SELL'
-        return None
+                return ('SELL', f"EMA 9/21 crossover DOWN | RSI={rsi:.0f}")
+        return (None, f"EMA: No crossover signal | RSI={rsi:.0f}")
 
     # Degen strategies
     if strategy.get('use_degen'):
         mode = strategy.get('mode', 'hybrid')
+        mom = analysis.get('momentum_1h', 0)
 
         if mode == 'scalping':
             # Quick reversals - tight entries/exits
             if analysis.get('scalp_buy') and has_cash:
-                return 'BUY'
+                return ('BUY', f"SCALP: RSI={rsi:.0f}<25 + momentum>0.3%")
             elif analysis.get('scalp_sell') and has_position:
-                return 'SELL'
-            # Also exit if RSI normalizes
+                return ('SELL', f"SCALP: RSI={rsi:.0f}>75 + momentum<-0.3%")
             elif analysis.get('rsi', 50) > 55 and has_position:
-                return 'SELL'
+                return ('SELL', f"SCALP EXIT: RSI normalized to {rsi:.0f}")
 
         elif mode == 'momentum':
             # Ride the wave - volume + momentum
             if analysis.get('momentum_buy') and has_cash:
-                return 'BUY'
+                return ('BUY', f"MOMENTUM: Vol spike + momentum={mom:.1f}%")
             elif analysis.get('momentum_sell') and has_position:
-                return 'SELL'
-            # Exit on momentum loss
-            elif has_position and analysis.get('momentum_1h', 0) < -0.5:
-                return 'SELL'
+                return ('SELL', f"MOMENTUM: Vol spike + negative momentum")
+            elif has_position and mom < -0.5:
+                return ('SELL', f"MOMENTUM LOSS: {mom:.1f}% < -0.5%")
 
         else:  # hybrid - combines both
-            # Entry: either scalp or momentum signal
             if (analysis.get('scalp_buy') or analysis.get('momentum_buy')) and has_cash:
-                return 'BUY'
-            # Exit: either signal or RSI extreme
+                return ('BUY', f"HYBRID: Scalp or momentum signal | RSI={rsi:.0f}")
             elif has_position:
                 if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
-                    return 'SELL'
-                elif analysis.get('rsi', 50) > 70:
-                    return 'SELL'
+                    return ('SELL', f"HYBRID: Exit signal triggered")
+                elif rsi > 70:
+                    return ('SELL', f"HYBRID: RSI={rsi:.0f} > 70 overbought")
 
-        return None
+        return (None, f"DEGEN {mode}: No signal | RSI={rsi:.0f} | Mom={mom:.1f}%")
 
     # VWAP Strategy
     if strategy.get('use_vwap'):
@@ -526,34 +564,31 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         trend_follow = strategy.get('trend_follow', False)
 
         if trend_follow:
-            # Trend following: buy above VWAP, sell below
             if vwap_dev > deviation and has_cash:
-                return 'BUY'
+                return ('BUY', f"VWAP TREND: Price {vwap_dev:.1f}% above VWAP")
             elif vwap_dev < -deviation and has_position:
-                return 'SELL'
+                return ('SELL', f"VWAP TREND: Price {vwap_dev:.1f}% below VWAP")
         else:
-            # Mean reversion: buy below VWAP, sell above
             if vwap_dev < -deviation and has_cash:
-                return 'BUY'
+                return ('BUY', f"VWAP BOUNCE: Price {vwap_dev:.1f}% below VWAP")
             elif vwap_dev > deviation and has_position:
-                return 'SELL'
-        return None
+                return ('SELL', f"VWAP BOUNCE: Price {vwap_dev:.1f}% above VWAP")
+        return (None, f"VWAP: Deviation={vwap_dev:.1f}% (threshold={deviation}%)")
 
     # Supertrend (normal vs fast)
     if strategy.get('use_supertrend'):
         period = strategy.get('period', 10)
-        # Use fast indicators if period is 7 (fast version)
         if period == 7:
             supertrend_up = analysis.get('supertrend_up_fast', False)
         else:
             supertrend_up = analysis.get('supertrend_up', False)
 
         if supertrend_up and not has_position and has_cash:
-            if analysis.get('rsi', 50) < 70:  # Not overbought
-                return 'BUY'
+            if rsi < 70:
+                return ('BUY', f"SUPERTREND: Uptrend confirmed | RSI={rsi:.0f}")
         elif not supertrend_up and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"SUPERTREND: Downtrend signal")
+        return (None, f"SUPERTREND: {'Up' if supertrend_up else 'Down'} | RSI={rsi:.0f}")
 
     # Stochastic RSI
     if strategy.get('use_stoch_rsi'):
@@ -562,15 +597,14 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         stoch = analysis.get('stoch_rsi', 50)
 
         if stoch < oversold and has_cash:
-            return 'BUY'
+            return ('BUY', f"STOCH RSI: {stoch:.0f} < {oversold} oversold")
         elif stoch > overbought and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"STOCH RSI: {stoch:.0f} > {overbought} overbought")
+        return (None, f"STOCH RSI: {stoch:.0f} (range {oversold}-{overbought})")
 
     # Breakout (normal vs tight)
     if strategy.get('use_breakout'):
         lookback = strategy.get('lookback', 20)
-        # Use tight indicators if lookback is 10 (tight version)
         if lookback == 10:
             breakout_up = analysis.get('breakout_up_tight', False)
             breakout_down = analysis.get('breakout_down_tight', False)
@@ -579,58 +613,51 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
             breakout_down = analysis.get('breakout_down', False)
 
         if breakout_up and has_cash:
-            return 'BUY'
+            return ('BUY', f"BREAKOUT UP: Price broke {lookback}-period high with volume")
         elif breakout_down and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"BREAKOUT DOWN: Price broke {lookback}-period low")
+        return (None, f"BREAKOUT: Waiting for {lookback}-period break")
 
     # Mean Reversion (normal vs tight)
     if strategy.get('use_mean_rev'):
         std_threshold = strategy.get('std_dev', 2.0)
         period = strategy.get('period', 20)
-        # Use tight indicator if period is 14
         if period == 14:
             deviation = analysis.get('deviation_from_mean_tight', 0)
         else:
             deviation = analysis.get('deviation_from_mean', 0)
 
         if deviation < -std_threshold and has_cash:
-            return 'BUY'
+            return ('BUY', f"MEAN REV: {deviation:.1f}σ below mean (threshold=-{std_threshold})")
         elif deviation > std_threshold and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"MEAN REV: {deviation:.1f}σ above mean (threshold={std_threshold})")
+        return (None, f"MEAN REV: Deviation={deviation:.1f}σ (threshold=±{std_threshold})")
 
-    # Grid Trading (uses grid_size to adjust thresholds)
+    # Grid Trading
     if strategy.get('use_grid'):
         grid_size = strategy.get('grid_size', 2.0)
         bb_pos = analysis.get('bb_position', 0.5)
-        # Smaller grid_size = tighter thresholds (more trades)
-        # 2.0% grid = 0.2/0.8 thresholds
-        # 1.0% grid = 0.3/0.7 thresholds (tighter range)
-        buy_threshold = 0.15 + (grid_size * 0.025)  # e.g., 2.0 -> 0.20, 1.0 -> 0.175
-        sell_threshold = 0.85 - (grid_size * 0.025)  # e.g., 2.0 -> 0.80, 1.0 -> 0.825
+        buy_threshold = 0.15 + (grid_size * 0.025)
+        sell_threshold = 0.85 - (grid_size * 0.025)
 
         if bb_pos < buy_threshold and has_cash:
-            return 'BUY'
+            return ('BUY', f"GRID: BB position={bb_pos:.0%} < {buy_threshold:.0%}")
         elif bb_pos > sell_threshold and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"GRID: BB position={bb_pos:.0%} > {sell_threshold:.0%}")
+        return (None, f"GRID: BB position={bb_pos:.0%} (buy<{buy_threshold:.0%}, sell>{sell_threshold:.0%})")
 
     # DCA Accumulator
     if strategy.get('use_dca'):
         dip_threshold = strategy.get('dip_threshold', 3.0)
         change = analysis.get('change_24h', 0)
 
-        # Buy on dips only
         if change < -dip_threshold and has_cash:
-            return 'BUY'
-        # DCA never sells by design
-        return None
+            return ('BUY', f"DCA: 24h change={change:.1f}% < -{dip_threshold}% dip")
+        return (None, f"DCA: 24h change={change:.1f}% (waiting for -{dip_threshold}% dip)")
 
     # Ichimoku (normal vs fast)
     if strategy.get('use_ichimoku'):
         tenkan = strategy.get('tenkan', 9)
-        # Use fast indicators if tenkan is 7 (fast version)
         if tenkan == 7:
             bullish = analysis.get('ichimoku_bullish_fast', False)
             bearish = analysis.get('ichimoku_bearish_fast', False)
@@ -641,10 +668,12 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
             above = analysis.get('above_cloud', False)
 
         if bullish and above and has_cash:
-            return 'BUY'
+            return ('BUY', f"ICHIMOKU: Bullish + above cloud")
         elif bearish and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"ICHIMOKU: Bearish signal")
+        cloud_status = "above" if above else "below"
+        trend = "bullish" if bullish else ("bearish" if bearish else "neutral")
+        return (None, f"ICHIMOKU: {trend}, {cloud_status} cloud")
 
     # Martingale (uses multiplier and max_levels)
     if strategy.get('use_martingale'):
@@ -659,34 +688,27 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
                 if t.get('pnl', 0) < 0:
                     consecutive_losses += 1
                 else:
-                    break  # Stopped by a win
+                    break
 
-        # Check if we should double down (respect max_levels)
         if consecutive_losses > 0 and consecutive_losses <= max_levels:
-            # More aggressive entry after losses
-            if has_cash and analysis.get('rsi', 50) < 45:
-                # Amount would be multiplied: base * (multiplier ^ consecutive_losses)
-                # This is handled in execute_trade via portfolio metadata
+            if has_cash and rsi < 45:
                 portfolio['_martingale_level'] = consecutive_losses
                 portfolio['_martingale_multiplier'] = multiplier
-                return 'BUY'
+                return ('BUY', f"MARTINGALE: Level {consecutive_losses}/{max_levels} | RSI={rsi:.0f}")
         elif consecutive_losses > max_levels:
-            # Max levels reached, wait for better conditions
-            if has_cash and analysis.get('rsi', 50) < 25:  # Only enter on extreme oversold
-                portfolio['_martingale_level'] = 0  # Reset
-                return 'BUY'
+            if has_cash and rsi < 25:
+                portfolio['_martingale_level'] = 0
+                return ('BUY', f"MARTINGALE RESET: Max level reached, extreme RSI={rsi:.0f}")
 
-        # Normal entry (level 0)
-        if analysis.get('rsi', 50) < 35 and has_cash:
+        if rsi < 35 and has_cash:
             portfolio['_martingale_level'] = 0
-            return 'BUY'
-        elif analysis.get('rsi', 50) > 65 and has_position:
-            return 'SELL'
-        return None
+            return ('BUY', f"MARTINGALE: Normal entry RSI={rsi:.0f} < 35")
+        elif rsi > 65 and has_position:
+            return ('SELL', f"MARTINGALE: RSI={rsi:.0f} > 65")
+        return (None, f"MARTINGALE: RSI={rsi:.0f} | Losses={consecutive_losses}")
 
     # ============ EXISTING STRATEGIES ============
 
-    rsi = analysis.get('rsi', 50)
     signal = analysis.get('signal', 'HOLD')
 
     # RSI Strategy
@@ -695,53 +717,49 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         rsi_overbought = config.get('rsi_overbought', 70)
 
         if rsi < rsi_oversold and has_cash:
-            return 'BUY'
+            return ('BUY', f"RSI={rsi:.0f} < {rsi_oversold} oversold")
         elif rsi > rsi_overbought and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"RSI={rsi:.0f} > {rsi_overbought} overbought")
+        return (None, f"RSI={rsi:.0f} (buy<{rsi_oversold}, sell>{rsi_overbought})")
 
     # DCA Fear & Greed Strategy
     if strategy.get('use_fear_greed', False):
         fng = get_fear_greed_index()
         fear_value = fng['value']
-        # Fear = 0-25 (Extreme Fear), 25-45 (Fear)
-        # Neutral = 45-55
-        # Greed = 55-75 (Greed), 75-100 (Extreme Greed)
+        fear_class = fng['classification']
 
-        # Buy during fear (DCA style)
-        if fear_value < 25 and has_cash:  # Extreme Fear = strong buy
-            return 'BUY'
-        elif fear_value < 40 and has_cash and rsi < 40:  # Fear + low RSI
-            return 'BUY'
-        # Sell during extreme greed
-        elif fear_value > 80 and has_position:  # Extreme Greed
-            return 'SELL'
-        return None
+        if fear_value < 25 and has_cash:
+            return ('BUY', f"FEAR&GREED: {fear_value} Extreme Fear!")
+        elif fear_value < 40 and has_cash and rsi < 40:
+            return ('BUY', f"FEAR&GREED: {fear_value} Fear + RSI={rsi:.0f}")
+        elif fear_value > 80 and has_position:
+            return ('SELL', f"FEAR&GREED: {fear_value} Extreme Greed!")
+        return (None, f"FEAR&GREED: {fear_value} ({fear_class}) | RSI={rsi:.0f}")
 
     # HODL Strategy
     if strategy.get('buy_on') == ["ALWAYS_FIRST"]:
         if len(portfolio['trades']) == 0 and has_cash:
-            return 'BUY'
-        return None
+            return ('BUY', "HODL: First buy - will never sell")
+        return (None, "HODL: Already bought, holding forever")
 
-    # GOD MODE strategy - uses indicator directly
+    # GOD MODE strategy
     if "GOD_MODE_BUY" in strategy.get('buy_on', []):
         if analysis.get('god_mode_buy') and has_cash:
-            return 'BUY'
+            return ('BUY', f"GOD MODE: RSI={rsi:.0f}<20 + Vol spike + Below mean + Bouncing!")
         elif analysis.get('god_mode_sell') and has_position:
-            return 'SELL'
-        return None
+            return ('SELL', f"GOD MODE SELL: RSI={rsi:.0f}>80 + Vol spike + Above mean + Dropping!")
+        return (None, f"GOD MODE: Waiting for extreme conditions | RSI={rsi:.0f}")
 
     # Signal-based strategies (confluence, conservative, aggressive, etc.)
     buy_signals = strategy.get('buy_on', [])
     sell_signals = strategy.get('sell_on', [])
 
     if signal in buy_signals and has_cash:
-        return 'BUY'
+        return ('BUY', f"SIGNAL: {signal} matched buy signals {buy_signals}")
     elif signal in sell_signals and has_position:
-        return 'SELL'
+        return ('SELL', f"SIGNAL: {signal} matched sell signals {sell_signals}")
 
-    return None
+    return (None, f"SIGNAL: {signal} | RSI={rsi:.0f} | Waiting for {buy_signals}")
 
 
 def run_engine(portfolios: dict) -> list:
@@ -774,7 +792,10 @@ def run_engine(portfolios: dict) -> list:
                 continue
 
             analysis = analyzed[crypto]
-            action = should_trade(portfolio, analysis)
+            action, reason = should_trade(portfolio, analysis)
+
+            # Log all decisions for this portfolio
+            log_decision(portfolio, crypto, analysis, action or 'HOLD', reason)
 
             if action:
                 result = execute_trade(portfolio, action, crypto, analysis['price'])
@@ -784,6 +805,7 @@ def run_engine(portfolios: dict) -> list:
                         'portfolio': portfolio['name'],
                         'crypto': crypto,
                         'action': action,
+                        'reason': reason,
                         'price': analysis['price'],
                         'message': result['message']
                     })
