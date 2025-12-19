@@ -353,23 +353,30 @@ def main():
         st.markdown("## 🚀 Trading Bot")
         st.divider()
 
-        # Navigation buttons
-        nav_buttons = [
-            ("📊", "Dashboard"),
-            ("🔥", "Degen"),
-            ("🔍", "Scanner"),
-            ("📈", "Portfolios"),
-            ("⚙️", "Settings")
+        # Navigation buttons - vertical stack
+        nav_items = [
+            ("📊", "Dashboard", "📊 Dashboard"),
+            ("🔥", "Degen Mode", "🔥 Degen"),
+            ("🔍", "Scanner", "🔍 Scanner"),
+            ("📈", "Portfolios", "📈 Portfolios"),
+            ("⚙️", "Settings", "⚙️ Settings")
         ]
 
-        cols = st.columns(5)
-        for i, (icon, name) in enumerate(nav_buttons):
-            with cols[i]:
-                full_name = f"{icon} {name}"
-                is_active = st.session_state.page == full_name
-                btn_type = "primary" if is_active else "secondary"
-                if st.button(icon, key=f"nav_{name}", use_container_width=True, type=btn_type, help=name):
-                    st.session_state.page = full_name
+        for icon, label, page_id in nav_items:
+            is_active = st.session_state.page == page_id
+            if is_active:
+                # Active button style
+                st.markdown(f"""
+                <div style="background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%);
+                            padding: 0.7rem 1rem; border-radius: 10px; margin-bottom: 0.5rem;
+                            display: flex; align-items: center; cursor: pointer;">
+                    <span style="font-size: 1.2rem; margin-right: 0.8rem;">{icon}</span>
+                    <span style="color: #000; font-weight: bold;">{label}</span>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                if st.button(f"{icon}  {label}", key=f"nav_{page_id}", use_container_width=True):
+                    st.session_state.page = page_id
                     st.rerun()
 
         st.divider()
