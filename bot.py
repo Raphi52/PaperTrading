@@ -51,6 +51,48 @@ STRATEGIES = {
     "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 50, "min_liquidity": 50000},
     "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 75, "min_liquidity": 10000},
     "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 90, "min_liquidity": 5000},
+
+    # ============ NEW STRATEGIES ============
+
+    # EMA Crossover - Classic trend following
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21},
+    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26},
+
+    # VWAP Strategy - Intraday mean reversion
+    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5},
+    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True},
+
+    # Supertrend - Dynamic support/resistance
+    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0},
+    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0},
+
+    # Stochastic RSI - Precise entries
+    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75},
+
+    # Breakout - Trade consolidation breaks
+    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5},
+    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0},
+
+    # Mean Reversion - Buy deviations from mean
+    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20},
+    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14},
+
+    # Grid Trading - Range trading
+    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10},
+
+    # DCA Accumulator - Regular buys on dips
+    "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0},
+    "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0},
+
+    # Ichimoku Cloud - Japanese trend system
+    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52},
+    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44},
+
+    # Martingale - Double down on losses (HIGH RISK!)
+    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4},
+    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3},
 }
 
 
@@ -91,8 +133,103 @@ def save_portfolios(portfolios: dict, counter: int):
         log(f"Error saving portfolios: {e}")
 
 
+def calculate_indicators(df: pd.DataFrame) -> dict:
+    """Calculate all technical indicators"""
+    indicators = {}
+
+    closes = df['close']
+    highs = df['high']
+    lows = df['low']
+    volumes = df['volume']
+
+    # RSI
+    delta = closes.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    indicators['rsi'] = rsi.iloc[-1]
+
+    # EMAs (multiple periods)
+    indicators['ema_9'] = closes.ewm(span=9).mean().iloc[-1]
+    indicators['ema_12'] = closes.ewm(span=12).mean().iloc[-1]
+    indicators['ema_21'] = closes.ewm(span=21).mean().iloc[-1]
+    indicators['ema_26'] = closes.ewm(span=26).mean().iloc[-1]
+    indicators['ema_50'] = closes.ewm(span=50).mean().iloc[-1]
+
+    # EMA crossover signals
+    ema_9_prev = closes.ewm(span=9).mean().iloc[-2]
+    ema_21_prev = closes.ewm(span=21).mean().iloc[-2]
+    indicators['ema_cross_up'] = ema_9_prev < ema_21_prev and indicators['ema_9'] > indicators['ema_21']
+    indicators['ema_cross_down'] = ema_9_prev > ema_21_prev and indicators['ema_9'] < indicators['ema_21']
+
+    # VWAP (Volume Weighted Average Price)
+    typical_price = (highs + lows + closes) / 3
+    vwap = (typical_price * volumes).cumsum() / volumes.cumsum()
+    indicators['vwap'] = vwap.iloc[-1]
+    indicators['vwap_deviation'] = ((closes.iloc[-1] - vwap.iloc[-1]) / vwap.iloc[-1]) * 100
+
+    # Supertrend
+    period = 10
+    multiplier = 3.0
+    tr = pd.concat([highs - lows, abs(highs - closes.shift(1)), abs(lows - closes.shift(1))], axis=1).max(axis=1)
+    atr = tr.rolling(window=period).mean()
+    hl2 = (highs + lows) / 2
+    upper_band = hl2 + (multiplier * atr)
+    lower_band = hl2 - (multiplier * atr)
+    indicators['supertrend_up'] = closes.iloc[-1] > lower_band.iloc[-1]
+    indicators['supertrend_value'] = lower_band.iloc[-1] if indicators['supertrend_up'] else upper_band.iloc[-1]
+
+    # Stochastic RSI
+    rsi_min = rsi.rolling(window=14).min()
+    rsi_max = rsi.rolling(window=14).max()
+    stoch_rsi = ((rsi - rsi_min) / (rsi_max - rsi_min)) * 100
+    indicators['stoch_rsi'] = stoch_rsi.iloc[-1] if not pd.isna(stoch_rsi.iloc[-1]) else 50
+    indicators['stoch_rsi_k'] = stoch_rsi.rolling(window=3).mean().iloc[-1] if not pd.isna(stoch_rsi.rolling(window=3).mean().iloc[-1]) else 50
+
+    # Bollinger Bands (for mean reversion)
+    sma_20 = closes.rolling(window=20).mean()
+    std_20 = closes.rolling(window=20).std()
+    indicators['bb_upper'] = sma_20.iloc[-1] + (2 * std_20.iloc[-1])
+    indicators['bb_lower'] = sma_20.iloc[-1] - (2 * std_20.iloc[-1])
+    indicators['bb_mid'] = sma_20.iloc[-1]
+    indicators['bb_position'] = (closes.iloc[-1] - indicators['bb_lower']) / (indicators['bb_upper'] - indicators['bb_lower']) if indicators['bb_upper'] != indicators['bb_lower'] else 0.5
+
+    # Breakout detection
+    high_20 = highs.rolling(window=20).max().iloc[-2]  # Previous high
+    low_20 = lows.rolling(window=20).min().iloc[-2]  # Previous low
+    vol_avg = volumes.rolling(window=20).mean().iloc[-1]
+    indicators['breakout_up'] = closes.iloc[-1] > high_20 and volumes.iloc[-1] > vol_avg * 1.5
+    indicators['breakout_down'] = closes.iloc[-1] < low_20 and volumes.iloc[-1] > vol_avg * 1.5
+    indicators['consolidation_range'] = (high_20 - low_20) / low_20 * 100
+
+    # Mean Reversion
+    indicators['deviation_from_mean'] = (closes.iloc[-1] - sma_20.iloc[-1]) / std_20.iloc[-1] if std_20.iloc[-1] > 0 else 0
+
+    # Ichimoku Cloud
+    tenkan = (highs.rolling(window=9).max() + lows.rolling(window=9).min()) / 2
+    kijun = (highs.rolling(window=26).max() + lows.rolling(window=26).min()) / 2
+    senkou_a = ((tenkan + kijun) / 2).shift(26)
+    senkou_b = ((highs.rolling(window=52).max() + lows.rolling(window=52).min()) / 2).shift(26)
+
+    indicators['tenkan'] = tenkan.iloc[-1]
+    indicators['kijun'] = kijun.iloc[-1]
+    indicators['ichimoku_bullish'] = closes.iloc[-1] > tenkan.iloc[-1] and tenkan.iloc[-1] > kijun.iloc[-1]
+    indicators['ichimoku_bearish'] = closes.iloc[-1] < tenkan.iloc[-1] and tenkan.iloc[-1] < kijun.iloc[-1]
+    indicators['above_cloud'] = closes.iloc[-1] > max(senkou_a.iloc[-1] if not pd.isna(senkou_a.iloc[-1]) else 0, senkou_b.iloc[-1] if not pd.isna(senkou_b.iloc[-1]) else 0)
+
+    # Price changes for DCA
+    indicators['change_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100 if len(closes) > 1 else 0
+    indicators['change_24h'] = (closes.iloc[-1] - closes.iloc[-24]) / closes.iloc[-24] * 100 if len(closes) > 24 else 0
+
+    # Volume analysis
+    indicators['volume_ratio'] = volumes.iloc[-1] / vol_avg if vol_avg > 0 else 1
+
+    return indicators
+
+
 def analyze_crypto(symbol: str) -> dict:
-    """Analyze a crypto - returns price, RSI, signal"""
+    """Analyze a crypto - returns price and all indicators"""
     try:
         # Fetch OHLCV from Binance
         url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval=1h&limit=100"
@@ -108,42 +245,33 @@ def analyze_crypto(symbol: str) -> dict:
         df['close'] = df['close'].astype(float)
         df['high'] = df['high'].astype(float)
         df['low'] = df['low'].astype(float)
+        df['volume'] = df['volume'].astype(float)
 
-        # Calculate RSI
-        delta = df['close'].diff()
-        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-        rs = gain / loss
-        rsi = 100 - (100 / (1 + rs))
-        current_rsi = rsi.iloc[-1]
+        # Calculate all indicators
+        indicators = calculate_indicators(df)
 
-        # Calculate EMAs
-        ema_12 = df['close'].ewm(span=12).mean().iloc[-1]
-        ema_26 = df['close'].ewm(span=26).mean().iloc[-1]
-
-        # Current price
         current_price = df['close'].iloc[-1]
 
-        # Determine signal
+        # Determine basic signal (for confluence strategies)
         signal = "HOLD"
-        if current_rsi < 30 and ema_12 > ema_26:
+        if indicators['rsi'] < 30 and indicators['ema_12'] > indicators['ema_26']:
             signal = "STRONG_BUY"
-        elif current_rsi < 35:
+        elif indicators['rsi'] < 35:
             signal = "BUY"
-        elif current_rsi > 70 and ema_12 < ema_26:
+        elif indicators['rsi'] > 70 and indicators['ema_12'] < indicators['ema_26']:
             signal = "STRONG_SELL"
-        elif current_rsi > 65:
+        elif indicators['rsi'] > 65:
             signal = "SELL"
 
-        return {
+        result = {
             'symbol': symbol,
             'price': current_price,
-            'rsi': current_rsi,
-            'ema_12': ema_12,
-            'ema_26': ema_26,
             'signal': signal,
-            'trend': 'bullish' if ema_12 > ema_26 else 'bearish'
+            'trend': 'bullish' if indicators['ema_12'] > indicators['ema_26'] else 'bearish'
         }
+        result.update(indicators)
+
+        return result
 
     except Exception as e:
         log(f"Error analyzing {symbol}: {e}")
@@ -225,7 +353,7 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
     return {'success': False, 'message': "No action"}
 
 
-def should_trade(portfolio: dict, signal: str, symbol: str, rsi: float) -> str:
+def should_trade(portfolio: dict, analysis: dict) -> str:
     """Determine if we should trade based on strategy"""
     strategy_id = portfolio.get('strategy_id', 'manuel')
     strategy = STRATEGIES.get(strategy_id, {})
@@ -237,37 +365,166 @@ def should_trade(portfolio: dict, signal: str, symbol: str, rsi: float) -> str:
     if not config.get('auto_trade', True):
         return None
 
+    symbol = analysis['symbol']
+    asset = symbol.split('/')[0]
+
     # Check max positions
     if len(portfolio['positions']) >= config.get('max_positions', 3):
         if symbol not in portfolio['positions']:
             return None
 
-    asset = symbol.split('/')[0]
+    has_position = portfolio['balance'].get(asset, 0) > 0
+    has_cash = portfolio['balance']['USDT'] > 100
+
+    # ============ NEW STRATEGIES ============
+
+    # EMA Crossover
+    if strategy.get('use_ema_cross'):
+        if analysis.get('ema_cross_up') and has_cash:
+            return 'BUY'
+        elif analysis.get('ema_cross_down') and has_position:
+            return 'SELL'
+        return None
+
+    # VWAP Strategy
+    if strategy.get('use_vwap'):
+        deviation = strategy.get('deviation', 1.5)
+        vwap_dev = analysis.get('vwap_deviation', 0)
+        trend_follow = strategy.get('trend_follow', False)
+
+        if trend_follow:
+            # Trend following: buy above VWAP, sell below
+            if vwap_dev > deviation and has_cash:
+                return 'BUY'
+            elif vwap_dev < -deviation and has_position:
+                return 'SELL'
+        else:
+            # Mean reversion: buy below VWAP, sell above
+            if vwap_dev < -deviation and has_cash:
+                return 'BUY'
+            elif vwap_dev > deviation and has_position:
+                return 'SELL'
+        return None
+
+    # Supertrend
+    if strategy.get('use_supertrend'):
+        if analysis.get('supertrend_up') and not has_position and has_cash:
+            # Price above supertrend = uptrend
+            if analysis.get('rsi', 50) < 70:  # Not overbought
+                return 'BUY'
+        elif not analysis.get('supertrend_up') and has_position:
+            # Price below supertrend = downtrend
+            return 'SELL'
+        return None
+
+    # Stochastic RSI
+    if strategy.get('use_stoch_rsi'):
+        oversold = strategy.get('oversold', 20)
+        overbought = strategy.get('overbought', 80)
+        stoch = analysis.get('stoch_rsi', 50)
+
+        if stoch < oversold and has_cash:
+            return 'BUY'
+        elif stoch > overbought and has_position:
+            return 'SELL'
+        return None
+
+    # Breakout
+    if strategy.get('use_breakout'):
+        if analysis.get('breakout_up') and has_cash:
+            return 'BUY'
+        elif analysis.get('breakout_down') and has_position:
+            return 'SELL'
+        return None
+
+    # Mean Reversion
+    if strategy.get('use_mean_rev'):
+        std_threshold = strategy.get('std_dev', 2.0)
+        deviation = analysis.get('deviation_from_mean', 0)
+
+        if deviation < -std_threshold and has_cash:
+            return 'BUY'
+        elif deviation > std_threshold and has_position:
+            return 'SELL'
+        return None
+
+    # Grid Trading
+    if strategy.get('use_grid'):
+        grid_size = strategy.get('grid_size', 2.0)
+        bb_pos = analysis.get('bb_position', 0.5)
+
+        if bb_pos < 0.2 and has_cash:  # Near bottom of range
+            return 'BUY'
+        elif bb_pos > 0.8 and has_position:  # Near top of range
+            return 'SELL'
+        return None
+
+    # DCA Accumulator
+    if strategy.get('use_dca'):
+        dip_threshold = strategy.get('dip_threshold', 3.0)
+        change = analysis.get('change_24h', 0)
+
+        # Buy on dips only
+        if change < -dip_threshold and has_cash:
+            return 'BUY'
+        # DCA never sells by design
+        return None
+
+    # Ichimoku
+    if strategy.get('use_ichimoku'):
+        if analysis.get('ichimoku_bullish') and analysis.get('above_cloud') and has_cash:
+            return 'BUY'
+        elif analysis.get('ichimoku_bearish') and has_position:
+            return 'SELL'
+        return None
+
+    # Martingale
+    if strategy.get('use_martingale'):
+        # Check last trade
+        trades = portfolio.get('trades', [])
+        if trades:
+            last_trade = trades[-1]
+            if last_trade.get('action') == 'SELL' and last_trade.get('pnl', 0) < 0:
+                # Lost money on last trade, double down
+                if has_cash and analysis.get('rsi', 50) < 40:
+                    return 'BUY'
+
+        # Normal entry
+        if analysis.get('rsi', 50) < 35 and has_cash:
+            return 'BUY'
+        elif analysis.get('rsi', 50) > 65 and has_position:
+            return 'SELL'
+        return None
+
+    # ============ EXISTING STRATEGIES ============
+
+    rsi = analysis.get('rsi', 50)
+    signal = analysis.get('signal', 'HOLD')
 
     # RSI Strategy
     if strategy.get('use_rsi', False):
         rsi_oversold = config.get('rsi_oversold', 30)
         rsi_overbought = config.get('rsi_overbought', 70)
 
-        if rsi < rsi_oversold and portfolio['balance']['USDT'] > 100:
+        if rsi < rsi_oversold and has_cash:
             return 'BUY'
-        elif rsi > rsi_overbought and portfolio['balance'].get(asset, 0) > 0:
+        elif rsi > rsi_overbought and has_position:
             return 'SELL'
         return None
 
     # HODL Strategy
     if strategy.get('buy_on') == ["ALWAYS_FIRST"]:
-        if len(portfolio['trades']) == 0 and portfolio['balance']['USDT'] > 100:
+        if len(portfolio['trades']) == 0 and has_cash:
             return 'BUY'
         return None
 
-    # Signal-based strategies
+    # Signal-based strategies (confluence, conservative, aggressive, etc.)
     buy_signals = strategy.get('buy_on', [])
     sell_signals = strategy.get('sell_on', [])
 
-    if signal in buy_signals and portfolio['balance']['USDT'] > 100:
+    if signal in buy_signals and has_cash:
         return 'BUY'
-    elif signal in sell_signals and portfolio['balance'].get(asset, 0) > 0:
+    elif signal in sell_signals and has_position:
         return 'SELL'
 
     return None
@@ -303,7 +560,7 @@ def run_engine(portfolios: dict) -> list:
                 continue
 
             analysis = analyzed[crypto]
-            action = should_trade(portfolio, analysis['signal'], crypto, analysis['rsi'])
+            action = should_trade(portfolio, analysis)
 
             if action:
                 result = execute_trade(portfolio, action, crypto, analysis['price'])

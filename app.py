@@ -641,23 +641,65 @@ def render_portfolios():
 
     # Strategy icons
     strat_icons = {
+        # Original
         "confluence_normal": "📊", "confluence_strict": "🎯", "degen_hybrid": "🔥",
-        "degen_scalp": "⚡", "god_mode_only": "🚨", "hodl": "💎", "manual": "🎮",
-        "sniper_safe": "🎯", "sniper_degen": "💀", "sniper_yolo": "🚀"
+        "degen_scalp": "⚡", "degen_momentum": "🚀", "degen_full": "💀",
+        "god_mode_only": "🚨", "hodl": "💎", "manual": "🎮",
+        "conservative": "🛡️", "aggressive": "🔥", "rsi_strategy": "📈",
+        "sniper_safe": "🎯", "sniper_degen": "🔫", "sniper_yolo": "💀",
+        # New strategies
+        "ema_crossover": "📈", "ema_crossover_slow": "🐢",
+        "vwap_bounce": "🎯", "vwap_trend": "📊",
+        "supertrend": "🚀", "supertrend_fast": "⚡",
+        "stoch_rsi": "📉", "stoch_rsi_aggressive": "🔥",
+        "breakout": "💥", "breakout_tight": "🎯",
+        "mean_reversion": "🔄", "mean_reversion_tight": "🎢",
+        "grid_trading": "📏", "grid_tight": "📐",
+        "dca_accumulator": "💰", "dca_aggressive": "💸",
+        "ichimoku": "☁️", "ichimoku_fast": "⛅",
+        "martingale": "🎰", "martingale_safe": "🎲"
     }
 
     # Strategy descriptions for tooltips
     strat_tooltips = {
+        # Original strategies
         "confluence_normal": "RSI + MACD + Bollinger Bands. Buys when RSI<35 + MACD crossover + price near lower band. Safe, medium frequency.",
         "confluence_strict": "Same as normal but stricter: RSI<30 + confirmed MACD + price below lower band. Fewer trades, higher precision.",
+        "conservative": "Only trades on STRONG signals (RSI<30 + bullish trend). Low frequency, high precision.",
+        "aggressive": "Trades on regular + strong signals. Higher frequency, more opportunities.",
         "degen_hybrid": "Combines scalping + momentum. Aggressive entries on volume spikes and RSI extremes. High risk, high reward.",
         "degen_scalp": "Ultra-fast scalping on 1m charts. Targets 0.5-1% gains. Very high frequency, small position sizes.",
+        "degen_momentum": "Rides momentum waves. Enters on volume spikes and price acceleration.",
+        "degen_full": "Maximum degen mode. All signals, high allocation, aggressive entries.",
         "god_mode_only": "Only trades on God Mode signals (RSI<20 oversold + volume spike + momentum reversal). Rare but powerful.",
         "hodl": "Buy and hold strategy. Buys on major dips (RSI<25), never sells. Long-term accumulation.",
+        "rsi_strategy": "Pure RSI strategy. Buy when RSI<30 (oversold), sell when RSI>70 (overbought).",
         "manual": "Manual trading only. No automated signals.",
         "sniper_safe": "Scans new DEX tokens. Risk score <50, min $50k liquidity. Conservative sniper.",
         "sniper_degen": "Scans new DEX tokens. Risk score <75, min $10k liquidity. Aggressive sniper.",
-        "sniper_yolo": "Scans new DEX tokens. Risk score <90, min $5k liquidity. Maximum degen mode."
+        "sniper_yolo": "Scans new DEX tokens. Risk score <90, min $5k liquidity. Maximum degen mode.",
+
+        # NEW STRATEGIES
+        "ema_crossover": "Classic 9/21 EMA crossover. Buy when fast EMA crosses above slow. Reliable trend following.",
+        "ema_crossover_slow": "Slower 12/26 EMA crossover. Fewer signals, stronger trends. Good for swing trading.",
+        "vwap_bounce": "Mean reversion on VWAP. Buys when price is 1.5% below VWAP, sells above. Great for ranging markets.",
+        "vwap_trend": "Trend following on VWAP. Buys above VWAP (bullish), sells below. Follows institutional flow.",
+        "supertrend": "Dynamic support/resistance indicator. Buys in uptrend, sells when trend flips. Period=10, Mult=3.",
+        "supertrend_fast": "Faster Supertrend settings. More signals, quicker reactions. Period=7, Mult=2.",
+        "stoch_rsi": "Stochastic RSI for precise entries. Buy <20 oversold, sell >80 overbought. Very accurate.",
+        "stoch_rsi_aggressive": "Aggressive Stoch RSI. Buy <25, sell >75. More trades, slightly lower precision.",
+        "breakout": "Breakout trading. Buys when price breaks 20-period high with volume. Catches big moves.",
+        "breakout_tight": "Tight breakout. 10-period range, 2x volume required. Faster entries, more signals.",
+        "mean_reversion": "Statistical mean reversion. Buys 2 std dev below mean, sells 2 std above. Works in ranges.",
+        "mean_reversion_tight": "Tighter mean reversion. 1.5 std dev threshold. More frequent trades.",
+        "grid_trading": "Grid bot strategy. Buys at range bottom, sells at top. Perfect for sideways markets.",
+        "grid_tight": "Tight grid. 1% grid size, 10 levels. Very active in consolidation.",
+        "dca_accumulator": "DCA on 3%+ dips only. Never sells. Long-term accumulation strategy.",
+        "dca_aggressive": "Aggressive DCA. Buys on 2%+ dips. Faster accumulation, more entries.",
+        "ichimoku": "Japanese Ichimoku Cloud. Buys above cloud + bullish crossover. Classic trend system.",
+        "ichimoku_fast": "Faster Ichimoku settings. Quicker signals, more trades. Good for crypto volatility.",
+        "martingale": "Double down on losses. 2x multiplier, max 4 levels. HIGH RISK - can blow up!",
+        "martingale_safe": "Safer Martingale. 1.5x multiplier, max 3 levels. Still risky but more controlled."
     }
 
     # Display portfolios as cards (2 per row)

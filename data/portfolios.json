@@ -538,7 +538,387 @@
       "trades": [],
       "created_at": "2025-12-19T12:00:00",
       "active": true
+    },
+    "portfolio_14": {
+      "id": "portfolio_14",
+      "name": "EMA Crossover",
+      "strategy_id": "ema_crossover",
+      "icon": "📈",
+      "color": "#00d4ff",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_15": {
+      "id": "portfolio_15",
+      "name": "EMA Cross Slow",
+      "strategy_id": "ema_crossover_slow",
+      "icon": "🐢",
+      "color": "#7c3aed",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_16": {
+      "id": "portfolio_16",
+      "name": "VWAP Bounce",
+      "strategy_id": "vwap_bounce",
+      "icon": "🎯",
+      "color": "#f59e0b",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_17": {
+      "id": "portfolio_17",
+      "name": "VWAP Trend",
+      "strategy_id": "vwap_trend",
+      "icon": "📊",
+      "color": "#10b981",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_18": {
+      "id": "portfolio_18",
+      "name": "Supertrend",
+      "strategy_id": "supertrend",
+      "icon": "🚀",
+      "color": "#ec4899",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_19": {
+      "id": "portfolio_19",
+      "name": "Supertrend Fast",
+      "strategy_id": "supertrend_fast",
+      "icon": "⚡",
+      "color": "#f43f5e",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_20": {
+      "id": "portfolio_20",
+      "name": "Stoch RSI",
+      "strategy_id": "stoch_rsi",
+      "icon": "📉",
+      "color": "#6366f1",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_21": {
+      "id": "portfolio_21",
+      "name": "Stoch RSI Aggro",
+      "strategy_id": "stoch_rsi_aggressive",
+      "icon": "🔥",
+      "color": "#ef4444",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_22": {
+      "id": "portfolio_22",
+      "name": "Breakout",
+      "strategy_id": "breakout",
+      "icon": "💥",
+      "color": "#22c55e",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_23": {
+      "id": "portfolio_23",
+      "name": "Breakout Tight",
+      "strategy_id": "breakout_tight",
+      "icon": "🎯",
+      "color": "#14b8a6",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_24": {
+      "id": "portfolio_24",
+      "name": "Mean Reversion",
+      "strategy_id": "mean_reversion",
+      "icon": "🔄",
+      "color": "#8b5cf6",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_25": {
+      "id": "portfolio_25",
+      "name": "Mean Rev Tight",
+      "strategy_id": "mean_reversion_tight",
+      "icon": "🎢",
+      "color": "#a855f7",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_26": {
+      "id": "portfolio_26",
+      "name": "Grid Trading",
+      "strategy_id": "grid_trading",
+      "icon": "📏",
+      "color": "#0ea5e9",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_27": {
+      "id": "portfolio_27",
+      "name": "Grid Tight",
+      "strategy_id": "grid_tight",
+      "icon": "📐",
+      "color": "#06b6d4",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_28": {
+      "id": "portfolio_28",
+      "name": "DCA Accumulator",
+      "strategy_id": "dca_accumulator",
+      "icon": "💰",
+      "color": "#f7931a",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_29": {
+      "id": "portfolio_29",
+      "name": "DCA Aggressive",
+      "strategy_id": "dca_aggressive",
+      "icon": "💸",
+      "color": "#eab308",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_30": {
+      "id": "portfolio_30",
+      "name": "Ichimoku",
+      "strategy_id": "ichimoku",
+      "icon": "☁️",
+      "color": "#3b82f6",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_31": {
+      "id": "portfolio_31",
+      "name": "Ichimoku Fast",
+      "strategy_id": "ichimoku_fast",
+      "icon": "⛅",
+      "color": "#60a5fa",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_32": {
+      "id": "portfolio_32",
+      "name": "Martingale",
+      "strategy_id": "martingale",
+      "icon": "🎰",
+      "color": "#dc2626",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_33": {
+      "id": "portfolio_33",
+      "name": "Martingale Safe",
+      "strategy_id": "martingale_safe",
+      "icon": "🎲",
+      "color": "#f87171",
+      "config": {
+        "cryptos": ["BTC/USDT", "ETH/USDT", "BNB/USDT", "SOL/USDT", "XRP/USDT", "ADA/USDT", "AVAX/USDT", "DOGE/USDT", "DOT/USDT", "MATIC/USDT", "LINK/USDT", "UNI/USDT", "ATOM/USDT", "LTC/USDT", "APT/USDT", "ARB/USDT", "OP/USDT", "INJ/USDT", "SUI/USDT", "PEPE/USDT"],
+        "allocation_percent": 5,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {"USDT": 10000},
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
     }
   },
-  "counter": 13
+  "counter": 33
 }
