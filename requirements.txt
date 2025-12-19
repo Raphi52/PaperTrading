@@ -10,3 +10,4 @@ aiohttp
 colorama
 textblob
 python-dotenv
+websockets
