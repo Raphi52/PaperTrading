@@ -510,21 +510,41 @@ def render_degen():
 
     with col2:
         st.subheader("📜 Recent Trades")
-        trades = state.get('trades', [])[-10:]
+        all_trades = state.get('trades', [])
+
+        # Toggle for full history
+        show_all = st.checkbox("📋 Show full history", key="show_all_trades")
+        trades = all_trades if show_all else all_trades[-10:]
 
         if trades:
-            for t in reversed(trades):
-                pnl_val = t.get('pnl', 0)
-                emoji = "✅" if pnl_val > 0 else "❌"
-                color = COLORS.BUY if pnl_val > 0 else COLORS.SELL
+            if show_all and len(all_trades) > 20:
+                # Use expander for large histories
+                with st.expander(f"📜 All {len(all_trades)} trades", expanded=True):
+                    for t in reversed(trades):
+                        pnl_val = t.get('pnl', 0)
+                        emoji = "✅" if pnl_val > 0 else "❌"
+                        color = COLORS.BUY if pnl_val > 0 else COLORS.SELL
 
-                st.markdown(f"""
-                <div style="padding: 0.5rem; border-bottom: 1px solid #333;">
-                    {emoji} <b>{t.get('symbol', '')}</b> |
-                    <span style="color: {color};">${pnl_val:+.2f}</span> |
-                    {t.get('reason', '')}
-                </div>
-                """, unsafe_allow_html=True)
+                        st.markdown(f"""
+                        <div style="padding: 0.5rem; border-bottom: 1px solid #333;">
+                            {emoji} <b>{t.get('symbol', '')}</b> |
+                            <span style="color: {color};">${pnl_val:+.2f}</span> |
+                            {t.get('reason', '')}
+                        </div>
+                        """, unsafe_allow_html=True)
+            else:
+                for t in reversed(trades):
+                    pnl_val = t.get('pnl', 0)
+                    emoji = "✅" if pnl_val > 0 else "❌"
+                    color = COLORS.BUY if pnl_val > 0 else COLORS.SELL
+
+                    st.markdown(f"""
+                    <div style="padding: 0.5rem; border-bottom: 1px solid #333;">
+                        {emoji} <b>{t.get('symbol', '')}</b> |
+                        <span style="color: {color};">${pnl_val:+.2f}</span> |
+                        {t.get('reason', '')}
+                    </div>
+                    """, unsafe_allow_html=True)
         else:
             st.info("No trades yet")
 
@@ -1533,8 +1553,20 @@ Paper trading uniquement pour expérimenter."""
                     if st.session_state.get(f'show_history_{pid}', False):
                         trades = p.get('trades', [])
                         if trades:
-                            st.markdown(f"**📜 History ({len(trades)} trades)**")
-                            for t in reversed(trades[-10:]):  # Last 10 trades
+                            # Toggle for full history
+                            col_hist1, col_hist2 = st.columns([3, 1])
+                            with col_hist1:
+                                st.markdown(f"**📜 History ({len(trades)} trades)**")
+                            with col_hist2:
+                                show_all_pf = st.checkbox("All", key=f"show_all_{pid}", value=False)
+
+                            display_trades = trades if show_all_pf else trades[-10:]
+
+                            # Scrollable container for many trades
+                            if show_all_pf and len(trades) > 15:
+                                st.markdown(f"""<div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">""", unsafe_allow_html=True)
+
+                            for t in reversed(display_trades):
                                 t_time = t.get('timestamp', '')[:16].replace('T', ' ')
                                 t_action = t.get('action', '')
                                 t_symbol = t.get('symbol', '').replace('/USDT', '')
@@ -1560,8 +1592,11 @@ Paper trading uniquement pour expérimenter."""
                                     </div>
                                     """, unsafe_allow_html=True)
 
-                            if len(trades) > 10:
-                                st.caption(f"... and {len(trades) - 10} more trades")
+                            if show_all_pf and len(trades) > 15:
+                                st.markdown("</div>", unsafe_allow_html=True)
+
+                            if not show_all_pf and len(trades) > 10:
+                                st.caption(f"... and {len(trades) - 10} more trades (check 'All' to see)")
                         else:
                             st.info("No trades yet")
 
