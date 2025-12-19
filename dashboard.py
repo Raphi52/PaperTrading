@@ -141,55 +141,39 @@ def run_async(coro):
         loop.close()
 
 
-@st.cache_data(ttl=5)
+@st.cache_data(ttl=10)
 def fetch_live_price(symbol: str = "BTCUSDT") -> dict:
     try:
         binance_symbol = symbol.replace("/", "")
-        url = f"https://api.binance.com/api/v3/ticker/24hr?symbol={binance_symbol}"
-        response = requests.get(url, timeout=2)
+        url = f"https://api.binance.com/api/v3/ticker/price?symbol={binance_symbol}"
+        response = requests.get(url, timeout=1)
         if response.status_code == 200:
             data = response.json()
-            return {
-                'price': float(data['lastPrice']),
-                'change': float(data['priceChangePercent']),
-                'high': float(data['highPrice']),
-                'low': float(data['lowPrice']),
-                'volume': float(data['quoteVolume'])
-            }
+            return {'price': float(data['price']), 'change': 0}
     except:
         pass
     return None
 
 
-@st.cache_data(ttl=3)
+@st.cache_data(ttl=5)
 def fetch_all_live_prices() -> dict:
+    """Endpoint leger: juste les prix (pas high/low/volume)"""
     try:
-        # Utilise l'endpoint specifique pour les symboles voulus (plus rapide)
-        symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'DOTUSDT', 'MATICUSDT']
-        url = f"https://api.binance.com/api/v3/ticker/24hr?symbols={json.dumps(symbols)}"
-        response = requests.get(url, timeout=1.5)  # Timeout reduit
+        # ticker/price est 10x plus rapide que ticker/24hr
+        url = "https://api.binance.com/api/v3/ticker/price"
+        response = requests.get(url, timeout=1)
         if response.status_code == 200:
             data = response.json()
             prices = {}
+            wanted = {'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'DOTUSDT', 'MATICUSDT'}
             for item in data:
-                sym = item['symbol'].replace('USDT', '/USDT')
-                prices[sym] = {
-                    'price': float(item['lastPrice']),
-                    'change': float(item['priceChangePercent']),
-                    'high': float(item['highPrice']),
-                    'low': float(item['lowPrice']),
-                    'volume': float(item['quoteVolume'])
-                }
+                if item['symbol'] in wanted:
+                    sym = item['symbol'].replace('USDT', '/USDT')
+                    prices[sym] = {'price': float(item['price']), 'change': 0}
             return prices
     except:
         pass
-    # Fallback avec valeurs par defaut pour affichage instantane
-    return {
-        'BTC/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
-        'ETH/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
-        'SOL/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
-        'BNB/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0}
-    }
+    return {}
 
 
 @st.cache_resource
@@ -520,18 +504,11 @@ def render_page_prix():
 
     prices = fetch_all_live_prices()
 
-    # Affichage en grille avec composants natifs (plus rapide)
+    # Affichage simple en grille
     cols = st.columns(2)
     for i, (sym, data) in enumerate(list(prices.items())[:4]):
         with cols[i % 2]:
-            change = data['change']
-            delta_color = "normal" if change >= 0 else "inverse"
-            st.metric(
-                sym.replace('/USDT', ''),
-                f"${data['price']:,.2f}" if data['price'] > 0 else "---",
-                delta=f"{change:+.2f}%" if data['price'] > 0 else None,
-                delta_color=delta_color
-            )
+            st.metric(sym.replace('/USDT', ''), f"${data['price']:,.2f}" if data['price'] > 0 else "---")
 
     col1, col2 = st.columns(2)
     with col1:
@@ -541,10 +518,7 @@ def render_page_prix():
     with col2:
         if st.button("🚀 RUN", type="primary", use_container_width=True):
             results, _ = run_engine()
-            if results:
-                st.success(f"{len(results)} trades!")
-            else:
-                st.info("Aucun trade")
+            st.success(f"{len(results)} trades!") if results else st.info("Aucun")
 
 
 def render_page_portfolios():
