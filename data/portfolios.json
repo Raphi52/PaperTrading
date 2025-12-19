@@ -1,0 +1,472 @@
+{
+  "portfolios": {
+    "portfolio_1": {
+      "id": "portfolio_1",
+      "name": "Conservative",
+      "strategy_id": "conservative",
+      "strategy_name": "Conservative",
+      "icon": "\ud83d\udee1\ufe0f",
+      "color": "#00ff88",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 25,
+        "rsi_overbought": 75,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_2": {
+      "id": "portfolio_2",
+      "name": "Aggressive",
+      "strategy_id": "aggressive",
+      "strategy_name": "Aggressive",
+      "icon": "\ud83d\udd25",
+      "color": "#ff4444",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 10,
+        "rsi_oversold": 35,
+        "rsi_overbought": 65,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_3": {
+      "id": "portfolio_3",
+      "name": "RSI Strategy",
+      "strategy_id": "rsi_strategy",
+      "strategy_name": "RSI Strategy",
+      "icon": "\ud83d\udcc8",
+      "color": "#00d4ff",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 30,
+        "rsi_overbought": 70,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_4": {
+      "id": "portfolio_4",
+      "name": "Confluence Normal",
+      "strategy_id": "confluence_normal",
+      "strategy_name": "Confluence Normal",
+      "icon": "\ud83d\udcca",
+      "color": "#7c3aed",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 30,
+        "rsi_overbought": 70,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_5": {
+      "id": "portfolio_5",
+      "name": "Confluence Strict",
+      "strategy_id": "confluence_strict",
+      "strategy_name": "Confluence Strict",
+      "icon": "\ud83c\udfaf",
+      "color": "#00d4ff",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 10,
+        "rsi_oversold": 25,
+        "rsi_overbought": 75,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_6": {
+      "id": "portfolio_6",
+      "name": "HODL",
+      "strategy_id": "hodl",
+      "strategy_name": "HODL",
+      "icon": "\ud83d\udc8e",
+      "color": "#f7931a",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 30,
+        "rsi_overbought": 70,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 9500.0,
+        "BTC": 0.005660560205265498
+      },
+      "initial_capital": 10000,
+      "positions": {
+        "BTC/USDT": {
+          "entry_price": 88330.48,
+          "quantity": 0.005660560205265498,
+          "entry_time": "2025-12-19T12:19:55.513488"
+        }
+      },
+      "trades": [
+        {
+          "timestamp": "2025-12-19T12:19:55.513488",
+          "action": "BUY",
+          "symbol": "BTC/USDT",
+          "price": 88330.48,
+          "quantity": 0.005660560205265498,
+          "amount_usdt": 500.0,
+          "pnl": 0
+        }
+      ],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_7": {
+      "id": "portfolio_7",
+      "name": "Degen Scalp",
+      "strategy_id": "degen_scalp",
+      "strategy_name": "Degen Scalp",
+      "icon": "\u26a1",
+      "color": "#ff6b6b",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 25,
+        "rsi_overbought": 75,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_8": {
+      "id": "portfolio_8",
+      "name": "Degen Momentum",
+      "strategy_id": "degen_momentum",
+      "strategy_name": "Degen Momentum",
+      "icon": "\ud83d\ude80",
+      "color": "#feca57",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 25,
+        "rsi_overbought": 75,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_9": {
+      "id": "portfolio_9",
+      "name": "Degen Hybrid",
+      "strategy_id": "degen_hybrid",
+      "strategy_name": "Degen Hybrid",
+      "icon": "\ud83c\udfaf",
+      "color": "#00ff88",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 5,
+        "rsi_oversold": 25,
+        "rsi_overbought": 75,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    },
+    "portfolio_10": {
+      "id": "portfolio_10",
+      "name": "Full Degen",
+      "strategy_id": "degen_full",
+      "strategy_name": "Full Degen",
+      "icon": "\ud83d\udc80",
+      "color": "#ff0000",
+      "config": {
+        "cryptos": [
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOGE/USDT",
+          "DOT/USDT",
+          "MATIC/USDT",
+          "LINK/USDT",
+          "UNI/USDT",
+          "ATOM/USDT",
+          "LTC/USDT",
+          "APT/USDT",
+          "ARB/USDT",
+          "OP/USDT",
+          "INJ/USDT",
+          "SUI/USDT",
+          "PEPE/USDT"
+        ],
+        "allocation_percent": 10,
+        "rsi_oversold": 20,
+        "rsi_overbought": 80,
+        "max_positions": 20,
+        "auto_trade": true
+      },
+      "balance": {
+        "USDT": 10000
+      },
+      "initial_capital": 10000,
+      "positions": {},
+      "trades": [],
+      "created_at": "2025-12-19T12:00:00",
+      "active": true
+    }
+  },
+  "counter": 10
+}
