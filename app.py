@@ -111,6 +111,7 @@ def get_top_cryptos(limit: int = 50) -> List[Dict]:
         return []
 
 
+@st.cache_data(ttl=5)  # Cache portfolios for 5 seconds
 def load_portfolios() -> Dict:
     """Charge les portfolios"""
     try:
@@ -1731,15 +1732,41 @@ Pour ceux qui veulent des signaux très fiables.
 Moins de trades mais meilleure qualité."""
     }
 
-    # Display portfolios as cards (2 per row)
+    # Display portfolios with pagination (10 per page)
     portfolio_list = list(portfolios.items())
+    PORTFOLIOS_PER_PAGE = 10
 
-    for i in range(0, len(portfolio_list), 2):
+    # Pagination controls
+    total_pages = (len(portfolio_list) + PORTFOLIOS_PER_PAGE - 1) // PORTFOLIOS_PER_PAGE
+
+    col_prev, col_info, col_next = st.columns([1, 2, 1])
+    with col_info:
+        if 'portfolio_page' not in st.session_state:
+            st.session_state.portfolio_page = 0
+        current_page = st.session_state.portfolio_page
+        st.markdown(f"<div style='text-align:center; color:#888;'>Page {current_page + 1} / {total_pages} ({len(portfolio_list)} portfolios)</div>", unsafe_allow_html=True)
+
+    with col_prev:
+        if st.button("⬅️ Précédent", disabled=current_page == 0, use_container_width=True):
+            st.session_state.portfolio_page = max(0, current_page - 1)
+            st.rerun()
+
+    with col_next:
+        if st.button("Suivant ➡️", disabled=current_page >= total_pages - 1, use_container_width=True):
+            st.session_state.portfolio_page = min(total_pages - 1, current_page + 1)
+            st.rerun()
+
+    # Get current page portfolios
+    start_idx = current_page * PORTFOLIOS_PER_PAGE
+    end_idx = start_idx + PORTFOLIOS_PER_PAGE
+    page_portfolios = portfolio_list[start_idx:end_idx]
+
+    for i in range(0, len(page_portfolios), 2):
         cols = st.columns(2)
 
         for j, col in enumerate(cols):
-            if i + j < len(portfolio_list):
-                pid, p = portfolio_list[i + j]
+            if i + j < len(page_portfolios):
+                pid, p = page_portfolios[i + j]
 
                 with col:
                     # Calculate real portfolio value including positions
