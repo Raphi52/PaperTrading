@@ -218,14 +218,14 @@ def save_portfolios():
         with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
         # Invalide le cache apres sauvegarde
-        load_portfolios_cached.clear()
+        load_portfolios_once.clear()
     except Exception as e:
         print(f"Erreur sauvegarde: {e}")
 
 
-@st.cache_data(ttl=2)
-def load_portfolios_cached() -> tuple:
-    """Version cachee pour eviter les lectures disque repetees"""
+@st.cache_resource
+def load_portfolios_once() -> tuple:
+    """Charge le fichier UNE SEULE FOIS au demarrage (4MB = lent)"""
     try:
         if os.path.exists(PORTFOLIOS_FILE):
             with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
@@ -237,7 +237,7 @@ def load_portfolios_cached() -> tuple:
 
 
 def load_portfolios() -> tuple:
-    return load_portfolios_cached()
+    return load_portfolios_once()
 
 
 def init_session():
@@ -548,44 +548,17 @@ def render_page_prix():
 
 
 def render_page_portfolios():
-    """Page: Liste des portfolios avec pagination"""
+    """Page: Liste des portfolios avec pagination - OPTIMISE pour 100+ portfolios"""
     prices = fetch_all_live_prices()
-    portfolios_list = list(st.session_state.portfolios.items())
-    total = len(portfolios_list)
-    per_page = 4
+    total = len(st.session_state.portfolios)
+    per_page = 10
 
-    # Pre-calcul de toutes les valeurs en une fois
-    all_values = get_all_portfolio_values(st.session_state.portfolios, prices)
-
-    # Calcul des PnL% pour chaque portfolio
-    def calc_pnl_pct(item):
-        port_id, portfolio = item
-        value = all_values.get(port_id, portfolio['initial_capital'])
-        return ((value - portfolio['initial_capital']) / portfolio['initial_capital'] * 100) if portfolio['initial_capital'] > 0 else 0
-
-    # Header avec tri
+    # Header avec tri (profit par defaut)
     col1, col2 = st.columns([2, 1])
     with col1:
-        total_value = sum(all_values.values())
-        total_initial = sum(p['initial_capital'] for _, p in portfolios_list)
-        total_pnl = total_value - total_initial
-        total_pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
-        pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
-        st.markdown(f"**💼 {total}** | ${total_value:,.0f} | <span style='color:{pnl_color}'>{total_pnl_pct:+.1f}%</span>", unsafe_allow_html=True)
+        st.markdown(f"**💼 {total} portfolios**")
     with col2:
-        sort_option = st.selectbox("Tri", ["% ↓", "% ↑", "Valeur", "Nom"], label_visibility="collapsed", key="pf_sort")
-
-    # Tri des portfolios
-    if sort_option == "% ↓":
-        portfolios_list.sort(key=calc_pnl_pct, reverse=True)
-    elif sort_option == "% ↑":
-        portfolios_list.sort(key=calc_pnl_pct)
-    elif sort_option == "Valeur":
-        portfolios_list.sort(key=lambda x: all_values.get(x[0], 0), reverse=True)
-    elif sort_option == "Nom":
-        portfolios_list.sort(key=lambda x: x[1]['name'])
-
-    total_pages = max(1, (total + per_page - 1) // per_page)
+        sort_option = st.selectbox("", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], label_visibility="collapsed", key="pf_sort")
 
     # Reset page si tri change
     if 'last_sort' not in st.session_state:
@@ -594,47 +567,58 @@ def render_page_portfolios():
         st.session_state.portfolio_page = 0
         st.session_state.last_sort = sort_option
 
-    # Portfolios de la page actuelle
+    # Calcul PnL% rapide (utilise seulement USDT, ignore les positions pour le tri)
+    def quick_pnl_pct(item):
+        port_id, portfolio = item
+        # Approximation rapide: USDT + positions estimees
+        usdt = portfolio['balance'].get('USDT', 0)
+        positions_value = sum(
+            portfolio['balance'].get(sym.split('/')[0], 0) * prices.get(sym, {}).get('price', 0)
+            for sym in ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT']
+        )
+        value = usdt + positions_value
+        init = portfolio['initial_capital']
+        return ((value - init) / init * 100) if init > 0 else 0
+
+    # Tri rapide
+    portfolios_list = list(st.session_state.portfolios.items())
+    if sort_option == "% Profit ↓":
+        portfolios_list.sort(key=quick_pnl_pct, reverse=True)
+    elif sort_option == "% Profit ↑":
+        portfolios_list.sort(key=quick_pnl_pct)
+    elif sort_option == "Valeur":
+        portfolios_list.sort(key=lambda x: x[1]['balance'].get('USDT', 0), reverse=True)
+    elif sort_option == "Nom":
+        portfolios_list.sort(key=lambda x: x[1]['name'])
+
+    total_pages = max(1, (total + per_page - 1) // per_page)
+
+    # Seulement les portfolios de la page actuelle
     start = st.session_state.portfolio_page * per_page
     end = min(start + per_page, total)
+    page_portfolios = portfolios_list[start:end]
 
-    for port_id, portfolio in portfolios_list[start:end]:
-        value = all_values.get(port_id, portfolio['initial_capital'])
+    # Calcul des valeurs SEULEMENT pour les portfolios affiches
+    for port_id, portfolio in page_portfolios:
+        value = get_portfolio_value(portfolio, prices)
         pnl = value - portfolio['initial_capital']
         pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
         is_active = portfolio.get('active', True)
-        trades = portfolio.get('trades', [])
-        positions = len(portfolio.get('positions', {}))
-        status_class = 'active' if is_active else 'paused'
+        n_trades = len(portfolio.get('trades', []))
 
-        # Rendu simplifie avec moins de HTML
-        with st.container():
-            st.markdown(f'<div class="pf-card {status_class}">', unsafe_allow_html=True)
-            c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
-            with c1:
-                st.markdown(f"**{portfolio['icon']} {portfolio['name'][:15]}**")
-                st.caption(portfolio['strategy_name'])
-            with c2:
-                st.metric("Valeur", f"${value:,.0f}", label_visibility="collapsed")
-            with c3:
-                delta_color = "normal" if pnl >= 0 else "inverse"
-                st.metric("P&L", f"{pnl_pct:+.1f}%", delta=f"${pnl:+,.0f}", delta_color=delta_color, label_visibility="collapsed")
-            with c4:
-                st.metric("Trades", f"{len(trades)}", label_visibility="collapsed")
-            st.markdown('</div>', unsafe_allow_html=True)
-
-            # Boutons inline
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("⏸️" if is_active else "▶️", key=f"t_{port_id}", use_container_width=True):
-                    st.session_state.portfolios[port_id]['active'] = not is_active
-                    save_portfolios()
-                    st.rerun()
-            with col2:
-                if st.button("📊", key=f"v_{port_id}", use_container_width=True, type="primary"):
-                    st.session_state.selected_portfolio = port_id
-                    st.session_state.page = 'detail'
-                    st.rerun()
+        # Rendu ultra-simplifie
+        c1, c2, c3 = st.columns([3, 2, 1])
+        with c1:
+            status = "🟢" if is_active else "⏸️"
+            st.markdown(f"{status} **{portfolio['icon']} {portfolio['name'][:12]}**")
+        with c2:
+            color = "green" if pnl >= 0 else "red"
+            st.markdown(f"${value:,.0f} | :{color}[{pnl_pct:+.1f}%]")
+        with c3:
+            if st.button("📊", key=f"v_{port_id}"):
+                st.session_state.selected_portfolio = port_id
+                st.session_state.page = 'detail'
+                st.rerun()
 
     # Pagination
     if total_pages > 1:
