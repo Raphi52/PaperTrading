@@ -208,6 +208,57 @@ STRATEGIES = {
     "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3},
 }
 
+# Timeframes per strategy type - optimized for each trading style
+STRATEGY_TIMEFRAMES = {
+    # Fast strategies - M15 (15 minutes)
+    "degen_scalp": "15m",
+    "degen_full": "15m",
+    "stoch_rsi_aggressive": "15m",
+    "breakout_tight": "15m",
+    "grid_tight": "15m",
+    "mean_reversion_tight": "15m",
+    "supertrend_fast": "15m",
+    "ichimoku_fast": "15m",
+
+    # Medium strategies - 1H (default)
+    "degen_momentum": "1h",
+    "degen_hybrid": "1h",
+    "aggressive": "1h",
+    "ema_crossover": "1h",
+    "vwap_bounce": "1h",
+    "vwap_trend": "1h",
+    "supertrend": "1h",
+    "stoch_rsi": "1h",
+    "breakout": "1h",
+    "mean_reversion": "1h",
+    "grid_trading": "1h",
+    "rsi_strategy": "1h",
+    "martingale": "1h",
+    "martingale_safe": "1h",
+    "sniper_safe": "1h",
+    "sniper_degen": "1h",
+    "sniper_yolo": "1h",
+
+    # Slow strategies - 4H (trend following)
+    "conservative": "4h",
+    "confluence_strict": "4h",
+    "confluence_normal": "4h",
+    "ema_crossover_slow": "4h",
+    "ichimoku": "4h",
+    "dca_fear": "4h",
+    "dca_accumulator": "4h",
+    "dca_aggressive": "4h",
+    "hodl": "4h",
+    "god_mode_only": "4h",
+}
+
+DEFAULT_TIMEFRAME = "1h"
+
+
+def get_strategy_timeframe(strategy_id: str) -> str:
+    """Get the optimal timeframe for a strategy"""
+    return STRATEGY_TIMEFRAMES.get(strategy_id, DEFAULT_TIMEFRAME)
+
 
 def get_fear_greed_index() -> dict:
     """Fetch Fear & Greed Index from Alternative.me API"""
@@ -478,11 +529,11 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     return indicators
 
 
-def analyze_crypto(symbol: str) -> dict:
+def analyze_crypto(symbol: str, timeframe: str = "1h") -> dict:
     """Analyze a crypto - returns price and all indicators"""
     try:
-        # Fetch OHLCV from Binance
-        url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval=1h&limit=100"
+        # Fetch OHLCV from Binance with specified timeframe
+        url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval={timeframe}&limit=100"
         response = requests.get(url, timeout=10)
 
         if response.status_code != 200:
@@ -927,44 +978,60 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 def run_engine(portfolios: dict) -> list:
     """Run the trading engine for all portfolios"""
     results = []
-    analyzed = {}
+    analyzed = {}  # (crypto, timeframe) -> analysis
 
-    # Get all unique cryptos
-    all_cryptos = set()
+    # Get all unique cryptos and required timeframes
+    crypto_timeframes = {}  # crypto -> set of timeframes needed
     for p in portfolios.values():
         if p.get('active', True):
-            all_cryptos.update(p['config'].get('cryptos', []))
+            strategy_id = p.get('strategy_id', 'manual')
+            timeframe = get_strategy_timeframe(strategy_id)
+            for crypto in p['config'].get('cryptos', []):
+                if crypto not in crypto_timeframes:
+                    crypto_timeframes[crypto] = set()
+                crypto_timeframes[crypto].add(timeframe)
 
-    if not all_cryptos:
+    if not crypto_timeframes:
         debug_log('SYSTEM', 'No cryptos configured in any active portfolio',
                  {'active_portfolios': len([p for p in portfolios.values() if p.get('active')])})
 
-    log(f"Scanning {len(all_cryptos)} cryptos for {len([p for p in portfolios.values() if p.get('active')])} active portfolios...")
+    # Count unique timeframes for logging
+    all_timeframes = set()
+    for tfs in crypto_timeframes.values():
+        all_timeframes.update(tfs)
 
-    # Analyze each crypto once
-    failed_cryptos = []
-    for crypto in all_cryptos:
-        analysis = analyze_crypto(crypto)
-        if analysis:
-            analyzed[crypto] = analysis
-            log(f"  {crypto}: ${analysis['price']:,.2f} | RSI {analysis['rsi']:.1f} | {analysis['signal']}")
-        else:
-            failed_cryptos.append(crypto)
+    log(f"Scanning {len(crypto_timeframes)} cryptos @ {len(all_timeframes)} timeframes ({', '.join(sorted(all_timeframes))})...")
 
-    if failed_cryptos:
-        debug_log('API', f'Failed to analyze {len(failed_cryptos)} cryptos',
-                 {'failed': failed_cryptos, 'total': len(all_cryptos)})
+    # Analyze each crypto at each required timeframe
+    failed_analyses = []
+    for crypto, timeframes in crypto_timeframes.items():
+        for timeframe in timeframes:
+            analysis = analyze_crypto(crypto, timeframe)
+            if analysis:
+                analysis['timeframe'] = timeframe  # Store which timeframe was used
+                analyzed[(crypto, timeframe)] = analysis
+                log(f"  {crypto} [{timeframe}]: ${analysis['price']:,.2f} | RSI {analysis['rsi']:.1f} | {analysis['signal']}")
+            else:
+                failed_analyses.append(f"{crypto}@{timeframe}")
 
-    # Check each portfolio
+    if failed_analyses:
+        debug_log('API', f'Failed to analyze {len(failed_analyses)} crypto/timeframe pairs',
+                 {'failed': failed_analyses[:10], 'total': len(failed_analyses)})
+
+    # Check each portfolio with its strategy's timeframe
     for port_id, portfolio in portfolios.items():
         if not portfolio.get('active', True):
             continue
 
+        strategy_id = portfolio.get('strategy_id', 'manual')
+        timeframe = get_strategy_timeframe(strategy_id)
+
         for crypto in portfolio['config'].get('cryptos', []):
-            if crypto not in analyzed:
+            key = (crypto, timeframe)
+            if key not in analyzed:
                 continue
 
-            analysis = analyzed[crypto]
+            analysis = analyzed[key]
 
             try:
                 action, reason = should_trade(portfolio, analysis)
@@ -1342,12 +1409,19 @@ def main():
             scan_duration = time.time() - scan_start
             log(f"📈 Classic: {len(classic_results)} trades | 🎯 Sniper: {len(sniper_results)} trades | 🆕 New tokens: {len(fresh_tokens)}")
 
+            # Calculate timeframes used
+            timeframes_used = set()
+            for p in portfolios.values():
+                if p.get('active', True):
+                    timeframes_used.add(get_strategy_timeframe(p.get('strategy_id', 'manual')))
+
             # Update debug state with scan info
             debug_update_bot_status(running=True, scan_count=scan_count)
             debug_update_scan({
                 'scan_number': scan_count,
                 'duration_seconds': round(scan_duration, 2),
                 'active_portfolios': active_portfolios,
+                'timeframes': sorted(list(timeframes_used)),
                 'classic_trades': len(classic_results),
                 'sniper_trades': len(sniper_results),
                 'new_tokens_found': len(fresh_tokens),

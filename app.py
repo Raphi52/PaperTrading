@@ -2020,7 +2020,9 @@ def render_debug():
         with col3:
             st.metric("New Tokens", last_scan.get('new_tokens_found', 0))
 
-        st.caption(f"Scan time: {last_scan.get('timestamp', 'N/A')} | Total tokens seen: {last_scan.get('total_tokens_seen', 0)}")
+        timeframes = last_scan.get('timeframes', [])
+        tf_str = ', '.join(timeframes) if timeframes else '1h'
+        st.caption(f"Scan time: {last_scan.get('timestamp', 'N/A')} | Timeframes: {tf_str} | Total tokens seen: {last_scan.get('total_tokens_seen', 0)}")
     else:
         st.info("No scan data yet. Start the bot to see activity.")
 
