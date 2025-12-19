@@ -39,6 +39,24 @@ from signals.onchain import OnChainAnalyzer
 from signals.godmode import GodModeDetector, GodModeLevel
 from core.confluence import ConfluenceEngine, TradeAction
 
+
+# Cache des analyseurs (objets lourds)
+@st.cache_resource
+def get_technical_analyzer():
+    return TechnicalAnalyzer()
+
+@st.cache_resource
+def get_sentiment_analyzer():
+    return SentimentAnalyzer()
+
+@st.cache_resource
+def get_onchain_analyzer():
+    return OnChainAnalyzer()
+
+@st.cache_resource
+def get_godmode_detector():
+    return GodModeDetector()
+
 # Configuration de la page
 st.set_page_config(
     page_title="Trading Bot",
@@ -47,205 +65,36 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# CSS pour supprimer les scrollbars et optimiser mobile
-st.markdown("""
-<style>
-    /* Supprimer TOUTES les scrollbars */
-    ::-webkit-scrollbar {
-        display: none !important;
-        width: 0 !important;
-        height: 0 !important;
-    }
-    * {
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-    }
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stVerticalBlock"] {
-        overflow: hidden !important;
-        max-height: 100vh !important;
-    }
-    .main .block-container {
-        padding: 0.5rem 1rem !important;
-        max-height: 100vh !important;
-        overflow: hidden !important;
-    }
-
-    /* Header compact */
-    .main-header {
-        font-size: 1.5rem;
-        font-weight: bold;
-        background: linear-gradient(90deg, #00d4ff, #7c3aed);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-align: center;
-        padding: 0.3rem;
-        margin: 0;
-    }
-
-    /* Navigation bar */
-    .nav-bar {
-        display: flex;
-        justify-content: space-around;
-        background: #1a1a2e;
-        padding: 0.5rem;
-        border-radius: 10px;
-        margin: 0.5rem 0;
-    }
-    .nav-btn {
-        padding: 0.8rem 1.2rem;
-        border-radius: 8px;
-        border: none;
-        font-size: 1.2rem;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .nav-btn:hover {
-        transform: scale(1.05);
-    }
-    .nav-btn.active {
-        background: linear-gradient(135deg, #7c3aed, #00d4ff);
-        color: white;
-    }
-
-    /* Cards compactes */
-    .price-card {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        padding: 0.8rem;
-        border-radius: 10px;
-        text-align: center;
-        margin-bottom: 0.5rem;
-    }
-
-    /* Portfolio Cards */
-    .pf-card {
-        background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%);
-        border-radius: 16px;
-        padding: 1rem;
-        margin-bottom: 0.8rem;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .pf-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        border-radius: 16px 16px 0 0;
-    }
-    .pf-card.active::before {
-        background: linear-gradient(90deg, #00ff88, #00d4ff);
-    }
-    .pf-card.paused::before {
-        background: linear-gradient(90deg, #ff4444, #ff6600);
-    }
-    .pf-card.active {
-        box-shadow: 0 4px 20px rgba(0,255,136,0.15);
-    }
-    .pf-card.paused {
-        opacity: 0.75;
-    }
-    .pf-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-    .pf-icon {
-        font-size: 2rem;
-        margin-right: 0.5rem;
-    }
-    .pf-name {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #fff;
-    }
-    .pf-strategy {
-        font-size: 0.75rem;
-        color: #888;
-        padding: 2px 8px;
-        background: rgba(255,255,255,0.1);
-        border-radius: 10px;
-    }
-    .pf-stats {
-        display: flex;
-        justify-content: space-between;
-        margin: 0.8rem 0;
-    }
-    .pf-stat {
-        text-align: center;
-    }
-    .pf-stat-value {
-        font-size: 1.2rem;
-        font-weight: bold;
-    }
-    .pf-stat-label {
-        font-size: 0.7rem;
-        color: #666;
-        text-transform: uppercase;
-    }
-    .pf-footer {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
-    .pf-btn {
-        flex: 1;
-        padding: 0.5rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    .pf-btn-toggle {
-        background: rgba(255,255,255,0.1);
-    }
-    .pf-btn-view {
-        background: linear-gradient(135deg, #7c3aed, #00d4ff);
-        color: white;
-    }
-
-    /* Signal box */
-    .signal-box {
-        padding: 1rem;
-        border-radius: 12px;
-        text-align: center;
-        margin: 0.5rem 0;
-    }
-    .signal-buy { background: rgba(0,255,136,0.2); border: 2px solid #00ff88; }
-    .signal-sell { background: rgba(255,68,68,0.2); border: 2px solid #ff4444; }
-    .signal-hold { background: rgba(136,136,136,0.2); border: 2px solid #888; }
-
-    /* Boutons gros pour mobile */
-    .stButton > button {
-        font-size: 1.1rem !important;
-        padding: 0.6rem 1rem !important;
-        border-radius: 8px !important;
-    }
-
-    /* Metrics compacts */
-    [data-testid="stMetric"] {
-        background-color: #1e1e2e;
-        padding: 0.5rem;
-        border-radius: 8px;
-    }
-    [data-testid="stMetricValue"] {
-        font-size: 1.2rem !important;
-    }
-
-    /* Hide Streamlit elements */
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-
-    /* PnL colors */
-    .pnl-positive { color: #00ff88; }
-    .pnl-negative { color: #ff4444; }
-</style>
-""", unsafe_allow_html=True)
+# CSS minifie et charge une seule fois via session_state
+if 'css_loaded' not in st.session_state:
+    st.session_state.css_loaded = True
+    st.markdown("""<style>
+::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+*{scrollbar-width:none!important;-ms-overflow-style:none!important}
+html,body,[data-testid="stAppViewContainer"],[data-testid="stVerticalBlock"]{overflow:hidden!important;max-height:100vh!important}
+.main .block-container{padding:.5rem 1rem!important;max-height:100vh!important;overflow:hidden!important}
+.main-header{font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,#00d4ff,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;padding:.3rem;margin:0}
+.price-card{background:#1a1a2e;padding:.8rem;border-radius:10px;text-align:center;margin-bottom:.5rem}
+.pf-card{background:#1a1a2e;border-radius:16px;padding:1rem;margin-bottom:.8rem;position:relative}
+.pf-card.active{box-shadow:0 4px 20px rgba(0,255,136,.15);border-top:4px solid #00ff88}
+.pf-card.paused{opacity:.75;border-top:4px solid #ff4444}
+.pf-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.pf-icon{font-size:2rem;margin-right:.5rem}
+.pf-name{font-size:1.1rem;font-weight:600;color:#fff}
+.pf-strategy{font-size:.75rem;color:#888;padding:2px 8px;background:rgba(255,255,255,.1);border-radius:10px}
+.pf-stats{display:flex;justify-content:space-between;margin:.8rem 0}
+.pf-stat{text-align:center}
+.pf-stat-value{font-size:1.2rem;font-weight:700}
+.pf-stat-label{font-size:.7rem;color:#666;text-transform:uppercase}
+.signal-box{padding:1rem;border-radius:12px;text-align:center;margin:.5rem 0}
+.signal-buy{background:rgba(0,255,136,.2);border:2px solid #00ff88}
+.signal-sell{background:rgba(255,68,68,.2);border:2px solid #ff4444}
+.signal-hold{background:rgba(136,136,136,.2);border:2px solid #888}
+.stButton>button{font-size:1.1rem!important;padding:.6rem 1rem!important;border-radius:8px!important}
+[data-testid="stMetric"]{background-color:#1e1e2e;padding:.5rem;border-radius:8px}
+[data-testid="stMetricValue"]{font-size:1.2rem!important}
+#MainMenu,footer,header{visibility:hidden}
+</style>""", unsafe_allow_html=True)
 
 
 # ==================== CONSTANTS ====================
@@ -292,6 +141,7 @@ def run_async(coro):
         loop.close()
 
 
+@st.cache_data(ttl=5)
 def fetch_live_price(symbol: str = "BTCUSDT") -> dict:
     try:
         binance_symbol = symbol.replace("/", "")
@@ -311,33 +161,47 @@ def fetch_live_price(symbol: str = "BTCUSDT") -> dict:
     return None
 
 
+@st.cache_data(ttl=3)
 def fetch_all_live_prices() -> dict:
     try:
-        url = "https://api.binance.com/api/v3/ticker/24hr"
-        response = requests.get(url, timeout=3)
+        # Utilise l'endpoint specifique pour les symboles voulus (plus rapide)
+        symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'DOTUSDT', 'MATICUSDT']
+        url = f"https://api.binance.com/api/v3/ticker/24hr?symbols={json.dumps(symbols)}"
+        response = requests.get(url, timeout=1.5)  # Timeout reduit
         if response.status_code == 200:
             data = response.json()
             prices = {}
             for item in data:
-                if item['symbol'] in ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT']:
-                    sym = item['symbol'].replace('USDT', '/USDT')
-                    prices[sym] = {
-                        'price': float(item['lastPrice']),
-                        'change': float(item['priceChangePercent']),
-                        'high': float(item['highPrice']),
-                        'low': float(item['lowPrice']),
-                        'volume': float(item['quoteVolume'])
-                    }
+                sym = item['symbol'].replace('USDT', '/USDT')
+                prices[sym] = {
+                    'price': float(item['lastPrice']),
+                    'change': float(item['priceChangePercent']),
+                    'high': float(item['highPrice']),
+                    'low': float(item['lowPrice']),
+                    'volume': float(item['quoteVolume'])
+                }
             return prices
     except:
         pass
-    return {}
+    # Fallback avec valeurs par defaut pour affichage instantane
+    return {
+        'BTC/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
+        'ETH/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
+        'SOL/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0},
+        'BNB/USDT': {'price': 0, 'change': 0, 'high': 0, 'low': 0, 'volume': 0}
+    }
 
 
-@st.cache_data(ttl=60)
+@st.cache_resource
+def get_exchange():
+    """Exchange ccxt cache pour eviter la reinitialisation"""
+    return ccxt.binance({'enableRateLimit': True, 'options': {'defaultType': 'spot'}})
+
+
+@st.cache_data(ttl=30)
 def fetch_real_ohlcv(symbol: str = "BTC/USDT", timeframe: str = "1h", limit: int = 100) -> pd.DataFrame:
     try:
-        exchange = ccxt.binance({'enableRateLimit': True, 'options': {'defaultType': 'spot'}})
+        exchange = get_exchange()
         ohlcv = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
         df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
@@ -353,11 +217,15 @@ def save_portfolios():
         data = {'portfolios': st.session_state.portfolios, 'counter': st.session_state.portfolio_counter}
         with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
+        # Invalide le cache apres sauvegarde
+        load_portfolios_cached.clear()
     except Exception as e:
         print(f"Erreur sauvegarde: {e}")
 
 
-def load_portfolios() -> tuple:
+@st.cache_data(ttl=2)
+def load_portfolios_cached() -> tuple:
+    """Version cachee pour eviter les lectures disque repetees"""
     try:
         if os.path.exists(PORTFOLIOS_FILE):
             with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
@@ -366,6 +234,10 @@ def load_portfolios() -> tuple:
     except:
         pass
     return {}, 0
+
+
+def load_portfolios() -> tuple:
+    return load_portfolios_cached()
 
 
 def init_session():
@@ -433,6 +305,11 @@ def get_portfolio_value(portfolio: dict, prices: dict) -> float:
     return total
 
 
+def get_all_portfolio_values(portfolios: dict, prices: dict) -> dict:
+    """Calcule toutes les valeurs en une fois"""
+    return {pid: get_portfolio_value(p, prices) for pid, p in portfolios.items()}
+
+
 def execute_portfolio_trade(portfolio_id: str, action: str, symbol: str, amount_usdt: float, price: float) -> dict:
     portfolio = st.session_state.portfolios[portfolio_id]
     asset = symbol.split('/')[0]
@@ -480,6 +357,7 @@ def execute_portfolio_trade(portfolio_id: str, action: str, symbol: str, amount_
     return {'success': False, 'message': "Action invalide"}
 
 
+@st.cache_data(ttl=10)
 def analyze_crypto_quick(symbol: str) -> dict:
     try:
         url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval=1h&limit=50"
@@ -489,18 +367,28 @@ def analyze_crypto_quick(symbol: str) -> dict:
         if not data or len(data) < 20:
             return None
 
-        closes = [float(d[4]) for d in data]
-        df = pd.Series(closes)
+        closes = np.array([float(d[4]) for d in data])
 
-        delta = df.diff()
-        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-        rs = gain / loss
-        rsi = 100 - (100 / (1 + rs))
-        current_rsi = rsi.iloc[-1] if not pd.isna(rsi.iloc[-1]) else 50
+        # RSI vectorise (plus rapide)
+        delta = np.diff(closes, prepend=closes[0])
+        gain = np.where(delta > 0, delta, 0)
+        loss = np.where(delta < 0, -delta, 0)
+        avg_gain = np.convolve(gain, np.ones(14)/14, mode='valid')[-1]
+        avg_loss = np.convolve(loss, np.ones(14)/14, mode='valid')[-1]
+        rs = avg_gain / avg_loss if avg_loss != 0 else 100
+        current_rsi = 100 - (100 / (1 + rs))
 
-        ema_12 = df.ewm(span=12).mean().iloc[-1]
-        ema_26 = df.ewm(span=26).mean().iloc[-1]
+        # EMA rapide avec numpy
+        def ema(data, span):
+            alpha = 2 / (span + 1)
+            result = np.zeros_like(data)
+            result[0] = data[0]
+            for i in range(1, len(data)):
+                result[i] = alpha * data[i] + (1 - alpha) * result[i-1]
+            return result[-1]
+
+        ema_12 = ema(closes, 12)
+        ema_26 = ema(closes, 26)
         current_price = closes[-1]
 
         signal = "HOLD"
@@ -628,43 +516,35 @@ def render_navigation():
 
 def render_page_prix():
     """Page: Prix en direct"""
-    st.markdown("### 💰 Prix en Direct")
+    st.markdown("### 💰 Prix")
 
     prices = fetch_all_live_prices()
 
-    if prices:
-        for sym, data in prices.items():
+    # Affichage en grille avec composants natifs (plus rapide)
+    cols = st.columns(2)
+    for i, (sym, data) in enumerate(list(prices.items())[:4]):
+        with cols[i % 2]:
             change = data['change']
-            color = '#00ff88' if change > 0 else '#ff4444' if change < 0 else '#888'
-            arrow = '↑' if change > 0 else '↓' if change < 0 else '→'
-
-            st.markdown(f"""
-            <div class="price-card" style="border-left: 4px solid {color};">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 1.3rem; font-weight: bold;">{sym.replace('/USDT', '')}</span>
-                    <span style="font-size: 1.5rem; font-weight: bold;">${data['price']:,.2f}</span>
-                    <span style="color: {color}; font-size: 1.2rem;">{arrow} {change:+.2f}%</span>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-    else:
-        st.warning("Impossible de charger les prix")
-
-    st.markdown(f"<p style='text-align:center; color:#666; font-size:0.8rem;'>Maj: {datetime.now().strftime('%H:%M:%S')}</p>", unsafe_allow_html=True)
+            delta_color = "normal" if change >= 0 else "inverse"
+            st.metric(
+                sym.replace('/USDT', ''),
+                f"${data['price']:,.2f}" if data['price'] > 0 else "---",
+                delta=f"{change:+.2f}%" if data['price'] > 0 else None,
+                delta_color=delta_color
+            )
 
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("🔄 Rafraichir", use_container_width=True):
+        if st.button("🔄", use_container_width=True):
             st.cache_data.clear()
             st.rerun()
     with col2:
-        if st.button("🚀 RUN ENGINE", type="primary", use_container_width=True):
-            with st.spinner("Analyse..."):
-                results, _ = run_engine()
-                if results:
-                    st.success(f"{len(results)} trades!")
-                else:
-                    st.info("Aucun trade")
+        if st.button("🚀 RUN", type="primary", use_container_width=True):
+            results, _ = run_engine()
+            if results:
+                st.success(f"{len(results)} trades!")
+            else:
+                st.info("Aucun trade")
 
 
 def render_page_portfolios():
@@ -672,97 +552,89 @@ def render_page_portfolios():
     prices = fetch_all_live_prices()
     portfolios_list = list(st.session_state.portfolios.items())
     total = len(portfolios_list)
-    per_page = 3
+    per_page = 4
+
+    # Pre-calcul de toutes les valeurs en une fois
+    all_values = get_all_portfolio_values(st.session_state.portfolios, prices)
+
+    # Calcul des PnL% pour chaque portfolio
+    def calc_pnl_pct(item):
+        port_id, portfolio = item
+        value = all_values.get(port_id, portfolio['initial_capital'])
+        return ((value - portfolio['initial_capital']) / portfolio['initial_capital'] * 100) if portfolio['initial_capital'] > 0 else 0
+
+    # Header avec tri
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        total_value = sum(all_values.values())
+        total_initial = sum(p['initial_capital'] for _, p in portfolios_list)
+        total_pnl = total_value - total_initial
+        total_pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
+        pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
+        st.markdown(f"**💼 {total}** | ${total_value:,.0f} | <span style='color:{pnl_color}'>{total_pnl_pct:+.1f}%</span>", unsafe_allow_html=True)
+    with col2:
+        sort_option = st.selectbox("Tri", ["% ↓", "% ↑", "Valeur", "Nom"], label_visibility="collapsed", key="pf_sort")
+
+    # Tri des portfolios
+    if sort_option == "% ↓":
+        portfolios_list.sort(key=calc_pnl_pct, reverse=True)
+    elif sort_option == "% ↑":
+        portfolios_list.sort(key=calc_pnl_pct)
+    elif sort_option == "Valeur":
+        portfolios_list.sort(key=lambda x: all_values.get(x[0], 0), reverse=True)
+    elif sort_option == "Nom":
+        portfolios_list.sort(key=lambda x: x[1]['name'])
+
     total_pages = max(1, (total + per_page - 1) // per_page)
 
-    # Header compact avec totaux
-    total_value = sum(get_portfolio_value(p, prices) for _, p in portfolios_list)
-    total_initial = sum(p['initial_capital'] for _, p in portfolios_list)
-    total_pnl = total_value - total_initial
-    total_pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
-
-    pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
-    st.markdown(f"""
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #333; margin-bottom: 0.5rem;">
-        <span style="color: #888;">💼 {total} portfolios</span>
-        <span style="font-size: 1.2rem; font-weight: bold;">${total_value:,.0f}</span>
-        <span style="color: {pnl_color}; font-weight: bold;">{total_pnl_pct:+.1f}%</span>
-    </div>
-    """, unsafe_allow_html=True)
+    # Reset page si tri change
+    if 'last_sort' not in st.session_state:
+        st.session_state.last_sort = sort_option
+    if st.session_state.last_sort != sort_option:
+        st.session_state.portfolio_page = 0
+        st.session_state.last_sort = sort_option
 
     # Portfolios de la page actuelle
     start = st.session_state.portfolio_page * per_page
     end = min(start + per_page, total)
 
     for port_id, portfolio in portfolios_list[start:end]:
-        value = get_portfolio_value(portfolio, prices)
+        value = all_values.get(port_id, portfolio['initial_capital'])
         pnl = value - portfolio['initial_capital']
         pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
         is_active = portfolio.get('active', True)
-
-        # Couleurs
-        pnl_color = '#00ff88' if pnl >= 0 else '#ff4444'
-        status_class = 'active' if is_active else 'paused'
-        status_icon = '▶️' if is_active else '⏸️'
-
-        # Calcul win rate
         trades = portfolio.get('trades', [])
-        wins = len([t for t in trades if t.get('pnl', 0) > 0])
-        total_trades = len([t for t in trades if t.get('pnl', 0) != 0])
-        win_rate = (wins / total_trades * 100) if total_trades > 0 else 0
-
-        # Nombre de positions
         positions = len(portfolio.get('positions', {}))
+        status_class = 'active' if is_active else 'paused'
 
-        st.markdown(f"""
-        <div class="pf-card {status_class}">
-            <div class="pf-header">
-                <div style="display: flex; align-items: center;">
-                    <span class="pf-icon">{portfolio['icon']}</span>
-                    <div>
-                        <div class="pf-name">{portfolio['name'][:18]}</div>
-                        <span class="pf-strategy">{portfolio['strategy_name']}</span>
-                    </div>
-                </div>
-                <div style="text-align: right;">
-                    <div style="color: {pnl_color}; font-size: 1.3rem; font-weight: bold;">{pnl_pct:+.1f}%</div>
-                    <div style="color: #888; font-size: 0.8rem;">{status_icon}</div>
-                </div>
-            </div>
-            <div class="pf-stats">
-                <div class="pf-stat">
-                    <div class="pf-stat-value">${value:,.0f}</div>
-                    <div class="pf-stat-label">Valeur</div>
-                </div>
-                <div class="pf-stat">
-                    <div class="pf-stat-value" style="color: {pnl_color};">${pnl:+,.0f}</div>
-                    <div class="pf-stat-label">P&L</div>
-                </div>
-                <div class="pf-stat">
-                    <div class="pf-stat-value">{len(trades)}</div>
-                    <div class="pf-stat-label">Trades</div>
-                </div>
-                <div class="pf-stat">
-                    <div class="pf-stat-value">{positions}</div>
-                    <div class="pf-stat-label">Pos.</div>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Rendu simplifie avec moins de HTML
+        with st.container():
+            st.markdown(f'<div class="pf-card {status_class}">', unsafe_allow_html=True)
+            c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
+            with c1:
+                st.markdown(f"**{portfolio['icon']} {portfolio['name'][:15]}**")
+                st.caption(portfolio['strategy_name'])
+            with c2:
+                st.metric("Valeur", f"${value:,.0f}", label_visibility="collapsed")
+            with c3:
+                delta_color = "normal" if pnl >= 0 else "inverse"
+                st.metric("P&L", f"{pnl_pct:+.1f}%", delta=f"${pnl:+,.0f}", delta_color=delta_color, label_visibility="collapsed")
+            with c4:
+                st.metric("Trades", f"{len(trades)}", label_visibility="collapsed")
+            st.markdown('</div>', unsafe_allow_html=True)
 
-        # Boutons sous la card
-        col1, col2 = st.columns(2)
-        with col1:
-            btn_label = "⏸️ Pause" if is_active else "▶️ Play"
-            if st.button(btn_label, key=f"toggle_{port_id}", use_container_width=True):
-                st.session_state.portfolios[port_id]['active'] = not is_active
-                save_portfolios()
-                st.rerun()
-        with col2:
-            if st.button("📊 Detail", key=f"view_{port_id}", use_container_width=True, type="primary"):
-                st.session_state.selected_portfolio = port_id
-                st.session_state.page = 'detail'
-                st.rerun()
+            # Boutons inline
+            col1, col2 = st.columns(2)
+            with col1:
+                if st.button("⏸️" if is_active else "▶️", key=f"t_{port_id}", use_container_width=True):
+                    st.session_state.portfolios[port_id]['active'] = not is_active
+                    save_portfolios()
+                    st.rerun()
+            with col2:
+                if st.button("📊", key=f"v_{port_id}", use_container_width=True, type="primary"):
+                    st.session_state.selected_portfolio = port_id
+                    st.session_state.page = 'detail'
+                    st.rerun()
 
     # Pagination
     if total_pages > 1:
@@ -790,6 +662,38 @@ def render_page_portfolios():
         """, unsafe_allow_html=True)
 
 
+@st.cache_data(ttl=15)
+def get_full_analysis(symbol: str):
+    """Analyse complete cachee pour eviter les appels repetes"""
+    df = fetch_real_ohlcv(symbol, "1h", 100)
+    if df.empty:
+        return None
+
+    current_price = df['close'].iloc[-1]
+
+    # Utilise les analyseurs caches
+    technical_analyzer = get_technical_analyzer()
+    technical_result = technical_analyzer.analyze(df)
+    tech_signal = technical_analyzer.get_signal_value(technical_result)
+
+    # Sentiment & Onchain
+    sentiment_result = run_async(get_sentiment_analyzer().analyze(symbol.split('/')[0]))
+    onchain_result = run_async(get_onchain_analyzer().analyze(symbol.split('/')[0]))
+    godmode_result = run_async(get_godmode_detector().detect(current_price))
+
+    return {
+        'df': df,
+        'price': current_price,
+        'technical': technical_result,
+        'tech_signal': tech_signal,
+        'sentiment': sentiment_result,
+        'sent_signal': sentiment_result.signal,
+        'onchain': onchain_result,
+        'chain_signal': onchain_result.signal,
+        'godmode': godmode_result
+    }
+
+
 def render_page_signaux():
     """Page: Signaux actuels"""
     symbol = st.session_state.symbol
@@ -808,26 +712,20 @@ def render_page_signaux():
             st.cache_data.clear()
             st.rerun()
 
-    # Fetch data
-    df = fetch_real_ohlcv(symbol, "1h", 100)
-    if df.empty:
+    # Fetch cached analysis
+    analysis = get_full_analysis(symbol)
+    if analysis is None:
         st.error("Erreur chargement donnees")
         return
 
-    current_price = df['close'].iloc[-1]
-
-    # Analyze
-    technical_analyzer = TechnicalAnalyzer()
-    technical_result = technical_analyzer.analyze(df)
-    tech_signal = technical_analyzer.get_signal_value(technical_result)
-
-    sentiment_result = run_async(SentimentAnalyzer().analyze(symbol.split('/')[0]))
-    sent_signal = sentiment_result.signal
-
-    onchain_result = run_async(OnChainAnalyzer().analyze(symbol.split('/')[0]))
-    chain_signal = onchain_result.signal
-
-    godmode_result = run_async(GodModeDetector().detect(current_price))
+    current_price = analysis['price']
+    technical_result = analysis['technical']
+    tech_signal = analysis['tech_signal']
+    sentiment_result = analysis['sentiment']
+    sent_signal = analysis['sent_signal']
+    onchain_result = analysis['onchain']
+    chain_signal = analysis['chain_signal']
+    godmode_result = analysis['godmode']
 
     # Calculate action
     confluence_score = tech_signal + sent_signal + chain_signal
@@ -885,6 +783,15 @@ def render_page_signaux():
             st.info("Aucun trade execute")
 
 
+@st.cache_data(ttl=15)
+def get_chart_data(symbol: str, tf: str):
+    """Prepare les donnees du chart avec cache - 30 bougies seulement"""
+    df = fetch_real_ohlcv(symbol, tf, 30)  # Reduit de 50 a 30
+    if df.empty:
+        return None
+    return df
+
+
 def render_page_chart():
     """Page: Graphique compact"""
     symbol = st.session_state.symbol
@@ -900,34 +807,28 @@ def render_page_chart():
     with col2:
         tf = st.selectbox("", ["1h", "4h", "1d"], label_visibility="collapsed", key="chart_tf")
 
-    df = fetch_real_ohlcv(symbol, tf, 50)
-    if df.empty:
+    df = get_chart_data(symbol, tf)
+    if df is None:
         st.error("Erreur donnees")
         return
 
-    # Chart simple
-    fig = go.Figure()
-
-    fig.add_trace(go.Candlestick(
+    # Chart ultra-simplifie pour vitesse max
+    fig = go.Figure(go.Candlestick(
         x=df.index, open=df['open'], high=df['high'], low=df['low'], close=df['close'],
-        increasing_line_color='#00ff88', decreasing_line_color='#ff4444', name=''
+        increasing_line_color='#00ff88', decreasing_line_color='#ff4444'
     ))
-
-    # EMA
-    ema12 = df['close'].ewm(span=12).mean()
-    fig.add_trace(go.Scatter(x=df.index, y=ema12, line=dict(color='#00d4ff', width=1), name='EMA12'))
 
     fig.update_layout(
         template='plotly_dark',
-        height=350,
-        margin=dict(l=0, r=0, t=10, b=0),
+        height=300,
+        margin=dict(l=0, r=0, t=0, b=0),
         xaxis_rangeslider_visible=False,
         showlegend=False,
-        xaxis=dict(showticklabels=False),
-        yaxis=dict(side='right')
+        xaxis=dict(showticklabels=False, showgrid=False),
+        yaxis=dict(side='right', showgrid=False)
     )
 
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False, 'staticPlot': True})
 
     # Quick stats
     current = df['close'].iloc[-1]
