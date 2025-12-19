@@ -157,23 +157,20 @@ def fetch_live_price(symbol: str = "BTCUSDT") -> dict:
 
 @st.cache_data(ttl=5)
 def fetch_all_live_prices() -> dict:
-    """Endpoint leger: juste les prix (pas high/low/volume)"""
+    """Fetch seulement les 4 prix necessaires"""
+    prices = {}
+    symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT']
     try:
-        # ticker/price est 10x plus rapide que ticker/24hr
-        url = "https://api.binance.com/api/v3/ticker/price"
-        response = requests.get(url, timeout=1)
+        # Une seule requete avec les symboles specifiques
+        url = f"https://api.binance.com/api/v3/ticker/price?symbols={json.dumps(symbols)}"
+        response = requests.get(url, timeout=0.5)
         if response.status_code == 200:
-            data = response.json()
-            prices = {}
-            wanted = {'BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'AVAXUSDT', 'DOTUSDT', 'MATICUSDT'}
-            for item in data:
-                if item['symbol'] in wanted:
-                    sym = item['symbol'].replace('USDT', '/USDT')
-                    prices[sym] = {'price': float(item['price']), 'change': 0}
-            return prices
+            for item in response.json():
+                sym = item['symbol'].replace('USDT', '/USDT')
+                prices[sym] = {'price': float(item['price'])}
     except:
         pass
-    return {}
+    return prices
 
 
 @st.cache_resource
@@ -527,12 +524,12 @@ def render_page_portfolios():
     total = len(st.session_state.portfolios)
     per_page = 10
 
-    # Header avec tri (profit par defaut)
-    col1, col2 = st.columns([2, 1])
+    # Header avec tri visible
+    col1, col2 = st.columns([1, 1])
     with col1:
-        st.markdown(f"**💼 {total} portfolios**")
+        st.markdown(f"**💼 {total}**")
     with col2:
-        sort_option = st.selectbox("", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], label_visibility="collapsed", key="pf_sort")
+        sort_option = st.selectbox("Tri", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], key="pf_sort")
 
     # Reset page si tri change
     if 'last_sort' not in st.session_state:
