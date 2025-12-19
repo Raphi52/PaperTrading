@@ -1128,12 +1128,246 @@ def main():
                     </div>
                     """, unsafe_allow_html=True)
 
-                    # Play/Pause button for this portfolio
-                    btn_label = "⏸️" if is_active else "▶️"
-                    if st.button(btn_label, key=f"toggle_{port_id}", use_container_width=True):
-                        st.session_state.portfolios[port_id]['active'] = not is_active
-                        save_portfolios()
+                    # Buttons row
+                    btn_col1, btn_col2 = st.columns(2)
+                    with btn_col1:
+                        btn_label = "⏸️" if is_active else "▶️"
+                        if st.button(btn_label, key=f"toggle_{port_id}", use_container_width=True):
+                            st.session_state.portfolios[port_id]['active'] = not is_active
+                            save_portfolios()
+                            st.rerun()
+                    with btn_col2:
+                        if st.button("📊", key=f"view_{port_id}", use_container_width=True):
+                            st.session_state.selected_portfolio = port_id
+
+        # ==================== PORTFOLIO DETAIL VIEW ====================
+        if st.session_state.get('selected_portfolio') and st.session_state.selected_portfolio in st.session_state.portfolios:
+            port_id = st.session_state.selected_portfolio
+            portfolio = st.session_state.portfolios[port_id]
+            config = portfolio['config']
+
+            # Calculate current value
+            port_value = portfolio['balance'].get('USDT', 0)
+            for asset, qty in portfolio['balance'].items():
+                if asset != 'USDT' and qty > 0:
+                    sym = f"{asset}/USDT"
+                    if temp_prices and sym in temp_prices and temp_prices[sym].get('price'):
+                        port_value += qty * temp_prices[sym]['price']
+
+            port_pnl = port_value - portfolio['initial_capital']
+            port_pnl_pct = (port_pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
+
+            st.markdown("---")
+            st.markdown(f"### {portfolio['icon']} {portfolio['name']} - Vue Détaillée")
+
+            # Close button
+            if st.button("❌ Fermer", key="close_detail"):
+                st.session_state.selected_portfolio = None
+                st.rerun()
+
+            # Info tabs
+            detail_tabs = st.tabs(["📊 Overview", "📜 Historique", "⚙️ Configuration", "📈 Positions"])
+
+            with detail_tabs[0]:  # Overview
+                ov_col1, ov_col2, ov_col3, ov_col4 = st.columns(4)
+
+                with ov_col1:
+                    st.metric("💰 Valeur Actuelle", f"${port_value:,.2f}")
+                with ov_col2:
+                    st.metric("📈 P&L Total", f"${port_pnl:+,.2f}", f"{port_pnl_pct:+.2f}%")
+                with ov_col3:
+                    st.metric("💵 Capital Initial", f"${portfolio['initial_capital']:,.2f}")
+                with ov_col4:
+                    st.metric("📊 Trades", len(portfolio['trades']))
+
+                st.markdown("---")
+
+                # Stats
+                trades = portfolio['trades']
+                if trades:
+                    wins = len([t for t in trades if t.get('pnl', 0) > 0])
+                    losses = len([t for t in trades if t.get('pnl', 0) < 0])
+                    total_pnl = sum(t.get('pnl', 0) for t in trades)
+                    avg_pnl = total_pnl / len(trades) if trades else 0
+                    best_trade = max(trades, key=lambda x: x.get('pnl', 0))
+                    worst_trade = min(trades, key=lambda x: x.get('pnl', 0))
+
+                    stat_col1, stat_col2, stat_col3, stat_col4 = st.columns(4)
+
+                    with stat_col1:
+                        win_rate = (wins / (wins + losses) * 100) if (wins + losses) > 0 else 0
+                        st.metric("🎯 Win Rate", f"{win_rate:.1f}%")
+                    with stat_col2:
+                        st.metric("✅ Gagnants", wins)
+                    with stat_col3:
+                        st.metric("❌ Perdants", losses)
+                    with stat_col4:
+                        st.metric("📊 P&L Moyen", f"${avg_pnl:+,.2f}")
+
+                    st.markdown("---")
+
+                    best_col, worst_col = st.columns(2)
+                    with best_col:
+                        st.success(f"🏆 Meilleur trade: ${best_trade.get('pnl', 0):+,.2f} ({best_trade.get('symbol', 'N/A')})")
+                    with worst_col:
+                        st.error(f"📉 Pire trade: ${worst_trade.get('pnl', 0):+,.2f} ({worst_trade.get('symbol', 'N/A')})")
+                else:
+                    st.info("Aucun trade effectué")
+
+                # Balance breakdown
+                st.markdown("#### 💼 Composition du Portfolio")
+                balance_data = []
+                for asset, qty in portfolio['balance'].items():
+                    if qty > 0:
+                        if asset == 'USDT':
+                            val = qty
+                        else:
+                            sym = f"{asset}/USDT"
+                            price = temp_prices.get(sym, {}).get('price', 0) if temp_prices else 0
+                            val = qty * price
+                        balance_data.append({
+                            'Asset': asset,
+                            'Quantité': f"{qty:.6f}" if asset != 'USDT' else f"${qty:,.2f}",
+                            'Valeur USD': f"${val:,.2f}",
+                            '% Portfolio': f"{(val/port_value*100):.1f}%" if port_value > 0 else "0%"
+                        })
+
+                if balance_data:
+                    st.dataframe(pd.DataFrame(balance_data), hide_index=True, use_container_width=True)
+
+            with detail_tabs[1]:  # Historique
+                st.markdown("#### 📜 Historique des Trades")
+
+                if portfolio['trades']:
+                    trades_data = []
+                    for t in reversed(portfolio['trades']):  # Most recent first
+                        pnl_emoji = "🟢" if t.get('pnl', 0) > 0 else ("🔴" if t.get('pnl', 0) < 0 else "⚪")
+                        trades_data.append({
+                            'Date': t.get('timestamp', 'N/A')[:19] if isinstance(t.get('timestamp'), str) else str(t.get('timestamp', 'N/A'))[:19],
+                            'Action': f"{'🟢 BUY' if t['action'] == 'BUY' else '🔴 SELL'}",
+                            'Symbol': t.get('symbol', 'N/A'),
+                            'Prix': f"${t.get('price', 0):,.2f}",
+                            'Quantité': f"{t.get('quantity', 0):.6f}",
+                            'Montant': f"${t.get('amount_usdt', 0):,.2f}",
+                            'P&L': f"{pnl_emoji} ${t.get('pnl', 0):+,.2f}"
+                        })
+
+                    st.dataframe(pd.DataFrame(trades_data), hide_index=True, use_container_width=True, height=400)
+
+                    # Export button
+                    csv = pd.DataFrame(trades_data).to_csv(index=False)
+                    st.download_button(
+                        "📥 Exporter CSV",
+                        csv,
+                        f"{portfolio['name']}_trades.csv",
+                        "text/csv",
+                        use_container_width=True
+                    )
+                else:
+                    st.info("Aucun trade dans l'historique")
+
+            with detail_tabs[2]:  # Configuration
+                st.markdown("#### ⚙️ Configuration du Portfolio")
+
+                cfg_col1, cfg_col2 = st.columns(2)
+
+                with cfg_col1:
+                    st.markdown("**Stratégie**")
+                    new_strategy = st.selectbox(
+                        "Stratégie",
+                        list(STRATEGIES.keys()),
+                        index=list(STRATEGIES.keys()).index(portfolio['strategy_id']) if portfolio['strategy_id'] in STRATEGIES else 0,
+                        format_func=lambda x: f"{STRATEGIES[x]['icon']} {STRATEGIES[x]['name']}",
+                        key=f"strat_select_{port_id}"
+                    )
+
+                    st.markdown("**Cryptos à trader**")
+                    new_cryptos = st.multiselect(
+                        "Cryptos",
+                        AVAILABLE_CRYPTOS,
+                        default=config.get('cryptos', ['BTC/USDT']),
+                        key=f"crypto_select_{port_id}"
+                    )
+
+                with cfg_col2:
+                    st.markdown("**Paramètres**")
+                    new_alloc = st.slider("Allocation par trade (%)", 1, 100, config.get('allocation_percent', 10), key=f"alloc_{port_id}_detail")
+                    new_max_pos = st.slider("Max positions", 1, 10, config.get('max_positions', 3), key=f"maxpos_{port_id}_detail")
+                    new_rsi_low = st.slider("RSI Oversold", 10, 50, config.get('rsi_oversold', 30), key=f"rsi_low_{port_id}_detail")
+                    new_rsi_high = st.slider("RSI Overbought", 50, 90, config.get('rsi_overbought', 70), key=f"rsi_high_{port_id}_detail")
+
+                st.markdown("---")
+
+                save_col, reset_col, delete_col = st.columns(3)
+
+                with save_col:
+                    if st.button("💾 Sauvegarder", type="primary", use_container_width=True, key=f"save_detail_{port_id}"):
+                        update_portfolio_config(port_id, {
+                            'cryptos': new_cryptos,
+                            'allocation_percent': new_alloc,
+                            'max_positions': new_max_pos,
+                            'rsi_oversold': new_rsi_low,
+                            'rsi_overbought': new_rsi_high
+                        })
+                        if new_strategy != portfolio['strategy_id']:
+                            update_portfolio_strategy(port_id, new_strategy)
+                        st.success("Configuration sauvegardée!")
                         st.rerun()
+
+                with reset_col:
+                    if st.button("🔄 Reset Portfolio", use_container_width=True, key=f"reset_detail_{port_id}"):
+                        portfolio['balance'] = {'USDT': portfolio['initial_capital']}
+                        for crypto in AVAILABLE_CRYPTOS:
+                            asset = crypto.split('/')[0]
+                            portfolio['balance'][asset] = 0.0
+                        portfolio['positions'] = {}
+                        portfolio['trades'] = []
+                        save_portfolios()
+                        st.success("Portfolio réinitialisé!")
+                        st.rerun()
+
+                with delete_col:
+                    if st.button("🗑️ Supprimer", use_container_width=True, key=f"delete_detail_{port_id}"):
+                        delete_portfolio(port_id)
+                        st.session_state.selected_portfolio = None
+                        st.rerun()
+
+            with detail_tabs[3]:  # Positions
+                st.markdown("#### 📈 Positions Ouvertes")
+
+                if portfolio['positions']:
+                    pos_data = []
+                    for sym, pos in portfolio['positions'].items():
+                        asset = sym.split('/')[0]
+                        entry = pos.get('entry_price', 0)
+                        qty = pos.get('quantity', 0)
+                        current = temp_prices.get(sym, {}).get('price', entry) if temp_prices else entry
+                        unrealized = (current - entry) * qty
+                        unrealized_pct = ((current - entry) / entry * 100) if entry > 0 else 0
+
+                        pos_data.append({
+                            'Symbol': sym,
+                            'Quantité': f"{qty:.6f}",
+                            'Prix Entrée': f"${entry:,.2f}",
+                            'Prix Actuel': f"${current:,.2f}",
+                            'P&L': f"{'🟢' if unrealized >= 0 else '🔴'} ${unrealized:+,.2f}",
+                            'P&L %': f"{unrealized_pct:+.2f}%",
+                            'Valeur': f"${qty * current:,.2f}"
+                        })
+
+                    st.dataframe(pd.DataFrame(pos_data), hide_index=True, use_container_width=True)
+
+                    # Close position buttons
+                    st.markdown("**Actions:**")
+                    for sym in portfolio['positions'].keys():
+                        if st.button(f"🔴 Fermer {sym}", key=f"close_pos_{port_id}_{sym}"):
+                            current = temp_prices.get(sym, {}).get('price', 0) if temp_prices else 0
+                            if current > 0:
+                                execute_portfolio_trade(port_id, 'SELL', sym, 0, current)
+                                st.success(f"Position {sym} fermée!")
+                                st.rerun()
+                else:
+                    st.info("Aucune position ouverte")
 
         st.divider()
 
