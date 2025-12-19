@@ -359,7 +359,8 @@ def main():
             ("🔥", "Degen Mode", "🔥 Degen"),
             ("🔍", "Scanner", "🔍 Scanner"),
             ("📈", "Portfolios", "📈 Portfolios"),
-            ("⚙️", "Settings", "⚙️ Settings")
+            ("⚙️", "Settings", "⚙️ Settings"),
+            ("🐛", "Debug", "🐛 Debug")
         ]
 
         for icon, label, page_id in nav_items:
@@ -471,6 +472,8 @@ def main():
         render_portfolios()
     elif page == "⚙️ Settings":
         render_settings()
+    elif page == "🐛 Debug":
+        render_debug()
 
 
 def render_dashboard():
@@ -835,16 +838,16 @@ def render_portfolios():
         "confluence_normal": """📊 CONFLUENCE NORMAL - Stratégie Équilibrée
 
 🎓 C'EST QUOI ?
-Cette stratégie combine plusieurs indicateurs techniques pour prendre des décisions.
+Cette stratégie combine RSI + tendance EMA pour prendre des décisions.
 Elle n'achète que quand PLUSIEURS signaux sont d'accord = moins d'erreurs.
 
 📈 QUAND J'ACHÈTE ?
-• Le RSI doit être < 35 (le RSI mesure si un actif est "survendu" - trop descendu trop vite)
-• ET il faut un signal BUY ou STRONG_BUY des autres indicateurs
+• Signal BUY: RSI < 35
+• Signal STRONG_BUY: RSI < 30 ET tendance haussière (EMA12 > EMA26)
 
 📉 QUAND JE VENDS ?
-• Le RSI doit être > 65 (l'actif est "suracheté" - monté trop vite)
-• ET il faut un signal SELL ou STRONG_SELL
+• Signal SELL: RSI > 65
+• Signal STRONG_SELL: RSI > 70 ET tendance baissière (EMA12 < EMA26)
 
 ⚖️ NIVEAU DE RISQUE: Moyen
 📊 FRÉQUENCE DES TRADES: Moyenne (quelques par semaine)
@@ -860,12 +863,12 @@ Version TRÈS prudente de Confluence. Attend des conditions quasi-parfaites avan
 Moins de trades, mais quand ça trade, c'est souvent gagnant.
 
 📈 QUAND J'ACHÈTE ?
-• RSI < 30 (vraiment très survendu - opportunité rare)
-• ET signal STRONG_BUY uniquement (pas de simple BUY)
+• STRONG_BUY uniquement = RSI < 30 ET EMA12 > EMA26
+• (doit être survendu ET en tendance haussière)
 
 📉 QUAND JE VENDS ?
-• RSI > 70 (vraiment très suracheté)
-• ET signal STRONG_SELL uniquement
+• STRONG_SELL uniquement = RSI > 70 ET EMA12 < EMA26
+• (doit être suracheté ET en tendance baissière)
 
 ⚖️ NIVEAU DE RISQUE: Faible
 📊 FRÉQUENCE DES TRADES: Basse (quelques par mois)
@@ -1437,16 +1440,16 @@ Comme Grid Trading mais avec une grille plus serrée.
 Plus de petits trades = plus de petits profits.
 
 📈 QUAND J'ACHÈTE ?
-• Bottom 20% du range
+• Position Bollinger < 17.5% (bottom du range)
 
 📉 QUAND JE VENDS ?
-• Top 80% du range
+• Position Bollinger > 82.5% (top du range)
 
 ⚖️ NIVEAU DE RISQUE: Moyen
 📊 FRÉQUENCE DES TRADES: Haute
 
 💡 POUR QUI ?
-Pour consolidations serrées.""",
+Pour consolidations serrées. Entre plus tôt que Grid normal.""",
 
         "dca_accumulator": """💰 DCA ACCUMULATOR - Accumuler sur les Dips
 
@@ -1543,7 +1546,8 @@ L'idée: un seul gain efface toutes les pertes précédentes.
 
 📈 QUAND J'ACHÈTE ?
 • RSI < 35 (entrée normale)
-• OU après une perte: RSI < 40 avec DOUBLE de la position !
+• OU après une perte: RSI < 45 avec DOUBLE de la position !
+• Maximum 4 niveaux de doublement (2x, 4x, 8x, 16x)
 
 📉 QUAND JE VENDS ?
 • RSI > 65
@@ -1564,11 +1568,11 @@ Les casinos interdisent cette stratégie pour une raison !""",
 🎓 C'EST QUOI ?
 Martingale avec des limites:
 • Multiplie par 1.5x au lieu de 2x
-• Maximum 3 niveaux au lieu de 4
+• Maximum 3 niveaux (1.5x, 2.25x, 3.4x) au lieu de 4
 
 📈 QUAND J'ACHÈTE ?
-• RSI < 35
-• OU après perte: 1.5x la position précédente
+• RSI < 35 (entrée normale)
+• OU après perte: RSI < 45 avec 1.5x la position
 
 📉 QUAND JE VENDS ?
 • RSI > 65
@@ -1578,6 +1582,7 @@ Martingale avec des limites:
 
 ⚠️ TOUJOURS DANGEREUX
 Moins explosif que le Martingale normal mais reste très risqué.
+Exposition max = 3.4x au lieu de 16x.
 
 💡 POUR QUI ?
 Paper trading uniquement pour expérimenter."""
@@ -1938,6 +1943,202 @@ def render_settings():
 
     if st.button("💾 Save Settings", type="primary"):
         st.success("Settings saved!")
+
+
+def render_debug():
+    """Debug panel - shows all errors and issues for troubleshooting"""
+    header("🐛 Debug Console")
+
+    st.markdown("""
+    <div style="background: #1a1a2e; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid #ff4444;">
+        <b>Debug Mode</b><br>
+        <span style="color: #888;">Cette page affiche toutes les erreurs et problèmes du bot.
+        Copiez le contenu et partagez-le pour obtenir de l'aide au debugging.</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Load debug log
+    debug_file = "data/debug_log.json"
+    debug_data = {'errors': [], 'warnings': [], 'info': []}
+
+    try:
+        if os.path.exists(debug_file):
+            with open(debug_file, 'r', encoding='utf-8') as f:
+                debug_data = json.load(f)
+    except Exception as e:
+        st.error(f"Could not load debug log: {e}")
+
+    # Summary stats
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("Errors", len(debug_data.get('errors', [])), delta=None)
+    with col2:
+        st.metric("Warnings", len(debug_data.get('warnings', [])), delta=None)
+    with col3:
+        st.metric("Info", len(debug_data.get('info', [])), delta=None)
+    with col4:
+        if st.button("🗑️ Clear Logs"):
+            try:
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    json.dump({'errors': [], 'warnings': [], 'info': []}, f)
+                st.toast("Logs cleared!")
+                st.rerun()
+            except:
+                st.error("Could not clear logs")
+
+    # Tabs for different log types
+    tab1, tab2, tab3, tab4 = st.tabs(["🔴 Errors", "🟡 Warnings", "🔵 Info", "📋 Copy All"])
+
+    with tab1:
+        errors = debug_data.get('errors', [])
+        if not errors:
+            st.success("No errors! Everything is working fine.")
+        else:
+            for i, err in enumerate(reversed(errors[-50:])):  # Show last 50
+                with st.expander(f"🔴 [{err.get('timestamp', 'N/A')}] {err.get('category', 'UNKNOWN')}: {err.get('message', 'No message')}", expanded=(i==0)):
+                    st.markdown(f"**Category:** `{err.get('category', 'N/A')}`")
+                    st.markdown(f"**Message:** {err.get('message', 'N/A')}")
+
+                    if err.get('context'):
+                        st.markdown("**Context:**")
+                        st.json(err['context'])
+
+                    if err.get('error'):
+                        st.markdown("**Error Details:**")
+                        st.code(f"Type: {err['error'].get('type', 'N/A')}\nMessage: {err['error'].get('message', 'N/A')}")
+
+                        if err['error'].get('traceback'):
+                            st.markdown("**Traceback:**")
+                            st.code(err['error']['traceback'], language='python')
+
+    with tab2:
+        warnings = debug_data.get('warnings', [])
+        if not warnings:
+            st.success("No warnings!")
+        else:
+            for warn in reversed(warnings[-30:]):
+                with st.expander(f"🟡 [{warn.get('timestamp', 'N/A')}] {warn.get('message', 'No message')}"):
+                    st.markdown(f"**Category:** `{warn.get('category', 'N/A')}`")
+                    if warn.get('context'):
+                        st.json(warn['context'])
+
+    with tab3:
+        info = debug_data.get('info', [])
+        if not info:
+            st.info("No info logs yet.")
+        else:
+            for log_entry in reversed(info[-20:]):
+                st.text(f"[{log_entry.get('timestamp', 'N/A')}] {log_entry.get('category', '')}: {log_entry.get('message', '')}")
+
+    with tab4:
+        st.markdown("### Copy this entire block to share for debugging:")
+
+        # Create a comprehensive debug report
+        report_lines = [
+            "=" * 60,
+            "TRADING BOT DEBUG REPORT",
+            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            "=" * 60,
+            "",
+            f"ERRORS: {len(debug_data.get('errors', []))}",
+            f"WARNINGS: {len(debug_data.get('warnings', []))}",
+            "",
+            "-" * 40,
+            "RECENT ERRORS:",
+            "-" * 40,
+        ]
+
+        for err in debug_data.get('errors', [])[-10:]:
+            report_lines.append(f"\n[{err.get('timestamp', 'N/A')}] {err.get('category', 'UNKNOWN')}")
+            report_lines.append(f"Message: {err.get('message', 'N/A')}")
+            if err.get('context'):
+                report_lines.append(f"Context: {json.dumps(err['context'], indent=2)}")
+            if err.get('error'):
+                report_lines.append(f"Error Type: {err['error'].get('type', 'N/A')}")
+                report_lines.append(f"Error Message: {err['error'].get('message', 'N/A')}")
+                if err['error'].get('traceback'):
+                    report_lines.append("Traceback:")
+                    report_lines.append(err['error']['traceback'])
+            report_lines.append("")
+
+        report_lines.extend([
+            "-" * 40,
+            "SYSTEM INFO:",
+            "-" * 40,
+        ])
+
+        # Add system info
+        try:
+            pf_data = load_portfolios()
+            portfolios = pf_data.get('portfolios', {})
+            report_lines.append(f"Portfolios: {len(portfolios)}")
+            for pid, p in portfolios.items():
+                report_lines.append(f"  - {p.get('name', 'Unknown')} [{p.get('strategy_id', 'manual')}] Active: {p.get('active', True)}")
+                report_lines.append(f"    Balance: ${p.get('balance', {}).get('USDT', 0):,.2f}")
+                report_lines.append(f"    Positions: {len(p.get('positions', {}))}")
+                report_lines.append(f"    Trades: {len(p.get('trades', []))}")
+        except Exception as e:
+            report_lines.append(f"Could not load portfolio info: {e}")
+
+        report_text = "\n".join(report_lines)
+        st.code(report_text, language=None)
+
+        if st.button("📋 Copy to Clipboard", type="primary"):
+            st.toast("Use Ctrl+A then Ctrl+C on the text above!")
+
+    # Real-time status check
+    st.divider()
+    st.markdown("### 🔄 System Health Check")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.markdown("**Bot Status:**")
+        # Check if bot is running by looking at recent log activity
+        log_file = "data/bot_log.txt"
+        bot_status = "Unknown"
+        last_activity = "N/A"
+
+        try:
+            if os.path.exists(log_file):
+                with open(log_file, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+                    if lines:
+                        last_line = lines[-1].strip()
+                        if last_line:
+                            # Extract timestamp
+                            try:
+                                ts = last_line.split(']')[0].replace('[', '')
+                                last_dt = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
+                                age = (datetime.now() - last_dt).total_seconds()
+                                last_activity = ts
+
+                                if age < 120:
+                                    bot_status = "Running"
+                                    st.success(f"Bot is RUNNING (last activity: {int(age)}s ago)")
+                                else:
+                                    bot_status = "Stopped"
+                                    st.warning(f"Bot appears STOPPED (last activity: {int(age/60)}min ago)")
+                            except:
+                                st.info(f"Last log: {last_line[:50]}...")
+            else:
+                st.warning("No bot log file found - bot may not have started yet")
+        except Exception as e:
+            st.error(f"Could not check bot status: {e}")
+
+    with col2:
+        st.markdown("**API Status:**")
+        # Quick API check
+        try:
+            response = requests.get("https://api.binance.com/api/v3/ping", timeout=5)
+            if response.status_code == 200:
+                st.success("Binance API: OK")
+            else:
+                st.error(f"Binance API: Error ({response.status_code})")
+        except requests.exceptions.Timeout:
+            st.error("Binance API: Timeout")
+        except Exception as e:
+            st.error(f"Binance API: {e}")
 
 
 if __name__ == "__main__":

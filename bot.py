@@ -13,13 +13,66 @@ import pandas as pd
 import subprocess
 import sys
 import webbrowser
+import traceback
 from datetime import datetime
 from pathlib import Path
 
 # Config
 PORTFOLIOS_FILE = "data/portfolios.json"
 LOG_FILE = "data/bot_log.txt"
+DEBUG_FILE = "data/debug_log.json"
 SCAN_INTERVAL = 60  # seconds between scans
+
+
+def debug_log(category: str, message: str, context: dict = None, error: Exception = None):
+    """
+    Log debug information for troubleshooting.
+    Categories: API, STRATEGY, DATA, FILE, TRADE, INDICATOR, SYSTEM
+    """
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    entry = {
+        'timestamp': timestamp,
+        'category': category,
+        'message': message,
+        'context': context or {},
+    }
+
+    if error:
+        entry['error'] = {
+            'type': type(error).__name__,
+            'message': str(error),
+            'traceback': traceback.format_exc()
+        }
+
+    # Load existing debug log
+    debug_data = {'errors': [], 'warnings': [], 'info': []}
+    try:
+        if os.path.exists(DEBUG_FILE):
+            with open(DEBUG_FILE, 'r', encoding='utf-8') as f:
+                debug_data = json.load(f)
+    except:
+        pass
+
+    # Determine severity
+    if error:
+        debug_data['errors'].append(entry)
+        # Keep last 200 errors
+        debug_data['errors'] = debug_data['errors'][-200:]
+    elif 'warning' in message.lower() or 'failed' in message.lower():
+        debug_data['warnings'].append(entry)
+        debug_data['warnings'] = debug_data['warnings'][-100:]
+    else:
+        debug_data['info'].append(entry)
+        debug_data['info'] = debug_data['info'][-50:]
+
+    # Save
+    try:
+        os.makedirs("data", exist_ok=True)
+        with open(DEBUG_FILE, 'w', encoding='utf-8') as f:
+            json.dump(debug_data, f, indent=2, default=str)
+    except:
+        pass
 
 # Strategies
 STRATEGIES = {
@@ -109,8 +162,11 @@ def get_fear_greed_index() -> dict:
                     'value': int(fng.get('value', 50)),
                     'classification': fng.get('value_classification', 'Neutral')
                 }
-    except Exception:
-        pass
+        else:
+            debug_log('API', f'Fear&Greed API returned status {response.status_code}',
+                     {'url': url, 'status': response.status_code})
+    except Exception as e:
+        debug_log('API', 'Fear&Greed API failed', {'url': url}, error=e)
     return {'value': 50, 'classification': 'Neutral'}  # Default neutral
 
 
@@ -171,8 +227,21 @@ def load_portfolios() -> dict:
         if os.path.exists(PORTFOLIOS_FILE):
             with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                return data.get('portfolios', {}), data.get('counter', 0)
+                portfolios = data.get('portfolios', {})
+                # Validate portfolios structure
+                for pid, p in portfolios.items():
+                    if 'config' not in p:
+                        debug_log('DATA', f'Portfolio {pid} missing config', {'portfolio_id': pid})
+                    if 'balance' not in p:
+                        debug_log('DATA', f'Portfolio {pid} missing balance', {'portfolio_id': pid})
+                return portfolios, data.get('counter', 0)
+        else:
+            debug_log('FILE', 'Portfolios file not found', {'path': PORTFOLIOS_FILE})
+    except json.JSONDecodeError as e:
+        debug_log('FILE', 'Portfolios JSON is corrupted', {'path': PORTFOLIOS_FILE}, error=e)
+        log(f"Error loading portfolios: {e}")
     except Exception as e:
+        debug_log('FILE', 'Failed to load portfolios', {'path': PORTFOLIOS_FILE}, error=e)
         log(f"Error loading portfolios: {e}")
     return {}, 0
 
@@ -185,6 +254,7 @@ def save_portfolios(portfolios: dict, counter: int):
         with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
     except Exception as e:
+        debug_log('FILE', 'Failed to save portfolios', {'path': PORTFOLIOS_FILE, 'portfolio_count': len(portfolios)}, error=e)
         log(f"Error saving portfolios: {e}")
 
 
@@ -354,9 +424,23 @@ def analyze_crypto(symbol: str) -> dict:
         # Fetch OHLCV from Binance
         url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval=1h&limit=100"
         response = requests.get(url, timeout=10)
+
+        if response.status_code != 200:
+            debug_log('API', f'Binance API error for {symbol}',
+                     {'symbol': symbol, 'status': response.status_code, 'response': response.text[:200]})
+            return None
+
         data = response.json()
 
+        if isinstance(data, dict) and data.get('code'):
+            # Binance error response
+            debug_log('API', f'Binance returned error for {symbol}',
+                     {'symbol': symbol, 'code': data.get('code'), 'msg': data.get('msg')})
+            return None
+
         if not data or len(data) < 50:
+            debug_log('DATA', f'Insufficient data for {symbol}',
+                     {'symbol': symbol, 'candles_received': len(data) if data else 0, 'required': 50})
             return None
 
         df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume',
@@ -368,7 +452,18 @@ def analyze_crypto(symbol: str) -> dict:
         df['volume'] = df['volume'].astype(float)
 
         # Calculate all indicators
-        indicators = calculate_indicators(df)
+        try:
+            indicators = calculate_indicators(df)
+        except Exception as e:
+            debug_log('INDICATOR', f'Failed to calculate indicators for {symbol}',
+                     {'symbol': symbol, 'df_shape': df.shape}, error=e)
+            return None
+
+        # Validate indicators
+        if pd.isna(indicators.get('rsi')) or indicators.get('rsi') is None:
+            debug_log('INDICATOR', f'Invalid RSI for {symbol}',
+                     {'symbol': symbol, 'rsi': indicators.get('rsi')})
+            indicators['rsi'] = 50  # Default
 
         current_price = df['close'].iloc[-1]
 
@@ -397,7 +492,14 @@ def analyze_crypto(symbol: str) -> dict:
 
         return result
 
+    except requests.exceptions.Timeout:
+        debug_log('API', f'Timeout fetching {symbol}', {'symbol': symbol, 'timeout': 10})
+        return None
+    except requests.exceptions.ConnectionError as e:
+        debug_log('API', f'Connection error for {symbol}', {'symbol': symbol}, error=e)
+        return None
     except Exception as e:
+        debug_log('API', f'Unexpected error analyzing {symbol}', {'symbol': symbol}, error=e)
         log(f"Error analyzing {symbol}: {e}")
         return None
 
@@ -773,14 +875,25 @@ def run_engine(portfolios: dict) -> list:
         if p.get('active', True):
             all_cryptos.update(p['config'].get('cryptos', []))
 
+    if not all_cryptos:
+        debug_log('SYSTEM', 'No cryptos configured in any active portfolio',
+                 {'active_portfolios': len([p for p in portfolios.values() if p.get('active')])})
+
     log(f"Scanning {len(all_cryptos)} cryptos for {len([p for p in portfolios.values() if p.get('active')])} active portfolios...")
 
     # Analyze each crypto once
+    failed_cryptos = []
     for crypto in all_cryptos:
         analysis = analyze_crypto(crypto)
         if analysis:
             analyzed[crypto] = analysis
             log(f"  {crypto}: ${analysis['price']:,.2f} | RSI {analysis['rsi']:.1f} | {analysis['signal']}")
+        else:
+            failed_cryptos.append(crypto)
+
+    if failed_cryptos:
+        debug_log('API', f'Failed to analyze {len(failed_cryptos)} cryptos',
+                 {'failed': failed_cryptos, 'total': len(all_cryptos)})
 
     # Check each portfolio
     for port_id, portfolio in portfolios.items():
@@ -792,23 +905,35 @@ def run_engine(portfolios: dict) -> list:
                 continue
 
             analysis = analyzed[crypto]
-            action, reason = should_trade(portfolio, analysis)
+
+            try:
+                action, reason = should_trade(portfolio, analysis)
+            except Exception as e:
+                debug_log('STRATEGY', f'Strategy error for {portfolio["name"]}',
+                         {'portfolio': portfolio['name'], 'strategy': portfolio.get('strategy_id'),
+                          'crypto': crypto, 'analysis': analysis}, error=e)
+                action, reason = None, f"ERROR: {str(e)}"
 
             # Log all decisions for this portfolio
             log_decision(portfolio, crypto, analysis, action or 'HOLD', reason)
 
             if action:
-                result = execute_trade(portfolio, action, crypto, analysis['price'])
-                if result['success']:
-                    log(f"  >> {portfolio['name']}: {result['message']}")
-                    results.append({
-                        'portfolio': portfolio['name'],
-                        'crypto': crypto,
-                        'action': action,
-                        'reason': reason,
-                        'price': analysis['price'],
-                        'message': result['message']
-                    })
+                try:
+                    result = execute_trade(portfolio, action, crypto, analysis['price'])
+                    if result['success']:
+                        log(f"  >> {portfolio['name']}: {result['message']}")
+                        results.append({
+                            'portfolio': portfolio['name'],
+                            'crypto': crypto,
+                            'action': action,
+                            'reason': reason,
+                            'price': analysis['price'],
+                            'message': result['message']
+                        })
+                except Exception as e:
+                    debug_log('TRADE', f'Trade execution failed for {portfolio["name"]}',
+                             {'portfolio': portfolio['name'], 'action': action,
+                              'crypto': crypto, 'price': analysis['price']}, error=e)
 
     return results
 
@@ -834,7 +959,11 @@ def start_dashboard(open_browser: bool = True):
             time.sleep(2)
             webbrowser.open("http://localhost:8501")
             log("Browser opened automatically")
+    except FileNotFoundError as e:
+        debug_log('SYSTEM', 'Streamlit not found', {'python': sys.executable}, error=e)
+        log(f"Could not start dashboard: {e}")
     except Exception as e:
+        debug_log('SYSTEM', 'Failed to start dashboard', {'python': sys.executable}, error=e)
         log(f"Could not start dashboard: {e}")
 
 
@@ -913,10 +1042,13 @@ def scan_new_tokens() -> list:
                                 'chain': 'solana'
                             }
                             new_tokens.append(token)
-        except:
-            pass
+            elif response.status_code != 403:  # 403 is expected (blocked)
+                debug_log('API', 'Pump.fun API error', {'status': response.status_code})
+        except Exception as e:
+            debug_log('API', 'Pump.fun scan failed', {}, error=e)
 
     except Exception as e:
+        debug_log('API', 'DexScreener scan failed', {}, error=e)
         log(f"Error scanning new tokens: {e}")
 
     return new_tokens
@@ -1095,22 +1227,31 @@ def main():
             total_results = []
 
             # 1. Classic trading engine (existing cryptos)
-            log("📊 Scanning existing cryptos...")
-            classic_results = run_engine(portfolios)
-            total_results.extend(classic_results)
+            try:
+                log("📊 Scanning existing cryptos...")
+                classic_results = run_engine(portfolios)
+                total_results.extend(classic_results)
+            except Exception as e:
+                debug_log('SYSTEM', 'Classic engine crashed', {'scan': scan_count}, error=e)
+                classic_results = []
 
             # 2. Sniper engine (new tokens)
-            log("🎯 Scanning for new tokens...")
-            new_tokens = scan_new_tokens()
+            try:
+                log("🎯 Scanning for new tokens...")
+                new_tokens = scan_new_tokens()
 
-            # Filter out already seen tokens
-            fresh_tokens = [t for t in new_tokens if t['address'] not in sniper_tokens_seen]
-            for t in fresh_tokens:
-                sniper_tokens_seen.add(t['address'])
-                log(f"  🆕 {t['symbol']} | ${t['price']:.8f} | MC: ${t['market_cap']:,.0f} | Risk: {t['risk_score']}/100 | {t['dex']}")
+                # Filter out already seen tokens
+                fresh_tokens = [t for t in new_tokens if t['address'] not in sniper_tokens_seen]
+                for t in fresh_tokens:
+                    sniper_tokens_seen.add(t['address'])
+                    log(f"  🆕 {t['symbol']} | ${t['price']:.8f} | MC: ${t['market_cap']:,.0f} | Risk: {t['risk_score']}/100 | {t['dex']}")
 
-            sniper_results = run_sniper_engine(portfolios, new_tokens)
-            total_results.extend(sniper_results)
+                sniper_results = run_sniper_engine(portfolios, new_tokens)
+                total_results.extend(sniper_results)
+            except Exception as e:
+                debug_log('SYSTEM', 'Sniper engine crashed', {'scan': scan_count}, error=e)
+                sniper_results = []
+                fresh_tokens = []
 
             # Save if any changes
             if total_results:
@@ -1128,6 +1269,10 @@ def main():
         log("\n🛑 Bot stopped by user")
         save_portfolios(portfolios, counter)
         log("💾 Final state saved")
+    except Exception as e:
+        debug_log('SYSTEM', 'Main loop crashed', {'scan': scan_count}, error=e)
+        log(f"FATAL ERROR: {e}")
+        save_portfolios(portfolios, counter)
 
 
 if __name__ == "__main__":
