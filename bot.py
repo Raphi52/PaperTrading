@@ -157,11 +157,17 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['ema_26'] = closes.ewm(span=26).mean().iloc[-1]
     indicators['ema_50'] = closes.ewm(span=50).mean().iloc[-1]
 
-    # EMA crossover signals
+    # EMA crossover signals (9/21 fast)
     ema_9_prev = closes.ewm(span=9).mean().iloc[-2]
     ema_21_prev = closes.ewm(span=21).mean().iloc[-2]
     indicators['ema_cross_up'] = ema_9_prev < ema_21_prev and indicators['ema_9'] > indicators['ema_21']
     indicators['ema_cross_down'] = ema_9_prev > ema_21_prev and indicators['ema_9'] < indicators['ema_21']
+
+    # EMA crossover signals (12/26 slow)
+    ema_12_prev = closes.ewm(span=12).mean().iloc[-2]
+    ema_26_prev = closes.ewm(span=26).mean().iloc[-2]
+    indicators['ema_cross_up_slow'] = ema_12_prev < ema_26_prev and indicators['ema_12'] > indicators['ema_26']
+    indicators['ema_cross_down_slow'] = ema_12_prev > ema_26_prev and indicators['ema_12'] < indicators['ema_26']
 
     # VWAP (Volume Weighted Average Price)
     typical_price = (highs + lows + closes) / 3
@@ -225,6 +231,34 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     # Volume analysis
     indicators['volume_ratio'] = volumes.iloc[-1] / vol_avg if vol_avg > 0 else 1
 
+    # GOD MODE detection (extreme conditions)
+    god_mode_buy = (
+        indicators['rsi'] < 20 and  # Extremely oversold
+        indicators['volume_ratio'] > 2.0 and  # Volume spike
+        indicators['deviation_from_mean'] < -2.0 and  # Way below mean
+        closes.iloc[-1] > closes.iloc[-2]  # Starting to bounce
+    )
+    god_mode_sell = (
+        indicators['rsi'] > 80 and  # Extremely overbought
+        indicators['volume_ratio'] > 2.0 and  # Volume spike
+        indicators['deviation_from_mean'] > 2.0 and  # Way above mean
+        closes.iloc[-1] < closes.iloc[-2]  # Starting to drop
+    )
+    indicators['god_mode_buy'] = god_mode_buy
+    indicators['god_mode_sell'] = god_mode_sell
+
+    # Momentum indicators for degen strategies
+    indicators['momentum_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100
+    indicators['momentum_4h'] = (closes.iloc[-1] - closes.iloc[-5]) / closes.iloc[-5] * 100 if len(closes) > 5 else 0
+
+    # Scalping signals (quick reversals)
+    indicators['scalp_buy'] = indicators['rsi'] < 25 and indicators['momentum_1h'] > 0.3
+    indicators['scalp_sell'] = indicators['rsi'] > 75 and indicators['momentum_1h'] < -0.3
+
+    # Momentum signals (riding the wave)
+    indicators['momentum_buy'] = indicators['volume_ratio'] > 2.0 and indicators['momentum_1h'] > 1.0 and indicators['rsi'] < 65
+    indicators['momentum_sell'] = indicators['volume_ratio'] > 2.0 and indicators['momentum_1h'] < -1.0 and indicators['rsi'] > 35
+
     return indicators
 
 
@@ -254,7 +288,11 @@ def analyze_crypto(symbol: str) -> dict:
 
         # Determine basic signal (for confluence strategies)
         signal = "HOLD"
-        if indicators['rsi'] < 30 and indicators['ema_12'] > indicators['ema_26']:
+        if indicators.get('god_mode_buy'):
+            signal = "GOD_MODE_BUY"
+        elif indicators.get('god_mode_sell'):
+            signal = "GOD_MODE_SELL"
+        elif indicators['rsi'] < 30 and indicators['ema_12'] > indicators['ema_26']:
             signal = "STRONG_BUY"
         elif indicators['rsi'] < 35:
             signal = "BUY"
@@ -380,10 +418,56 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
 
     # EMA Crossover
     if strategy.get('use_ema_cross'):
-        if analysis.get('ema_cross_up') and has_cash:
-            return 'BUY'
-        elif analysis.get('ema_cross_down') and has_position:
-            return 'SELL'
+        fast = strategy.get('fast_ema', 9)
+        # Use slow crossover (12/26) if specified
+        if fast == 12:
+            if analysis.get('ema_cross_up_slow') and has_cash:
+                return 'BUY'
+            elif analysis.get('ema_cross_down_slow') and has_position:
+                return 'SELL'
+        else:
+            # Default fast crossover (9/21)
+            if analysis.get('ema_cross_up') and has_cash:
+                return 'BUY'
+            elif analysis.get('ema_cross_down') and has_position:
+                return 'SELL'
+        return None
+
+    # Degen strategies
+    if strategy.get('use_degen'):
+        mode = strategy.get('mode', 'hybrid')
+
+        if mode == 'scalping':
+            # Quick reversals - tight entries/exits
+            if analysis.get('scalp_buy') and has_cash:
+                return 'BUY'
+            elif analysis.get('scalp_sell') and has_position:
+                return 'SELL'
+            # Also exit if RSI normalizes
+            elif analysis.get('rsi', 50) > 55 and has_position:
+                return 'SELL'
+
+        elif mode == 'momentum':
+            # Ride the wave - volume + momentum
+            if analysis.get('momentum_buy') and has_cash:
+                return 'BUY'
+            elif analysis.get('momentum_sell') and has_position:
+                return 'SELL'
+            # Exit on momentum loss
+            elif has_position and analysis.get('momentum_1h', 0) < -0.5:
+                return 'SELL'
+
+        else:  # hybrid - combines both
+            # Entry: either scalp or momentum signal
+            if (analysis.get('scalp_buy') or analysis.get('momentum_buy')) and has_cash:
+                return 'BUY'
+            # Exit: either signal or RSI extreme
+            elif has_position:
+                if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
+                    return 'SELL'
+                elif analysis.get('rsi', 50) > 70:
+                    return 'SELL'
+
         return None
 
     # VWAP Strategy
@@ -516,6 +600,14 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
     if strategy.get('buy_on') == ["ALWAYS_FIRST"]:
         if len(portfolio['trades']) == 0 and has_cash:
             return 'BUY'
+        return None
+
+    # GOD MODE strategy - uses indicator directly
+    if "GOD_MODE_BUY" in strategy.get('buy_on', []):
+        if analysis.get('god_mode_buy') and has_cash:
+            return 'BUY'
+        elif analysis.get('god_mode_sell') and has_position:
+            return 'SELL'
         return None
 
     # Signal-based strategies (confluence, conservative, aggressive, etc.)
