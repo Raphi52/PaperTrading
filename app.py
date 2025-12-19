@@ -1946,199 +1946,200 @@ def render_settings():
 
 
 def render_debug():
-    """Debug panel - shows all errors and issues for troubleshooting"""
+    """Debug panel - real-time bot monitoring"""
     header("🐛 Debug Console")
 
-    st.markdown("""
-    <div style="background: #1a1a2e; padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border-left: 4px solid #ff4444;">
-        <b>Debug Mode</b><br>
-        <span style="color: #888;">Cette page affiche toutes les erreurs et problèmes du bot.
-        Copiez le contenu et partagez-le pour obtenir de l'aide au debugging.</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Load debug log
+    # Load debug state
     debug_file = "data/debug_log.json"
-    debug_data = {'errors': [], 'warnings': [], 'info': []}
+    debug_state = {
+        'bot_status': {'running': False, 'started_at': None, 'scan_count': 0},
+        'last_scan': {},
+        'api_health': {},
+        'recent_errors': [],
+        'recent_trades': []
+    }
 
     try:
         if os.path.exists(debug_file):
             with open(debug_file, 'r', encoding='utf-8') as f:
-                debug_data = json.load(f)
-    except Exception as e:
-        st.error(f"Could not load debug log: {e}")
+                debug_state = json.load(f)
+    except:
+        pass
 
-    # Summary stats
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("Errors", len(debug_data.get('errors', [])), delta=None)
-    with col2:
-        st.metric("Warnings", len(debug_data.get('warnings', [])), delta=None)
-    with col3:
-        st.metric("Info", len(debug_data.get('info', [])), delta=None)
-    with col4:
-        if st.button("🗑️ Clear Logs"):
-            try:
-                with open(debug_file, 'w', encoding='utf-8') as f:
-                    json.dump({'errors': [], 'warnings': [], 'info': []}, f)
-                st.toast("Logs cleared!")
-                st.rerun()
-            except:
-                st.error("Could not clear logs")
+    bot_status = debug_state.get('bot_status', {})
+    last_scan = debug_state.get('last_scan', {})
 
-    # Tabs for different log types
-    tab1, tab2, tab3, tab4 = st.tabs(["🔴 Errors", "🟡 Warnings", "🔵 Info", "📋 Copy All"])
+    # === BOT STATUS BANNER ===
+    is_running = bot_status.get('running', False)
+    last_update = bot_status.get('last_update', 'Never')
 
+    # Check if bot is actually running (last update < 2 min)
+    try:
+        last_dt = datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S")
+        age_seconds = (datetime.now() - last_dt).total_seconds()
+        actually_running = is_running and age_seconds < 120
+    except:
+        actually_running = False
+        age_seconds = 9999
+
+    if actually_running:
+        st.markdown(f"""
+        <div style="background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+            <span style="font-size: 1.5rem;">🟢</span>
+            <b style="color: #000; font-size: 1.2rem;"> BOT RUNNING</b>
+            <span style="color: #000; margin-left: 1rem;">Scan #{bot_status.get('scan_count', 0)} | Updated {int(age_seconds)}s ago</span>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+        <div style="background: #ff4444; padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+            <span style="font-size: 1.5rem;">🔴</span>
+            <b style="color: #fff; font-size: 1.2rem;"> BOT STOPPED</b>
+            <span style="color: #fff; margin-left: 1rem;">Last seen: {last_update}</span>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # === LAST SCAN INFO ===
+    st.subheader("📊 Last Scan")
+    if last_scan:
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.metric("Scan #", last_scan.get('scan_number', 'N/A'))
+        with col2:
+            st.metric("Duration", f"{last_scan.get('duration_seconds', 0)}s")
+        with col3:
+            st.metric("Portfolios", last_scan.get('active_portfolios', 0))
+        with col4:
+            st.metric("API Errors", last_scan.get('api_errors', 0))
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Classic Trades", last_scan.get('classic_trades', 0))
+        with col2:
+            st.metric("Sniper Trades", last_scan.get('sniper_trades', 0))
+        with col3:
+            st.metric("New Tokens", last_scan.get('new_tokens_found', 0))
+
+        st.caption(f"Scan time: {last_scan.get('timestamp', 'N/A')} | Total tokens seen: {last_scan.get('total_tokens_seen', 0)}")
+    else:
+        st.info("No scan data yet. Start the bot to see activity.")
+
+    st.divider()
+
+    # === TABS ===
+    tab1, tab2, tab3, tab4 = st.tabs(["📈 Recent Trades", "🔴 Errors", "🔌 API Health", "📋 Full Report"])
+
+    # TAB 1: Recent Trades
     with tab1:
-        errors = debug_data.get('errors', [])
+        trades = debug_state.get('recent_trades', [])
+        if not trades:
+            st.info("No trades yet.")
+        else:
+            for trade in reversed(trades):
+                action = trade.get('action', 'UNKNOWN')
+                color = '#00ff88' if 'BUY' in action else '#ff4444'
+                st.markdown(f"""
+                <div style="background: #1a1a2e; padding: 0.5rem 1rem; border-radius: 5px; margin-bottom: 0.5rem; border-left: 3px solid {color};">
+                    <span style="color: {color}; font-weight: bold;">{action}</span>
+                    <span style="color: #fff;"> {trade.get('symbol', '?')}</span>
+                    <span style="color: #888;"> @ ${trade.get('price', 0):,.2f}</span>
+                    <span style="color: #666; float: right;">{trade.get('timestamp', '')}</span>
+                    <br><span style="color: #aaa; font-size: 0.8rem;">{trade.get('portfolio', '')} - {trade.get('reason', '')}</span>
+                </div>
+                """, unsafe_allow_html=True)
+
+    # TAB 2: Errors
+    with tab2:
+        errors = debug_state.get('recent_errors', [])
         if not errors:
             st.success("No errors! Everything is working fine.")
         else:
-            for i, err in enumerate(reversed(errors[-50:])):  # Show last 50
-                with st.expander(f"🔴 [{err.get('timestamp', 'N/A')}] {err.get('category', 'UNKNOWN')}: {err.get('message', 'No message')}", expanded=(i==0)):
-                    st.markdown(f"**Category:** `{err.get('category', 'N/A')}`")
-                    st.markdown(f"**Message:** {err.get('message', 'N/A')}")
+            if st.button("🗑️ Clear Errors"):
+                debug_state['recent_errors'] = []
+                with open(debug_file, 'w', encoding='utf-8') as f:
+                    json.dump(debug_state, f, indent=2)
+                st.rerun()
 
+            for err in reversed(errors):
+                with st.expander(f"🔴 [{err.get('timestamp')}] {err.get('category')}: {err.get('message')}", expanded=False):
+                    st.code(f"Type: {err.get('error_type', 'N/A')}\nMessage: {err.get('error_msg', 'N/A')}")
                     if err.get('context'):
-                        st.markdown("**Context:**")
                         st.json(err['context'])
+                    if err.get('traceback'):
+                        st.code(err['traceback'], language='python')
 
-                    if err.get('error'):
-                        st.markdown("**Error Details:**")
-                        st.code(f"Type: {err['error'].get('type', 'N/A')}\nMessage: {err['error'].get('message', 'N/A')}")
-
-                        if err['error'].get('traceback'):
-                            st.markdown("**Traceback:**")
-                            st.code(err['error']['traceback'], language='python')
-
-    with tab2:
-        warnings = debug_data.get('warnings', [])
-        if not warnings:
-            st.success("No warnings!")
-        else:
-            for warn in reversed(warnings[-30:]):
-                with st.expander(f"🟡 [{warn.get('timestamp', 'N/A')}] {warn.get('message', 'No message')}"):
-                    st.markdown(f"**Category:** `{warn.get('category', 'N/A')}`")
-                    if warn.get('context'):
-                        st.json(warn['context'])
-
+    # TAB 3: API Health
     with tab3:
-        info = debug_data.get('info', [])
-        if not info:
-            st.info("No info logs yet.")
+        api_health = debug_state.get('api_health', {})
+        if not api_health:
+            st.info("No API calls recorded yet.")
         else:
-            for log_entry in reversed(info[-20:]):
-                st.text(f"[{log_entry.get('timestamp', 'N/A')}] {log_entry.get('category', '')}: {log_entry.get('message', '')}")
+            for api_name, status in api_health.items():
+                is_ok = status.get('status') == 'ok'
+                icon = "✅" if is_ok else "❌"
+                st.markdown(f"""
+                **{icon} {api_name}**
+                - Status: `{status.get('status', 'unknown')}`
+                - Last check: {status.get('last_check', 'N/A')}
+                - Message: {status.get('message', 'N/A')}
+                """)
 
+        st.divider()
+        st.markdown("**Live API Check:**")
+        col1, col2 = st.columns(2)
+        with col1:
+            try:
+                r = requests.get("https://api.binance.com/api/v3/ping", timeout=5)
+                if r.status_code == 200:
+                    st.success("Binance: OK")
+                else:
+                    st.error(f"Binance: {r.status_code}")
+            except Exception as e:
+                st.error(f"Binance: {e}")
+        with col2:
+            try:
+                r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=5)
+                if r.status_code == 200:
+                    st.success("Fear&Greed: OK")
+                else:
+                    st.error(f"Fear&Greed: {r.status_code}")
+            except Exception as e:
+                st.error(f"Fear&Greed: {e}")
+
+    # TAB 4: Full Report
     with tab4:
-        st.markdown("### Copy this entire block to share for debugging:")
+        st.markdown("### Copy this for debugging:")
 
-        # Create a comprehensive debug report
-        report_lines = [
-            "=" * 60,
+        # Build report
+        report = [
+            "=" * 50,
             "TRADING BOT DEBUG REPORT",
             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-            "=" * 60,
+            "=" * 50,
             "",
-            f"ERRORS: {len(debug_data.get('errors', []))}",
-            f"WARNINGS: {len(debug_data.get('warnings', []))}",
+            f"Bot Running: {actually_running}",
+            f"Scan Count: {bot_status.get('scan_count', 0)}",
+            f"Last Update: {last_update}",
             "",
-            "-" * 40,
-            "RECENT ERRORS:",
-            "-" * 40,
+            "--- LAST SCAN ---",
+            json.dumps(last_scan, indent=2),
+            "",
+            "--- RECENT ERRORS ---",
         ]
 
-        for err in debug_data.get('errors', [])[-10:]:
-            report_lines.append(f"\n[{err.get('timestamp', 'N/A')}] {err.get('category', 'UNKNOWN')}")
-            report_lines.append(f"Message: {err.get('message', 'N/A')}")
-            if err.get('context'):
-                report_lines.append(f"Context: {json.dumps(err['context'], indent=2)}")
-            if err.get('error'):
-                report_lines.append(f"Error Type: {err['error'].get('type', 'N/A')}")
-                report_lines.append(f"Error Message: {err['error'].get('message', 'N/A')}")
-                if err['error'].get('traceback'):
-                    report_lines.append("Traceback:")
-                    report_lines.append(err['error']['traceback'])
-            report_lines.append("")
+        for err in debug_state.get('recent_errors', [])[-5:]:
+            report.append(f"\n[{err.get('timestamp')}] {err.get('category')}: {err.get('message')}")
+            report.append(f"  Error: {err.get('error_type')}: {err.get('error_msg')}")
 
-        report_lines.extend([
-            "-" * 40,
-            "SYSTEM INFO:",
-            "-" * 40,
-        ])
-
-        # Add system info
+        report.extend(["", "--- PORTFOLIOS ---"])
         try:
             pf_data = load_portfolios()
-            portfolios = pf_data.get('portfolios', {})
-            report_lines.append(f"Portfolios: {len(portfolios)}")
-            for pid, p in portfolios.items():
-                report_lines.append(f"  - {p.get('name', 'Unknown')} [{p.get('strategy_id', 'manual')}] Active: {p.get('active', True)}")
-                report_lines.append(f"    Balance: ${p.get('balance', {}).get('USDT', 0):,.2f}")
-                report_lines.append(f"    Positions: {len(p.get('positions', {}))}")
-                report_lines.append(f"    Trades: {len(p.get('trades', []))}")
-        except Exception as e:
-            report_lines.append(f"Could not load portfolio info: {e}")
+            for pid, p in pf_data.get('portfolios', {}).items():
+                report.append(f"{p.get('name')} [{p.get('strategy_id')}]: ${p.get('balance', {}).get('USDT', 0):,.0f} | {len(p.get('positions', {}))} pos | {len(p.get('trades', []))} trades")
+        except:
+            report.append("Could not load portfolios")
 
-        report_text = "\n".join(report_lines)
-        st.code(report_text, language=None)
-
-        if st.button("📋 Copy to Clipboard", type="primary"):
-            st.toast("Use Ctrl+A then Ctrl+C on the text above!")
-
-    # Real-time status check
-    st.divider()
-    st.markdown("### 🔄 System Health Check")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.markdown("**Bot Status:**")
-        # Check if bot is running by looking at recent log activity
-        log_file = "data/bot_log.txt"
-        bot_status = "Unknown"
-        last_activity = "N/A"
-
-        try:
-            if os.path.exists(log_file):
-                with open(log_file, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-                    if lines:
-                        last_line = lines[-1].strip()
-                        if last_line:
-                            # Extract timestamp
-                            try:
-                                ts = last_line.split(']')[0].replace('[', '')
-                                last_dt = datetime.strptime(ts, "%Y-%m-%d %H:%M:%S")
-                                age = (datetime.now() - last_dt).total_seconds()
-                                last_activity = ts
-
-                                if age < 120:
-                                    bot_status = "Running"
-                                    st.success(f"Bot is RUNNING (last activity: {int(age)}s ago)")
-                                else:
-                                    bot_status = "Stopped"
-                                    st.warning(f"Bot appears STOPPED (last activity: {int(age/60)}min ago)")
-                            except:
-                                st.info(f"Last log: {last_line[:50]}...")
-            else:
-                st.warning("No bot log file found - bot may not have started yet")
-        except Exception as e:
-            st.error(f"Could not check bot status: {e}")
-
-    with col2:
-        st.markdown("**API Status:**")
-        # Quick API check
-        try:
-            response = requests.get("https://api.binance.com/api/v3/ping", timeout=5)
-            if response.status_code == 200:
-                st.success("Binance API: OK")
-            else:
-                st.error(f"Binance API: Error ({response.status_code})")
-        except requests.exceptions.Timeout:
-            st.error("Binance API: Timeout")
-        except Exception as e:
-            st.error(f"Binance API: {e}")
+        st.code("\n".join(report), language=None)
 
 
 if __name__ == "__main__":

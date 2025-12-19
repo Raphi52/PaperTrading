@@ -24,55 +24,103 @@ DEBUG_FILE = "data/debug_log.json"
 SCAN_INTERVAL = 60  # seconds between scans
 
 
-def debug_log(category: str, message: str, context: dict = None, error: Exception = None):
-    """
-    Log debug information for troubleshooting.
-    Categories: API, STRATEGY, DATA, FILE, TRADE, INDICATOR, SYSTEM
-    """
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    entry = {
-        'timestamp': timestamp,
-        'category': category,
-        'message': message,
-        'context': context or {},
-    }
-
-    if error:
-        entry['error'] = {
-            'type': type(error).__name__,
-            'message': str(error),
-            'traceback': traceback.format_exc()
-        }
-
-    # Load existing debug log
-    debug_data = {'errors': [], 'warnings': [], 'info': []}
+def get_debug_state() -> dict:
+    """Load current debug state"""
     try:
         if os.path.exists(DEBUG_FILE):
             with open(DEBUG_FILE, 'r', encoding='utf-8') as f:
-                debug_data = json.load(f)
+                return json.load(f)
     except:
         pass
+    return {
+        'bot_status': {'running': False, 'started_at': None, 'scan_count': 0},
+        'last_scan': {},
+        'api_health': {},
+        'recent_errors': [],
+        'recent_trades': []
+    }
 
-    # Determine severity
-    if error:
-        debug_data['errors'].append(entry)
-        # Keep last 200 errors
-        debug_data['errors'] = debug_data['errors'][-200:]
-    elif 'warning' in message.lower() or 'failed' in message.lower():
-        debug_data['warnings'].append(entry)
-        debug_data['warnings'] = debug_data['warnings'][-100:]
-    else:
-        debug_data['info'].append(entry)
-        debug_data['info'] = debug_data['info'][-50:]
 
-    # Save
+def save_debug_state(state: dict):
+    """Save debug state"""
     try:
         os.makedirs("data", exist_ok=True)
         with open(DEBUG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(debug_data, f, indent=2, default=str)
+            json.dump(state, f, indent=2, default=str)
     except:
         pass
+
+
+def debug_log(category: str, message: str, context: dict = None, error: Exception = None):
+    """
+    Log debug information. Categories: API, STRATEGY, DATA, FILE, TRADE, SYSTEM
+    """
+    state = get_debug_state()
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Only log actual errors to recent_errors
+    if error:
+        entry = {
+            'timestamp': timestamp,
+            'category': category,
+            'message': message,
+            'context': context or {},
+            'error_type': type(error).__name__,
+            'error_msg': str(error),
+            'traceback': traceback.format_exc()
+        }
+        state['recent_errors'].append(entry)
+        state['recent_errors'] = state['recent_errors'][-20:]  # Keep last 20
+
+    # Update API health for API category
+    if category == 'API':
+        api_name = context.get('api', 'unknown') if context else 'unknown'
+        state['api_health'][api_name] = {
+            'last_check': timestamp,
+            'status': 'error' if error else 'ok',
+            'message': message
+        }
+
+    save_debug_state(state)
+
+
+def debug_update_bot_status(running: bool, scan_count: int = 0):
+    """Update bot running status"""
+    state = get_debug_state()
+    state['bot_status'] = {
+        'running': running,
+        'last_update': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'scan_count': scan_count,
+        'started_at': state['bot_status'].get('started_at') if running else None
+    }
+    if running and not state['bot_status'].get('started_at'):
+        state['bot_status']['started_at'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    save_debug_state(state)
+
+
+def debug_update_scan(scan_data: dict):
+    """Update last scan info"""
+    state = get_debug_state()
+    state['last_scan'] = {
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        **scan_data
+    }
+    save_debug_state(state)
+
+
+def debug_log_trade(portfolio_name: str, action: str, symbol: str, price: float, reason: str):
+    """Log a trade for debug"""
+    state = get_debug_state()
+    state['recent_trades'].append({
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'portfolio': portfolio_name,
+        'action': action,
+        'symbol': symbol,
+        'price': price,
+        'reason': reason
+    })
+    state['recent_trades'] = state['recent_trades'][-30:]  # Keep last 30
+    save_debug_state(state)
 
 # Strategies
 STRATEGIES = {
@@ -1216,24 +1264,37 @@ def main():
     scan_count = 0
     sniper_tokens_seen = set()
 
+    # Initialize debug state
+    debug_update_bot_status(running=True, scan_count=0)
+
     try:
         while True:
             scan_count += 1
+            scan_start = time.time()
             log(f"\n{'='*20} SCAN #{scan_count} {'='*20}")
 
             # Reload portfolios
             portfolios, counter = load_portfolios()
+            active_portfolios = len([p for p in portfolios.values() if p.get('active', True)])
 
             total_results = []
+            cryptos_scanned = 0
+            api_errors = 0
 
             # 1. Classic trading engine (existing cryptos)
             try:
                 log("📊 Scanning existing cryptos...")
                 classic_results = run_engine(portfolios)
                 total_results.extend(classic_results)
+
+                # Log trades to debug
+                for r in classic_results:
+                    debug_log_trade(r['portfolio'], r['action'], r['crypto'], r['price'], r['reason'])
+
             except Exception as e:
                 debug_log('SYSTEM', 'Classic engine crashed', {'scan': scan_count}, error=e)
                 classic_results = []
+                api_errors += 1
 
             # 2. Sniper engine (new tokens)
             try:
@@ -1248,10 +1309,17 @@ def main():
 
                 sniper_results = run_sniper_engine(portfolios, new_tokens)
                 total_results.extend(sniper_results)
+
+                # Log sniper trades
+                for r in sniper_results:
+                    if 'token' in r:
+                        debug_log_trade(r['portfolio'], r['action'], r['symbol'], r['token']['price'], 'Sniper')
+
             except Exception as e:
                 debug_log('SYSTEM', 'Sniper engine crashed', {'scan': scan_count}, error=e)
                 sniper_results = []
                 fresh_tokens = []
+                api_errors += 1
 
             # Save if any changes
             if total_results:
@@ -1259,7 +1327,21 @@ def main():
                 log(f"💾 Saved {len(total_results)} trades")
 
             # Summary
+            scan_duration = time.time() - scan_start
             log(f"📈 Classic: {len(classic_results)} trades | 🎯 Sniper: {len(sniper_results)} trades | 🆕 New tokens: {len(fresh_tokens)}")
+
+            # Update debug state with scan info
+            debug_update_bot_status(running=True, scan_count=scan_count)
+            debug_update_scan({
+                'scan_number': scan_count,
+                'duration_seconds': round(scan_duration, 2),
+                'active_portfolios': active_portfolios,
+                'classic_trades': len(classic_results),
+                'sniper_trades': len(sniper_results),
+                'new_tokens_found': len(fresh_tokens),
+                'total_tokens_seen': len(sniper_tokens_seen),
+                'api_errors': api_errors
+            })
 
             # Wait
             log(f"⏳ Next scan in {SCAN_INTERVAL}s...")
@@ -1267,10 +1349,12 @@ def main():
 
     except KeyboardInterrupt:
         log("\n🛑 Bot stopped by user")
+        debug_update_bot_status(running=False, scan_count=scan_count)
         save_portfolios(portfolios, counter)
         log("💾 Final state saved")
     except Exception as e:
         debug_log('SYSTEM', 'Main loop crashed', {'scan': scan_count}, error=e)
+        debug_update_bot_status(running=False, scan_count=scan_count)
         log(f"FATAL ERROR: {e}")
         save_portfolios(portfolios, counter)
 
