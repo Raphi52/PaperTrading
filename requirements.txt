@@ -6,3 +6,7 @@ plotly
 ccxt
 websocket-client
 ta
+aiohttp
+colorama
+textblob
+python-dotenv
