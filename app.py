@@ -295,20 +295,31 @@ def main():
 
         st.divider()
 
-        # Bot status
-        st.markdown("### 🤖 Bot Status")
+        # Bot status - Control ALL portfolios
+        st.markdown("### 🤖 All Portfolios")
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("▶️ Start", use_container_width=True):
-                st.session_state.bot_running = True
-                st.toast("Bot started!")
+            if st.button("▶️ All ON", use_container_width=True):
+                pf_data = load_portfolios()
+                for pid in pf_data.get('portfolios', {}):
+                    pf_data['portfolios'][pid]['active'] = True
+                save_portfolios(pf_data)
+                st.toast("All portfolios activated!")
+                st.rerun()
         with col2:
-            if st.button("⏹️ Stop", use_container_width=True):
-                st.session_state.bot_running = False
-                st.toast("Bot stopped!")
+            if st.button("⏹️ All OFF", use_container_width=True):
+                pf_data = load_portfolios()
+                for pid in pf_data.get('portfolios', {}):
+                    pf_data['portfolios'][pid]['active'] = False
+                save_portfolios(pf_data)
+                st.toast("All portfolios paused!")
+                st.rerun()
 
-        bot_status = "🟢 Running" if st.session_state.get('bot_running', False) else "🔴 Stopped"
-        st.markdown(f"Status: **{bot_status}**")
+        # Count active
+        pf_data = load_portfolios()
+        active_count = sum(1 for p in pf_data.get('portfolios', {}).values() if p.get('active', True))
+        total_count = len(pf_data.get('portfolios', {}))
+        st.markdown(f"Active: **{active_count}/{total_count}**")
 
     # Main content based on page
     if page == "📊 Dashboard":
