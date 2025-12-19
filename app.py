@@ -115,17 +115,17 @@ def load_portfolios() -> Dict:
     """Charge les portfolios"""
     try:
         if os.path.exists("data/portfolios.json"):
-            with open("data/portfolios.json", 'r') as f:
+            with open("data/portfolios.json", 'r', encoding='utf-8') as f:
                 return json.load(f)
-    except:
-        pass
+    except Exception as e:
+        print(f"Error loading portfolios: {e}")
     return {"portfolios": {}, "counter": 0}
 
 
 def save_portfolios(data: Dict):
     """Sauvegarde les portfolios"""
     os.makedirs("data", exist_ok=True)
-    with open("data/portfolios.json", 'w') as f:
+    with open("data/portfolios.json", 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, default=str)
 
 
