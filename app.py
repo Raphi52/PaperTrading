@@ -1585,7 +1585,37 @@ Moins explosif que le Martingale normal mais reste très risqué.
 Exposition max = 3.4x au lieu de 16x.
 
 💡 POUR QUI ?
-Paper trading uniquement pour expérimenter."""
+Paper trading uniquement pour expérimenter.""",
+
+        "dca_fear": """😱 DCA FEAR INDEX - Acheter la Peur
+
+🎓 C'EST QUOI ?
+Utilise le "Fear & Greed Index" (indice de peur et avidité) du marché crypto.
+Cet indice mesure le sentiment global:
+• 0-25 = Peur Extrême (tout le monde a peur)
+• 25-50 = Peur
+• 50-75 = Avidité
+• 75-100 = Avidité Extrême (euphorie)
+
+Warren Buffett: "Sois avide quand les autres ont peur"
+
+📈 QUAND J'ACHÈTE ?
+• Fear Index < 25 (peur extrême sur le marché)
+• → Le marché panique = opportunité d'achat !
+
+📉 QUAND JE VENDS ?
+• Fear Index > 75 (euphorie extrême)
+• → Tout le monde achète = temps de vendre
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse (quelques par mois)
+
+💡 POUR QUI ?
+Pour les investisseurs contrarians qui achètent quand le marché panique.
+Stratégie long terme qui achète les crashs.
+
+📊 OÙ VOIR L'INDEX ?
+alternative.me/crypto/fear-and-greed-index/"""
     }
 
     # Display portfolios as cards (2 per row)
