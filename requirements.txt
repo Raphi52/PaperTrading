@@ -5,3 +5,4 @@ streamlit
 plotly
 ccxt
 websocket-client
+ta
