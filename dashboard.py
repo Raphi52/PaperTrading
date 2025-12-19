@@ -87,6 +87,26 @@ st.markdown("""
         padding: 1rem;
         border-radius: 10px;
     }
+    .portfolio-card {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        transition: transform 0.2s;
+    }
+    .portfolio-card:hover {
+        transform: translateY(-2px);
+    }
+    .portfolio-card.playing {
+        border: 2px solid #00ff88;
+        box-shadow: 0 0 15px rgba(0,255,136,0.3);
+    }
+    .portfolio-card.paused {
+        border: 2px solid #ff4444;
+        opacity: 0.7;
+    }
+    .pnl-positive { color: #00ff88; }
+    .pnl-negative { color: #ff4444; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1025,6 +1045,97 @@ def main():
             """, unsafe_allow_html=True)
 
             st.divider()
+
+    # ==================== PORTFOLIO CARDS ====================
+    if st.session_state.portfolios:
+        st.markdown("### 💼 Portfolios")
+
+        # Global play/pause buttons
+        ctrl_col1, ctrl_col2, ctrl_col3, ctrl_col4 = st.columns([2, 1, 1, 1])
+
+        with ctrl_col1:
+            st.markdown(f"**{len(st.session_state.portfolios)} portfolios** | Capital total: **${sum(p['initial_capital'] for p in st.session_state.portfolios.values()):,.0f}**")
+
+        with ctrl_col2:
+            if st.button("▶️ Play All", type="primary", use_container_width=True):
+                for pid in st.session_state.portfolios:
+                    st.session_state.portfolios[pid]['active'] = True
+                save_portfolios()
+                st.rerun()
+
+        with ctrl_col3:
+            if st.button("⏸️ Pause All", use_container_width=True):
+                for pid in st.session_state.portfolios:
+                    st.session_state.portfolios[pid]['active'] = False
+                save_portfolios()
+                st.rerun()
+
+        with ctrl_col4:
+            if st.button("➕ Nouveau", use_container_width=True):
+                st.session_state.show_create_portfolio = True
+
+        # Portfolio cards grid (4 per row)
+        portfolios_list = list(st.session_state.portfolios.items())
+
+        # Pre-calculate prices for portfolio values
+        temp_prices = fetch_multiple_prices() if use_real_data else {}
+        temp_current_price = fetch_real_price(symbol) if use_real_data else 45000
+
+        for row_start in range(0, len(portfolios_list), 4):
+            row_portfolios = portfolios_list[row_start:row_start + 4]
+            cols = st.columns(4)
+
+            for idx, (port_id, portfolio) in enumerate(row_portfolios):
+                with cols[idx]:
+                    # Calculate value
+                    value = portfolio['balance'].get('USDT', 0)
+                    for asset, qty in portfolio['balance'].items():
+                        if asset != 'USDT' and qty > 0:
+                            sym = f"{asset}/USDT"
+                            if temp_prices and sym in temp_prices and temp_prices[sym].get('price'):
+                                value += qty * temp_prices[sym]['price']
+                            elif sym == symbol:
+                                value += qty * temp_current_price
+
+                    initial = portfolio['initial_capital']
+                    pnl = value - initial
+                    pnl_pct = (pnl / initial) * 100 if initial > 0 else 0
+                    is_active = portfolio.get('active', True)
+
+                    # Card styling
+                    border_color = '#00ff88' if is_active else '#ff4444'
+                    status_icon = '▶️' if is_active else '⏸️'
+                    pnl_color = '#00ff88' if pnl >= 0 else '#ff4444'
+
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                                border-radius: 12px; padding: 1rem;
+                                border: 2px solid {border_color};
+                                {'box-shadow: 0 0 15px rgba(0,255,136,0.2);' if is_active else 'opacity: 0.8;'}">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 1.5rem;">{portfolio['icon']}</span>
+                            <span style="color: {border_color};">{status_icon}</span>
+                        </div>
+                        <h4 style="margin: 0.5rem 0 0.2rem 0; color: white; font-size: 0.95rem;">{portfolio['name'][:18]}</h4>
+                        <p style="margin: 0; color: #888; font-size: 0.75rem;">{portfolio['strategy_name']}</p>
+                        <h3 style="margin: 0.5rem 0; color: white;">${value:,.0f}</h3>
+                        <p style="margin: 0; color: {pnl_color}; font-weight: bold;">
+                            {'+' if pnl >= 0 else ''}{pnl_pct:.1f}% (${pnl:+,.0f})
+                        </p>
+                        <p style="margin: 0.3rem 0 0 0; color: #666; font-size: 0.7rem;">
+                            {len(portfolio['trades'])} trades | {len(portfolio['positions'])} pos
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    # Play/Pause button for this portfolio
+                    btn_label = "⏸️" if is_active else "▶️"
+                    if st.button(btn_label, key=f"toggle_{port_id}", use_container_width=True):
+                        st.session_state.portfolios[port_id]['active'] = not is_active
+                        save_portfolios()
+                        st.rerun()
+
+        st.divider()
 
     # Recuperer les donnees
     if use_real_data:
