@@ -345,15 +345,222 @@ def start_dashboard(open_browser: bool = True):
         log(f"Could not start dashboard: {e}")
 
 
+def scan_new_tokens() -> list:
+    """Scan for new tokens on DEX (Solana)"""
+    new_tokens = []
+
+    try:
+        # Scan DexScreener for new Solana pairs
+        url = "https://api.dexscreener.com/latest/dex/tokens/So11111111111111111111111111111111111111112"
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            data = response.json()
+            pairs = data.get('pairs', [])
+
+            for pair in pairs[:30]:
+                created = pair.get('pairCreatedAt', 0)
+                if created:
+                    age_hours = (time.time() * 1000 - created) / (1000 * 60 * 60)
+
+                    if age_hours < 24:  # Less than 24h old
+                        liquidity = float(pair.get('liquidity', {}).get('usd', 0) or 0)
+                        volume = float(pair.get('volume', {}).get('h24', 0) or 0)
+
+                        # Calculate risk score
+                        risk = 50
+                        if liquidity < 10000: risk += 30
+                        elif liquidity > 100000: risk -= 20
+                        if volume < 10000: risk += 20
+                        elif volume > 50000: risk -= 10
+
+                        price_change = float(pair.get('priceChange', {}).get('h24', 0) or 0)
+                        if price_change > 500: risk += 25
+
+                        risk = min(100, max(0, risk))
+
+                        token = {
+                            'symbol': pair.get('baseToken', {}).get('symbol', 'UNKNOWN'),
+                            'name': pair.get('baseToken', {}).get('name', 'Unknown'),
+                            'address': pair.get('baseToken', {}).get('address', ''),
+                            'price': float(pair.get('priceUsd', 0) or 0),
+                            'liquidity': liquidity,
+                            'volume_24h': volume,
+                            'market_cap': float(pair.get('fdv', 0) or 0),
+                            'age_hours': age_hours,
+                            'risk_score': risk,
+                            'dex': pair.get('dexId', 'unknown'),
+                            'chain': 'solana'
+                        }
+                        new_tokens.append(token)
+
+        # Scan Pump.fun
+        try:
+            pump_url = "https://frontend-api.pump.fun/coins?offset=0&limit=20&sort=created_timestamp&order=desc"
+            response = requests.get(pump_url, timeout=10, headers={"Accept": "application/json"})
+            if response.status_code == 200:
+                coins = response.json()
+                for coin in coins:
+                    created = coin.get('created_timestamp', 0)
+                    age_hours = (time.time() - created / 1000) / 3600 if created else 999
+
+                    if age_hours < 12:
+                        mc = float(coin.get('usd_market_cap', 0) or 0)
+                        if mc > 5000:
+                            token = {
+                                'symbol': coin.get('symbol', 'UNKNOWN'),
+                                'name': coin.get('name', 'Unknown'),
+                                'address': coin.get('mint', ''),
+                                'price': float(coin.get('price', 0) or 0),
+                                'liquidity': mc * 0.1,
+                                'volume_24h': 0,
+                                'market_cap': mc,
+                                'age_hours': age_hours,
+                                'risk_score': 70,  # Pump.fun = higher risk
+                                'dex': 'pumpfun',
+                                'chain': 'solana'
+                            }
+                            new_tokens.append(token)
+        except:
+            pass
+
+    except Exception as e:
+        log(f"Error scanning new tokens: {e}")
+
+    return new_tokens
+
+
+def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
+    """Run sniper strategy on new tokens"""
+    results = []
+
+    for port_id, portfolio in portfolios.items():
+        if not portfolio.get('active', True):
+            continue
+
+        strategy_id = portfolio.get('strategy_id', '')
+        strategy = STRATEGIES.get(strategy_id, {})
+
+        if not strategy.get('use_sniper', False):
+            continue
+
+        config = portfolio['config']
+        max_risk = config.get('max_risk', 75)
+        min_liquidity = config.get('min_liquidity', 10000)
+        allocation = config.get('allocation_percent', 10)
+        max_positions = config.get('max_positions', 10)
+        take_profit = config.get('take_profit', 100)  # %
+        stop_loss = config.get('stop_loss', 50)  # %
+
+        # Check max positions
+        if len(portfolio['positions']) >= max_positions:
+            continue
+
+        # Check existing positions for TP/SL
+        for symbol, pos in list(portfolio['positions'].items()):
+            if pos.get('is_snipe'):
+                # Find current price
+                current_price = pos.get('current_price', pos['entry_price'])
+                for token in new_tokens:
+                    if token['address'] == pos.get('address'):
+                        current_price = token['price']
+                        break
+
+                if current_price > 0:
+                    pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
+
+                    # Take profit
+                    if pnl_pct >= take_profit:
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        if result['success']:
+                            log(f"🎯 SNIPER TP: {symbol} +{pnl_pct:.1f}%")
+                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_TP', 'symbol': symbol})
+
+                    # Stop loss
+                    elif pnl_pct <= -stop_loss:
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        if result['success']:
+                            log(f"🎯 SNIPER SL: {symbol} {pnl_pct:.1f}%")
+                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_SL', 'symbol': symbol})
+
+        # Look for new snipes
+        for token in new_tokens:
+            if token['risk_score'] > max_risk:
+                continue
+            if token['liquidity'] < min_liquidity:
+                continue
+            if token['price'] <= 0:
+                continue
+
+            # Check if we already have this token
+            symbol = f"{token['symbol']}/USDT"
+            if symbol in portfolio['positions']:
+                continue
+            if token['address'] in [p.get('address') for p in portfolio['positions'].values()]:
+                continue
+
+            # Check balance
+            if portfolio['balance']['USDT'] < 100:
+                continue
+
+            # Calculate amount
+            amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
+            amount_usdt = min(amount_usdt, 500)  # Max $500 per snipe
+
+            if amount_usdt < 50:
+                continue
+
+            # Execute snipe buy
+            qty = amount_usdt / token['price']
+            portfolio['balance']['USDT'] -= amount_usdt
+
+            asset = token['symbol']
+            portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+
+            portfolio['positions'][symbol] = {
+                'entry_price': token['price'],
+                'quantity': qty,
+                'entry_time': datetime.now().isoformat(),
+                'is_snipe': True,
+                'address': token['address'],
+                'chain': token['chain'],
+                'dex': token['dex'],
+                'risk_score': token['risk_score'],
+                'liquidity_at_entry': token['liquidity']
+            }
+
+            trade = {
+                'timestamp': datetime.now().isoformat(),
+                'action': 'SNIPE_BUY',
+                'symbol': symbol,
+                'price': token['price'],
+                'quantity': qty,
+                'amount_usdt': amount_usdt,
+                'pnl': 0,
+                'token_address': token['address'],
+                'chain': token['chain'],
+                'dex': token['dex'],
+                'risk_score': token['risk_score'],
+                'market_cap': token['market_cap'],
+                'liquidity': token['liquidity']
+            }
+            portfolio['trades'].append(trade)
+
+            log(f"🎯 SNIPE BUY: {token['symbol']} @ ${token['price']:.8f} | MC: ${token['market_cap']:,.0f} | Risk: {token['risk_score']}/100 | {portfolio['name']}")
+            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_BUY', 'symbol': symbol, 'token': token})
+
+    return results
+
+
 def main():
-    """Main bot loop"""
+    """Main bot loop - All-in-one trading engine"""
     print("\n" + "=" * 60)
-    print("  TRADING BOT - FULL DEGEN EDITION")
+    print("  🚀 TRADING BOT - FULL DEGEN EDITION")
     print("  Dashboard: http://localhost:8501")
     print("  Ctrl+C to stop")
     print("=" * 60)
-    print("  Modes: Classic | Degen Scalping | Degen Momentum")
-    print("  Features: Scanner | TP Ladder | Wallet Tracker | Sniper")
+    print("  Strategies: Conservative | Aggressive | RSI | Confluence")
+    print("  Degen: Scalping | Momentum | Hybrid | Full Degen")
+    print("  Sniper: Safe | Degen | YOLO (New Token Hunter)")
     print("=" * 60 + "\n")
 
     # Start dashboard
@@ -366,44 +573,68 @@ def main():
         log("No portfolios found! Run the dashboard first to create portfolios.")
         return
 
-    log(f"Loaded {len(portfolios)} portfolios")
+    # Count portfolio types
+    sniper_count = len([p for p in portfolios.values() if STRATEGIES.get(p.get('strategy_id', ''), {}).get('use_sniper')])
+    classic_count = len(portfolios) - sniper_count
+
+    log(f"Loaded {len(portfolios)} portfolios ({classic_count} classic, {sniper_count} sniper)")
     for pid, p in portfolios.items():
-        status = "ACTIVE" if p.get('active', True) else "PAUSED"
-        cryptos = ", ".join(p['config'].get('cryptos', []))
-        log(f"  [{status}] {p['name']}: {cryptos}")
+        status = "✅" if p.get('active', True) else "⏸️"
+        strategy = p.get('strategy_id', 'manual')
+        is_sniper = "🎯" if STRATEGIES.get(strategy, {}).get('use_sniper') else ""
+        log(f"  {status} {is_sniper} {p['name']} [{strategy}]")
 
     print("=" * 60)
-    log(f"Starting bot loop (scan every {SCAN_INTERVAL}s)...")
+    log(f"Starting unified bot loop (scan every {SCAN_INTERVAL}s)...")
     print("=" * 60)
 
     scan_count = 0
+    sniper_tokens_seen = set()
 
     try:
         while True:
             scan_count += 1
-            log(f"\n--- SCAN #{scan_count} ---")
+            log(f"\n{'='*20} SCAN #{scan_count} {'='*20}")
 
-            # Reload portfolios (in case dashboard changed them)
+            # Reload portfolios
             portfolios, counter = load_portfolios()
 
-            # Run engine
-            results = run_engine(portfolios)
+            total_results = []
 
-            # Save if any trades
-            if results:
+            # 1. Classic trading engine (existing cryptos)
+            log("📊 Scanning existing cryptos...")
+            classic_results = run_engine(portfolios)
+            total_results.extend(classic_results)
+
+            # 2. Sniper engine (new tokens)
+            log("🎯 Scanning for new tokens...")
+            new_tokens = scan_new_tokens()
+
+            # Filter out already seen tokens
+            fresh_tokens = [t for t in new_tokens if t['address'] not in sniper_tokens_seen]
+            for t in fresh_tokens:
+                sniper_tokens_seen.add(t['address'])
+                log(f"  🆕 {t['symbol']} | ${t['price']:.8f} | MC: ${t['market_cap']:,.0f} | Risk: {t['risk_score']}/100 | {t['dex']}")
+
+            sniper_results = run_sniper_engine(portfolios, new_tokens)
+            total_results.extend(sniper_results)
+
+            # Save if any changes
+            if total_results:
                 save_portfolios(portfolios, counter)
-                log(f"Executed {len(results)} trades - saved to {PORTFOLIOS_FILE}")
-            else:
-                log("No trades executed")
+                log(f"💾 Saved {len(total_results)} trades")
+
+            # Summary
+            log(f"📈 Classic: {len(classic_results)} trades | 🎯 Sniper: {len(sniper_results)} trades | 🆕 New tokens: {len(fresh_tokens)}")
 
             # Wait
-            log(f"Next scan in {SCAN_INTERVAL}s...")
+            log(f"⏳ Next scan in {SCAN_INTERVAL}s...")
             time.sleep(SCAN_INTERVAL)
 
     except KeyboardInterrupt:
-        log("\nBot stopped by user")
+        log("\n🛑 Bot stopped by user")
         save_portfolios(portfolios, counter)
-        log("Final state saved")
+        log("💾 Final state saved")
 
 
 if __name__ == "__main__":
