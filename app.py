@@ -597,7 +597,22 @@ def render_portfolios():
     # Strategy icons
     strat_icons = {
         "confluence_normal": "📊", "confluence_strict": "🎯", "degen_hybrid": "🔥",
-        "degen_scalp": "⚡", "god_mode_only": "🚨", "hodl": "💎", "manual": "🎮"
+        "degen_scalp": "⚡", "god_mode_only": "🚨", "hodl": "💎", "manual": "🎮",
+        "sniper_safe": "🎯", "sniper_degen": "💀", "sniper_yolo": "🚀"
+    }
+
+    # Strategy descriptions for tooltips
+    strat_tooltips = {
+        "confluence_normal": "RSI + MACD + Bollinger Bands. Buys when RSI<35 + MACD crossover + price near lower band. Safe, medium frequency.",
+        "confluence_strict": "Same as normal but stricter: RSI<30 + confirmed MACD + price below lower band. Fewer trades, higher precision.",
+        "degen_hybrid": "Combines scalping + momentum. Aggressive entries on volume spikes and RSI extremes. High risk, high reward.",
+        "degen_scalp": "Ultra-fast scalping on 1m charts. Targets 0.5-1% gains. Very high frequency, small position sizes.",
+        "god_mode_only": "Only trades on God Mode signals (RSI<20 oversold + volume spike + momentum reversal). Rare but powerful.",
+        "hodl": "Buy and hold strategy. Buys on major dips (RSI<25), never sells. Long-term accumulation.",
+        "manual": "Manual trading only. No automated signals.",
+        "sniper_safe": "Scans new DEX tokens. Risk score <50, min $50k liquidity. Conservative sniper.",
+        "sniper_degen": "Scans new DEX tokens. Risk score <75, min $10k liquidity. Aggressive sniper.",
+        "sniper_yolo": "Scans new DEX tokens. Risk score <90, min $5k liquidity. Maximum degen mode."
     }
 
     # Display portfolios as cards (2 per row)
@@ -620,6 +635,7 @@ def render_portfolios():
                     is_active = p.get('active', True)
                     strategy = p.get('strategy_id', 'manual')
                     icon = strat_icons.get(strategy, '📈')
+                    tooltip = strat_tooltips.get(strategy, 'No description available')
                     cryptos = p['config'].get('cryptos', [])
 
                     # Colors
@@ -642,7 +658,7 @@ def render_portfolios():
                                 <span style="font-size: 2rem; margin-right: 0.5rem;">{icon}</span>
                                 <span style="font-size: 1.3rem; font-weight: bold; color: white;">{p['name']}</span>
                                 <div style="color: #888; font-size: 0.8rem; margin-top: 0.3rem;">
-                                    {strategy} • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
+                                    <span style="cursor: help; border-bottom: 1px dotted #888;" title="{tooltip}">ℹ️ {strategy}</span> • {', '.join([c.replace('/USDT','') for c in cryptos[:3]])}{'...' if len(cryptos) > 3 else ''}
                                 </div>
                             </div>
                             <div style="text-align: right;">
