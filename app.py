@@ -700,7 +700,7 @@ def render_portfolios():
                     if st.session_state.get(f'show_history_{pid}', False):
                         trades = p.get('trades', [])
                         if trades:
-                            st.markdown(f"**📜 Historique ({len(trades)} trades)**")
+                            st.markdown(f"**📜 History ({len(trades)} trades)**")
                             for t in reversed(trades[-10:]):  # Last 10 trades
                                 t_time = t.get('timestamp', '')[:16].replace('T', ' ')
                                 t_action = t.get('action', '')
@@ -728,9 +728,9 @@ def render_portfolios():
                                     """, unsafe_allow_html=True)
 
                             if len(trades) > 10:
-                                st.caption(f"... et {len(trades) - 10} autres trades")
+                                st.caption(f"... and {len(trades) - 10} more trades")
                         else:
-                            st.info("Aucun trade pour le moment")
+                            st.info("No trades yet")
 
 
 def render_settings():
