@@ -1,0 +1,429 @@
+"""
+Whale Tracker - Copy trading des whales crypto
+==============================================
+
+Suit les transactions des plus gros wallets et copie leurs trades.
+Utilise des APIs publiques pour tracker les mouvements.
+"""
+import requests
+import time
+from datetime import datetime, timedelta
+from typing import List, Dict, Optional
+from dataclasses import dataclass
+import json
+import os
+
+@dataclass
+class WhaleTransaction:
+    """Transaction d'une whale"""
+    whale_name: str
+    wallet: str
+    action: str  # BUY or SELL
+    token_symbol: str
+    token_address: str
+    amount_usd: float
+    price: float
+    chain: str
+    timestamp: datetime
+    tx_hash: str
+
+# Known whale wallets (public, famous traders)
+WHALE_WALLETS = {
+    # Ethereum whales
+    "eth_whale_1": {
+        "name": "Jump Trading",
+        "wallet": "0x9507c04b10486547584c37bcbd931b2a4fee9a41",
+        "chain": "ethereum",
+        "type": "institution"
+    },
+    "eth_whale_2": {
+        "name": "Wintermute",
+        "wallet": "0x4f3a120e72c76c22ae802d129f599bfdbc31cb81",
+        "chain": "ethereum",
+        "type": "market_maker"
+    },
+    "eth_whale_3": {
+        "name": "Alameda Remains",
+        "wallet": "0x84d34f4f83a87596cd3fb6887cff8f17bf5a7b83",
+        "chain": "ethereum",
+        "type": "fund"
+    },
+
+    # Solana whales
+    "sol_whale_1": {
+        "name": "SOL Whale Alpha",
+        "wallet": "5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9",
+        "chain": "solana",
+        "type": "trader"
+    },
+
+    # BSC whales
+    "bsc_whale_1": {
+        "name": "BSC Degen King",
+        "wallet": "0x8894e0a0c962cb723c1976a4421c95949be2d4e3",
+        "chain": "bsc",
+        "type": "degen"
+    },
+
+    # Famous traders (simulated based on public info)
+    "trader_1": {
+        "name": "GCR (simulated)",
+        "wallet": "gcr_simulated",
+        "chain": "multi",
+        "type": "legendary",
+        "style": "contrarian"
+    },
+    "trader_2": {
+        "name": "Hsaka (simulated)",
+        "wallet": "hsaka_simulated",
+        "chain": "multi",
+        "type": "legendary",
+        "style": "momentum"
+    },
+    "trader_3": {
+        "name": "Cobie (simulated)",
+        "wallet": "cobie_simulated",
+        "chain": "multi",
+        "type": "legendary",
+        "style": "value"
+    },
+    "trader_4": {
+        "name": "Ansem (simulated)",
+        "wallet": "ansem_simulated",
+        "chain": "solana",
+        "type": "legendary",
+        "style": "memecoin"
+    },
+    "trader_5": {
+        "name": "CryptoCobain (simulated)",
+        "wallet": "cobain_simulated",
+        "chain": "multi",
+        "type": "legendary",
+        "style": "degen"
+    }
+}
+
+class WhaleTracker:
+    """Track whale transactions and generate copy-trade signals"""
+
+    def __init__(self, config: Dict = None):
+        self.config = config or {}
+        self.last_transactions = {}
+        self.cache_file = "data/whale_cache.json"
+        self._load_cache()
+
+    def _load_cache(self):
+        """Load cached transactions"""
+        try:
+            if os.path.exists(self.cache_file):
+                with open(self.cache_file, 'r') as f:
+                    self.last_transactions = json.load(f)
+        except:
+            self.last_transactions = {}
+
+    def _save_cache(self):
+        """Save transaction cache"""
+        try:
+            os.makedirs(os.path.dirname(self.cache_file), exist_ok=True)
+            with open(self.cache_file, 'w') as f:
+                json.dump(self.last_transactions, f, default=str)
+        except:
+            pass
+
+    def get_whale_signals(self, whale_ids: List[str] = None) -> List[Dict]:
+        """
+        Get trading signals from whale activity
+        Returns list of {action, symbol, whale, confidence, reason}
+        """
+        signals = []
+        whales = whale_ids or list(WHALE_WALLETS.keys())
+
+        for whale_id in whales:
+            whale = WHALE_WALLETS.get(whale_id)
+            if not whale:
+                continue
+
+            try:
+                whale_signals = self._get_whale_activity(whale_id, whale)
+                signals.extend(whale_signals)
+            except Exception as e:
+                print(f"Error tracking {whale['name']}: {e}")
+
+        return signals
+
+    def _get_whale_activity(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """Get activity for a specific whale"""
+        signals = []
+
+        # For simulated traders, generate signals based on their style
+        if whale['wallet'].endswith('_simulated'):
+            signals = self._simulate_legendary_trader(whale_id, whale)
+        else:
+            # Real wallet tracking via public APIs
+            signals = self._track_real_wallet(whale_id, whale)
+
+        return signals
+
+    def _simulate_legendary_trader(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """
+        Simulate signals from legendary traders based on their known styles.
+        In production, this would use their actual public calls/tweets.
+        """
+        signals = []
+        style = whale.get('style', 'momentum')
+
+        # Get market data to base decisions on
+        try:
+            market_data = self._get_market_overview()
+        except:
+            market_data = {}
+
+        # Generate signals based on trader style
+        if style == 'contrarian':
+            # GCR style: Buy fear, sell greed
+            signals = self._contrarian_signals(whale, market_data)
+        elif style == 'momentum':
+            # Hsaka style: Ride the wave
+            signals = self._momentum_signals(whale, market_data)
+        elif style == 'value':
+            # Cobie style: Fundamentals + patience
+            signals = self._value_signals(whale, market_data)
+        elif style == 'memecoin':
+            # Ansem style: Early memecoin entries
+            signals = self._memecoin_signals(whale, market_data)
+        elif style == 'degen':
+            # Full degen: High risk high reward
+            signals = self._degen_signals(whale, market_data)
+
+        return signals
+
+    def _get_market_overview(self) -> Dict:
+        """Get current market conditions"""
+        try:
+            # Fear & Greed Index
+            fg_response = requests.get("https://api.alternative.me/fng/", timeout=5)
+            fg_data = fg_response.json()
+            fear_greed = int(fg_data['data'][0]['value'])
+
+            # BTC price and change
+            btc_response = requests.get("https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT", timeout=5)
+            btc_data = btc_response.json()
+            btc_change = float(btc_data['priceChangePercent'])
+
+            # Top movers
+            tickers = requests.get("https://api.binance.com/api/v3/ticker/24hr", timeout=5).json()
+            usdt_pairs = [t for t in tickers if t['symbol'].endswith('USDT') and 'UP' not in t['symbol'] and 'DOWN' not in t['symbol']]
+
+            top_gainers = sorted(usdt_pairs, key=lambda x: float(x['priceChangePercent']), reverse=True)[:10]
+            top_losers = sorted(usdt_pairs, key=lambda x: float(x['priceChangePercent']))[:10]
+
+            return {
+                'fear_greed': fear_greed,
+                'btc_change': btc_change,
+                'top_gainers': top_gainers,
+                'top_losers': top_losers,
+                'market_trend': 'bullish' if btc_change > 2 else 'bearish' if btc_change < -2 else 'neutral'
+            }
+        except Exception as e:
+            return {'fear_greed': 50, 'btc_change': 0, 'market_trend': 'neutral', 'top_gainers': [], 'top_losers': []}
+
+    def _contrarian_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """GCR-style contrarian signals: buy fear, sell greed"""
+        signals = []
+        fg = market.get('fear_greed', 50)
+
+        # Extreme fear = buy signal
+        if fg < 25:
+            for loser in market.get('top_losers', [])[:3]:
+                symbol = loser['symbol'].replace('USDT', '/USDT')
+                change = float(loser['priceChangePercent'])
+                if change < -10:  # Only big drops
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': whale['name'],
+                        'confidence': min(90, 100 - fg),
+                        'reason': f"CONTRARIAN: Fear={fg}, {symbol} down {change:.1f}%"
+                    })
+
+        # Extreme greed = sell signal
+        elif fg > 80:
+            for gainer in market.get('top_gainers', [])[:3]:
+                symbol = gainer['symbol'].replace('USDT', '/USDT')
+                change = float(gainer['priceChangePercent'])
+                if change > 15:  # Only big pumps
+                    signals.append({
+                        'action': 'SELL',
+                        'symbol': symbol,
+                        'whale': whale['name'],
+                        'confidence': min(90, fg),
+                        'reason': f"CONTRARIAN: Greed={fg}, {symbol} up {change:.1f}%"
+                    })
+
+        return signals
+
+    def _momentum_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """Hsaka-style momentum: ride strong trends"""
+        signals = []
+
+        for gainer in market.get('top_gainers', [])[:5]:
+            symbol = gainer['symbol'].replace('USDT', '/USDT')
+            change = float(gainer['priceChangePercent'])
+            volume = float(gainer.get('quoteVolume', 0))
+
+            # Strong momentum with volume
+            if change > 8 and volume > 50_000_000:  # >8% gain, >$50M volume
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': min(85, 50 + change),
+                    'reason': f"MOMENTUM: {symbol} +{change:.1f}% with ${volume/1e6:.0f}M volume"
+                })
+
+        return signals
+
+    def _value_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """Cobie-style value investing: quality at discount"""
+        signals = []
+
+        # Quality tokens that are down
+        quality_tokens = ['ETH/USDT', 'SOL/USDT', 'LINK/USDT', 'AAVE/USDT', 'UNI/USDT', 'MKR/USDT']
+
+        for loser in market.get('top_losers', [])[:10]:
+            symbol = loser['symbol'].replace('USDT', '/USDT')
+            change = float(loser['priceChangePercent'])
+
+            if symbol in quality_tokens and change < -8:
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 75,
+                    'reason': f"VALUE: Quality token {symbol} on sale ({change:.1f}%)"
+                })
+
+        return signals
+
+    def _memecoin_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """Ansem-style memecoin plays"""
+        signals = []
+
+        memecoins = ['DOGE/USDT', 'SHIB/USDT', 'PEPE/USDT', 'FLOKI/USDT', 'BONK/USDT', 'WIF/USDT', 'TURBO/USDT']
+
+        for gainer in market.get('top_gainers', [])[:15]:
+            symbol = gainer['symbol'].replace('USDT', '/USDT')
+            change = float(gainer['priceChangePercent'])
+
+            if symbol in memecoins and change > 5:
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 60,
+                    'reason': f"MEME: {symbol} pumping +{change:.1f}%"
+                })
+
+        return signals
+
+    def _degen_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """Full degen: chase pumps aggressively"""
+        signals = []
+
+        for gainer in market.get('top_gainers', [])[:8]:
+            symbol = gainer['symbol'].replace('USDT', '/USDT')
+            change = float(gainer['priceChangePercent'])
+
+            if change > 10:
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 50,
+                    'reason': f"DEGEN: Chasing {symbol} +{change:.1f}%"
+                })
+
+        return signals
+
+    def _track_real_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """Track real wallet via blockchain explorers"""
+        signals = []
+        chain = whale.get('chain', 'ethereum')
+        wallet = whale['wallet']
+
+        # For now, return empty - would need API keys for real tracking
+        # In production: use Etherscan, BSCScan, Solscan APIs
+
+        return signals
+
+
+# Whale-based strategies
+WHALE_STRATEGIES = {
+    "whale_gcr": {
+        "name": "Copy GCR (Contrarian)",
+        "whales": ["trader_1"],
+        "style": "contrarian",
+        "take_profit": 50,
+        "stop_loss": 20
+    },
+    "whale_hsaka": {
+        "name": "Copy Hsaka (Momentum)",
+        "whales": ["trader_2"],
+        "style": "momentum",
+        "take_profit": 30,
+        "stop_loss": 15
+    },
+    "whale_cobie": {
+        "name": "Copy Cobie (Value)",
+        "whales": ["trader_3"],
+        "style": "value",
+        "take_profit": 100,
+        "stop_loss": 25
+    },
+    "whale_ansem": {
+        "name": "Copy Ansem (Memecoins)",
+        "whales": ["trader_4"],
+        "style": "memecoin",
+        "take_profit": 100,
+        "stop_loss": 30
+    },
+    "whale_degen": {
+        "name": "Copy Degens (YOLO)",
+        "whales": ["trader_5"],
+        "style": "degen",
+        "take_profit": 50,
+        "stop_loss": 25
+    },
+    "whale_smart_money": {
+        "name": "Smart Money Composite",
+        "whales": ["trader_1", "trader_2", "trader_3"],
+        "style": "composite",
+        "take_profit": 40,
+        "stop_loss": 20
+    }
+}
+
+
+def get_whale_signals_for_strategy(strategy_id: str) -> List[Dict]:
+    """Get whale signals for a specific strategy"""
+    strategy = WHALE_STRATEGIES.get(strategy_id)
+    if not strategy:
+        return []
+
+    tracker = WhaleTracker()
+    signals = tracker.get_whale_signals(strategy.get('whales'))
+
+    return signals
+
+
+# Test
+if __name__ == "__main__":
+    tracker = WhaleTracker()
+
+    print("Testing whale signals...")
+    signals = tracker.get_whale_signals()
+
+    print(f"\nFound {len(signals)} signals:\n")
+    for s in signals[:10]:
+        print(f"  {s['action']} {s['symbol']} - {s['whale']} ({s['confidence']}%)")
+        print(f"    Reason: {s['reason']}")

@@ -910,12 +910,13 @@ def render_portfolios():
     with col_category:
         strategy_categories = {
             "All": [],
+            "Whale": ["whale_gcr", "whale_hsaka", "whale_cobie", "whale_ansem", "whale_degen", "whale_smart_money"],
+            "Sniper": ["sniper_safe", "sniper_degen", "sniper_yolo", "sniper_all_in", "sniper_spray", "sniper_quickflip"],
             "Classic": ["confluence_normal", "confluence_strict", "conservative", "aggressive", "rsi_strategy", "hodl"],
-            "Degen": ["degen_hybrid", "degen_scalp", "degen_momentum", "degen_full"],
+            "Degen": ["degen_hybrid", "degen_scalp", "degen_momentum", "degen_full", "god_mode_only"],
             "EMA/Trend": ["ema_crossover", "ema_crossover_slow", "supertrend", "supertrend_fast"],
             "Oscillators": ["stoch_rsi", "stoch_rsi_aggressive", "vwap_bounce", "vwap_trend"],
-            "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion", "ichimoku"],
-            "Sniper": ["sniper_safe", "sniper_degen", "sniper_yolo", "god_mode_only"]
+            "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion", "ichimoku"]
         }
         selected_category = st.selectbox("📂 Category", list(strategy_categories.keys()), label_visibility="collapsed")
 
@@ -975,6 +976,10 @@ def render_portfolios():
         "god_mode_only": "🚨", "hodl": "💎", "manual": "🎮",
         "conservative": "🛡️", "aggressive": "🔥", "rsi_strategy": "📈",
         "sniper_safe": "🎯", "sniper_degen": "🔫", "sniper_yolo": "💀",
+        "sniper_all_in": "🚀", "sniper_spray": "💸", "sniper_quickflip": "⚡",
+        # Whale copy-trading
+        "whale_gcr": "🐋", "whale_hsaka": "🦈", "whale_cobie": "🐳",
+        "whale_ansem": "🦑", "whale_degen": "🐙", "whale_smart_money": "💎",
         # New strategies
         "ema_crossover": "📈", "ema_crossover_slow": "🐢",
         "vwap_bounce": "🎯", "vwap_trend": "📊",

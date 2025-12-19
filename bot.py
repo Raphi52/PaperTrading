@@ -231,9 +231,22 @@ STRATEGIES = {
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20},
 
     # SNIPER STRATEGIES - New token hunting
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 10000},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 1000},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 500},
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 10000, "take_profit": 100, "stop_loss": 50},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 1000, "take_profit": 75, "stop_loss": 40},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 500, "take_profit": 50, "stop_loss": 30},
+
+    # ULTRA DEGEN - Buy ALL new tokens, sell fast
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 100, "take_profit": 30, "stop_loss": 20, "max_hold_hours": 2},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 50, "take_profit": 50, "stop_loss": 25, "max_hold_hours": 4, "allocation_percent": 5},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 200, "take_profit": 20, "stop_loss": 15, "max_hold_hours": 1},
+
+    # WHALE COPY TRADING - Follow legendary traders
+    "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 50, "stop_loss": 20},
+    "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 30, "stop_loss": 15},
+    "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 100, "stop_loss": 25},
+    "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 100, "stop_loss": 30},
+    "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 50, "stop_loss": 25},
+    "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 40, "stop_loss": 20},
 
     # ============ NEW STRATEGIES ============
 
@@ -320,6 +333,15 @@ STRATEGY_TIMEFRAMES = {
     "sniper_safe": "1h",
     "sniper_degen": "1h",
     "sniper_yolo": "1h",
+    "sniper_all_in": "15m",
+    "sniper_spray": "15m",
+    "sniper_quickflip": "15m",
+    "whale_gcr": "1h",
+    "whale_hsaka": "15m",
+    "whale_cobie": "4h",
+    "whale_ansem": "15m",
+    "whale_degen": "15m",
+    "whale_smart_money": "1h",
 
     # Slow strategies - 4H (trend following)
     "conservative": "4h",
@@ -1436,7 +1458,10 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
         if len(portfolio['positions']) >= max_positions:
             continue
 
-        # Check existing positions for TP/SL
+        # Get max hold time
+        max_hold_hours = config.get('max_hold_hours', strategy.get('max_hold_hours', 0))
+
+        # Check existing positions for TP/SL/Time exit
         for symbol, pos in list(portfolio['positions'].items()):
             if pos.get('is_snipe'):
                 # Find current price
@@ -1448,6 +1473,10 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
 
                 if current_price > 0:
                     pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
+
+                    # Check hold time
+                    entry_time = datetime.fromisoformat(pos.get('entry_time', datetime.now().isoformat()))
+                    hold_hours = (datetime.now() - entry_time).total_seconds() / 3600
 
                     # Take profit
                     if pnl_pct >= take_profit:
@@ -1462,6 +1491,13 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                         if result['success']:
                             log(f"🎯 SNIPER SL: {symbol} {pnl_pct:.1f}%")
                             results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_SL', 'symbol': symbol})
+
+                    # Time-based exit (if max_hold_hours is set)
+                    elif max_hold_hours > 0 and hold_hours >= max_hold_hours:
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        if result['success']:
+                            log(f"🎯 SNIPER TIME EXIT: {symbol} after {hold_hours:.1f}h ({pnl_pct:+.1f}%)")
+                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_TIME', 'symbol': symbol})
 
         # Look for new snipes
         for token in new_tokens:
@@ -1528,6 +1564,134 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
 
             log(f"🎯 SNIPE BUY: {token['symbol']} @ ${token['price']:.8f} | MC: ${token['market_cap']:,.0f} | Risk: {token['risk_score']}/100 | {portfolio['name']}")
             results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_BUY', 'symbol': symbol, 'token': token})
+
+    return results
+
+
+def run_whale_engine(portfolios: dict) -> list:
+    """Run whale copy-trading strategy"""
+    results = []
+
+    try:
+        from sniper.whale_tracker import WhaleTracker
+        tracker = WhaleTracker()
+    except Exception as e:
+        log(f"Whale tracker import error: {e}")
+        return results
+
+    for port_id, portfolio in portfolios.items():
+        if not portfolio.get('active', True):
+            continue
+
+        strategy_id = portfolio.get('strategy_id', '')
+        strategy = STRATEGIES.get(strategy_id, {})
+
+        if not strategy.get('use_whale', False):
+            continue
+
+        config = portfolio['config']
+        whale_ids = config.get('whale_ids', strategy.get('whale_ids', []))
+        allocation = config.get('allocation_percent', 10)
+        take_profit = config.get('take_profit', strategy.get('take_profit', 50))
+        stop_loss = config.get('stop_loss', strategy.get('stop_loss', 25))
+
+        # Get whale signals
+        try:
+            signals = tracker.get_whale_signals(whale_ids)
+        except Exception as e:
+            log(f"Error getting whale signals for {portfolio['name']}: {e}")
+            continue
+
+        # Get current prices
+        all_prices = {}
+        try:
+            response = requests.get("https://api.binance.com/api/v3/ticker/price", timeout=5)
+            for p in response.json():
+                if p['symbol'].endswith('USDT'):
+                    sym = p['symbol'].replace('USDT', '/USDT')
+                    all_prices[sym] = float(p['price'])
+        except:
+            pass
+
+        # Check existing positions for TP/SL
+        for symbol, pos in list(portfolio['positions'].items()):
+            if pos.get('is_whale_trade'):
+                current_price = all_prices.get(symbol, pos['entry_price'])
+                if current_price > 0:
+                    pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
+
+                    if pnl_pct >= take_profit:
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        if result['success']:
+                            log(f"🐋 WHALE TP: {symbol} +{pnl_pct:.1f}% [{portfolio['name']}]")
+                            results.append({'portfolio': portfolio['name'], 'action': 'WHALE_SELL_TP', 'symbol': symbol})
+
+                    elif pnl_pct <= -stop_loss:
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        if result['success']:
+                            log(f"🐋 WHALE SL: {symbol} {pnl_pct:.1f}% [{portfolio['name']}]")
+                            results.append({'portfolio': portfolio['name'], 'action': 'WHALE_SELL_SL', 'symbol': symbol})
+
+        # Execute new whale signals
+        for signal in signals:
+            if signal['action'] != 'BUY':
+                continue
+
+            symbol = signal['symbol']
+            if symbol not in all_prices:
+                continue
+
+            # Skip if already have position
+            if symbol in portfolio['positions']:
+                continue
+
+            # Check balance
+            if portfolio['balance']['USDT'] < 100:
+                continue
+
+            # Only act on high confidence signals
+            if signal.get('confidence', 0) < 60:
+                continue
+
+            # Calculate amount
+            price = all_prices[symbol]
+            amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
+            amount_usdt = min(amount_usdt, 500)
+
+            if amount_usdt < 50:
+                continue
+
+            # Execute buy
+            qty = amount_usdt / price
+            asset = symbol.split('/')[0]
+
+            portfolio['balance']['USDT'] -= amount_usdt
+            portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+
+            portfolio['positions'][symbol] = {
+                'entry_price': price,
+                'quantity': qty,
+                'entry_time': datetime.now().isoformat(),
+                'is_whale_trade': True,
+                'whale': signal['whale'],
+                'confidence': signal['confidence']
+            }
+
+            trade = {
+                'timestamp': datetime.now().isoformat(),
+                'action': 'WHALE_BUY',
+                'symbol': symbol,
+                'price': price,
+                'quantity': qty,
+                'amount_usdt': amount_usdt,
+                'pnl': 0,
+                'whale': signal['whale'],
+                'reason': signal['reason']
+            }
+            portfolio['trades'].append(trade)
+
+            log(f"🐋 WHALE BUY: {symbol} @ ${price:.4f} | {signal['whale']} ({signal['confidence']}%) | {portfolio['name']}")
+            results.append({'portfolio': portfolio['name'], 'action': 'WHALE_BUY', 'symbol': symbol, 'whale': signal['whale']})
 
     return results
 
@@ -1632,6 +1796,22 @@ def main():
                 fresh_tokens = []
                 api_errors += 1
 
+            # 3. Whale copy-trading engine
+            whale_results = []
+            try:
+                log("🐋 Checking whale signals...")
+                whale_results = run_whale_engine(portfolios)
+                total_results.extend(whale_results)
+
+                for r in whale_results:
+                    if 'whale' in r:
+                        debug_log_trade(r['portfolio'], r['action'], r['symbol'], 0, f"Whale: {r['whale']}")
+
+            except Exception as e:
+                debug_log('SYSTEM', 'Whale engine crashed', {'scan': scan_count}, error=e)
+                whale_results = []
+                api_errors += 1
+
             # Save if any changes
             if total_results:
                 save_portfolios(portfolios, counter)
@@ -1639,7 +1819,7 @@ def main():
 
             # Summary
             scan_duration = time.time() - scan_start
-            log(f"📈 Classic: {len(classic_results)} trades | 🎯 Sniper: {len(sniper_results)} trades | 🆕 New tokens: {len(fresh_tokens)}")
+            log(f"📈 Classic: {len(classic_results)} | 🎯 Sniper: {len(sniper_results)} | 🐋 Whale: {len(whale_results)} | 🆕 New: {len(fresh_tokens)}")
 
             # Calculate timeframes used
             timeframes_used = set()
