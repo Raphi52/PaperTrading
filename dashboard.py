@@ -930,6 +930,124 @@ def execute_signals_for_all_portfolios(action_str: str, symbol: str, price: floa
     return results
 
 
+def analyze_crypto_quick(symbol: str) -> dict:
+    """Analyse rapide d'une crypto - retourne signal, prix, RSI"""
+    try:
+        # Fetch OHLCV
+        url = f"https://api.binance.com/api/v3/klines?symbol={symbol.replace('/', '')}&interval=1h&limit=100"
+        response = requests.get(url, timeout=10)
+        data = response.json()
+
+        if not data or len(data) < 50:
+            return None
+
+        df = pd.DataFrame(data, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume',
+                                          'close_time', 'quote_volume', 'trades', 'taker_buy_base',
+                                          'taker_buy_quote', 'ignore'])
+        df['close'] = df['close'].astype(float)
+        df['high'] = df['high'].astype(float)
+        df['low'] = df['low'].astype(float)
+        df['volume'] = df['volume'].astype(float)
+
+        # Calculate RSI
+        delta = df['close'].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+        rs = gain / loss
+        rsi = 100 - (100 / (1 + rs))
+        current_rsi = rsi.iloc[-1]
+
+        # Calculate EMAs
+        ema_12 = df['close'].ewm(span=12).mean().iloc[-1]
+        ema_26 = df['close'].ewm(span=26).mean().iloc[-1]
+
+        # Current price
+        current_price = df['close'].iloc[-1]
+
+        # Determine signal
+        signal = "HOLD"
+        if current_rsi < 30 and ema_12 > ema_26:
+            signal = "STRONG_BUY"
+        elif current_rsi < 35:
+            signal = "BUY"
+        elif current_rsi > 70 and ema_12 < ema_26:
+            signal = "STRONG_SELL"
+        elif current_rsi > 65:
+            signal = "SELL"
+
+        return {
+            'symbol': symbol,
+            'price': current_price,
+            'rsi': current_rsi,
+            'ema_12': ema_12,
+            'ema_26': ema_26,
+            'signal': signal,
+            'trend': 'bullish' if ema_12 > ema_26 else 'bearish'
+        }
+
+    except Exception as e:
+        return None
+
+
+def run_portfolio_engine():
+    """Execute le moteur de trading pour tous les portfolios actifs"""
+    results = []
+    analyzed_cryptos = {}  # Cache pour eviter d'analyser plusieurs fois la meme crypto
+
+    for port_id, portfolio in st.session_state.portfolios.items():
+        if not portfolio.get('active', True):
+            continue
+
+        config = portfolio['config']
+        if not config.get('auto_trade', True):
+            continue
+
+        strategy = STRATEGIES.get(portfolio['strategy_id'], {})
+
+        for crypto in config.get('cryptos', []):
+            # Analyser la crypto (avec cache)
+            if crypto not in analyzed_cryptos:
+                analysis = analyze_crypto_quick(crypto)
+                analyzed_cryptos[crypto] = analysis
+
+            analysis = analyzed_cryptos.get(crypto)
+            if not analysis:
+                continue
+
+            price = analysis['price']
+            rsi = analysis['rsi']
+            signal = analysis['signal']
+
+            # Convertir signal en action string
+            signal_map = {
+                "STRONG_BUY": "🟢🟢 STRONG BUY",
+                "BUY": "🟢 BUY",
+                "SELL": "🔴 SELL",
+                "STRONG_SELL": "🔴🔴 STRONG SELL",
+                "HOLD": "⚪ HOLD"
+            }
+            action_str = signal_map.get(signal, "⚪ HOLD")
+
+            # Executer selon la strategie
+            result = execute_strategy_signal(
+                port_id, action_str, crypto, price,
+                50,  # fear_greed placeholder
+                None,  # god_mode_level placeholder
+                rsi
+            )
+
+            if result and result.get('success'):
+                results.append({
+                    'portfolio': portfolio['name'],
+                    'crypto': crypto,
+                    'action': signal,
+                    'price': price,
+                    'message': result['message']
+                })
+
+    return results, analyzed_cryptos
+
+
 def reset_all_portfolios():
     """Reset tous les portfolios"""
     st.session_state.portfolios = {}
@@ -1074,6 +1192,48 @@ def main():
             if st.button("➕ Nouveau", use_container_width=True, key="btn_new_portfolio"):
                 st.session_state.show_create_portfolio = not st.session_state.get('show_create_portfolio', False)
                 st.rerun()
+
+        # Run Engine button - prominent
+        engine_col1, engine_col2 = st.columns([3, 1])
+        with engine_col1:
+            active_count = sum(1 for p in st.session_state.portfolios.values() if p.get('active', True))
+            total_cryptos = len(set(c for p in st.session_state.portfolios.values() for c in p['config'].get('cryptos', [])))
+            st.markdown(f"🔍 **{active_count} portfolios actifs** surveillant **{total_cryptos} cryptos**")
+
+        with engine_col2:
+            if st.button("🚀 RUN ENGINE", type="primary", use_container_width=True, key="btn_run_engine"):
+                with st.spinner("Analyse en cours..."):
+                    results, analyzed = run_portfolio_engine()
+                    st.session_state['last_engine_results'] = results
+                    st.session_state['last_engine_analysis'] = analyzed
+                    st.session_state['last_engine_time'] = datetime.now().strftime('%H:%M:%S')
+                    if results:
+                        save_portfolios()
+                st.rerun()
+
+        # Show last engine results
+        if st.session_state.get('last_engine_analysis'):
+            with st.expander(f"📡 Dernière analyse ({st.session_state.get('last_engine_time', '')})", expanded=True):
+                analysis_data = []
+                for sym, data in st.session_state['last_engine_analysis'].items():
+                    if data:
+                        signal_color = "🟢" if "BUY" in data['signal'] else ("🔴" if "SELL" in data['signal'] else "⚪")
+                        analysis_data.append({
+                            'Crypto': sym.replace('/USDT', ''),
+                            'Prix': f"${data['price']:,.2f}",
+                            'RSI': f"{data['rsi']:.1f}",
+                            'Trend': "📈" if data['trend'] == 'bullish' else "📉",
+                            'Signal': f"{signal_color} {data['signal']}"
+                        })
+
+                if analysis_data:
+                    st.dataframe(pd.DataFrame(analysis_data), hide_index=True, use_container_width=True)
+
+                # Show executed trades
+                if st.session_state.get('last_engine_results'):
+                    st.markdown("**⚡ Trades exécutés:**")
+                    for r in st.session_state['last_engine_results']:
+                        st.success(f"{r['portfolio']}: {r['action']} {r['crypto']} @ ${r['price']:,.2f}")
 
         # Quick create portfolio form
         if st.session_state.get('show_create_portfolio', False):
@@ -2039,40 +2199,18 @@ def main():
 
     # Auto-refresh et Auto-execute
     if auto_refresh:
-        # Auto-execute signals sur tous les portfolios
+        # Auto-execute via portfolio engine
         if auto_execute and st.session_state.portfolios:
-            # Executer pour chaque crypto dans chaque portfolio
-            all_results = []
-            for port_id, portfolio in st.session_state.portfolios.items():
-                if portfolio.get('active', True) and portfolio['config'].get('auto_trade', True):
-                    for crypto in portfolio['config'].get('cryptos', []):
-                        # Utiliser le signal actuel si c'est la crypto selectionnee
-                        if crypto == symbol:
-                            result = execute_strategy_signal(
-                                port_id, action, crypto, current_price,
-                                sentiment_result.fear_greed_index, godmode_result.level,
-                                technical_result.rsi
-                            )
-                            if result and result.get('success'):
-                                all_results.append(f"{portfolio['name']}: {result['message']}")
-
-            if all_results:
-                # Log les trades executes (visible au prochain refresh)
-                st.session_state['last_auto_trades'] = all_results
-                st.session_state['last_auto_time'] = datetime.now().strftime('%H:%M:%S')
+            results, analyzed = run_portfolio_engine()
+            if results:
+                st.session_state['last_engine_results'] = results
+                st.session_state['last_engine_analysis'] = analyzed
+                st.session_state['last_engine_time'] = datetime.now().strftime('%H:%M:%S')
+                save_portfolios()
 
         import time
         time.sleep(refresh_rate)
         st.rerun()
-
-    # Afficher les derniers trades auto-executes
-    if 'last_auto_trades' in st.session_state and st.session_state.get('last_auto_trades'):
-        with st.sidebar:
-            st.markdown("---")
-            st.markdown(f"**⚡ Derniers trades auto ({st.session_state.get('last_auto_time', '')}):**")
-            for trade in st.session_state['last_auto_trades'][-5:]:
-                st.write(f"• {trade}")
-            st.session_state['last_auto_trades'] = []  # Clear apres affichage
 
 
 if __name__ == "__main__":
