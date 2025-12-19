@@ -1,4 +1,7 @@
 requests
 pandas
+numpy
 streamlit
 plotly
+ccxt
+websocket-client
