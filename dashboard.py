@@ -524,12 +524,11 @@ def render_page_portfolios():
     total = len(st.session_state.portfolios)
     per_page = 10
 
-    # Header avec tri visible
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        st.markdown(f"**💼 {total}**")
-    with col2:
-        sort_option = st.selectbox("Tri", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], key="pf_sort")
+    # Header
+    st.markdown(f"### 💼 {total} Portfolios")
+
+    # Tri bien visible
+    sort_option = st.selectbox("🔽 Trier par", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], key="pf_sort")
 
     # Reset page si tri change
     if 'last_sort' not in st.session_state:
