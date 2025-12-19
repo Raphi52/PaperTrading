@@ -96,6 +96,24 @@ STRATEGIES = {
 }
 
 
+def get_fear_greed_index() -> dict:
+    """Fetch Fear & Greed Index from Alternative.me API"""
+    try:
+        url = "https://api.alternative.me/fng/?limit=1"
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('data') and len(data['data']) > 0:
+                fng = data['data'][0]
+                return {
+                    'value': int(fng.get('value', 50)),
+                    'classification': fng.get('value_classification', 'Neutral')
+                }
+    except Exception:
+        pass
+    return {'value': 50, 'classification': 'Neutral'}  # Default neutral
+
+
 def log(message: str):
     """Log to console and file"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -175,16 +193,23 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['vwap'] = vwap.iloc[-1]
     indicators['vwap_deviation'] = ((closes.iloc[-1] - vwap.iloc[-1]) / vwap.iloc[-1]) * 100
 
-    # Supertrend
-    period = 10
-    multiplier = 3.0
+    # Supertrend (normal: period=10, mult=3.0 | fast: period=7, mult=2.0)
     tr = pd.concat([highs - lows, abs(highs - closes.shift(1)), abs(lows - closes.shift(1))], axis=1).max(axis=1)
-    atr = tr.rolling(window=period).mean()
     hl2 = (highs + lows) / 2
-    upper_band = hl2 + (multiplier * atr)
-    lower_band = hl2 - (multiplier * atr)
-    indicators['supertrend_up'] = closes.iloc[-1] > lower_band.iloc[-1]
-    indicators['supertrend_value'] = lower_band.iloc[-1] if indicators['supertrend_up'] else upper_band.iloc[-1]
+
+    # Normal supertrend
+    atr_10 = tr.rolling(window=10).mean()
+    lower_band_10 = hl2 - (3.0 * atr_10)
+    upper_band_10 = hl2 + (3.0 * atr_10)
+    indicators['supertrend_up'] = closes.iloc[-1] > lower_band_10.iloc[-1]
+    indicators['supertrend_value'] = lower_band_10.iloc[-1] if indicators['supertrend_up'] else upper_band_10.iloc[-1]
+
+    # Fast supertrend
+    atr_7 = tr.rolling(window=7).mean()
+    lower_band_7 = hl2 - (2.0 * atr_7)
+    upper_band_7 = hl2 + (2.0 * atr_7)
+    indicators['supertrend_up_fast'] = closes.iloc[-1] > lower_band_7.iloc[-1]
+    indicators['supertrend_value_fast'] = lower_band_7.iloc[-1] if indicators['supertrend_up_fast'] else upper_band_7.iloc[-1]
 
     # Stochastic RSI
     rsi_min = rsi.rolling(window=14).min()
@@ -201,18 +226,32 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['bb_mid'] = sma_20.iloc[-1]
     indicators['bb_position'] = (closes.iloc[-1] - indicators['bb_lower']) / (indicators['bb_upper'] - indicators['bb_lower']) if indicators['bb_upper'] != indicators['bb_lower'] else 0.5
 
-    # Breakout detection
-    high_20 = highs.rolling(window=20).max().iloc[-2]  # Previous high
-    low_20 = lows.rolling(window=20).min().iloc[-2]  # Previous low
+    # Breakout detection (normal: lookback=20, vol=1.5x | tight: lookback=10, vol=2.0x)
     vol_avg = volumes.rolling(window=20).mean().iloc[-1]
+
+    # Normal breakout (20 period)
+    high_20 = highs.rolling(window=20).max().iloc[-2]
+    low_20 = lows.rolling(window=20).min().iloc[-2]
     indicators['breakout_up'] = closes.iloc[-1] > high_20 and volumes.iloc[-1] > vol_avg * 1.5
     indicators['breakout_down'] = closes.iloc[-1] < low_20 and volumes.iloc[-1] > vol_avg * 1.5
     indicators['consolidation_range'] = (high_20 - low_20) / low_20 * 100
 
-    # Mean Reversion
+    # Tight breakout (10 period, 2x volume)
+    high_10 = highs.rolling(window=10).max().iloc[-2]
+    low_10 = lows.rolling(window=10).min().iloc[-2]
+    indicators['breakout_up_tight'] = closes.iloc[-1] > high_10 and volumes.iloc[-1] > vol_avg * 2.0
+    indicators['breakout_down_tight'] = closes.iloc[-1] < low_10 and volumes.iloc[-1] > vol_avg * 2.0
+
+    # Mean Reversion (normal: period=20 | tight: period=14)
     indicators['deviation_from_mean'] = (closes.iloc[-1] - sma_20.iloc[-1]) / std_20.iloc[-1] if std_20.iloc[-1] > 0 else 0
 
-    # Ichimoku Cloud
+    # Tight mean reversion (14 period)
+    sma_14 = closes.rolling(window=14).mean()
+    std_14 = closes.rolling(window=14).std()
+    indicators['deviation_from_mean_tight'] = (closes.iloc[-1] - sma_14.iloc[-1]) / std_14.iloc[-1] if std_14.iloc[-1] > 0 else 0
+
+    # Ichimoku Cloud (normal: 9/26/52 | fast: 7/22/44)
+    # Normal Ichimoku
     tenkan = (highs.rolling(window=9).max() + lows.rolling(window=9).min()) / 2
     kijun = (highs.rolling(window=26).max() + lows.rolling(window=26).min()) / 2
     senkou_a = ((tenkan + kijun) / 2).shift(26)
@@ -223,6 +262,16 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['ichimoku_bullish'] = closes.iloc[-1] > tenkan.iloc[-1] and tenkan.iloc[-1] > kijun.iloc[-1]
     indicators['ichimoku_bearish'] = closes.iloc[-1] < tenkan.iloc[-1] and tenkan.iloc[-1] < kijun.iloc[-1]
     indicators['above_cloud'] = closes.iloc[-1] > max(senkou_a.iloc[-1] if not pd.isna(senkou_a.iloc[-1]) else 0, senkou_b.iloc[-1] if not pd.isna(senkou_b.iloc[-1]) else 0)
+
+    # Fast Ichimoku (7/22/44)
+    tenkan_fast = (highs.rolling(window=7).max() + lows.rolling(window=7).min()) / 2
+    kijun_fast = (highs.rolling(window=22).max() + lows.rolling(window=22).min()) / 2
+    senkou_a_fast = ((tenkan_fast + kijun_fast) / 2).shift(22)
+    senkou_b_fast = ((highs.rolling(window=44).max() + lows.rolling(window=44).min()) / 2).shift(22)
+
+    indicators['ichimoku_bullish_fast'] = closes.iloc[-1] > tenkan_fast.iloc[-1] and tenkan_fast.iloc[-1] > kijun_fast.iloc[-1]
+    indicators['ichimoku_bearish_fast'] = closes.iloc[-1] < tenkan_fast.iloc[-1] and tenkan_fast.iloc[-1] < kijun_fast.iloc[-1]
+    indicators['above_cloud_fast'] = closes.iloc[-1] > max(senkou_a_fast.iloc[-1] if not pd.isna(senkou_a_fast.iloc[-1]) else 0, senkou_b_fast.iloc[-1] if not pd.isna(senkou_b_fast.iloc[-1]) else 0)
 
     # Price changes for DCA
     indicators['change_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100 if len(closes) > 1 else 0
@@ -490,14 +539,19 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
                 return 'SELL'
         return None
 
-    # Supertrend
+    # Supertrend (normal vs fast)
     if strategy.get('use_supertrend'):
-        if analysis.get('supertrend_up') and not has_position and has_cash:
-            # Price above supertrend = uptrend
+        period = strategy.get('period', 10)
+        # Use fast indicators if period is 7 (fast version)
+        if period == 7:
+            supertrend_up = analysis.get('supertrend_up_fast', False)
+        else:
+            supertrend_up = analysis.get('supertrend_up', False)
+
+        if supertrend_up and not has_position and has_cash:
             if analysis.get('rsi', 50) < 70:  # Not overbought
                 return 'BUY'
-        elif not analysis.get('supertrend_up') and has_position:
-            # Price below supertrend = downtrend
+        elif not supertrend_up and has_position:
             return 'SELL'
         return None
 
@@ -513,18 +567,32 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
             return 'SELL'
         return None
 
-    # Breakout
+    # Breakout (normal vs tight)
     if strategy.get('use_breakout'):
-        if analysis.get('breakout_up') and has_cash:
+        lookback = strategy.get('lookback', 20)
+        # Use tight indicators if lookback is 10 (tight version)
+        if lookback == 10:
+            breakout_up = analysis.get('breakout_up_tight', False)
+            breakout_down = analysis.get('breakout_down_tight', False)
+        else:
+            breakout_up = analysis.get('breakout_up', False)
+            breakout_down = analysis.get('breakout_down', False)
+
+        if breakout_up and has_cash:
             return 'BUY'
-        elif analysis.get('breakout_down') and has_position:
+        elif breakout_down and has_position:
             return 'SELL'
         return None
 
-    # Mean Reversion
+    # Mean Reversion (normal vs tight)
     if strategy.get('use_mean_rev'):
         std_threshold = strategy.get('std_dev', 2.0)
-        deviation = analysis.get('deviation_from_mean', 0)
+        period = strategy.get('period', 20)
+        # Use tight indicator if period is 14
+        if period == 14:
+            deviation = analysis.get('deviation_from_mean_tight', 0)
+        else:
+            deviation = analysis.get('deviation_from_mean', 0)
 
         if deviation < -std_threshold and has_cash:
             return 'BUY'
@@ -532,14 +600,19 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
             return 'SELL'
         return None
 
-    # Grid Trading
+    # Grid Trading (uses grid_size to adjust thresholds)
     if strategy.get('use_grid'):
         grid_size = strategy.get('grid_size', 2.0)
         bb_pos = analysis.get('bb_position', 0.5)
+        # Smaller grid_size = tighter thresholds (more trades)
+        # 2.0% grid = 0.2/0.8 thresholds
+        # 1.0% grid = 0.3/0.7 thresholds (tighter range)
+        buy_threshold = 0.15 + (grid_size * 0.025)  # e.g., 2.0 -> 0.20, 1.0 -> 0.175
+        sell_threshold = 0.85 - (grid_size * 0.025)  # e.g., 2.0 -> 0.80, 1.0 -> 0.825
 
-        if bb_pos < 0.2 and has_cash:  # Near bottom of range
+        if bb_pos < buy_threshold and has_cash:
             return 'BUY'
-        elif bb_pos > 0.8 and has_position:  # Near top of range
+        elif bb_pos > sell_threshold and has_position:
             return 'SELL'
         return None
 
@@ -554,27 +627,58 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         # DCA never sells by design
         return None
 
-    # Ichimoku
+    # Ichimoku (normal vs fast)
     if strategy.get('use_ichimoku'):
-        if analysis.get('ichimoku_bullish') and analysis.get('above_cloud') and has_cash:
+        tenkan = strategy.get('tenkan', 9)
+        # Use fast indicators if tenkan is 7 (fast version)
+        if tenkan == 7:
+            bullish = analysis.get('ichimoku_bullish_fast', False)
+            bearish = analysis.get('ichimoku_bearish_fast', False)
+            above = analysis.get('above_cloud_fast', False)
+        else:
+            bullish = analysis.get('ichimoku_bullish', False)
+            bearish = analysis.get('ichimoku_bearish', False)
+            above = analysis.get('above_cloud', False)
+
+        if bullish and above and has_cash:
             return 'BUY'
-        elif analysis.get('ichimoku_bearish') and has_position:
+        elif bearish and has_position:
             return 'SELL'
         return None
 
-    # Martingale
+    # Martingale (uses multiplier and max_levels)
     if strategy.get('use_martingale'):
-        # Check last trade
-        trades = portfolio.get('trades', [])
-        if trades:
-            last_trade = trades[-1]
-            if last_trade.get('action') == 'SELL' and last_trade.get('pnl', 0) < 0:
-                # Lost money on last trade, double down
-                if has_cash and analysis.get('rsi', 50) < 40:
-                    return 'BUY'
+        multiplier = strategy.get('multiplier', 2.0)
+        max_levels = strategy.get('max_levels', 4)
 
-        # Normal entry
+        # Count consecutive losses
+        trades = portfolio.get('trades', [])
+        consecutive_losses = 0
+        for t in reversed(trades):
+            if t.get('action') == 'SELL':
+                if t.get('pnl', 0) < 0:
+                    consecutive_losses += 1
+                else:
+                    break  # Stopped by a win
+
+        # Check if we should double down (respect max_levels)
+        if consecutive_losses > 0 and consecutive_losses <= max_levels:
+            # More aggressive entry after losses
+            if has_cash and analysis.get('rsi', 50) < 45:
+                # Amount would be multiplied: base * (multiplier ^ consecutive_losses)
+                # This is handled in execute_trade via portfolio metadata
+                portfolio['_martingale_level'] = consecutive_losses
+                portfolio['_martingale_multiplier'] = multiplier
+                return 'BUY'
+        elif consecutive_losses > max_levels:
+            # Max levels reached, wait for better conditions
+            if has_cash and analysis.get('rsi', 50) < 25:  # Only enter on extreme oversold
+                portfolio['_martingale_level'] = 0  # Reset
+                return 'BUY'
+
+        # Normal entry (level 0)
         if analysis.get('rsi', 50) < 35 and has_cash:
+            portfolio['_martingale_level'] = 0
             return 'BUY'
         elif analysis.get('rsi', 50) > 65 and has_position:
             return 'SELL'
@@ -593,6 +697,24 @@ def should_trade(portfolio: dict, analysis: dict) -> str:
         if rsi < rsi_oversold and has_cash:
             return 'BUY'
         elif rsi > rsi_overbought and has_position:
+            return 'SELL'
+        return None
+
+    # DCA Fear & Greed Strategy
+    if strategy.get('use_fear_greed', False):
+        fng = get_fear_greed_index()
+        fear_value = fng['value']
+        # Fear = 0-25 (Extreme Fear), 25-45 (Fear)
+        # Neutral = 45-55
+        # Greed = 55-75 (Greed), 75-100 (Extreme Greed)
+
+        # Buy during fear (DCA style)
+        if fear_value < 25 and has_cash:  # Extreme Fear = strong buy
+            return 'BUY'
+        elif fear_value < 40 and has_cash and rsi < 40:  # Fear + low RSI
+            return 'BUY'
+        # Sell during extreme greed
+        elif fear_value > 80 and has_position:  # Extreme Greed
             return 'SELL'
         return None
 
