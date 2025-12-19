@@ -1,0 +1,33 @@
+# Exchange & Data
+ccxt>=4.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Technical Analysis
+ta>=0.10.2
+pandas-ta>=0.3.14b
+
+# Sentiment Analysis
+tweepy>=4.14.0
+praw>=7.7.0
+textblob>=0.17.1
+requests>=2.31.0
+
+# On-Chain Data
+web3>=6.0.0
+
+# Backtesting
+backtrader>=1.9.78
+
+# Utilities
+python-dotenv>=1.0.0
+schedule>=1.2.0
+colorama>=0.4.6
+
+# Async
+aiohttp>=3.8.0
+asyncio-throttle>=1.0.2
+
+# Database (pour historique)
+sqlalchemy>=2.0.0
+aiosqlite>=0.19.0
