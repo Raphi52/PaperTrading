@@ -2,15 +2,16 @@
 Trading Bot - Dashboard Unifie
 ===============================
 
-Interface unique avec toutes les fonctionnalites:
-- Dashboard principal (portfolios, signaux)
-- Mode Degen (scalping, momentum)
-- Scanner temps reel
-- Wallet Tracker
-- Sniper
+Interface avec:
+- Dashboard (overview marché)
+- Portfolios (100 stratégies automatiques)
+- Settings
+- Debug
+
+Tout est automatique via bot.py - les stratégies degen, sniper, etc.
+sont intégrées directement dans les portfolios.
 
 Lance avec: streamlit run app.py
-Ou automatiquement via: python bot.py
 """
 import sys
 import os
@@ -111,42 +112,279 @@ def get_top_cryptos(limit: int = 50) -> List[Dict]:
         return []
 
 
-@st.cache_data(ttl=5)  # Cache portfolios for 5 seconds
 def load_portfolios() -> Dict:
-    """Charge les portfolios"""
+    """Charge les portfolios - JAMAIS de perte de donnees"""
+    import glob
+
     try:
         if os.path.exists("data/portfolios.json"):
             with open("data/portfolios.json", 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                count = len(data.get('portfolios', {}))
+
+                # Creer backup MASTER si beaucoup de portfolios
+                if count >= 50:
+                    backup_file = f"data/portfolios_MASTER_{count}.json"
+                    if not os.path.exists(backup_file):
+                        with open(backup_file, 'w', encoding='utf-8') as bf:
+                            json.dump(data, bf, indent=2, default=str)
+                        print(f"✅ MASTER backup: {backup_file}")
+
+                return data
     except Exception as e:
-        print(f"Error loading portfolios: {e}")
+        print(f"❌ Erreur load: {e}")
+
+    # Si erreur ou fichier vide -> chercher le meilleur backup
+    backups = glob.glob("data/portfolios_MASTER_*.json") + glob.glob("data/portfolios_backup_*.json")
+    if backups:
+        # Trouver celui avec le plus de portfolios
+        best_backup = None
+        best_count = 0
+        for b in backups:
+            try:
+                with open(b, 'r', encoding='utf-8') as f:
+                    d = json.load(f)
+                    c = len(d.get('portfolios', {}))
+                    if c > best_count:
+                        best_count = c
+                        best_backup = b
+            except:
+                pass
+
+        if best_backup:
+            print(f"🔄 Restauration: {best_backup} ({best_count} portfolios)")
+            with open(best_backup, 'r', encoding='utf-8') as f:
+                return json.load(f)
+
     return {"portfolios": {}, "counter": 0}
 
 
 def save_portfolios(data: Dict):
-    """Sauvegarde les portfolios"""
+    """Sauvegarde les portfolios - PROTECTION ABSOLUE"""
     os.makedirs("data", exist_ok=True)
+    new_count = len(data.get('portfolios', {}))
+
+    # PROTECTION ABSOLUE: JAMAIS sauvegarder si moins de 50 portfolios et le fichier en a plus
+    if os.path.exists("data/portfolios.json"):
+        try:
+            with open("data/portfolios.json", 'r', encoding='utf-8') as f:
+                existing = json.load(f)
+                existing_count = len(existing.get('portfolios', {}))
+
+                # Si on perdrait des portfolios, BLOQUER
+                if existing_count > new_count:
+                    backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
+                    with open(backup_file, 'w', encoding='utf-8') as bf:
+                        json.dump(existing, bf, indent=2, default=str)
+                    print(f"🚫 BLOQUÉ! Tentative d'écraser {existing_count} portfolios avec {new_count}")
+                    print(f"   Backup sauvé: {backup_file}")
+                    return  # NE PAS SAUVEGARDER
+        except Exception as e:
+            print(f"Erreur protection save: {e}")
+            return  # En cas d'erreur, ne pas risquer
+
     with open("data/portfolios.json", 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, default=str)
+    print(f"✅ Sauvegardé {new_count} portfolios")
 
 
-@st.cache_data(ttl=30)  # Cache prices for 30 seconds
-def get_current_prices(symbols: List[str]) -> Dict[str, float]:
-    """Fetch current prices for multiple symbols from Binance"""
+# ============ PORTFOLIO HISTORY FOR CHARTS ============
+
+def load_portfolio_history() -> Dict:
+    """Load portfolio value history"""
+    try:
+        with open("data/portfolio_history.json", 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except:
+        return {"last_update": None, "portfolios": {}}
+
+
+def get_portfolio_gains(port_id: str, history_data: Dict) -> Dict:
+    """Calculate % gains for different time periods"""
+    gains = {
+        'hour': None,
+        'day': None,
+        'week': None,
+        'month': None
+    }
+
+    port_history = history_data.get('portfolios', {}).get(port_id, {})
+    history = port_history.get('history', [])
+
+    if len(history) < 2:
+        return gains
+
+    current_value = history[-1]['value']
+    current_time = datetime.strptime(history[-1]['timestamp'], "%Y-%m-%d %H:%M:%S")
+
+    # Find values at different time points
+    for entry in reversed(history):
+        entry_time = datetime.strptime(entry['timestamp'], "%Y-%m-%d %H:%M:%S")
+        time_diff = current_time - entry_time
+
+        # 1 hour ago
+        if gains['hour'] is None and time_diff >= timedelta(hours=1):
+            if entry['value'] > 0:
+                gains['hour'] = ((current_value / entry['value']) - 1) * 100
+
+        # 1 day ago
+        if gains['day'] is None and time_diff >= timedelta(days=1):
+            if entry['value'] > 0:
+                gains['day'] = ((current_value / entry['value']) - 1) * 100
+
+        # 1 week ago
+        if gains['week'] is None and time_diff >= timedelta(weeks=1):
+            if entry['value'] > 0:
+                gains['week'] = ((current_value / entry['value']) - 1) * 100
+
+        # 1 month ago
+        if gains['month'] is None and time_diff >= timedelta(days=30):
+            if entry['value'] > 0:
+                gains['month'] = ((current_value / entry['value']) - 1) * 100
+
+    return gains
+
+
+def create_portfolio_chart(port_id: str, port_name: str, history_data: Dict) -> go.Figure:
+    """Create a plotly chart for portfolio value history"""
+    port_history = history_data.get('portfolios', {}).get(port_id, {})
+    history = port_history.get('history', [])
+    initial_capital = port_history.get('initial_capital', 10000)
+
+    if len(history) < 2:
+        # Return empty chart with message
+        fig = go.Figure()
+        fig.add_annotation(
+            text="Not enough data yet. Chart will appear after a few scans.",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color="#888")
+        )
+        fig.update_layout(
+            height=300,
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
+        )
+        return fig
+
+    timestamps = [entry['timestamp'] for entry in history]
+    values = [entry['value'] for entry in history]
+
+    # Calculate % change from initial
+    pct_changes = [(v / initial_capital - 1) * 100 for v in values]
+
+    fig = make_subplots(
+        rows=2, cols=1,
+        row_heights=[0.7, 0.3],
+        vertical_spacing=0.1,
+        subplot_titles=(f"Total Value", "% Change from Start")
+    )
+
+    # Value line
+    color = '#00ff88' if values[-1] >= initial_capital else '#ff4444'
+
+    fig.add_trace(
+        go.Scatter(
+            x=timestamps,
+            y=values,
+            mode='lines',
+            name='Value',
+            line=dict(color=color, width=2),
+            fill='tozeroy',
+            fillcolor=f'rgba({"0,255,136" if values[-1] >= initial_capital else "255,68,68"},0.1)'
+        ),
+        row=1, col=1
+    )
+
+    # Initial capital line
+    fig.add_hline(
+        y=initial_capital,
+        line_dash="dash",
+        line_color="#888",
+        annotation_text=f"Initial ${initial_capital:,.0f}",
+        row=1, col=1
+    )
+
+    # % Change line
+    fig.add_trace(
+        go.Scatter(
+            x=timestamps,
+            y=pct_changes,
+            mode='lines',
+            name='% Change',
+            line=dict(color='#00aaff', width=2),
+        ),
+        row=2, col=1
+    )
+
+    # Zero line for % change
+    fig.add_hline(y=0, line_dash="dash", line_color="#666", row=2, col=1)
+
+    fig.update_layout(
+        height=400,
+        showlegend=False,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(26,26,46,0.8)',
+        margin=dict(l=50, r=20, t=40, b=30),
+        font=dict(color='#888'),
+    )
+
+    fig.update_xaxes(gridcolor='rgba(255,255,255,0.1)', showgrid=True)
+    fig.update_yaxes(gridcolor='rgba(255,255,255,0.1)', showgrid=True)
+
+    return fig
+
+
+@st.cache_data(ttl=10)
+def get_all_prices_cached() -> Dict[str, float]:
+    """Fetch ALL prices once - shared cache for all portfolios"""
     prices = {}
     try:
-        # Get all prices in one API call
         url = "https://api.binance.com/api/v3/ticker/price"
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, timeout=3)
         if response.status_code == 200:
-            all_prices = {p['symbol']: float(p['price']) for p in response.json()}
-            for symbol in symbols:
-                binance_symbol = symbol.replace('/', '')
-                if binance_symbol in all_prices:
-                    prices[symbol] = all_prices[binance_symbol]
+            for p in response.json():
+                if p['symbol'].endswith('USDT'):
+                    sym = p['symbol'].replace('USDT', '/USDT')
+                    prices[sym] = float(p['price'])
     except:
         pass
     return prices
+
+
+def get_current_prices(symbols: List[str]) -> Dict[str, float]:
+    """Get prices from shared cache - NO API call per portfolio"""
+    all_prices = get_all_prices_cached()
+    return {sym: all_prices.get(sym, 0) for sym in symbols if sym in all_prices}
+
+
+def calculate_all_portfolio_values(portfolios: Dict) -> Dict[str, Dict]:
+    """Calculate ALL portfolio values in ONE pass - super fast"""
+    all_prices = get_all_prices_cached()
+    results = {}
+
+    for pid, p in portfolios.items():
+        usdt_balance = p['balance'].get('USDT', 0)
+        positions = p.get('positions', {})
+        positions_value = 0
+        unrealized_pnl = 0
+
+        for symbol, pos in positions.items():
+            entry_price = pos.get('entry_price', 0)
+            quantity = pos.get('quantity', 0)
+            current_price = all_prices.get(symbol, entry_price)
+            current_value = quantity * current_price
+            positions_value += current_value
+            unrealized_pnl += current_value - (quantity * entry_price)
+
+        results[pid] = {
+            'total_value': usdt_balance + positions_value,
+            'usdt_balance': usdt_balance,
+            'positions_value': positions_value,
+            'unrealized_pnl': unrealized_pnl
+        }
+
+    return results
 
 
 def calculate_portfolio_value(portfolio: Dict) -> Dict:
@@ -357,8 +595,6 @@ def main():
         # Navigation buttons - vertical stack
         nav_items = [
             ("📊", "Dashboard", "📊 Dashboard"),
-            ("🔥", "Degen Mode", "🔥 Degen"),
-            ("🔍", "Scanner", "🔍 Scanner"),
             ("📈", "Portfolios", "📈 Portfolios"),
             ("⚙️", "Settings", "⚙️ Settings"),
             ("🐛", "Debug", "🐛 Debug")
@@ -383,19 +619,14 @@ def main():
 
         st.divider()
 
-        # Calculate REAL total PnL from all portfolios
+        # Calculate REAL total PnL from all portfolios - BATCH mode (1 API call)
         pf_data = load_portfolios()
-        total_pnl = 0
-        total_value = 0
-        total_initial = 0
-        total_positions = 0
+        portfolios = pf_data.get('portfolios', {})
+        all_values = calculate_all_portfolio_values(portfolios)
 
-        for pid, p in pf_data.get('portfolios', {}).items():
-            pf_value = calculate_portfolio_value(p)
-            total_value += pf_value['total_value']
-            total_initial += p.get('initial_capital', 1000)
-            total_positions += len(p.get('positions', {}))
-
+        total_value = sum(v['total_value'] for v in all_values.values())
+        total_initial = sum(p.get('initial_capital', 1000) for p in portfolios.values())
+        total_positions = sum(len(p.get('positions', {})) for p in portfolios.values())
         total_pnl = total_value - total_initial
         pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
         pnl_color = COLORS.BUY if total_pnl >= 0 else COLORS.SELL
@@ -465,10 +696,6 @@ def main():
     page = st.session_state.page
     if page == "📊 Dashboard":
         render_dashboard()
-    elif page == "🔥 Degen":
-        render_degen()
-    elif page == "🔍 Scanner":
-        render_scanner()
     elif page == "📈 Portfolios":
         render_portfolios()
     elif page == "⚙️ Settings":
@@ -576,198 +803,6 @@ def render_dashboard():
                 """, unsafe_allow_html=True)
         else:
             st.info("No active signals")
-
-
-def render_degen():
-    """Mode Degen"""
-    header("🔥 Degen Mode", degen=True)
-
-    state = load_degen_state()
-
-    # Stats
-    col1, col2, col3, col4, col5 = st.columns(5)
-
-    pnl = state.get('total_pnl', 0)
-    capital = state.get('capital', 1000)
-    total_trades = state.get('total_trades', 0)
-    winning = state.get('winning_trades', 0)
-    win_rate = (winning / total_trades * 100) if total_trades > 0 else 0
-
-    with col1:
-        st.metric("💰 Capital", f"${capital:,.2f}")
-    with col2:
-        st.metric("📈 PnL", f"${pnl:+,.2f}")
-    with col3:
-        st.metric("📊 Trades", total_trades)
-    with col4:
-        st.metric("✅ Win Rate", f"{win_rate:.1f}%")
-    with col5:
-        positions = state.get('positions', {})
-        st.metric("📌 Positions", f"{len(positions)}/5")
-
-    st.divider()
-
-    # Config
-    with st.expander("⚙️ Degen Config", expanded=False):
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            risk = st.slider("Risk per trade %", 5, 25, 15)
-            st.caption(f"${capital * risk / 100:.2f} per trade")
-        with col2:
-            mode = st.selectbox("Mode", ["hybrid", "scalping", "momentum"])
-        with col3:
-            max_pos = st.slider("Max positions", 1, 10, 5)
-
-    st.divider()
-
-    # Positions and trades
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("📌 Open Positions")
-        positions = state.get('positions', {})
-
-        if positions:
-            for symbol, pos in positions.items():
-                entry = pos.get('entry_price', 0)
-                current = pos.get('current_price', entry)
-                pnl_val = (current - entry) / entry * pos.get('amount_usdt', 0) if entry > 0 else 0
-                pnl_pct = (current - entry) / entry * 100 if entry > 0 else 0
-
-                card_class = "profit" if pnl_val >= 0 else "loss"
-                pnl_color = COLORS.BUY if pnl_val >= 0 else COLORS.SELL
-
-                st.markdown(f"""
-                <div class="position-card {card_class}">
-                    <div style="display: flex; justify-content: space-between;">
-                        <h4 style="margin: 0;">{symbol}</h4>
-                        <span style="color: {pnl_color}; font-weight: bold;">${pnl_val:+.2f} ({pnl_pct:+.1f}%)</span>
-                    </div>
-                    <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.9rem;">
-                        Entry: ${entry:.4f} | Size: ${pos.get('amount_usdt', 0):.2f}
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.info("No open positions")
-
-    with col2:
-        st.subheader("📜 Recent Trades")
-        all_trades = state.get('trades', [])
-
-        # Toggle for full history
-        show_all = st.checkbox("📋 Show full history", key="show_all_trades")
-        trades = all_trades if show_all else all_trades[-10:]
-
-        if trades:
-            if show_all and len(all_trades) > 20:
-                # Use expander for large histories
-                with st.expander(f"📜 All {len(all_trades)} trades", expanded=True):
-                    for t in reversed(trades):
-                        pnl_val = t.get('pnl', 0)
-                        emoji = "✅" if pnl_val > 0 else "❌"
-                        color = COLORS.BUY if pnl_val > 0 else COLORS.SELL
-
-                        st.markdown(f"""
-                        <div style="padding: 0.5rem; border-bottom: 1px solid #333;">
-                            {emoji} <b>{t.get('symbol', '')}</b> |
-                            <span style="color: {color};">${pnl_val:+.2f}</span> |
-                            {t.get('reason', '')}
-                        </div>
-                        """, unsafe_allow_html=True)
-            else:
-                for t in reversed(trades):
-                    pnl_val = t.get('pnl', 0)
-                    emoji = "✅" if pnl_val > 0 else "❌"
-                    color = COLORS.BUY if pnl_val > 0 else COLORS.SELL
-
-                    st.markdown(f"""
-                    <div style="padding: 0.5rem; border-bottom: 1px solid #333;">
-                        {emoji} <b>{t.get('symbol', '')}</b> |
-                        <span style="color: {color};">${pnl_val:+.2f}</span> |
-                        {t.get('reason', '')}
-                    </div>
-                    """, unsafe_allow_html=True)
-        else:
-            st.info("No trades yet")
-
-
-def render_scanner():
-    """Scanner"""
-    header("🔍 Scanner")
-
-    # Config
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        num_tokens = st.selectbox("Tokens", [25, 50, 100], index=1)
-    with col2:
-        timeframe = st.selectbox("Timeframe", ["1m", "5m", "15m", "1h"], index=0)
-    with col3:
-        min_score = st.slider("Min Score", 0, 100, 25)
-    with col4:
-        if st.button("🔄 Scan Now", type="primary"):
-            st.cache_data.clear()
-
-    st.divider()
-
-    # Scan
-    with st.spinner(f"Scanning {num_tokens} tokens..."):
-        cryptos = get_top_cryptos(num_tokens)
-        results = []
-
-        progress = st.progress(0)
-        for i, c in enumerate(cryptos):
-            result = analyze_token(c['symbol'], c)
-            if result:
-                results.append(result)
-            progress.progress((i + 1) / len(cryptos))
-        progress.empty()
-
-    # Stats
-    pumps = [r for r in results if r['is_pump']]
-    dumps = [r for r in results if r['is_dump']]
-    opportunities = [r for r in results if r['score'] >= min_score]
-
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("🚀 Pumps", len(pumps))
-    with col2:
-        st.metric("📉 Dumps", len(dumps))
-    with col3:
-        st.metric("🎯 Opportunities", len(opportunities))
-    with col4:
-        st.metric("⏱️ Updated", datetime.now().strftime("%H:%M:%S"))
-
-    st.divider()
-
-    # Alerts
-    if pumps:
-        for r in pumps[:3]:
-            alert(f"🚀 <b>{r['symbol']}</b> | ${r['price']:.4f} | +{r['change_1m']:.1f}% | Vol: {r['volume_ratio']:.1f}x", "pump")
-
-    if dumps:
-        for r in dumps[:3]:
-            alert(f"📉 <b>{r['symbol']}</b> | ${r['price']:.4f} | {r['change_1m']:.1f}% | Vol: {r['volume_ratio']:.1f}x", "dump")
-
-    # Results table
-    st.subheader("📊 All Results")
-
-    # Sort by score
-    results.sort(key=lambda x: x['score'], reverse=True)
-
-    df = pd.DataFrame([{
-        'Symbol': r['symbol'],
-        'Price': f"${r['price']:.4f}" if r['price'] < 1 else f"${r['price']:.2f}",
-        '1m': f"{r['change_1m']:+.1f}%",
-        '5m': f"{r['change_5m']:+.1f}%",
-        '24h': f"{r['change_24h']:+.1f}%",
-        'Vol': f"{r['volume_ratio']:.1f}x",
-        'RSI': f"{r['rsi']:.0f}",
-        'Score': r['score'],
-        'Signal': r['signal']
-    } for r in results if r['score'] >= min_score or r['signal'] != 'NEUTRAL'])
-
-    st.dataframe(df, use_container_width=True, hide_index=True)
 
 
 def render_portfolios():
@@ -903,22 +938,22 @@ Tu rates beaucoup d'opportunités, mais tu évites les pièges.""",
         "aggressive": """🔥 AGGRESSIVE - Plus de Trades, Plus d'Action
 
 🎓 C'EST QUOI ?
-L'opposé de Conservative. Entre plus tôt dans les trades, sort plus tôt aussi.
-Capture plus de mouvements mais avec plus de risque.
+L'opposé de Conservative. Entre très tôt dans les trades, sort tôt aussi.
+Capture beaucoup plus de mouvements mais avec plus de risque.
 
 📈 QUAND J'ACHÈTE ?
-• RSI < 35 suffit (pas besoin d'attendre 30)
-• Un léger signal d'achat déclenche l'entrée
+• RSI < 45 suffit (très large, beaucoup d'opportunités)
+• OU RSI < 50 avec momentum positif > 0.2%
 
 📉 QUAND JE VENDS ?
-• RSI > 65 (n'attend pas 70)
-• Sort dès les premiers signes de faiblesse
+• RSI > 55 (sort très vite)
+• OU momentum négatif < -0.3%
 
 ⚖️ NIVEAU DE RISQUE: Élevé
-📊 FRÉQUENCE DES TRADES: Haute
+📊 FRÉQUENCE DES TRADES: Très Haute
 
 💡 POUR QUI ?
-Pour ceux qui veulent plus d'action et acceptent plus de trades perdants.
+Pour ceux qui veulent maximum d'action et acceptent beaucoup de trades perdants.
 Utilise des petites positions pour limiter le risque par trade.""",
 
         "rsi_strategy": """📈 RSI PURE - Simple et Classique
@@ -999,12 +1034,12 @@ Le "scalping" consiste à faire plein de petits trades rapides.
 On vise des gains de 0.5-1% répétés plutôt qu'un gros gain.
 
 📈 QUAND J'ACHÈTE ?
-• RSI < 25 (survendu)
-• ET le prix commence à remonter (momentum positif > 0.3%)
+• RSI < 40 (relativement bas)
+• ET momentum positif > 0.1% (début de rebond)
 
 📉 QUAND JE VENDS ?
-• RSI > 75 avec momentum négatif
-• OU dès que RSI > 55 (on sort vite pour sécuriser !)
+• RSI > 60 avec momentum négatif < -0.1%
+• OU RSI > 50 avec momentum négatif (on sort vite !)
 
 ⚖️ NIVEAU DE RISQUE: Élevé
 📊 FRÉQUENCE DES TRADES: Très Haute
@@ -1023,13 +1058,14 @@ Le "momentum" = la force du mouvement. Cette stratégie saute dans les pumps
 quand ils commencent et sort quand ils s'essoufflent.
 
 📈 QUAND J'ACHÈTE ?
-• Volume > 2x la moyenne (beaucoup d'intérêt soudain !)
-• ET le prix monte de +1% en 1h (momentum positif)
-• ET RSI < 65 (pas encore suracheté)
+• Volume > 1.3x la moyenne (intérêt croissant)
+• ET momentum positif > 0.3% sur 1h
+• ET RSI < 70 (pas encore suracheté)
 
 📉 QUAND JE VENDS ?
-• Le momentum devient négatif
-• OU volume spike avec chute de prix
+• Momentum négatif < -0.3%
+• OU volume spike avec momentum négatif
+• OU momentum < -0.2% (perte de force)
 
 ⚖️ NIVEAU DE RISQUE: Élevé
 📊 FRÉQUENCE DES TRADES: Moyenne-Haute
@@ -1090,17 +1126,17 @@ tester des trades manuellement si tu veux.""",
         "sniper_safe": """🎯 SNIPER SAFE - Chasse aux Nouveaux Tokens (Prudent)
 
 🎓 C'EST QUOI ?
-Scanne automatiquement les NOUVEAUX tokens créés sur Solana (DexScreener, Pump.fun).
+Scanne automatiquement les NOUVEAUX tokens sur toutes les chains (Solana, BSC, ETH, Base...).
 Achète les plus "sûrs" parmi les nouveaux tokens.
 
 📈 QUAND J'ACHÈTE ?
-• Token créé il y a moins de 24h
-• Score de risque < 50 (relativement safe)
-• Liquidité > $50,000 (assez pour pouvoir revendre)
+• Token créé récemment (< 2h)
+• Score de risque < 60 (relativement safe)
+• Liquidité > $10,000 (assez pour pouvoir revendre)
 
 📉 QUAND JE VENDS ?
 • Take Profit: +100% (double ton argent)
-• Stop Loss: -30% (limite les pertes)
+• Stop Loss: -50% (limite les pertes)
 
 ⚖️ NIVEAU DE RISQUE: Élevé (même "safe" c'est risqué)
 📊 FRÉQUENCE DES TRADES: Dépend des nouveaux tokens
@@ -1116,12 +1152,12 @@ Comme Sniper Safe mais accepte plus de risque.
 Plus de tokens achetés, plus de chances de trouver une pépite.
 
 📈 QUAND J'ACHÈTE ?
-• Token < 24h
-• Score de risque < 75 (accepte plus de risque)
-• Liquidité > $10,000 (minimum)
+• Token récent (< 2h)
+• Score de risque < 80 (accepte beaucoup de risque)
+• Liquidité > $1,000 (minimum très bas)
 
 📉 QUAND JE VENDS ?
-• Take Profit: +200% (triple ton argent)
+• Take Profit: +100% (double ton argent)
 • Stop Loss: -50%
 
 ⚖️ NIVEAU DE RISQUE: Très Élevé
@@ -1137,13 +1173,13 @@ Achète presque TOUS les nouveaux tokens. La plupart iront à 0.
 Mais ceux qui réussissent peuvent faire x100.
 
 📈 QUAND J'ACHÈTE ?
-• Token < 12h (très nouveau)
-• Score de risque < 90 (accepte quasi tout)
-• Liquidité > $5,000 (minimum vital)
+• Token < 2h (très nouveau)
+• Score de risque < 100 (accepte TOUT)
+• Liquidité > $500 (minimum absolu)
 
 📉 QUAND JE VENDS ?
-• Take Profit: +500% (x6 ton argent)
-• Stop Loss: -80% (laisse courir longtemps)
+• Take Profit: +100% (x2 ton argent)
+• Stop Loss: -50%
 
 ⚖️ NIVEAU DE RISQUE: EXTRÊME ⚠️
 📊 FRÉQUENCE DES TRADES: Très Haute
@@ -1736,6 +1772,46 @@ Moins de trades mais meilleure qualité."""
     portfolio_list = list(portfolios.items())
     PORTFOLIOS_PER_PAGE = 10
 
+    # === TRI DES PORTFOLIOS ===
+    all_prices = get_all_prices_cached()
+
+    # Calculer les valeurs pour le tri
+    def get_pnl_pct(item):
+        pid, p = item
+        usdt = p['balance'].get('USDT', 0)
+        pos_value = sum(
+            pos.get('quantity', 0) * all_prices.get(sym, pos.get('entry_price', 0))
+            for sym, pos in p.get('positions', {}).items()
+        )
+        total = usdt + pos_value
+        initial = p.get('initial_capital', 1000)
+        return ((total - initial) / initial * 100) if initial > 0 else 0
+
+    # Boutons de tri
+    sort_option = st.radio(
+        "🔀 Sort by",
+        ["📈 Gain % ↑", "📉 Loss % ↓", "💰 Value", "🔤 Name"],
+        horizontal=True,
+        key="pf_sort_radio"
+    )
+
+    # Appliquer le tri
+    if "Gain" in sort_option:
+        portfolio_list.sort(key=get_pnl_pct, reverse=True)
+    elif "Loss" in sort_option:
+        portfolio_list.sort(key=get_pnl_pct, reverse=False)
+    elif "Value" in sort_option:
+        portfolio_list.sort(key=lambda x: get_pnl_pct(x), reverse=True)
+    elif "Name" in sort_option:
+        portfolio_list.sort(key=lambda x: x[1].get('name', ''))
+
+    # Reset page si tri change
+    if 'last_sort' not in st.session_state:
+        st.session_state.last_sort = sort_option
+    if st.session_state.last_sort != sort_option:
+        st.session_state.portfolio_page = 0
+        st.session_state.last_sort = sort_option
+
     # Pagination controls
     total_pages = (len(portfolio_list) + PORTFOLIOS_PER_PAGE - 1) // PORTFOLIOS_PER_PAGE
 
@@ -1848,7 +1924,7 @@ Moins de trades mais meilleure qualité."""
                         """, unsafe_allow_html=True)
 
                     # Action buttons
-                    btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6 = st.columns(6)
+                    btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6, btn_col7 = st.columns(7)
                     with btn_col1:
                         # Take Profit button - sells all positions and converts to USDT
                         if positions_count > 0:
@@ -1909,10 +1985,46 @@ Moins de trades mais meilleure qualité."""
                             del data['portfolios'][pid]
                             save_portfolios(data)
                             st.rerun()
+                    with btn_col7:
+                        if st.button("📈", key=f"chart_{pid}", use_container_width=True, help="Value History Chart"):
+                            st.session_state[f'show_chart_{pid}'] = not st.session_state.get(f'show_chart_{pid}', False)
+                            st.rerun()
 
                     # Show strategy info if toggled
                     if st.session_state.get(f'show_info_{pid}', False):
                         st.info(f"**{strategy}**: {tooltip}")
+
+                    # Show value chart if toggled
+                    if st.session_state.get(f'show_chart_{pid}', False):
+                        history_data = load_portfolio_history()
+                        gains = get_portfolio_gains(pid, history_data)
+
+                        # Show gains in different timeframes
+                        st.markdown("**📈 Performance**")
+                        gain_cols = st.columns(4)
+                        timeframes = [('1H', gains['hour']), ('1D', gains['day']), ('1W', gains['week']), ('1M', gains['month'])]
+
+                        for i, (label, value) in enumerate(timeframes):
+                            with gain_cols[i]:
+                                if value is not None:
+                                    color = '#00ff88' if value >= 0 else '#ff4444'
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                        <div style="color: #888; font-size: 0.75rem;">{label}</div>
+                                        <div style="color: {color}; font-size: 1.2rem; font-weight: bold;">{value:+.2f}%</div>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                    <div style="text-align: center; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                        <div style="color: #888; font-size: 0.75rem;">{label}</div>
+                                        <div style="color: #666; font-size: 1rem;">--</div>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+
+                        # Show the chart
+                        fig = create_portfolio_chart(pid, p['name'], history_data)
+                        st.plotly_chart(fig, use_container_width=True)
 
                     # Show history if toggled
                     if st.session_state.get(f'show_history_{pid}', False):
@@ -2143,11 +2255,11 @@ def render_debug():
     is_running = bot_status.get('running', False)
     last_update = bot_status.get('last_update', 'Never')
 
-    # Check if bot is actually running (last update < 2 min)
+    # Check if bot is actually running (last update < 10 min - scans take ~6 min)
     try:
         last_dt = datetime.strptime(last_update, "%Y-%m-%d %H:%M:%S")
         age_seconds = (datetime.now() - last_dt).total_seconds()
-        actually_running = is_running and age_seconds < 120
+        actually_running = is_running and age_seconds < 600
     except:
         actually_running = False
         age_seconds = 9999

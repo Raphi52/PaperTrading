@@ -134,6 +134,76 @@ def debug_log_trade(portfolio_name: str, action: str, symbol: str, price: float,
     state['recent_trades'] = state['recent_trades'][-30:]  # Keep last 30
     save_debug_state(state)
 
+
+# ============ PORTFOLIO HISTORY TRACKING ============
+
+def get_portfolio_history() -> dict:
+    """Load portfolio history from file"""
+    try:
+        with open('data/portfolio_history.json', 'r') as f:
+            return json.load(f)
+    except:
+        return {"last_update": None, "portfolios": {}}
+
+def save_portfolio_history(history: dict):
+    """Save portfolio history to file"""
+    try:
+        with open('data/portfolio_history.json', 'w') as f:
+            json.dump(history, f, indent=2)
+    except Exception as e:
+        print(f"Error saving portfolio history: {e}")
+
+def record_portfolio_values(portfolios: dict, prices: dict = None):
+    """Record current portfolio values to history (called every scan)"""
+    history = get_portfolio_history()
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Fetch prices if not provided
+    if prices is None:
+        prices = {}
+        try:
+            response = requests.get("https://api.binance.com/api/v3/ticker/price", timeout=5)
+            if response.status_code == 200:
+                for p in response.json():
+                    if p['symbol'].endswith('USDT'):
+                        sym = p['symbol'].replace('USDT', '/USDT')
+                        prices[sym] = float(p['price'])
+        except:
+            pass
+
+    for port_id, portfolio in portfolios.items():
+        if not portfolio.get('active', True):
+            continue
+
+        # Calculate current value
+        total_value = portfolio['balance'].get('USDT', 0)
+        for asset, qty in portfolio['balance'].items():
+            if asset != 'USDT' and qty > 0:
+                symbol = f"{asset}/USDT"
+                price = prices.get(symbol, 0)
+                total_value += qty * price
+
+        # Initialize portfolio history if needed
+        if port_id not in history['portfolios']:
+            history['portfolios'][port_id] = {
+                'name': portfolio.get('name', port_id),
+                'initial_capital': portfolio.get('initial_capital', 10000),
+                'history': []
+            }
+
+        # Add data point (keep max 720 points = 12 hours at 1 min intervals, or 30 days at 1h)
+        history['portfolios'][port_id]['history'].append({
+            'timestamp': timestamp,
+            'value': round(total_value, 2)
+        })
+
+        # Keep last 720 data points
+        history['portfolios'][port_id]['history'] = history['portfolios'][port_id]['history'][-720:]
+
+    history['last_update'] = timestamp
+    save_portfolio_history(history)
+
+
 # Strategies
 STRATEGIES = {
     # Manual
@@ -146,7 +216,7 @@ STRATEGIES = {
 
     # Classic strategies
     "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"]},
-    "aggressive": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"]},
+    "aggressive": {"auto": True, "use_aggressive": True},  # Custom logic - vraiment agressif
     "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": []},
     "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": []},
 
@@ -161,9 +231,9 @@ STRATEGIES = {
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20},
 
     # SNIPER STRATEGIES - New token hunting
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 50, "min_liquidity": 50000},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 75, "min_liquidity": 10000},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 90, "min_liquidity": 5000},
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 10000},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 1000},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 500},
 
     # ============ NEW STRATEGIES ============
 
@@ -441,14 +511,31 @@ def load_portfolios() -> dict:
 
 
 def save_portfolios(portfolios: dict, counter: int):
-    """Save portfolios to JSON"""
+    """Save portfolios - PROTECTION ABSOLUE"""
     try:
         os.makedirs("data", exist_ok=True)
+        new_count = len(portfolios)
+
+        # PROTECTION ABSOLUE
+        if os.path.exists(PORTFOLIOS_FILE):
+            try:
+                with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
+                    existing = json.load(f)
+                    existing_count = len(existing.get('portfolios', {}))
+
+                    if existing_count > new_count:
+                        backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
+                        with open(backup_file, 'w', encoding='utf-8') as bf:
+                            json.dump(existing, bf, indent=2, default=str)
+                        log(f"🚫 BLOQUÉ! {existing_count} -> {new_count}")
+                        return existing.get('portfolios', {}), existing.get('counter', 0)
+            except:
+                return portfolios, counter  # En cas d'erreur, ne pas risquer
+
         data = {'portfolios': portfolios, 'counter': counter}
         with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
     except Exception as e:
-        debug_log('FILE', 'Failed to save portfolios', {'path': PORTFOLIOS_FILE, 'portfolio_count': len(portfolios)}, error=e)
         log(f"Error saving portfolios: {e}")
 
 
@@ -601,13 +688,13 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['momentum_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100
     indicators['momentum_4h'] = (closes.iloc[-1] - closes.iloc[-5]) / closes.iloc[-5] * 100 if len(closes) > 5 else 0
 
-    # Scalping signals (quick reversals)
-    indicators['scalp_buy'] = indicators['rsi'] < 25 and indicators['momentum_1h'] > 0.3
-    indicators['scalp_sell'] = indicators['rsi'] > 75 and indicators['momentum_1h'] < -0.3
+    # Scalping signals (quick reversals) - ASSOUPLI pour plus de trades
+    indicators['scalp_buy'] = indicators['rsi'] < 40 and indicators['momentum_1h'] > 0.1
+    indicators['scalp_sell'] = indicators['rsi'] > 60 and indicators['momentum_1h'] < -0.1
 
-    # Momentum signals (riding the wave)
-    indicators['momentum_buy'] = indicators['volume_ratio'] > 2.0 and indicators['momentum_1h'] > 1.0 and indicators['rsi'] < 65
-    indicators['momentum_sell'] = indicators['volume_ratio'] > 2.0 and indicators['momentum_1h'] < -1.0 and indicators['rsi'] > 35
+    # Momentum signals (riding the wave) - ASSOUPLI pour plus de trades
+    indicators['momentum_buy'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] > 0.3 and indicators['rsi'] < 70
+    indicators['momentum_sell'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] < -0.3 and indicators['rsi'] > 30
 
     return indicators
 
@@ -830,19 +917,19 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return ('SELL', f"EMA 9/21 crossover DOWN | RSI={rsi:.0f}")
         return (None, f"EMA: No crossover signal | RSI={rsi:.0f}")
 
-    # Degen strategies
+    # Degen strategies - ASSOUPLI pour plus d'action
     if strategy.get('use_degen'):
         mode = strategy.get('mode', 'hybrid')
         mom = analysis.get('momentum_1h', 0)
 
         if mode == 'scalping':
-            # Quick reversals - tight entries/exits
+            # Quick reversals - entries/exits plus frequentes
             if analysis.get('scalp_buy') and has_cash:
-                return ('BUY', f"SCALP: RSI={rsi:.0f}<25 + momentum>0.3%")
+                return ('BUY', f"SCALP: RSI={rsi:.0f}<40 + momentum>0.1%")
             elif analysis.get('scalp_sell') and has_position:
-                return ('SELL', f"SCALP: RSI={rsi:.0f}>75 + momentum<-0.3%")
-            elif analysis.get('rsi', 50) > 55 and has_position:
-                return ('SELL', f"SCALP EXIT: RSI normalized to {rsi:.0f}")
+                return ('SELL', f"SCALP: RSI={rsi:.0f}>60 + momentum<-0.1%")
+            elif has_position and rsi > 50 and mom < 0:
+                return ('SELL', f"SCALP EXIT: RSI={rsi:.0f} + momentum negatif")
 
         elif mode == 'momentum':
             # Ride the wave - volume + momentum
@@ -850,19 +937,19 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return ('BUY', f"MOMENTUM: Vol spike + momentum={mom:.1f}%")
             elif analysis.get('momentum_sell') and has_position:
                 return ('SELL', f"MOMENTUM: Vol spike + negative momentum")
-            elif has_position and mom < -0.5:
-                return ('SELL', f"MOMENTUM LOSS: {mom:.1f}% < -0.5%")
+            elif has_position and mom < -0.2:
+                return ('SELL', f"MOMENTUM LOSS: {mom:.1f}% negatif")
 
-        else:  # hybrid - combines both
+        else:  # hybrid - combines both - le plus actif
             if (analysis.get('scalp_buy') or analysis.get('momentum_buy')) and has_cash:
-                return ('BUY', f"HYBRID: Scalp or momentum signal | RSI={rsi:.0f}")
+                return ('BUY', f"HYBRID: Signal detected | RSI={rsi:.0f} | Mom={mom:.1f}%")
             elif has_position:
                 if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
                     return ('SELL', f"HYBRID: Exit signal triggered")
-                elif rsi > 70:
-                    return ('SELL', f"HYBRID: RSI={rsi:.0f} > 70 overbought")
+                elif rsi > 65 or mom < -0.2:
+                    return ('SELL', f"HYBRID: RSI={rsi:.0f} ou Mom={mom:.1f}% negatif")
 
-        return (None, f"DEGEN {mode}: No signal | RSI={rsi:.0f} | Mom={mom:.1f}%")
+        return (None, f"DEGEN {mode}: Waiting | RSI={rsi:.0f} | Mom={mom:.1f}%")
 
     # VWAP Strategy
     if strategy.get('use_vwap'):
@@ -925,9 +1012,9 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             return ('SELL', f"BREAKOUT DOWN: Price broke {lookback}-period low")
         return (None, f"BREAKOUT: Waiting for {lookback}-period break")
 
-    # Mean Reversion (normal vs tight)
+    # Mean Reversion (normal vs tight) - assoupli (1.5σ au lieu de 2σ)
     if strategy.get('use_mean_rev'):
-        std_threshold = strategy.get('std_dev', 2.0)
+        std_threshold = strategy.get('std_dev', 1.5)  # 1.5 au lieu de 2.0
         period = strategy.get('period', 20)
         if period == 14:
             deviation = analysis.get('deviation_from_mean_tight', 0)
@@ -940,12 +1027,12 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             return ('SELL', f"MEAN REV: {deviation:.1f}σ above mean (threshold={std_threshold})")
         return (None, f"MEAN REV: Deviation={deviation:.1f}σ (threshold=±{std_threshold})")
 
-    # Grid Trading
+    # Grid Trading - assoupli (25%/75% au lieu de 15%/85%)
     if strategy.get('use_grid'):
         grid_size = strategy.get('grid_size', 2.0)
         bb_pos = analysis.get('bb_position', 0.5)
-        buy_threshold = 0.15 + (grid_size * 0.025)
-        sell_threshold = 0.85 - (grid_size * 0.025)
+        buy_threshold = 0.25 + (grid_size * 0.02)   # 25% au lieu de 15%
+        sell_threshold = 0.75 - (grid_size * 0.02)  # 75% au lieu de 85%
 
         if bb_pos < buy_threshold and has_cash:
             return ('BUY', f"GRID: BB position={bb_pos:.0%} < {buy_threshold:.0%}")
@@ -982,7 +1069,7 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         trend = "bullish" if bullish else ("bearish" if bearish else "neutral")
         return (None, f"ICHIMOKU: {trend}, {cloud_status} cloud")
 
-    # Martingale (uses multiplier and max_levels)
+    # Martingale - assoupli (RSI < 40 au lieu de 35)
     if strategy.get('use_martingale'):
         multiplier = strategy.get('multiplier', 2.0)
         max_levels = strategy.get('max_levels', 4)
@@ -998,30 +1085,43 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                     break
 
         if consecutive_losses > 0 and consecutive_losses <= max_levels:
-            if has_cash and rsi < 45:
+            if has_cash and rsi < 50:  # 50 au lieu de 45
                 portfolio['_martingale_level'] = consecutive_losses
                 portfolio['_martingale_multiplier'] = multiplier
                 return ('BUY', f"MARTINGALE: Level {consecutive_losses}/{max_levels} | RSI={rsi:.0f}")
         elif consecutive_losses > max_levels:
-            if has_cash and rsi < 25:
+            if has_cash and rsi < 30:  # 30 au lieu de 25
                 portfolio['_martingale_level'] = 0
-                return ('BUY', f"MARTINGALE RESET: Max level reached, extreme RSI={rsi:.0f}")
+                return ('BUY', f"MARTINGALE RESET: Max level reached, RSI={rsi:.0f}")
 
-        if rsi < 35 and has_cash:
+        if rsi < 40 and has_cash:  # 40 au lieu de 35
             portfolio['_martingale_level'] = 0
-            return ('BUY', f"MARTINGALE: Normal entry RSI={rsi:.0f} < 35")
-        elif rsi > 65 and has_position:
-            return ('SELL', f"MARTINGALE: RSI={rsi:.0f} > 65")
+            return ('BUY', f"MARTINGALE: Normal entry RSI={rsi:.0f} < 40")
+        elif rsi > 60 and has_position:  # 60 au lieu de 65
+            return ('SELL', f"MARTINGALE: RSI={rsi:.0f} > 60")
         return (None, f"MARTINGALE: RSI={rsi:.0f} | Losses={consecutive_losses}")
 
     # ============ EXISTING STRATEGIES ============
 
+    # Aggressive Strategy - vraiment agressif (RSI < 45, sell > 55)
+    if strategy.get('use_aggressive'):
+        mom = analysis.get('momentum_1h', 0)
+        if rsi < 45 and has_cash:
+            return ('BUY', f"AGGRESSIVE: RSI={rsi:.0f} < 45")
+        elif rsi < 50 and mom > 0.2 and has_cash:
+            return ('BUY', f"AGGRESSIVE: RSI={rsi:.0f} + momentum={mom:.1f}%")
+        elif rsi > 55 and has_position:
+            return ('SELL', f"AGGRESSIVE: RSI={rsi:.0f} > 55")
+        elif mom < -0.3 and has_position:
+            return ('SELL', f"AGGRESSIVE: Momentum={mom:.1f}% negatif")
+        return (None, f"AGGRESSIVE: RSI={rsi:.0f} | Mom={mom:.1f}%")
+
     signal = analysis.get('signal', 'HOLD')
 
-    # RSI Strategy
+    # RSI Strategy - Classic 30/70 levels
     if strategy.get('use_rsi', False):
-        rsi_oversold = config.get('rsi_oversold', 30)
-        rsi_overbought = config.get('rsi_overbought', 70)
+        rsi_oversold = config.get('rsi_oversold', 30)  # Classic RSI oversold
+        rsi_overbought = config.get('rsi_overbought', 70)  # Classic RSI overbought
 
         if rsi < rsi_oversold and has_cash:
             return ('BUY', f"RSI={rsi:.0f} < {rsi_oversold} oversold")
@@ -1251,84 +1351,56 @@ def start_dashboard(open_browser: bool = True):
 
 
 def scan_new_tokens() -> list:
-    """Scan for new tokens on DEX (Solana)"""
+    """Scan for new tokens on ALL chains via DexScreener"""
     new_tokens = []
 
     try:
-        # Scan DexScreener for new Solana pairs
-        url = "https://api.dexscreener.com/latest/dex/tokens/So11111111111111111111111111111111111111112"
-        response = requests.get(url, timeout=10)
-        if response.status_code == 200:
-            data = response.json()
-            pairs = data.get('pairs', [])
+        from sniper.dexscreener import DexScreenerSniper
 
-            for pair in pairs[:30]:
-                created = pair.get('pairCreatedAt', 0)
-                if created:
-                    age_hours = (time.time() * 1000 - created) / (1000 * 60 * 60)
+        sniper = DexScreenerSniper({
+            'min_liquidity': 500,      # $500 min
+            'max_age_minutes': 120,    # Max 2h
+            'min_volume': 100          # $100 min volume
+        })
 
-                    if age_hours < 24:  # Less than 24h old
-                        liquidity = float(pair.get('liquidity', {}).get('usd', 0) or 0)
-                        volume = float(pair.get('volume', {}).get('h24', 0) or 0)
+        # Recuperer les tokens trending/nouveaux
+        tokens = sniper.get_trending_new()
 
-                        # Calculate risk score
-                        risk = 50
-                        if liquidity < 10000: risk += 30
-                        elif liquidity > 100000: risk -= 20
-                        if volume < 10000: risk += 20
-                        elif volume > 50000: risk -= 10
+        for t in tokens:
+            # Calculer risk score
+            risk = 50
+            if t.liquidity_usd < 5000: risk += 30
+            elif t.liquidity_usd > 50000: risk -= 20
+            if t.volume_24h < 5000: risk += 15
+            elif t.volume_24h > 50000: risk -= 10
+            if t.age_minutes < 10: risk += 20  # Tres nouveau = plus risque
+            if t.price_change_5m > 100: risk += 15  # Pump violent = risque
 
-                        price_change = float(pair.get('priceChange', {}).get('h24', 0) or 0)
-                        if price_change > 500: risk += 25
+            risk = min(100, max(0, risk))
 
-                        risk = min(100, max(0, risk))
+            token = {
+                'symbol': t.symbol,
+                'name': t.name,
+                'address': t.token_address,
+                'pair_address': t.pair_address,
+                'price': t.price_usd,
+                'liquidity': t.liquidity_usd,
+                'volume_24h': t.volume_24h,
+                'market_cap': t.liquidity_usd * 2,  # Estimation
+                'age_hours': t.age_minutes / 60,
+                'age_minutes': t.age_minutes,
+                'risk_score': risk,
+                'dex': t.dex,
+                'chain': t.chain,
+                'price_change_5m': t.price_change_5m,
+                'price_change_1h': t.price_change_1h,
+                'buys': t.buys,
+                'sells': t.sells,
+                'url': t.url
+            }
+            new_tokens.append(token)
 
-                        token = {
-                            'symbol': pair.get('baseToken', {}).get('symbol', 'UNKNOWN'),
-                            'name': pair.get('baseToken', {}).get('name', 'Unknown'),
-                            'address': pair.get('baseToken', {}).get('address', ''),
-                            'price': float(pair.get('priceUsd', 0) or 0),
-                            'liquidity': liquidity,
-                            'volume_24h': volume,
-                            'market_cap': float(pair.get('fdv', 0) or 0),
-                            'age_hours': age_hours,
-                            'risk_score': risk,
-                            'dex': pair.get('dexId', 'unknown'),
-                            'chain': 'solana'
-                        }
-                        new_tokens.append(token)
-
-        # Scan Pump.fun
-        try:
-            pump_url = "https://frontend-api.pump.fun/coins?offset=0&limit=20&sort=created_timestamp&order=desc"
-            response = requests.get(pump_url, timeout=10, headers={"Accept": "application/json"})
-            if response.status_code == 200:
-                coins = response.json()
-                for coin in coins:
-                    created = coin.get('created_timestamp', 0)
-                    age_hours = (time.time() - created / 1000) / 3600 if created else 999
-
-                    if age_hours < 12:
-                        mc = float(coin.get('usd_market_cap', 0) or 0)
-                        if mc > 5000:
-                            token = {
-                                'symbol': coin.get('symbol', 'UNKNOWN'),
-                                'name': coin.get('name', 'Unknown'),
-                                'address': coin.get('mint', ''),
-                                'price': float(coin.get('price', 0) or 0),
-                                'liquidity': mc * 0.1,
-                                'volume_24h': 0,
-                                'market_cap': mc,
-                                'age_hours': age_hours,
-                                'risk_score': 70,  # Pump.fun = higher risk
-                                'dex': 'pumpfun',
-                                'chain': 'solana'
-                            }
-                            new_tokens.append(token)
-            elif response.status_code != 403:  # 403 is expected (blocked)
-                debug_log('API', 'Pump.fun API error', {'status': response.status_code})
-        except Exception as e:
-            debug_log('API', 'Pump.fun scan failed', {}, error=e)
+        log(f"🔍 Scanned {len(new_tokens)} new tokens across all chains")
 
     except Exception as e:
         debug_log('API', 'DexScreener scan failed', {}, error=e)
@@ -1352,10 +1424,11 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
             continue
 
         config = portfolio['config']
-        max_risk = config.get('max_risk', 75)
-        min_liquidity = config.get('min_liquidity', 10000)
+        # Use STRATEGY defaults, then portfolio config overrides
+        max_risk = config.get('max_risk', strategy.get('max_risk', 75))
+        min_liquidity = config.get('min_liquidity', strategy.get('min_liquidity', 1000))
         allocation = config.get('allocation_percent', 10)
-        max_positions = config.get('max_positions', 10)
+        max_positions = config.get('max_positions', 20)
         take_profit = config.get('take_profit', 100)  # %
         stop_loss = config.get('stop_loss', 50)  # %
 
@@ -1508,6 +1581,9 @@ def main():
             scan_start = time.time()
             log(f"\n{'='*20} SCAN #{scan_count} {'='*20}")
 
+            # Update status at START of scan (heartbeat)
+            debug_update_bot_status(running=True, scan_count=scan_count)
+
             # Reload portfolios
             portfolios, counter = load_portfolios()
             active_portfolios = len([p for p in portfolios.values() if p.get('active', True)])
@@ -1584,6 +1660,13 @@ def main():
                 'total_tokens_seen': len(sniper_tokens_seen),
                 'api_errors': api_errors
             })
+
+            # Record portfolio values for history charts
+            try:
+                record_portfolio_values(portfolios)
+                log("📊 Portfolio history recorded")
+            except Exception as e:
+                log(f"Warning: Could not record history: {e}")
 
             # Wait
             log(f"⏳ Next scan in {SCAN_INTERVAL}s...")

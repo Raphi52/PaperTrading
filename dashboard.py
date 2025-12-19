@@ -155,22 +155,33 @@ def fetch_live_price(symbol: str = "BTCUSDT") -> dict:
     return None
 
 
-@st.cache_data(ttl=5)
+@st.cache_data(ttl=10)
 def fetch_all_live_prices() -> dict:
-    """Fetch seulement les 4 prix necessaires"""
+    """Fetch tous les prix en une seule requete - cache 10s"""
     prices = {}
-    symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'BNBUSDT']
     try:
-        # Une seule requete avec les symboles specifiques
-        url = f"https://api.binance.com/api/v3/ticker/price?symbols={json.dumps(symbols)}"
-        response = requests.get(url, timeout=0.5)
+        url = "https://api.binance.com/api/v3/ticker/price"
+        response = requests.get(url, timeout=3)
         if response.status_code == 200:
             for item in response.json():
-                sym = item['symbol'].replace('USDT', '/USDT')
-                prices[sym] = {'price': float(item['price'])}
+                if item['symbol'].endswith('USDT'):
+                    sym = item['symbol'].replace('USDT', '/USDT')
+                    prices[sym] = {'price': float(item['price'])}
     except:
         pass
     return prices
+
+
+# Cache des prix en session pour affichage instantane
+def get_cached_prices() -> dict:
+    """Retourne les prix caches ou vide - JAMAIS de blocage"""
+    return st.session_state.get('_price_cache', {})
+
+
+def update_price_cache(prices: dict):
+    """Met a jour le cache de prix en session"""
+    if prices:
+        st.session_state['_price_cache'] = prices
 
 
 @st.cache_resource
@@ -193,12 +204,32 @@ def fetch_real_ohlcv(symbol: str = "BTC/USDT", timeframe: str = "1h", limit: int
 
 
 def save_portfolios():
+    """Sauvegarde - PROTECTION ABSOLUE"""
     try:
         os.makedirs("data", exist_ok=True)
+        new_count = len(st.session_state.portfolios)
+
+        # PROTECTION ABSOLUE
+        if os.path.exists(PORTFOLIOS_FILE):
+            try:
+                with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
+                    existing = json.load(f)
+                    existing_count = len(existing.get('portfolios', {}))
+
+                    if existing_count > new_count:
+                        backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
+                        with open(backup_file, 'w', encoding='utf-8') as bf:
+                            json.dump(existing, bf, indent=2, default=str)
+                        print(f"🚫 BLOQUÉ! {existing_count} -> {new_count}")
+                        st.session_state.portfolios = existing.get('portfolios', {})
+                        st.session_state.portfolio_counter = existing.get('counter', 0)
+                        return
+            except:
+                return  # En cas d'erreur, ne pas risquer
+
         data = {'portfolios': st.session_state.portfolios, 'counter': st.session_state.portfolio_counter}
         with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
-        # Invalide le cache apres sauvegarde
         load_portfolios_once.clear()
     except Exception as e:
         print(f"Erreur sauvegarde: {e}")
@@ -236,6 +267,11 @@ def init_session():
         st.session_state.portfolio_page = 0
     if 'symbol' not in st.session_state:
         st.session_state.symbol = "BTC/USDT"
+    # Pre-load price cache au demarrage
+    if '_price_cache' not in st.session_state:
+        prices = fetch_all_live_prices()
+        if prices:
+            st.session_state['_price_cache'] = prices
 
 
 def create_portfolio(name: str, strategy_id: str, initial_capital: float = 10000.0, config: dict = None) -> str:
@@ -519,15 +555,17 @@ def render_page_prix():
 
 
 def render_page_portfolios():
-    """Page: Liste des portfolios avec pagination - OPTIMISE pour 100+ portfolios"""
+    """Page: Liste des portfolios avec pagination - ULTRA RAPIDE"""
     total = len(st.session_state.portfolios)
     per_page = 10
 
-    # Header
-    st.markdown(f"### 💼 {total} Portfolios")
-
-    # Tri bien visible
-    sort_option = st.selectbox("🔽 Trier par", ["% Profit ↓", "% Profit ↑", "Valeur", "Nom"], key="pf_sort")
+    # Header + Tri en haut bien visible
+    col_title, col_sort = st.columns([1, 2])
+    with col_title:
+        st.markdown(f"### 💼 {total}")
+    with col_sort:
+        sort_option = st.radio("Tri", ["📈 Gain%", "📉 Perte%", "💰 Valeur", "🔤 Nom"],
+                               horizontal=True, label_visibility="collapsed", key="pf_sort_radio")
 
     # Reset page si tri change
     if 'last_sort' not in st.session_state:
@@ -536,39 +574,49 @@ def render_page_portfolios():
         st.session_state.portfolio_page = 0
         st.session_state.last_sort = sort_option
 
-    # Tri par USDT seulement (instantane, pas besoin de prix)
-    portfolios_list = list(st.session_state.portfolios.items())
-    if sort_option == "% Profit ↓" or sort_option == "% Profit ↑":
-        # Tri par USDT restant vs initial (approximation sans API)
-        def usdt_pnl(item):
-            p = item[1]
-            return (p['balance'].get('USDT', 0) - p['initial_capital']) / p['initial_capital'] * 100 if p['initial_capital'] > 0 else 0
-        portfolios_list.sort(key=usdt_pnl, reverse=(sort_option == "% Profit ↓"))
-    elif sort_option == "Valeur":
-        portfolios_list.sort(key=lambda x: x[1]['balance'].get('USDT', 0), reverse=True)
-    elif sort_option == "Nom":
-        portfolios_list.sort(key=lambda x: x[1]['name'])
+    # Utilise le cache de prix pour tri instantane (ou vide si premier load)
+    cached_prices = get_cached_prices()
 
+    # Calcul des valeurs avec prix caches (instantane)
+    portfolios_with_values = []
+    for pid, p in st.session_state.portfolios.items():
+        value = get_portfolio_value(p, cached_prices) if cached_prices else p['balance'].get('USDT', 0)
+        pnl_pct = ((value - p['initial_capital']) / p['initial_capital'] * 100) if p['initial_capital'] > 0 else 0
+        portfolios_with_values.append((pid, p, value, pnl_pct))
+
+    # Tri selon l'option
+    if "📈" in sort_option:  # Gain% decroissant
+        portfolios_with_values.sort(key=lambda x: x[3], reverse=True)
+    elif "📉" in sort_option:  # Perte% croissant
+        portfolios_with_values.sort(key=lambda x: x[3], reverse=False)
+    elif "💰" in sort_option:  # Valeur
+        portfolios_with_values.sort(key=lambda x: x[2], reverse=True)
+    elif "🔤" in sort_option:  # Nom
+        portfolios_with_values.sort(key=lambda x: x[1]['name'])
+
+    # Pagination
     total_pages = max(1, (total + per_page - 1) // per_page)
     start = st.session_state.portfolio_page * per_page
     end = min(start + per_page, total)
-    page_portfolios = portfolios_list[start:end]
+    page_portfolios = portfolios_with_values[start:end]
 
-    # Affichage INSTANTANE avec placeholders
-    price_placeholder = st.empty()
+    # AFFICHAGE INSTANTANE - avec valeurs caches
     portfolio_containers = []
-
-    for port_id, portfolio in page_portfolios:
+    for port_id, portfolio, cached_value, cached_pnl in page_portfolios:
         is_active = portfolio.get('active', True)
         c1, c2, c3 = st.columns([3, 2, 1])
         with c1:
             status = "🟢" if is_active else "⏸️"
             st.markdown(f"{status} **{portfolio['icon']} {portfolio['name'][:12]}**")
         with c2:
-            # Placeholder avec USDT seulement
-            usdt = portfolio['balance'].get('USDT', 0)
             container = st.empty()
-            container.markdown(f"${usdt:,.0f} | ⏳")
+            # Affiche immediatement avec valeurs caches ou USDT
+            if cached_prices:
+                color = "green" if cached_pnl >= 0 else "red"
+                container.markdown(f"${cached_value:,.0f} | :{color}[{cached_pnl:+.1f}%]")
+            else:
+                usdt = portfolio['balance'].get('USDT', 0)
+                container.markdown(f"${usdt:,.0f} | ⏳")
             portfolio_containers.append((container, port_id, portfolio))
         with c3:
             if st.button("📊", key=f"v_{port_id}"):
@@ -576,29 +624,31 @@ def render_page_portfolios():
                 st.session_state.page = 'detail'
                 st.rerun()
 
-    # Charge les prix en arriere-plan et met a jour
-    prices = fetch_all_live_prices()
-    for container, port_id, portfolio in portfolio_containers:
-        value = get_portfolio_value(portfolio, prices)
-        pnl = value - portfolio['initial_capital']
-        pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
-        color = "green" if pnl >= 0 else "red"
-        container.markdown(f"${value:,.0f} | :{color}[{pnl_pct:+.1f}%]")
+    # Fetch prix frais en arriere-plan et update
+    fresh_prices = fetch_all_live_prices()
+    if fresh_prices:
+        update_price_cache(fresh_prices)
+        # Update les containers avec les prix frais
+        for container, port_id, portfolio in portfolio_containers:
+            value = get_portfolio_value(portfolio, fresh_prices)
+            pnl = value - portfolio['initial_capital']
+            pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
+            color = "green" if pnl >= 0 else "red"
+            container.markdown(f"${value:,.0f} | :{color}[{pnl_pct:+.1f}%]")
 
-    # Pagination
-    if total_pages > 1:
-        st.markdown("<div style='height: 0.5rem;'></div>", unsafe_allow_html=True)
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col1:
-            if st.button("◀️", disabled=st.session_state.portfolio_page == 0, use_container_width=True):
-                st.session_state.portfolio_page -= 1
-                st.rerun()
-        with col2:
-            st.markdown(f"<p style='text-align:center; margin:0; padding: 0.5rem;'>{st.session_state.portfolio_page + 1} / {total_pages}</p>", unsafe_allow_html=True)
-        with col3:
-            if st.button("▶️", disabled=st.session_state.portfolio_page >= total_pages - 1, use_container_width=True):
-                st.session_state.portfolio_page += 1
-                st.rerun()
+    # Pagination + Tri
+    st.markdown("<div style='height: 0.3rem;'></div>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col1:
+        if st.button("◀️", disabled=st.session_state.portfolio_page == 0, use_container_width=True):
+            st.session_state.portfolio_page -= 1
+            st.rerun()
+    with col2:
+        st.markdown(f"<p style='text-align:center; margin:0; padding: 0.5rem;'>Page {st.session_state.portfolio_page + 1} / {total_pages}</p>", unsafe_allow_html=True)
+    with col3:
+        if st.button("▶️", disabled=st.session_state.portfolio_page >= total_pages - 1, use_container_width=True):
+            st.session_state.portfolio_page += 1
+            st.rerun()
 
     # Si aucun portfolio
     if total == 0:
@@ -851,7 +901,10 @@ def render_page_detail():
         return
 
     portfolio = st.session_state.portfolios[port_id]
-    prices = fetch_all_live_prices()
+    # Utilise cache d'abord puis prix frais
+    prices = get_cached_prices() or fetch_all_live_prices()
+    if prices:
+        update_price_cache(prices)
     value = get_portfolio_value(portfolio, prices)
     pnl = value - portfolio['initial_capital']
     pnl_pct = (pnl / portfolio['initial_capital']) * 100 if portfolio['initial_capital'] > 0 else 0
