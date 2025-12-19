@@ -129,6 +129,82 @@ def save_portfolios(data: Dict):
         json.dump(data, f, indent=2, default=str)
 
 
+@st.cache_data(ttl=30)  # Cache prices for 30 seconds
+def get_current_prices(symbols: List[str]) -> Dict[str, float]:
+    """Fetch current prices for multiple symbols from Binance"""
+    prices = {}
+    try:
+        # Get all prices in one API call
+        url = "https://api.binance.com/api/v3/ticker/price"
+        response = requests.get(url, timeout=10)
+        if response.status_code == 200:
+            all_prices = {p['symbol']: float(p['price']) for p in response.json()}
+            for symbol in symbols:
+                binance_symbol = symbol.replace('/', '')
+                if binance_symbol in all_prices:
+                    prices[symbol] = all_prices[binance_symbol]
+    except:
+        pass
+    return prices
+
+
+def calculate_portfolio_value(portfolio: Dict) -> Dict:
+    """
+    Calculate total portfolio value including open positions at current prices.
+    Returns dict with: total_value, usdt_balance, positions_value, unrealized_pnl, positions_details
+    """
+    usdt_balance = portfolio['balance'].get('USDT', 0)
+    positions = portfolio.get('positions', {})
+
+    if not positions:
+        return {
+            'total_value': usdt_balance,
+            'usdt_balance': usdt_balance,
+            'positions_value': 0,
+            'unrealized_pnl': 0,
+            'positions_details': []
+        }
+
+    # Get current prices for all positions
+    symbols = list(positions.keys())
+    current_prices = get_current_prices(symbols)
+
+    positions_value = 0
+    unrealized_pnl = 0
+    positions_details = []
+
+    for symbol, pos in positions.items():
+        entry_price = pos.get('entry_price', 0)
+        quantity = pos.get('quantity', 0)
+        current_price = current_prices.get(symbol, entry_price)  # Fallback to entry if no price
+
+        current_value = quantity * current_price
+        cost_basis = quantity * entry_price
+        pnl = current_value - cost_basis
+        pnl_pct = ((current_price / entry_price) - 1) * 100 if entry_price > 0 else 0
+
+        positions_value += current_value
+        unrealized_pnl += pnl
+
+        positions_details.append({
+            'symbol': symbol,
+            'quantity': quantity,
+            'entry_price': entry_price,
+            'current_price': current_price,
+            'current_value': current_value,
+            'pnl': pnl,
+            'pnl_pct': pnl_pct
+        })
+
+    return {
+        'total_value': usdt_balance + positions_value,
+        'usdt_balance': usdt_balance,
+        'positions_value': positions_value,
+        'unrealized_pnl': unrealized_pnl,
+        'positions_details': positions_details
+    }
+
+
 def load_degen_state() -> Dict:
     """Charge l'etat du bot degen"""
     state = {
@@ -1455,12 +1531,20 @@ Paper trading uniquement pour expérimenter."""
                 pid, p = portfolio_list[i + j]
 
                 with col:
-                    balance = p['balance'].get('USDT', 0)
-                    initial = p.get('initial_capital', balance)
-                    pnl = balance - initial
-                    pnl_pct = (pnl / initial * 100) if initial > 0 else 0
+                    # Calculate real portfolio value including positions
+                    pf_value = calculate_portfolio_value(p)
+                    total_value = pf_value['total_value']
+                    usdt_balance = pf_value['usdt_balance']
+                    positions_value = pf_value['positions_value']
+                    unrealized_pnl = pf_value['unrealized_pnl']
+
+                    initial = p.get('initial_capital', 1000)
+                    # Total PnL = (current total value - initial capital)
+                    total_pnl = total_value - initial
+                    pnl_pct = (total_pnl / initial * 100) if initial > 0 else 0
+
                     trades_count = len(p.get('trades', []))
-                    positions = len(p.get('positions', {}))
+                    positions_count = len(p.get('positions', {}))
                     is_active = p.get('active', True)
                     strategy = p.get('strategy_id', 'manual')
                     icon = strat_icons.get(strategy, '📈')
@@ -1468,7 +1552,8 @@ Paper trading uniquement pour expérimenter."""
                     cryptos = p['config'].get('cryptos', [])
 
                     # Colors
-                    pnl_color = '#00ff88' if pnl >= 0 else '#ff4444'
+                    pnl_color = '#00ff88' if total_pnl >= 0 else '#ff4444'
+                    unrealized_color = '#00ff88' if unrealized_pnl >= 0 else '#ff4444'
                     border_color = '#00ff88' if is_active else '#ff4444'
                     status_text = '▶️ Active' if is_active else '⏸️ Paused'
 
@@ -1497,11 +1582,11 @@ Paper trading uniquement pour expérimenter."""
                         </div>
                         <div style="display: flex; justify-content: space-between; padding: 0.8rem 0; border-top: 1px solid #333;">
                             <div style="text-align: center;">
-                                <div style="font-size: 1.2rem; font-weight: bold; color: white;">${balance:,.0f}</div>
-                                <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Balance</div>
+                                <div style="font-size: 1.2rem; font-weight: bold; color: white;">${total_value:,.0f}</div>
+                                <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Total Value</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-size: 1.2rem; font-weight: bold; color: {pnl_color};">${pnl:+,.0f}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold; color: {pnl_color};">${total_pnl:+,.0f}</div>
                                 <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">P&L</div>
                             </div>
                             <div style="text-align: center;">
@@ -1509,10 +1594,17 @@ Paper trading uniquement pour expérimenter."""
                                 <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Trades</div>
                             </div>
                             <div style="text-align: center;">
-                                <div style="font-size: 1.2rem; font-weight: bold; color: white;">{positions}</div>
+                                <div style="font-size: 1.2rem; font-weight: bold; color: white;">{positions_count}</div>
                                 <div style="font-size: 0.7rem; color: #666; text-transform: uppercase;">Pos.</div>
                             </div>
                         </div>
+                        {"" if positions_count == 0 else f'''
+                        <div style="padding: 0.5rem 0; border-top: 1px solid #333; font-size: 0.75rem;">
+                            <span style="color: #888;">💵 Cash: ${usdt_balance:,.0f}</span>
+                            <span style="color: #888; margin-left: 1rem;">📊 In positions: ${positions_value:,.0f}</span>
+                            <span style="color: {unrealized_color}; margin-left: 1rem;">📈 Unrealized: ${unrealized_pnl:+,.0f}</span>
+                        </div>
+                        '''}
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -1599,6 +1691,39 @@ Paper trading uniquement pour expérimenter."""
                                 st.caption(f"... and {len(trades) - 10} more trades (check 'All' to see)")
                         else:
                             st.info("No trades yet")
+
+                    # Show positions detail when there are open positions
+                    if positions_count > 0:
+                        with st.expander(f"📊 Open Positions ({positions_count})", expanded=False):
+                            for pos_detail in pf_value['positions_details']:
+                                pos_symbol = pos_detail['symbol'].replace('/USDT', '')
+                                pos_qty = pos_detail['quantity']
+                                pos_entry = pos_detail['entry_price']
+                                pos_current = pos_detail['current_price']
+                                pos_value = pos_detail['current_value']
+                                pos_pnl = pos_detail['pnl']
+                                pos_pnl_pct = pos_detail['pnl_pct']
+                                pos_color = '#00ff88' if pos_pnl >= 0 else '#ff4444'
+
+                                st.markdown(f"""
+                                <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; border-left: 3px solid {pos_color};">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <span style="font-size: 1.1rem; font-weight: bold; color: white;">{pos_symbol}</span>
+                                            <span style="color: #888; margin-left: 0.5rem; font-size: 0.8rem;">{pos_qty:.6f} tokens</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <span style="color: {pos_color}; font-size: 1.1rem; font-weight: bold;">{pos_pnl_pct:+.2f}%</span>
+                                            <span style="color: {pos_color}; margin-left: 0.5rem;">${pos_pnl:+.2f}</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
+                                        <span>Entry: ${pos_entry:,.4f}</span>
+                                        <span>Current: ${pos_current:,.4f}</span>
+                                        <span>Value: ${pos_value:,.2f}</span>
+                                    </div>
+                                </div>
+                                """, unsafe_allow_html=True)
 
 
 def render_settings():
