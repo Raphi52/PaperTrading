@@ -344,35 +344,69 @@ def analyze_token(symbol: str, data: Dict) -> Dict:
 # ==================== MAIN APP ====================
 
 def main():
+    # Initialize session state for navigation
+    if 'page' not in st.session_state:
+        st.session_state.page = "📈 Portfolios"
+
     # Sidebar Navigation
     with st.sidebar:
         st.markdown("## 🚀 Trading Bot")
         st.divider()
 
-        page = st.radio(
-            "Navigation",
-            ["📊 Dashboard", "🔥 Degen Mode", "🔍 Scanner", "📈 Portfolios", "⚙️ Settings"],
-            label_visibility="collapsed"
-        )
+        # Navigation buttons
+        nav_buttons = [
+            ("📊", "Dashboard"),
+            ("🔥", "Degen"),
+            ("🔍", "Scanner"),
+            ("📈", "Portfolios"),
+            ("⚙️", "Settings")
+        ]
+
+        cols = st.columns(5)
+        for i, (icon, name) in enumerate(nav_buttons):
+            with cols[i]:
+                full_name = f"{icon} {name}"
+                is_active = st.session_state.page == full_name
+                btn_type = "primary" if is_active else "secondary"
+                if st.button(icon, key=f"nav_{name}", use_container_width=True, type=btn_type, help=name):
+                    st.session_state.page = full_name
+                    st.rerun()
 
         st.divider()
 
-        # Quick stats
-        degen_state = load_degen_state()
-        pnl = degen_state.get('total_pnl', 0)
-        pnl_color = COLORS.BUY if pnl >= 0 else COLORS.SELL
+        # Calculate REAL total PnL from all portfolios
+        pf_data = load_portfolios()
+        total_pnl = 0
+        total_value = 0
+        total_initial = 0
+        total_positions = 0
+
+        for pid, p in pf_data.get('portfolios', {}).items():
+            pf_value = calculate_portfolio_value(p)
+            total_value += pf_value['total_value']
+            total_initial += p.get('initial_capital', 1000)
+            total_positions += len(p.get('positions', {}))
+
+        total_pnl = total_value - total_initial
+        pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
+        pnl_color = COLORS.BUY if total_pnl >= 0 else COLORS.SELL
 
         st.markdown(f"""
         <div style="background: {COLORS.BG_CARD}; padding: 1rem; border-radius: 10px;">
-            <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Total PnL</div>
-            <div style="color: {pnl_color}; font-size: 1.5rem; font-weight: bold;">${pnl:+,.2f}</div>
+            <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Total Portfolio Value</div>
+            <div style="color: white; font-size: 1.3rem; font-weight: bold;">${total_value:,.0f}</div>
+            <div style="color: {pnl_color}; font-size: 1rem; margin-top: 0.3rem;">
+                {pnl_pct:+.2f}% (${total_pnl:+,.0f})
+            </div>
+            <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.75rem; margin-top: 0.3rem;">
+                {total_positions} positions ouvertes
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
         st.divider()
 
         # Portfolios count
-        pf_data = load_portfolios()
         total_count = len(pf_data.get('portfolios', {}))
         st.markdown(f"### 🤖 {total_count} Portfolios")
 
@@ -419,9 +453,10 @@ def main():
                 st.rerun()
 
     # Main content based on page
+    page = st.session_state.page
     if page == "📊 Dashboard":
         render_dashboard()
-    elif page == "🔥 Degen Mode":
+    elif page == "🔥 Degen":
         render_degen()
     elif page == "🔍 Scanner":
         render_scanner()
