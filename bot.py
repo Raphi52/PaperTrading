@@ -12,6 +12,7 @@ import requests
 import pandas as pd
 import subprocess
 import sys
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 
@@ -22,15 +23,29 @@ SCAN_INTERVAL = 60  # seconds between scans
 
 # Strategies
 STRATEGIES = {
+    # Manual
     "manuel": {"auto": False},
+    "manual": {"auto": False},
+
+    # Confluence strategies
     "confluence_strict": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"]},
     "confluence_normal": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"]},
-    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": []},
-    "dca_fear": {"auto": True, "use_fear_greed": True},
-    "rsi_strategy": {"auto": True, "use_rsi": True},
-    "aggressive": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"]},
+
+    # Classic strategies
     "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"]},
-    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": []}
+    "aggressive": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"]},
+    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": []},
+    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": []},
+
+    # Indicator-based
+    "rsi_strategy": {"auto": True, "use_rsi": True},
+    "dca_fear": {"auto": True, "use_fear_greed": True},
+
+    # DEGEN STRATEGIES
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping"},
+    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum"},
+    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid"},
+    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20},
 }
 
 
@@ -300,29 +315,41 @@ def run_engine(portfolios: dict) -> list:
     return results
 
 
-def start_dashboard():
-    """Start Streamlit dashboard in background"""
+def start_dashboard(open_browser: bool = True):
+    """Start unified Streamlit dashboard in background"""
     try:
-        log("Starting Streamlit dashboard on port 8501...")
+        log("Starting unified dashboard on port 8501...")
         subprocess.Popen(
-            [sys.executable, "-m", "streamlit", "run", "dashboard.py",
+            [sys.executable, "-m", "streamlit", "run", "app.py",
              "--server.address", "0.0.0.0",
              "--server.port", "8501",
-             "--server.headless", "true"],
+             "--server.headless", "true",
+             "--browser.gatherUsageStats", "false"],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
         log("Dashboard started: http://localhost:8501")
+        log("Features: Dashboard | Degen Mode | Scanner | Portfolios | Settings")
+
+        # Open browser after a short delay
+        if open_browser:
+            time.sleep(2)
+            webbrowser.open("http://localhost:8501")
+            log("Browser opened automatically")
     except Exception as e:
         log(f"Could not start dashboard: {e}")
 
 
 def main():
     """Main bot loop"""
-    print("=" * 60)
-    print("  PAPER TRADING BOT")
+    print("\n" + "=" * 60)
+    print("  TRADING BOT - FULL DEGEN EDITION")
+    print("  Dashboard: http://localhost:8501")
     print("  Ctrl+C to stop")
     print("=" * 60)
+    print("  Modes: Classic | Degen Scalping | Degen Momentum")
+    print("  Features: Scanner | TP Ladder | Wallet Tracker | Sniper")
+    print("=" * 60 + "\n")
 
     # Start dashboard
     start_dashboard()

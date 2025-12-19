@@ -110,6 +110,9 @@ class NotificationConfig:
     enabled: bool = True
 
 
+# Import Degen config
+from config.degen_config import degen_config, degen_risk_config
+
 # Instances globales
 exchange_config = ExchangeConfig()
 trading_config = TradingConfig()
@@ -117,3 +120,6 @@ technical_config = TechnicalConfig()
 sentiment_config = SentimentConfig()
 onchain_config = OnChainConfig()
 notification_config = NotificationConfig()
+
+# Degen config already instantiated in degen_config.py
+# Use: from config.degen_config import degen_config
