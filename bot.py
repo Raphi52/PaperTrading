@@ -17,10 +17,17 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-# Fix Windows console encoding for emojis
-if sys.platform == 'win32':
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+# Fix console encoding for emojis (Windows/Linux)
+try:
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    else:
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+except:
+    pass  # Ignore if encoding fix fails
 
 # Config
 PORTFOLIOS_FILE = "data/portfolios.json"

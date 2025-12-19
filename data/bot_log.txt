@@ -6158,3 +6158,318 @@
 [2025-12-19 16:15:45]   UNI/USDT: $5.24 | RSI 76.1 | SELL
 [2025-12-19 16:15:46]   SUI/USDT: $1.45 | RSI 90.6 | SELL
 [2025-12-19 16:15:46]   AVAX/USDT: $12.15 | RSI 91.9 | SELL
+[2025-12-19 16:15:47]   ADA/USDT: $0.37 | RSI 91.4 | SELL
+[2025-12-19 16:15:47]   SOL/USDT: $125.99 | RSI 94.4 | SELL
+[2025-12-19 16:15:48]   BTC/USDT: $88,218.58 | RSI 88.9 | SELL
+[2025-12-19 16:15:48]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:15:49]   DOT/USDT: $1.83 | RSI 79.6 | SELL
+[2025-12-19 16:15:49]   XRP/USDT: $1.88 | RSI 82.1 | SELL
+[2025-12-19 16:15:50]   LTC/USDT: $76.55 | RSI 90.1 | SELL
+[2025-12-19 16:15:50]   ARB/USDT: $0.19 | RSI 95.2 | SELL
+[2025-12-19 16:15:51] No trades executed
+[2025-12-19 16:15:51] Next scan in 60s...
+[2025-12-19 16:15:54] 
+==================== SCAN #2 ====================
+[2025-12-19 16:15:54] 📊 Scanning existing cryptos...
+[2025-12-19 16:15:54] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:15:55]   DOGE/USDT: $0.13 | RSI 93.2 | SELL
+[2025-12-19 16:15:56]   APT/USDT: $1.54 | RSI 87.5 | SELL
+[2025-12-19 16:15:56]   LTC/USDT: $76.55 | RSI 90.1 | SELL
+[2025-12-19 16:15:57]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:15:57]   UNI/USDT: $5.24 | RSI 76.1 | SELL
+[2025-12-19 16:15:58]   SUI/USDT: $1.45 | RSI 90.4 | SELL
+[2025-12-19 16:15:59]   ADA/USDT: $0.37 | RSI 91.4 | SELL
+[2025-12-19 16:15:59]   ETH/USDT: $2,978.78 | RSI 94.1 | SELL
+[2025-12-19 16:16:00]   SOL/USDT: $126.00 | RSI 94.5 | SELL
+[2025-12-19 16:16:00]   BNB/USDT: $848.54 | RSI 85.6 | SELL
+[2025-12-19 16:16:01]   AVAX/USDT: $12.15 | RSI 91.9 | SELL
+[2025-12-19 16:16:01]   LINK/USDT: $12.55 | RSI 88.5 | SELL
+[2025-12-19 16:16:02]   BTC/USDT: $88,267.09 | RSI 89.1 | SELL
+[2025-12-19 16:16:03]   XRP/USDT: $1.88 | RSI 82.2 | SELL
+[2025-12-19 16:16:03]   OP/USDT: $0.27 | RSI 85.0 | SELL
+[2025-12-19 16:16:04]   ATOM/USDT: $1.92 | RSI 70.3 | STRONG_SELL
+[2025-12-19 16:16:04]   PEPE/USDT: $0.00 | RSI 91.4 | SELL
+[2025-12-19 16:16:05]   ARB/USDT: $0.19 | RSI 95.2 | SELL
+[2025-12-19 16:16:05]   INJ/USDT: $4.76 | RSI 90.7 | SELL
+[2025-12-19 16:16:06]   DOT/USDT: $1.83 | RSI 80.1 | SELL
+[2025-12-19 16:16:06]   >> EMA Cross Slow: BUY 1732.312181 OP @ $0.27
+[2025-12-19 16:16:06]   >> VWAP Bounce: BUY 235.393845 ATOM @ $1.92
+[2025-12-19 16:16:06]   >> VWAP Bounce: BUY 1563.411743 OP @ $0.27
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 0.003956 BTC @ $88,267.09
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 0.111358 ETH @ $2,978.78
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 25.936190 AVAX @ $12.15
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 2311.368666 DOGE @ $0.13
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 749.604761 MATIC @ $0.38
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 51.580764 UNI @ $5.24
+[2025-12-19 16:16:06]   >> VWAP Trend: BUY 166.130124 APT @ $1.54
+[2025-12-19 16:16:06]   >> DCA Aggressive: BUY 1732.312181 OP @ $0.27
+[2025-12-19 16:16:06]   >> Ichimoku: BUY 0.004857 BTC @ $88,267.09
+[2025-12-19 16:16:06]   >> Ichimoku: BUY 0.136718 ETH @ $2,978.78
+[2025-12-19 16:16:06]   >> Ichimoku: BUY 73.862251 UNI @ $5.24
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 0.003758 BTC @ $88,267.09
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 0.105790 ETH @ $2,978.78
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 0.352804 BNB @ $848.54
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 23.407411 AVAX @ $12.15
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 2086.010221 DOGE @ $0.13
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 20.451876 LINK @ $12.55
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 46.551640 UNI @ $5.24
+[2025-12-19 16:16:06]   >> Ichimoku Fast: BUY 159.546536 SUI @ $1.45
+[2025-12-19 16:16:06] 🎯 Scanning for new tokens...
+[2025-12-19 16:16:07] 💾 Saved 22 trades
+[2025-12-19 16:16:07] 📈 Classic: 22 trades | 🎯 Sniper: 0 trades | 🆕 New tokens: 0
+[2025-12-19 16:16:07] ⏳ Next scan in 60s...
+[2025-12-19 16:16:51] 
+--- SCAN #237 ---
+[2025-12-19 16:16:51] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:16:52]   BNB/USDT: $849.36 | RSI 85.9 | SELL
+[2025-12-19 16:16:52]   DOGE/USDT: $0.13 | RSI 93.3 | SELL
+[2025-12-19 16:16:53]   ATOM/USDT: $1.92 | RSI 71.5 | STRONG_SELL
+[2025-12-19 16:16:53]   PEPE/USDT: $0.00 | RSI 91.4 | SELL
+[2025-12-19 16:16:54]   OP/USDT: $0.27 | RSI 85.7 | SELL
+[2025-12-19 16:16:55]   APT/USDT: $1.55 | RSI 87.7 | SELL
+[2025-12-19 16:16:55]   INJ/USDT: $4.77 | RSI 90.9 | SELL
+[2025-12-19 16:16:56]   ETH/USDT: $2,986.34 | RSI 94.4 | SELL
+[2025-12-19 16:16:56]   LINK/USDT: $12.56 | RSI 89.5 | SELL
+[2025-12-19 16:16:57]   UNI/USDT: $5.25 | RSI 77.2 | SELL
+[2025-12-19 16:16:58]   SUI/USDT: $1.46 | RSI 92.5 | SELL
+[2025-12-19 16:16:59]   AVAX/USDT: $12.16 | RSI 92.0 | SELL
+[2025-12-19 16:16:59]   ADA/USDT: $0.37 | RSI 91.7 | SELL
+[2025-12-19 16:17:00]   SOL/USDT: $126.31 | RSI 94.9 | SELL
+[2025-12-19 16:17:00]   BTC/USDT: $88,410.91 | RSI 89.5 | SELL
+[2025-12-19 16:17:01]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:17:01]   DOT/USDT: $1.83 | RSI 82.0 | SELL
+[2025-12-19 16:17:02]   XRP/USDT: $1.88 | RSI 82.5 | SELL
+[2025-12-19 16:17:02]   LTC/USDT: $76.72 | RSI 90.8 | SELL
+[2025-12-19 16:17:03]   ARB/USDT: $0.19 | RSI 95.9 | SELL
+[2025-12-19 16:17:04] No trades executed
+[2025-12-19 16:17:04] Next scan in 60s...
+[2025-12-19 16:17:07] 
+==================== SCAN #3 ====================
+[2025-12-19 16:17:07] 📊 Scanning existing cryptos...
+[2025-12-19 16:17:07] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:17:07]   DOGE/USDT: $0.13 | RSI 93.4 | SELL
+[2025-12-19 16:17:08]   APT/USDT: $1.55 | RSI 87.7 | SELL
+[2025-12-19 16:17:08]   LTC/USDT: $76.72 | RSI 90.8 | SELL
+[2025-12-19 16:17:09]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:17:10]   UNI/USDT: $5.25 | RSI 77.5 | SELL
+[2025-12-19 16:17:11]   SUI/USDT: $1.45 | RSI 92.2 | SELL
+[2025-12-19 16:17:11]   ADA/USDT: $0.37 | RSI 91.7 | SELL
+[2025-12-19 16:17:12]   ETH/USDT: $2,984.18 | RSI 94.3 | SELL
+[2025-12-19 16:17:12]   SOL/USDT: $126.29 | RSI 94.9 | SELL
+[2025-12-19 16:17:13]   BNB/USDT: $849.45 | RSI 86.0 | SELL
+[2025-12-19 16:17:14]   AVAX/USDT: $12.17 | RSI 92.1 | SELL
+[2025-12-19 16:17:14]   LINK/USDT: $12.57 | RSI 89.7 | SELL
+[2025-12-19 16:17:15]   BTC/USDT: $88,413.79 | RSI 89.5 | SELL
+[2025-12-19 16:17:15]   XRP/USDT: $1.88 | RSI 82.3 | SELL
+[2025-12-19 16:17:16]   OP/USDT: $0.27 | RSI 85.7 | SELL
+[2025-12-19 16:17:16]   ATOM/USDT: $1.92 | RSI 71.7 | STRONG_SELL
+[2025-12-19 16:17:17]   PEPE/USDT: $0.00 | RSI 91.4 | SELL
+[2025-12-19 16:17:18]   ARB/USDT: $0.19 | RSI 95.9 | SELL
+[2025-12-19 16:17:18]   INJ/USDT: $4.77 | RSI 90.9 | SELL
+[2025-12-19 16:17:19]   DOT/USDT: $1.83 | RSI 82.0 | SELL
+[2025-12-19 16:17:19]   >> EMA Cross Slow: BUY 1641.506002 OP @ $0.27
+[2025-12-19 16:17:19]   >> VWAP Bounce: BUY 211.780096 ATOM @ $1.92
+[2025-12-19 16:17:19]   >> VWAP Bounce: BUY 1407.386209 OP @ $0.27
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 0.002758 BTC @ $88,413.79
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 0.077625 ETH @ $2,984.18
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 1.742524 SOL @ $126.29
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 17.178321 AVAX @ $12.17
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 1529.983508 DOGE @ $0.13
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 497.303114 MATIC @ $0.38
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 34.109032 UNI @ $5.25
+[2025-12-19 16:17:19]   >> VWAP Trend: BUY 110.071631 APT @ $1.55
+[2025-12-19 16:17:19]   >> DCA Aggressive: BUY 1641.506002 OP @ $0.27
+[2025-12-19 16:17:19]   >> Ichimoku: BUY 0.004157 BTC @ $88,413.79
+[2025-12-19 16:17:19]   >> Ichimoku: BUY 0.117007 ETH @ $2,984.18
+[2025-12-19 16:17:19]   >> Ichimoku: BUY 27.256386 AVAX @ $12.17
+[2025-12-19 16:17:19]   >> Ichimoku: BUY 59.966642 UNI @ $5.25
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 0.002489 BTC @ $88,413.79
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 0.070056 ETH @ $2,984.18
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 0.233807 BNB @ $849.45
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 15.503435 AVAX @ $12.17
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 1380.810116 DOGE @ $0.13
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 13.546604 LINK @ $12.57
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 30.783401 UNI @ $5.25
+[2025-12-19 16:17:19]   >> Ichimoku Fast: BUY 105.642699 SUI @ $1.45
+[2025-12-19 16:17:19] 🎯 Scanning for new tokens...
+[2025-12-19 16:17:20] 💾 Saved 24 trades
+[2025-12-19 16:17:20] 📈 Classic: 24 trades | 🎯 Sniper: 0 trades | 🆕 New tokens: 0
+[2025-12-19 16:17:20] ⏳ Next scan in 60s...
+[2025-12-19 16:18:04] 
+--- SCAN #238 ---
+[2025-12-19 16:18:04] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:18:04]   BNB/USDT: $849.87 | RSI 86.1 | SELL
+[2025-12-19 16:18:05]   DOGE/USDT: $0.13 | RSI 93.5 | SELL
+[2025-12-19 16:18:05]   ATOM/USDT: $1.93 | RSI 72.0 | STRONG_SELL
+[2025-12-19 16:18:06]   PEPE/USDT: $0.00 | RSI 91.7 | SELL
+[2025-12-19 16:18:06]   OP/USDT: $0.28 | RSI 86.0 | SELL
+[2025-12-19 16:18:07]   APT/USDT: $1.55 | RSI 87.9 | SELL
+[2025-12-19 16:18:07]   INJ/USDT: $4.78 | RSI 91.0 | SELL
+[2025-12-19 16:18:08]   ETH/USDT: $2,985.69 | RSI 94.3 | SELL
+[2025-12-19 16:18:08]   LINK/USDT: $12.58 | RSI 89.8 | SELL
+[2025-12-19 16:18:09]   UNI/USDT: $5.26 | RSI 77.7 | SELL
+[2025-12-19 16:18:09]   SUI/USDT: $1.46 | RSI 92.5 | SELL
+[2025-12-19 16:18:10]   AVAX/USDT: $12.18 | RSI 92.2 | SELL
+[2025-12-19 16:18:10] Starting unified dashboard on port 8501...
+[2025-12-19 16:18:10] Dashboard started: http://localhost:8501
+[2025-12-19 16:18:10] Features: Dashboard | Degen Mode | Scanner | Portfolios | Settings
+[2025-12-19 16:18:11]   ADA/USDT: $0.37 | RSI 91.9 | SELL
+[2025-12-19 16:18:11]   SOL/USDT: $126.47 | RSI 95.0 | SELL
+[2025-12-19 16:18:12]   BTC/USDT: $88,636.91 | RSI 90.1 | SELL
+[2025-12-19 16:18:12]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:18:13] Browser opened automatically
+[2025-12-19 16:18:13] Loaded 33 portfolios (30 classic, 3 sniper)
+[2025-12-19 16:18:13]   ✅  Conservative [conservative]
+[2025-12-19 16:18:13]   ✅  Aggressive [aggressive]
+[2025-12-19 16:18:13]   ✅  RSI Strategy [rsi_strategy]
+[2025-12-19 16:18:13]   ✅  Confluence Normal [confluence_normal]
+[2025-12-19 16:18:13]   ✅  Confluence Strict [confluence_strict]
+[2025-12-19 16:18:13]   ✅  HODL [hodl]
+[2025-12-19 16:18:13]   ✅  Degen Scalp [degen_scalp]
+[2025-12-19 16:18:13]   ✅  Degen Momentum [degen_momentum]
+[2025-12-19 16:18:13]   ✅  Degen Hybrid [degen_hybrid]
+[2025-12-19 16:18:13]   ✅  Full Degen [degen_full]
+[2025-12-19 16:18:13]   ✅ 🎯 Sniper Safe [sniper_safe]
+[2025-12-19 16:18:13]   ✅ 🎯 Sniper Degen [sniper_degen]
+[2025-12-19 16:18:13]   ✅ 🎯 Sniper YOLO [sniper_yolo]
+[2025-12-19 16:18:13]   ✅  EMA Crossover [ema_crossover]
+[2025-12-19 16:18:13]   ✅  EMA Cross Slow [ema_crossover_slow]
+[2025-12-19 16:18:13]   ✅  VWAP Bounce [vwap_bounce]
+[2025-12-19 16:18:13]   ✅  VWAP Trend [vwap_trend]
+[2025-12-19 16:18:13]   ✅  Supertrend [supertrend]
+[2025-12-19 16:18:13]   ✅  Supertrend Fast [supertrend_fast]
+[2025-12-19 16:18:13]   ✅  Stoch RSI [stoch_rsi]
+[2025-12-19 16:18:13]   ✅  Stoch RSI Aggro [stoch_rsi_aggressive]
+[2025-12-19 16:18:13]   ✅  Breakout [breakout]
+[2025-12-19 16:18:13]   ✅  Breakout Tight [breakout_tight]
+[2025-12-19 16:18:13]   ✅  Mean Reversion [mean_reversion]
+[2025-12-19 16:18:13]   ✅  Mean Rev Tight [mean_reversion_tight]
+[2025-12-19 16:18:13]   ✅  Grid Trading [grid_trading]
+[2025-12-19 16:18:13]   ✅  Grid Tight [grid_tight]
+[2025-12-19 16:18:13]   ✅  DCA Accumulator [dca_accumulator]
+[2025-12-19 16:18:13]   ✅  DCA Aggressive [dca_aggressive]
+[2025-12-19 16:18:13]   ✅  Ichimoku [ichimoku]
+[2025-12-19 16:18:13]   ✅  Ichimoku Fast [ichimoku_fast]
+[2025-12-19 16:18:13]   ✅  Martingale [martingale]
+[2025-12-19 16:18:13]   ✅  Martingale Safe [martingale_safe]
+[2025-12-19 16:18:13] Starting unified bot loop (scan every 60s)...
+[2025-12-19 16:18:13] 
+==================== SCAN #1 ====================
+[2025-12-19 16:18:13] 📊 Scanning existing cryptos...
+[2025-12-19 16:18:13] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:18:13]   DOT/USDT: $1.84 | RSI 82.6 | SELL
+[2025-12-19 16:18:13]   BTC/USDT: $88,640.02 | RSI 90.1 | SELL
+[2025-12-19 16:18:13]   XRP/USDT: $1.89 | RSI 82.7 | SELL
+[2025-12-19 16:18:14]   ADA/USDT: $0.37 | RSI 92.0 | SELL
+[2025-12-19 16:18:14]   LTC/USDT: $76.79 | RSI 91.0 | SELL
+[2025-12-19 16:18:15]   ARB/USDT: $0.19 | RSI 96.0 | SELL
+[2025-12-19 16:18:16] No trades executed
+[2025-12-19 16:18:16] Next scan in 60s...
+[2025-12-19 16:18:16]   ARB/USDT: $0.19 | RSI 96.0 | SELL
+[2025-12-19 16:18:16]   LTC/USDT: $76.78 | RSI 91.0 | SELL
+[2025-12-19 16:18:17]   OP/USDT: $0.28 | RSI 86.1 | SELL
+[2025-12-19 16:18:17]   APT/USDT: $1.55 | RSI 87.9 | SELL
+[2025-12-19 16:18:18]   DOT/USDT: $1.84 | RSI 82.6 | SELL
+[2025-12-19 16:18:19]   DOGE/USDT: $0.13 | RSI 93.5 | SELL
+[2025-12-19 16:18:19]   XRP/USDT: $1.89 | RSI 82.8 | SELL
+[2025-12-19 16:18:20] 
+==================== SCAN #4 ====================
+[2025-12-19 16:18:20] 📊 Scanning existing cryptos...
+[2025-12-19 16:18:20] Scanning 21 cryptos for 33 active portfolios...
+[2025-12-19 16:18:20]   ETH/USDT: $2,987.94 | RSI 94.4 | SELL
+[2025-12-19 16:18:20]   DOGE/USDT: $0.13 | RSI 93.5 | SELL
+[2025-12-19 16:18:20]   PEPE/USDT: $0.00 | RSI 91.9 | SELL
+[2025-12-19 16:18:21]   APT/USDT: $1.55 | RSI 88.0 | SELL
+[2025-12-19 16:18:21]   UNI/USDT: $5.27 | RSI 77.9 | SELL
+[2025-12-19 16:18:22]   LTC/USDT: $76.80 | RSI 91.0 | SELL
+[2025-12-19 16:18:22]   INJ/USDT: $4.79 | RSI 91.2 | SELL
+[2025-12-19 16:18:22]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:18:22]   MATIC/USDT: $0.38 | RSI 55.7 | HOLD
+[2025-12-19 16:18:23]   UNI/USDT: $5.27 | RSI 78.0 | SELL
+[2025-12-19 16:18:23]   ATOM/USDT: $1.93 | RSI 72.4 | STRONG_SELL
+[2025-12-19 16:18:24]   AVAX/USDT: $12.21 | RSI 92.4 | SELL
+[2025-12-19 16:18:24]   SUI/USDT: $1.46 | RSI 92.6 | SELL
+[2025-12-19 16:18:24]   LINK/USDT: $12.60 | RSI 90.0 | SELL
+[2025-12-19 16:18:25]   ADA/USDT: $0.37 | RSI 92.0 | SELL
+[2025-12-19 16:18:25]   SOL/USDT: $126.66 | RSI 95.1 | SELL
+[2025-12-19 16:18:25]   ETH/USDT: $2,988.55 | RSI 94.4 | SELL
+[2025-12-19 16:18:25]   SUI/USDT: $1.46 | RSI 92.6 | SELL
+[2025-12-19 16:18:26]   SOL/USDT: $126.62 | RSI 95.1 | SELL
+[2025-12-19 16:18:26]   BNB/USDT: $850.48 | RSI 86.4 | SELL
+[2025-12-19 16:18:26]   >> EMA Cross Slow: BUY 1555.469884 OP @ $0.28
+[2025-12-19 16:18:26]   >> VWAP Bounce: BUY 190.734793 ATOM @ $1.93
+[2025-12-19 16:18:26]   >> VWAP Bounce: BUY 1266.939942 OP @ $0.28
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 0.001825 BTC @ $88,640.02
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 0.051433 ETH @ $2,987.94
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 1.152649 SOL @ $126.66
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 11.359114 AVAX @ $12.21
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 1012.993367 DOGE @ $0.13
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 329.921046 MATIC @ $0.38
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 22.581360 UNI @ $5.27
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 72.882433 APT @ $1.55
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 73.622407 SUI @ $1.46
+[2025-12-19 16:18:26]   >> VWAP Trend: BUY 25552233.802731 PEPE @ $0.00
+[2025-12-19 16:18:26]   >> Ichimoku: BUY 0.003377 BTC @ $88,640.02
+[2025-12-19 16:18:26]   >> Ichimoku: BUY 0.095183 ETH @ $2,987.94
+[2025-12-19 16:18:26]   >> Ichimoku: BUY 22.127768 AVAX @ $12.21
+[2025-12-19 16:18:26]   >> Ichimoku: BUY 48.741178 UNI @ $5.27
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 0.001647 BTC @ $88,640.02
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 0.046418 ETH @ $2,987.94
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 0.154924 BNB @ $850.48
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 10.251601 AVAX @ $12.21
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 914.226514 DOGE @ $0.13
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 8.965696 LINK @ $12.60
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 20.379678 UNI @ $5.27
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 65.776395 APT @ $1.55
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 508.429093 ARB @ $0.19
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 19.225440 INJ @ $4.79
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 59.965910 SUI @ $1.46
+[2025-12-19 16:18:26]   >> Ichimoku Fast: BUY 20812454.133785 PEPE @ $0.00
+[2025-12-19 16:18:26] 🎯 Scanning for new tokens...
+[2025-12-19 16:18:26]   BNB/USDT: $850.48 | RSI 86.4 | SELL
+[2025-12-19 16:18:27]   AVAX/USDT: $12.21 | RSI 92.4 | SELL
+[2025-12-19 16:18:27] 💾 Saved 29 trades
+[2025-12-19 16:18:27] 📈 Classic: 29 trades | 🎯 Sniper: 0 trades | 🆕 New tokens: 0
+[2025-12-19 16:18:27] ⏳ Next scan in 60s...
+[2025-12-19 16:18:28]   LINK/USDT: $12.60 | RSI 90.0 | SELL
+[2025-12-19 16:18:28]   BTC/USDT: $88,788.91 | RSI 90.4 | SELL
+[2025-12-19 16:18:29]   XRP/USDT: $1.89 | RSI 82.9 | SELL
+[2025-12-19 16:18:29]   OP/USDT: $0.28 | RSI 86.3 | SELL
+[2025-12-19 16:18:30]   ATOM/USDT: $1.93 | RSI 72.7 | STRONG_SELL
+[2025-12-19 16:18:30]   PEPE/USDT: $0.00 | RSI 91.7 | SELL
+[2025-12-19 16:18:31]   ARB/USDT: $0.19 | RSI 96.1 | SELL
+[2025-12-19 16:18:31]   INJ/USDT: $4.79 | RSI 91.2 | SELL
+[2025-12-19 16:18:32]   DOT/USDT: $1.84 | RSI 83.0 | SELL
+[2025-12-19 16:18:32]   >> EMA Cross Slow: BUY 1553.778543 OP @ $0.28
+[2025-12-19 16:18:32]   >> VWAP Bounce: BUY 190.537037 ATOM @ $1.93
+[2025-12-19 16:18:32]   >> VWAP Bounce: BUY 1265.562334 OP @ $0.28
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 0.001822 BTC @ $88,788.91
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 0.051422 ETH @ $2,988.55
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 1.153013 SOL @ $126.62
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 11.359114 AVAX @ $12.21
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 1012.915492 DOGE @ $0.13
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 329.921046 MATIC @ $0.38
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 22.572787 UNI @ $5.27
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 72.835442 APT @ $1.55
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 73.617356 SUI @ $1.46
+[2025-12-19 16:18:32]   >> VWAP Trend: BUY 25616435.395200 PEPE @ $0.00
+[2025-12-19 16:18:32]   >> Ichimoku: BUY 0.003372 BTC @ $88,788.91
+[2025-12-19 16:18:32]   >> Ichimoku: BUY 0.095163 ETH @ $2,988.55
+[2025-12-19 16:18:32]   >> Ichimoku: BUY 22.127768 AVAX @ $12.21
+[2025-12-19 16:18:32]   >> Ichimoku: BUY 48.722673 UNI @ $5.27
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 0.001644 BTC @ $88,788.91
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 0.046409 ETH @ $2,988.55
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 0.154924 BNB @ $850.48
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 10.251601 AVAX @ $12.21
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 914.156232 DOGE @ $0.13
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 8.965696 LINK @ $12.60
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 20.371940 UNI @ $5.27
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 65.733986 APT @ $1.55
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 507.629676 ARB @ $0.19
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 19.217409 INJ @ $4.79
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 59.961797 SUI @ $1.46
+[2025-12-19 16:18:32]   >> Ichimoku Fast: BUY 20864746.732111 PEPE @ $0.00
+[2025-12-19 16:18:32] 🎯 Scanning for new tokens...
+[2025-12-19 16:18:33] 💾 Saved 29 trades
+[2025-12-19 16:18:33] 📈 Classic: 29 trades | 🎯 Sniper: 0 trades | 🆕 New tokens: 0
+[2025-12-19 16:18:33] ⏳ Next scan in 60s...
