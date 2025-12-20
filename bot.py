@@ -254,6 +254,16 @@ STRATEGIES = {
     "congress_crenshaw": {"auto": True, "use_whale": True, "whale_ids": ["congress_crenshaw"], "take_profit": 40, "stop_loss": 20},
     "congress_all": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi", "congress_mccaul", "congress_tuberville"], "take_profit": 50, "stop_loss": 20},
 
+    # LEGENDARY INVESTORS - World's best traders/investors
+    "legend_buffett": {"auto": True, "use_whale": True, "whale_ids": ["legend_buffett"], "take_profit": 100, "stop_loss": 25},
+    "legend_dalio": {"auto": True, "use_whale": True, "whale_ids": ["legend_dalio"], "take_profit": 40, "stop_loss": 15},
+    "legend_simons": {"auto": True, "use_whale": True, "whale_ids": ["legend_simons"], "take_profit": 30, "stop_loss": 15},
+    "legend_soros": {"auto": True, "use_whale": True, "whale_ids": ["legend_soros"], "take_profit": 50, "stop_loss": 20},
+    "legend_burry": {"auto": True, "use_whale": True, "whale_ids": ["legend_burry"], "take_profit": 100, "stop_loss": 30},
+    "legend_cathie": {"auto": True, "use_whale": True, "whale_ids": ["legend_cathie"], "take_profit": 100, "stop_loss": 35},
+    "legend_ptj": {"auto": True, "use_whale": True, "whale_ids": ["legend_ptj"], "take_profit": 40, "stop_loss": 20},
+    "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20},
+
     # ============ NEW STRATEGIES ============
 
     # EMA Crossover - Classic trend following
@@ -454,6 +464,14 @@ STRATEGY_TIMEFRAMES = {
     "congress_tuberville": "1h",
     "congress_crenshaw": "1h",
     "congress_all": "1h",
+    "legend_buffett": "4h",
+    "legend_dalio": "1h",
+    "legend_simons": "15m",
+    "legend_soros": "1h",
+    "legend_burry": "4h",
+    "legend_cathie": "1h",
+    "legend_ptj": "15m",
+    "legend_ackman": "1h",
 
     # Slow strategies - 4H (trend following)
     "conservative": "4h",

@@ -142,6 +142,108 @@ WHALE_WALLETS = {
         "type": "congress",
         "style": "congress_composite",
         "focus": ["NVDA", "GOOGL", "MSFT", "AAPL", "AMZN", "META", "TSLA", "AMD"]
+    },
+
+    # ============ LEGENDARY INVESTORS (World's Best) ============
+
+    # Warren Buffett - Value investing, quality at discount
+    "legend_buffett": {
+        "name": "Warren Buffett",
+        "wallet": "buffett_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_value",
+        "description": "Buy wonderful companies at fair prices, hold forever"
+    },
+
+    # Ray Dalio - All Weather, risk parity, macro
+    "legend_dalio": {
+        "name": "Ray Dalio",
+        "wallet": "dalio_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_allweather",
+        "description": "Balanced portfolio, hedge all environments"
+    },
+
+    # Jim Simons - Quant king, Renaissance Technologies (66% annual returns)
+    "legend_simons": {
+        "name": "Jim Simons",
+        "wallet": "simons_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_quant",
+        "description": "Pure quant, statistical arbitrage, mean reversion"
+    },
+
+    # George Soros - Macro legend, broke Bank of England
+    "legend_soros": {
+        "name": "George Soros",
+        "wallet": "soros_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_macro",
+        "description": "Reflexivity, big macro bets, trend following"
+    },
+
+    # Michael Burry - Contrarian, The Big Short
+    "legend_burry": {
+        "name": "Michael Burry",
+        "wallet": "burry_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_contrarian",
+        "description": "Deep value, contrarian, short overvalued assets"
+    },
+
+    # Cathie Wood - Innovation, disruptive tech (ARK)
+    "legend_cathie": {
+        "name": "Cathie Wood",
+        "wallet": "cathie_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_innovation",
+        "description": "Disruptive innovation, high growth, 5-year horizon"
+    },
+
+    # Stanley Druckenmiller - Macro, Soros protégé
+    "legend_druckenmiller": {
+        "name": "Stanley Druckenmiller",
+        "wallet": "druckenmiller_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_macro",
+        "description": "Macro trends, concentrated bets, owns Bitcoin"
+    },
+
+    # Paul Tudor Jones - Macro, trend following
+    "legend_ptj": {
+        "name": "Paul Tudor Jones",
+        "wallet": "ptj_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_trend",
+        "description": "Trend following, momentum, 5% BTC allocation"
+    },
+
+    # Carl Icahn - Activist investor
+    "legend_icahn": {
+        "name": "Carl Icahn",
+        "wallet": "icahn_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_activist",
+        "description": "Activist, undervalued assets, force change"
+    },
+
+    # Bill Ackman - Concentrated bets, activist
+    "legend_ackman": {
+        "name": "Bill Ackman",
+        "wallet": "ackman_simulated",
+        "chain": "multi",
+        "type": "legend",
+        "style": "legend_concentrated",
+        "description": "Concentrated portfolio, high conviction bets"
     }
 }
 
@@ -239,6 +341,9 @@ class WhaleTracker:
         elif style.startswith('congress_'):
             # Congress member style: Buy their favorite sectors
             signals = self._congress_signals(whale, market_data)
+        elif style.startswith('legend_'):
+            # Legendary investors
+            signals = self._legend_signals(whale, market_data)
 
         return signals
 
@@ -494,6 +599,197 @@ class WhaleTracker:
 
         return signals
 
+    def _legend_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """
+        Legendary investor signals - each legend has their unique style.
+        Maps their investment philosophy to crypto.
+        """
+        signals = []
+        style = whale.get('style', 'legend_value')
+        name = whale.get('name', 'Legend')
+        fg = market.get('fear_greed', 50)
+
+        # Blue chip cryptos (Buffett would approve)
+        BLUE_CHIPS = ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'BNB/USDT']
+
+        # Quality DeFi (established protocols)
+        QUALITY_DEFI = ['AAVE/USDT', 'UNI/USDT', 'MKR/USDT', 'LINK/USDT', 'LDO/USDT', 'SNX/USDT']
+
+        # L1/L2 Infrastructure
+        INFRASTRUCTURE = ['ETH/USDT', 'SOL/USDT', 'AVAX/USDT', 'DOT/USDT', 'ATOM/USDT', 'NEAR/USDT',
+                         'ARB/USDT', 'OP/USDT', 'MATIC/USDT', 'INJ/USDT', 'SUI/USDT', 'APT/USDT', 'SEI/USDT']
+
+        # Innovation/AI tokens (Cathie Wood style)
+        INNOVATION = ['RENDER/USDT', 'FET/USDT', 'AGIX/USDT', 'OCEAN/USDT', 'TAO/USDT', 'GRT/USDT',
+                     'AR/USDT', 'FIL/USDT', 'RNDR/USDT', 'WLD/USDT']
+
+        # High beta / momentum plays
+        HIGH_BETA = ['SOL/USDT', 'AVAX/USDT', 'INJ/USDT', 'SUI/USDT', 'TIA/USDT', 'SEI/USDT',
+                    'JUP/USDT', 'PYTH/USDT', 'JTO/USDT', 'BONK/USDT', 'WIF/USDT']
+
+        all_tickers = market.get('top_gainers', []) + market.get('top_losers', [])
+
+        if style == 'legend_value':
+            # BUFFETT: Buy quality on fear, extreme patience
+            if fg < 30:  # Only buy when others are fearful
+                for ticker in all_tickers:
+                    symbol = ticker['symbol'].replace('USDT', '/USDT')
+                    change = float(ticker['priceChangePercent'])
+                    if symbol in BLUE_CHIPS + QUALITY_DEFI and change < -5:
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 85,
+                            'reason': f"BUFFETT: Quality {symbol} on sale ({change:.1f}%), Fear={fg}"
+                        })
+
+        elif style == 'legend_allweather':
+            # DALIO: Balanced, buy dips across sectors
+            for ticker in all_tickers:
+                symbol = ticker['symbol'].replace('USDT', '/USDT')
+                change = float(ticker['priceChangePercent'])
+                if symbol in BLUE_CHIPS + INFRASTRUCTURE[:5] and -8 < change < -3:
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': name,
+                        'confidence': 70,
+                        'reason': f"DALIO: Balanced buy {symbol} ({change:.1f}%)"
+                    })
+
+        elif style == 'legend_quant':
+            # SIMONS: Mean reversion, statistical patterns
+            for ticker in all_tickers:
+                symbol = ticker['symbol'].replace('USDT', '/USDT')
+                change = float(ticker['priceChangePercent'])
+                volume = float(ticker.get('quoteVolume', 0))
+
+                # Mean reversion: big drops with volume = buy
+                if change < -8 and volume > 20_000_000:
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': name,
+                        'confidence': 75,
+                        'reason': f"SIMONS: Mean reversion {symbol} ({change:.1f}%), Vol ${volume/1e6:.0f}M"
+                    })
+                # Momentum breakout
+                elif change > 10 and volume > 50_000_000:
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': name,
+                        'confidence': 70,
+                        'reason': f"SIMONS: Momentum breakout {symbol} +{change:.1f}%"
+                    })
+
+        elif style == 'legend_macro':
+            # SOROS/DRUCKENMILLER: Big macro trends, reflexivity
+            btc_change = market.get('btc_change', 0)
+            trend = market.get('market_trend', 'neutral')
+
+            if trend == 'bullish' and btc_change > 3:
+                # Risk-on: buy high beta
+                for ticker in market.get('top_gainers', [])[:5]:
+                    symbol = ticker['symbol'].replace('USDT', '/USDT')
+                    change = float(ticker['priceChangePercent'])
+                    if symbol in HIGH_BETA and change > 5:
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 75,
+                            'reason': f"SOROS: Macro bullish, riding {symbol} +{change:.1f}%"
+                        })
+            elif trend == 'bearish' and fg < 25:
+                # Capitulation = opportunity
+                for ticker in market.get('top_losers', [])[:3]:
+                    symbol = ticker['symbol'].replace('USDT', '/USDT')
+                    change = float(ticker['priceChangePercent'])
+                    if symbol in BLUE_CHIPS and change < -10:
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 80,
+                            'reason': f"SOROS: Capitulation buy {symbol} ({change:.1f}%), Fear={fg}"
+                        })
+
+        elif style == 'legend_contrarian':
+            # BURRY: Extreme contrarian, buy max fear
+            if fg < 20:  # Extreme fear only
+                for ticker in market.get('top_losers', [])[:5]:
+                    symbol = ticker['symbol'].replace('USDT', '/USDT')
+                    change = float(ticker['priceChangePercent'])
+                    if change < -12:
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 80,
+                            'reason': f"BURRY: Max fear buy {symbol} ({change:.1f}%), Fear={fg}"
+                        })
+
+        elif style == 'legend_innovation':
+            # CATHIE WOOD: Disruptive tech, AI, innovation
+            for ticker in all_tickers:
+                symbol = ticker['symbol'].replace('USDT', '/USDT')
+                change = float(ticker['priceChangePercent'])
+
+                if symbol in INNOVATION:
+                    if change < -5:  # Buy dips on innovation
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 70,
+                            'reason': f"CATHIE: Innovation dip {symbol} ({change:.1f}%)"
+                        })
+                    elif change > 8:  # Add on strength
+                        signals.append({
+                            'action': 'BUY',
+                            'symbol': symbol,
+                            'whale': name,
+                            'confidence': 65,
+                            'reason': f"CATHIE: Innovation momentum {symbol} +{change:.1f}%"
+                        })
+
+        elif style == 'legend_trend':
+            # PTJ: Trend following, momentum
+            for ticker in market.get('top_gainers', [])[:8]:
+                symbol = ticker['symbol'].replace('USDT', '/USDT')
+                change = float(ticker['priceChangePercent'])
+                volume = float(ticker.get('quoteVolume', 0))
+
+                if change > 7 and volume > 30_000_000:
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': name,
+                        'confidence': 70,
+                        'reason': f"PTJ: Trend follow {symbol} +{change:.1f}%"
+                    })
+
+        elif style == 'legend_activist' or style == 'legend_concentrated':
+            # ICAHN/ACKMAN: Concentrated, high conviction
+            # Buy the biggest movers with conviction
+            for ticker in market.get('top_gainers', [])[:3]:
+                symbol = ticker['symbol'].replace('USDT', '/USDT')
+                change = float(ticker['priceChangePercent'])
+                volume = float(ticker.get('quoteVolume', 0))
+
+                if change > 10 and volume > 50_000_000 and symbol in INFRASTRUCTURE:
+                    signals.append({
+                        'action': 'BUY',
+                        'symbol': symbol,
+                        'whale': name,
+                        'confidence': 80,
+                        'reason': f"ACKMAN: High conviction {symbol} +{change:.1f}%"
+                    })
+
+        return signals
+
     def _track_real_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
         """Track real wallet via blockchain explorers"""
         signals = []
@@ -576,6 +872,64 @@ WHALE_STRATEGIES = {
         "name": "Congress Composite",
         "whales": ["congress_pelosi", "congress_mccaul", "congress_tuberville"],
         "style": "congress_composite",
+        "take_profit": 50,
+        "stop_loss": 20
+    },
+
+    # ============ LEGENDARY INVESTORS ============
+    "legend_buffett": {
+        "name": "Copy Buffett (Value)",
+        "whales": ["legend_buffett"],
+        "style": "legend_value",
+        "take_profit": 100,
+        "stop_loss": 25
+    },
+    "legend_dalio": {
+        "name": "Copy Dalio (All Weather)",
+        "whales": ["legend_dalio"],
+        "style": "legend_allweather",
+        "take_profit": 40,
+        "stop_loss": 15
+    },
+    "legend_simons": {
+        "name": "Copy Simons (Quant)",
+        "whales": ["legend_simons"],
+        "style": "legend_quant",
+        "take_profit": 30,
+        "stop_loss": 15
+    },
+    "legend_soros": {
+        "name": "Copy Soros (Macro)",
+        "whales": ["legend_soros"],
+        "style": "legend_macro",
+        "take_profit": 50,
+        "stop_loss": 20
+    },
+    "legend_burry": {
+        "name": "Copy Burry (Contrarian)",
+        "whales": ["legend_burry"],
+        "style": "legend_contrarian",
+        "take_profit": 100,
+        "stop_loss": 30
+    },
+    "legend_cathie": {
+        "name": "Copy Cathie (Innovation)",
+        "whales": ["legend_cathie"],
+        "style": "legend_innovation",
+        "take_profit": 100,
+        "stop_loss": 35
+    },
+    "legend_ptj": {
+        "name": "Copy PTJ (Trend)",
+        "whales": ["legend_ptj"],
+        "style": "legend_trend",
+        "take_profit": 40,
+        "stop_loss": 20
+    },
+    "legend_ackman": {
+        "name": "Copy Ackman (Concentrated)",
+        "whales": ["legend_ackman"],
+        "style": "legend_concentrated",
         "take_profit": 50,
         "stop_loss": 20
     }
