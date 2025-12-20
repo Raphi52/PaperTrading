@@ -266,13 +266,13 @@ class WhaleTracker:
         """Hsaka-style momentum: ride strong trends"""
         signals = []
 
-        for gainer in market.get('top_gainers', [])[:5]:
+        for gainer in market.get('top_gainers', [])[:10]:
             symbol = gainer['symbol'].replace('USDT', '/USDT')
             change = float(gainer['priceChangePercent'])
             volume = float(gainer.get('quoteVolume', 0))
 
-            # Strong momentum with volume
-            if change > 8 and volume > 50_000_000:  # >8% gain, >$50M volume
+            # Strong momentum with decent volume
+            if change > 5 and volume > 5_000_000:  # >5% gain, >$5M volume
                 signals.append({
                     'action': 'BUY',
                     'symbol': symbol,
@@ -287,14 +287,20 @@ class WhaleTracker:
         """Cobie-style value investing: quality at discount"""
         signals = []
 
-        # Quality tokens that are down
-        quality_tokens = ['ETH/USDT', 'SOL/USDT', 'LINK/USDT', 'AAVE/USDT', 'UNI/USDT', 'MKR/USDT']
+        # Quality tokens that are down (expanded list)
+        quality_tokens = [
+            'ETH/USDT', 'SOL/USDT', 'LINK/USDT', 'AAVE/USDT', 'UNI/USDT', 'MKR/USDT',
+            'AVAX/USDT', 'DOT/USDT', 'ATOM/USDT', 'NEAR/USDT', 'ARB/USDT', 'OP/USDT',
+            'MATIC/USDT', 'LDO/USDT', 'CRV/USDT', 'SNX/USDT', 'COMP/USDT', 'SUSHI/USDT',
+            'INJ/USDT', 'TIA/USDT', 'SEI/USDT', 'SUI/USDT', 'APT/USDT', 'FTM/USDT',
+            'RUNE/USDT', 'GMX/USDT', 'DYDX/USDT', 'ENS/USDT', 'GRT/USDT', 'FIL/USDT'
+        ]
 
-        for loser in market.get('top_losers', [])[:10]:
+        for loser in market.get('top_losers', [])[:20]:
             symbol = loser['symbol'].replace('USDT', '/USDT')
             change = float(loser['priceChangePercent'])
 
-            if symbol in quality_tokens and change < -8:
+            if symbol in quality_tokens and change < -5:  # -5% threshold
                 signals.append({
                     'action': 'BUY',
                     'symbol': symbol,
@@ -309,13 +315,20 @@ class WhaleTracker:
         """Ansem-style memecoin plays"""
         signals = []
 
-        memecoins = ['DOGE/USDT', 'SHIB/USDT', 'PEPE/USDT', 'FLOKI/USDT', 'BONK/USDT', 'WIF/USDT', 'TURBO/USDT']
+        # Extended memecoin list
+        memecoins = [
+            'DOGE/USDT', 'SHIB/USDT', 'PEPE/USDT', 'FLOKI/USDT', 'BONK/USDT', 'WIF/USDT',
+            'TURBO/USDT', 'MEME/USDT', 'SATS/USDT', 'RATS/USDT', 'ORDI/USDT', '1000SATS/USDT',
+            'PEOPLE/USDT', 'LUNC/USDT', 'BABYDOGE/USDT', 'ELON/USDT', 'LADYS/USDT',
+            'WOJAK/USDT', 'BITCOIN/USDT', 'COQ/USDT', 'MYRO/USDT', 'SILLY/USDT',
+            'MOG/USDT', 'BRETT/USDT', 'POPCAT/USDT', 'NEIRO/USDT', 'GOAT/USDT'
+        ]
 
-        for gainer in market.get('top_gainers', [])[:15]:
+        for gainer in market.get('top_gainers', [])[:20]:
             symbol = gainer['symbol'].replace('USDT', '/USDT')
             change = float(gainer['priceChangePercent'])
 
-            if symbol in memecoins and change > 5:
+            if symbol in memecoins and change > 3:  # Lower threshold to 3%
                 signals.append({
                     'action': 'BUY',
                     'symbol': symbol,
@@ -324,22 +337,36 @@ class WhaleTracker:
                     'reason': f"MEME: {symbol} pumping +{change:.1f}%"
                 })
 
+        # Also buy any meme that's really pumping, even if not in list
+        for gainer in market.get('top_gainers', [])[:5]:
+            symbol = gainer['symbol'].replace('USDT', '/USDT')
+            change = float(gainer['priceChangePercent'])
+
+            if change > 15 and symbol not in [s['symbol'] for s in signals]:
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 55,
+                    'reason': f"MEME FOMO: {symbol} pumping hard +{change:.1f}%"
+                })
+
         return signals
 
     def _degen_signals(self, whale: Dict, market: Dict) -> List[Dict]:
         """Full degen: chase pumps aggressively"""
         signals = []
 
-        for gainer in market.get('top_gainers', [])[:8]:
+        for gainer in market.get('top_gainers', [])[:12]:
             symbol = gainer['symbol'].replace('USDT', '/USDT')
             change = float(gainer['priceChangePercent'])
 
-            if change > 10:
+            if change > 7:  # Lower threshold
                 signals.append({
                     'action': 'BUY',
                     'symbol': symbol,
                     'whale': whale['name'],
-                    'confidence': 50,
+                    'confidence': min(70, 40 + change),
                     'reason': f"DEGEN: Chasing {symbol} +{change:.1f}%"
                 })
 
