@@ -100,6 +100,48 @@ WHALE_WALLETS = {
         "chain": "multi",
         "type": "legendary",
         "style": "degen"
+    },
+
+    # US Congress Members (famous for their trading performance)
+    "congress_pelosi": {
+        "name": "Nancy Pelosi",
+        "wallet": "pelosi_simulated",
+        "chain": "multi",
+        "type": "congress",
+        "style": "congress_tech",
+        "focus": ["NVDA", "GOOGL", "MSFT", "AAPL", "AMZN", "META", "TSLA", "AMD", "CRM", "AVGO"]
+    },
+    "congress_tuberville": {
+        "name": "Tommy Tuberville",
+        "wallet": "tuberville_simulated",
+        "chain": "multi",
+        "type": "congress",
+        "style": "congress_defense",
+        "focus": ["LMT", "RTX", "NOC", "BA", "GD"]
+    },
+    "congress_crenshaw": {
+        "name": "Dan Crenshaw",
+        "wallet": "crenshaw_simulated",
+        "chain": "multi",
+        "type": "congress",
+        "style": "congress_energy",
+        "focus": ["XOM", "CVX", "OXY", "SLB", "HAL"]
+    },
+    "congress_mccaul": {
+        "name": "Michael McCaul",
+        "wallet": "mccaul_simulated",
+        "chain": "multi",
+        "type": "congress",
+        "style": "congress_tech",
+        "focus": ["NVDA", "MSFT", "GOOGL", "META", "INTC"]
+    },
+    "congress_all": {
+        "name": "Congress Composite",
+        "wallet": "congress_all_simulated",
+        "chain": "multi",
+        "type": "congress",
+        "style": "congress_composite",
+        "focus": ["NVDA", "GOOGL", "MSFT", "AAPL", "AMZN", "META", "TSLA", "AMD"]
     }
 }
 
@@ -194,6 +236,9 @@ class WhaleTracker:
         elif style == 'degen':
             # Full degen: High risk high reward
             signals = self._degen_signals(whale, market_data)
+        elif style.startswith('congress_'):
+            # Congress member style: Buy their favorite sectors
+            signals = self._congress_signals(whale, market_data)
 
         return signals
 
@@ -372,6 +417,83 @@ class WhaleTracker:
 
         return signals
 
+    def _congress_signals(self, whale: Dict, market: Dict) -> List[Dict]:
+        """
+        Congress member trading style - maps their stock picks to crypto equivalents.
+        Pelosi loves tech (NVDA, GOOGL) -> AI tokens, L1s
+        Tuberville loves defense -> Infrastructure tokens
+        """
+        signals = []
+        style = whale.get('style', 'congress_tech')
+
+        # Map stock sectors to crypto equivalents
+        SECTOR_CRYPTO_MAP = {
+            # Tech stocks -> AI & Infrastructure tokens
+            'tech': [
+                'RENDER/USDT', 'FET/USDT', 'AGIX/USDT', 'OCEAN/USDT', 'TAO/USDT',  # AI tokens
+                'SOL/USDT', 'ETH/USDT', 'AVAX/USDT', 'NEAR/USDT', 'INJ/USDT',  # L1s (tech infrastructure)
+                'ARB/USDT', 'OP/USDT', 'MATIC/USDT',  # L2s
+                'LINK/USDT', 'GRT/USDT',  # Infrastructure
+            ],
+            # Defense stocks -> Security & Infrastructure tokens
+            'defense': [
+                'ETH/USDT', 'SOL/USDT', 'DOT/USDT', 'ATOM/USDT',  # Secure L1s
+                'LINK/USDT', 'BAND/USDT',  # Oracles (data security)
+                'ZEC/USDT', 'XMR/USDT',  # Privacy (if available)
+            ],
+            # Energy stocks -> DeFi & Staking tokens
+            'energy': [
+                'LDO/USDT', 'RPL/USDT',  # Staking (energy for blockchain)
+                'AAVE/USDT', 'COMP/USDT', 'MKR/USDT',  # DeFi blue chips
+                'CRV/USDT', 'CVX/USDT',  # Yield
+            ],
+        }
+
+        # Determine which sector based on style
+        if 'tech' in style:
+            target_cryptos = SECTOR_CRYPTO_MAP['tech']
+            sector_name = "TECH"
+        elif 'defense' in style:
+            target_cryptos = SECTOR_CRYPTO_MAP['defense']
+            sector_name = "DEFENSE"
+        elif 'energy' in style:
+            target_cryptos = SECTOR_CRYPTO_MAP['energy']
+            sector_name = "ENERGY"
+        else:  # composite
+            target_cryptos = SECTOR_CRYPTO_MAP['tech'] + SECTOR_CRYPTO_MAP['defense'][:3]
+            sector_name = "COMPOSITE"
+
+        # Check market data for these cryptos
+        all_tickers = market.get('top_gainers', []) + market.get('top_losers', [])
+
+        for ticker in all_tickers:
+            symbol = ticker['symbol'].replace('USDT', '/USDT')
+            if symbol not in target_cryptos:
+                continue
+
+            change = float(ticker['priceChangePercent'])
+            volume = float(ticker.get('quoteVolume', 0))
+
+            # Pelosi style: Buy quality on dips OR momentum plays
+            if change < -3 and change > -15:  # Buy the dip on quality
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 75,
+                    'reason': f"CONGRESS {sector_name}: {symbol} dip buy ({change:.1f}%) - {whale['name']} style"
+                })
+            elif change > 5 and volume > 10_000_000:  # Momentum with volume
+                signals.append({
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'whale': whale['name'],
+                    'confidence': 70,
+                    'reason': f"CONGRESS {sector_name}: {symbol} momentum +{change:.1f}% - {whale['name']} style"
+                })
+
+        return signals
+
     def _track_real_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
         """Track real wallet via blockchain explorers"""
         signals = []
@@ -426,6 +548,35 @@ WHALE_STRATEGIES = {
         "whales": ["trader_1", "trader_2", "trader_3"],
         "style": "composite",
         "take_profit": 40,
+        "stop_loss": 20
+    },
+    # Congress Members
+    "congress_pelosi": {
+        "name": "Copy Pelosi (Tech)",
+        "whales": ["congress_pelosi"],
+        "style": "congress_tech",
+        "take_profit": 50,
+        "stop_loss": 20
+    },
+    "congress_tuberville": {
+        "name": "Copy Tuberville (Defense)",
+        "whales": ["congress_tuberville"],
+        "style": "congress_defense",
+        "take_profit": 40,
+        "stop_loss": 20
+    },
+    "congress_crenshaw": {
+        "name": "Copy Crenshaw (Energy)",
+        "whales": ["congress_crenshaw"],
+        "style": "congress_energy",
+        "take_profit": 40,
+        "stop_loss": 20
+    },
+    "congress_all": {
+        "name": "Congress Composite",
+        "whales": ["congress_pelosi", "congress_mccaul", "congress_tuberville"],
+        "style": "congress_composite",
+        "take_profit": 50,
         "stop_loss": 20
     }
 }

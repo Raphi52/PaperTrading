@@ -248,6 +248,12 @@ STRATEGIES = {
     "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 50, "stop_loss": 25},
     "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 40, "stop_loss": 20},
 
+    # CONGRESS COPY TRADING - Follow US Congress members (famous for beating the market)
+    "congress_pelosi": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi"], "take_profit": 50, "stop_loss": 20},
+    "congress_tuberville": {"auto": True, "use_whale": True, "whale_ids": ["congress_tuberville"], "take_profit": 40, "stop_loss": 20},
+    "congress_crenshaw": {"auto": True, "use_whale": True, "whale_ids": ["congress_crenshaw"], "take_profit": 40, "stop_loss": 20},
+    "congress_all": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi", "congress_mccaul", "congress_tuberville"], "take_profit": 50, "stop_loss": 20},
+
     # ============ NEW STRATEGIES ============
 
     # EMA Crossover - Classic trend following
@@ -444,6 +450,10 @@ STRATEGY_TIMEFRAMES = {
     "whale_ansem": "15m",
     "whale_degen": "15m",
     "whale_smart_money": "1h",
+    "congress_pelosi": "1h",
+    "congress_tuberville": "1h",
+    "congress_crenshaw": "1h",
+    "congress_all": "1h",
 
     # Slow strategies - 4H (trend following)
     "conservative": "4h",
@@ -1577,9 +1587,11 @@ def scan_new_tokens() -> list:
     return new_tokens
 
 
-# ============ DEX TRADING SIMULATION ============
+# ============ DEX TRADING SIMULATION (PRODUCTION-READY) ============
 
-# Gas fees per chain (in USD)
+import random
+
+# Gas fees per chain (in USD) - realistic averages
 DEX_GAS_FEES = {
     'solana': 0.01,      # SOL is very cheap
     'bsc': 0.30,         # BSC is cheap
@@ -1602,6 +1614,31 @@ DEX_MIN_TRADE = {
     'avalanche': 20,     # $20 min
     'ethereum': 100,     # $100 min (gas is expensive)
 }
+
+# Maximum position size as % of liquidity (realistic constraint)
+MAX_POSITION_PCT_OF_LIQUIDITY = 0.10  # Max 10% of liquidity
+
+# MEV/Front-running simulation
+MEV_CHANCE = 0.15  # 15% chance of being front-run
+MEV_EXTRA_SLIPPAGE = 0.03  # 3% extra slippage when front-run
+
+# Transaction failure rates
+TX_FAIL_RATE = {
+    'solana': 0.03,      # 3% fail (network congestion)
+    'bsc': 0.02,         # 2% fail
+    'polygon': 0.04,     # 4% fail
+    'arbitrum': 0.02,    # 2% fail
+    'optimism': 0.02,    # 2% fail
+    'base': 0.02,        # 2% fail
+    'avalanche': 0.02,   # 2% fail
+    'ethereum': 0.05,    # 5% fail (gas price volatility)
+}
+
+# Execution delay price change (price moves while tx confirms)
+EXECUTION_DELAY_VOLATILITY = 0.02  # 2% max price change during execution
+
+# Token approval tracking (first trade needs approval)
+_approved_tokens = set()  # Track which tokens have been approved
 
 def calculate_dex_slippage(trade_size_usd: float, liquidity_usd: float, is_buy: bool = True) -> float:
     """
@@ -1672,6 +1709,206 @@ def get_realistic_entry_price(token_price: float, slippage: float, is_buy: bool)
         return token_price * (1 + slippage)  # Pay more when buying
     else:
         return token_price * (1 - slippage)  # Get less when selling
+
+
+def check_max_position_size(trade_size_usd: float, liquidity_usd: float) -> tuple:
+    """
+    Check if trade size is realistic vs liquidity.
+    Returns (allowed_size, was_reduced, reason)
+    """
+    if liquidity_usd <= 0:
+        return 0, True, "No liquidity"
+
+    max_size = liquidity_usd * MAX_POSITION_PCT_OF_LIQUIDITY
+
+    if trade_size_usd <= max_size:
+        return trade_size_usd, False, None
+
+    return max_size, True, f"Reduced to {MAX_POSITION_PCT_OF_LIQUIDITY*100:.0f}% of liquidity (${max_size:.2f})"
+
+
+def simulate_mev_frontrun(is_buy: bool) -> tuple:
+    """
+    Simulate MEV bot front-running.
+    Returns (was_frontrun, extra_slippage)
+    """
+    # MEV bots mostly target buys (sandwich attacks)
+    if is_buy and random.random() < MEV_CHANCE:
+        return True, MEV_EXTRA_SLIPPAGE
+    return False, 0
+
+
+def simulate_transaction_failure(chain: str) -> tuple:
+    """
+    Simulate transaction failure (network issues, gas issues, etc.)
+    Returns (failed, reason)
+    """
+    fail_rate = TX_FAIL_RATE.get(chain, 0.03)
+
+    if random.random() < fail_rate:
+        reasons = [
+            "Transaction reverted",
+            "Insufficient gas",
+            "Slippage tolerance exceeded",
+            "Network congestion timeout",
+            "RPC node error",
+            "Nonce too low"
+        ]
+        return True, random.choice(reasons)
+
+    return False, None
+
+
+def simulate_execution_delay(token_price: float) -> float:
+    """
+    Simulate price change during transaction confirmation.
+    Returns new price after delay.
+    """
+    # Random price movement during execution (can be + or -)
+    change = random.uniform(-EXECUTION_DELAY_VOLATILITY, EXECUTION_DELAY_VOLATILITY)
+    return token_price * (1 + change)
+
+
+def calculate_approval_gas(chain: str, token_address: str) -> float:
+    """
+    Calculate gas for token approval (first trade only).
+    Returns approval gas cost, 0 if already approved.
+    """
+    if token_address in _approved_tokens:
+        return 0
+
+    # Approval costs roughly same as a swap
+    base_gas = DEX_GAS_FEES.get(chain, 1.0)
+
+    # Mark as approved for future trades
+    _approved_tokens.add(token_address)
+
+    return base_gas
+
+
+def execute_dex_trade_realistic(
+    chain: str,
+    token_address: str,
+    token_price: float,
+    trade_size_usd: float,
+    liquidity_usd: float,
+    is_buy: bool
+) -> dict:
+    """
+    Execute a DEX trade with ALL realistic constraints.
+    Returns dict with success, execution details, or failure reason.
+
+    For BUYS: tokens_received, total_cost, execution_price
+    For SELLS: net_proceeds, execution_price
+    """
+    result = {
+        'success': False,
+        'tx_failed': False,
+        'gas_lost': 0,
+        'fail_reason': None,
+        # Trade details
+        'requested_size': trade_size_usd,
+        'actual_trade_size': trade_size_usd,
+        'execution_price': 0,
+        'slippage_pct': 0,
+        'total_fees': 0,
+        'approval_gas': 0,
+        # Buy-specific
+        'tokens_received': 0,
+        'total_cost': 0,
+        # Sell-specific
+        'net_proceeds': 0,
+        # Flags
+        'was_frontrun': False,
+        'size_reduced': False,
+        'price_changed': False,
+        'price_impact_pct': 0,
+        'warnings': []
+    }
+
+    # 1. Check minimum trade size
+    min_trade = DEX_MIN_TRADE.get(chain, 50)
+    if trade_size_usd < min_trade:
+        result['fail_reason'] = f"Below minimum trade size (${min_trade})"
+        return result
+
+    # 2. Check max position size vs liquidity (only for buys)
+    if is_buy:
+        allowed_size, was_reduced, reduce_reason = check_max_position_size(trade_size_usd, liquidity_usd)
+        if allowed_size == 0:
+            result['fail_reason'] = reduce_reason
+            return result
+        if was_reduced:
+            result['size_reduced'] = True
+            result['warnings'].append(reduce_reason)
+            trade_size_usd = allowed_size
+            result['actual_trade_size'] = allowed_size
+
+    # 3. Calculate approval gas (first trade only for buys)
+    approval_gas = 0
+    if is_buy:
+        approval_gas = calculate_approval_gas(chain, token_address)
+        if approval_gas > 0:
+            result['approval_gas'] = approval_gas
+            result['warnings'].append(f"First trade: approval gas ${approval_gas:.2f}")
+
+    # 4. Simulate transaction failure
+    tx_failed, fail_reason = simulate_transaction_failure(chain)
+    if tx_failed:
+        gas_lost = DEX_GAS_FEES.get(chain, 1.0) + approval_gas
+        result['tx_failed'] = True
+        result['gas_lost'] = gas_lost
+        result['fail_reason'] = fail_reason
+        result['warnings'].append(f"Lost ${gas_lost:.2f} in gas")
+        return result
+
+    # 5. Simulate price change during execution
+    delayed_price = simulate_execution_delay(token_price)
+    price_change_pct = ((delayed_price / token_price) - 1) * 100
+    if abs(price_change_pct) > 1:
+        result['price_changed'] = True
+        result['warnings'].append(f"Price moved {price_change_pct:+.1f}% during execution")
+
+    # 6. Calculate base slippage
+    base_slippage = calculate_dex_slippage(trade_size_usd, liquidity_usd, is_buy)
+
+    # 7. Simulate MEV front-running (mostly affects buys)
+    was_frontrun, mev_slippage = simulate_mev_frontrun(is_buy)
+    if was_frontrun:
+        result['was_frontrun'] = True
+        result['warnings'].append(f"MEV bot front-ran: +{mev_slippage*100:.1f}% slippage")
+
+    total_slippage = base_slippage + mev_slippage
+    result['slippage_pct'] = total_slippage * 100  # as percentage
+
+    # 8. Calculate execution price
+    execution_price = get_realistic_entry_price(delayed_price, total_slippage, is_buy)
+    result['execution_price'] = execution_price
+
+    # 9. Calculate price impact
+    price_impact = abs((execution_price / token_price) - 1) * 100
+    result['price_impact_pct'] = price_impact
+
+    # 10. Calculate fees
+    fees = calculate_dex_fees(chain, trade_size_usd)
+    total_fees = fees['total'] + approval_gas
+    result['total_fees'] = total_fees
+
+    # 11. Calculate final amounts
+    if is_buy:
+        # Buying: spend USDT, receive tokens
+        tokens_received = trade_size_usd / execution_price
+        total_cost = trade_size_usd + total_fees
+        result['tokens_received'] = tokens_received
+        result['total_cost'] = total_cost
+    else:
+        # Selling: trade_size_usd is the gross value of tokens
+        # We receive less due to slippage and fees
+        net_proceeds = trade_size_usd * (1 - total_slippage) - total_fees
+        result['net_proceeds'] = max(0, net_proceeds)
+
+    result['success'] = True
+    return result
 
 
 def check_sniper_positions_realtime(portfolios: dict) -> list:
@@ -1861,68 +2098,89 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                     continue
 
                 if current_price > 0:
-                    # Calculate sell with realistic DEX conditions
                     qty = pos['quantity']
                     gross_value = qty * current_price
 
-                    # Sell slippage (higher than buy)
-                    sell_slippage = calculate_dex_slippage(gross_value, current_liquidity, is_buy=False)
-                    actual_price = get_realistic_entry_price(current_price, sell_slippage, is_buy=False)
-                    net_value_before_fees = qty * actual_price
-
-                    # Fees
-                    fees = calculate_dex_fees(chain, net_value_before_fees)
-                    net_value = net_value_before_fees - fees['total']
-
-                    # Real PNL including slippage and fees
-                    entry_cost = pos['entry_price'] * qty + pos.get('fees_paid', 0)
-                    real_pnl = net_value - entry_cost
-                    real_pnl_pct = (real_pnl / entry_cost) * 100 if entry_cost > 0 else 0
-
-                    # Gross PNL (without considering fees/slippage) for TP/SL trigger
+                    # Gross PNL (for TP/SL trigger decision)
                     gross_pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
 
                     should_sell = False
                     sell_reason = ""
 
-                    # Take profit (use gross for trigger, but show real PNL)
+                    # Take profit trigger
                     if gross_pnl_pct >= take_profit:
                         should_sell = True
-                        sell_reason = f"TP hit {gross_pnl_pct:.1f}% | Net: {real_pnl_pct:.1f}% after fees"
+                        sell_reason = f"TP hit {gross_pnl_pct:.1f}%"
 
-                    # Stop loss
+                    # Stop loss trigger
                     elif gross_pnl_pct <= -stop_loss:
                         should_sell = True
-                        sell_reason = f"SL hit {gross_pnl_pct:.1f}% | Net: {real_pnl_pct:.1f}%"
+                        sell_reason = f"SL hit {gross_pnl_pct:.1f}%"
 
                     # Time-based exit
                     elif max_hold_hours > 0 and hold_hours >= max_hold_hours:
                         should_sell = True
-                        sell_reason = f"Time exit {hold_hours:.1f}h | Net: {real_pnl_pct:.1f}%"
+                        sell_reason = f"Time exit {hold_hours:.1f}h"
 
-                    if should_sell and net_value > fees['total']:  # Only sell if we get something back
-                        asset = symbol.replace('/USDT', '')
-                        portfolio['balance']['USDT'] += net_value
-                        portfolio['balance'][asset] = 0
-                        del portfolio['positions'][symbol]
+                    if should_sell:
+                        # Execute sell with realistic simulation
+                        sell_result = execute_dex_trade_realistic(
+                            chain=chain,
+                            token_address=pos.get('address', ''),
+                            token_price=current_price,
+                            trade_size_usd=gross_value,
+                            liquidity_usd=current_liquidity,
+                            is_buy=False
+                        )
 
-                        trade = {
-                            'timestamp': datetime.now().isoformat(),
-                            'action': 'SNIPE_SELL',
-                            'symbol': symbol,
-                            'price': actual_price,
-                            'quantity': qty,
-                            'amount_usdt': net_value,
-                            'fees': fees['total'],
-                            'slippage_pct': sell_slippage * 100,
-                            'pnl': real_pnl,
-                            'reason': sell_reason
-                        }
-                        portfolio['trades'].append(trade)
+                        # Check if sell tx failed
+                        if not sell_result['success']:
+                            if sell_result.get('tx_failed'):
+                                gas_lost = sell_result.get('gas_lost', 0)
+                                if gas_lost > 0 and portfolio['balance']['USDT'] >= gas_lost:
+                                    portfolio['balance']['USDT'] -= gas_lost
+                                    log(f"[SELL TX FAIL] {symbol} | Lost ${gas_lost:.2f} gas | {sell_result.get('fail_reason')} | {portfolio['name']}")
+                            continue
 
-                        pnl_emoji = "✅" if real_pnl >= 0 else "❌"
-                        log(f"{pnl_emoji} SNIPE SELL: {symbol} | PNL: ${real_pnl:+.2f} ({real_pnl_pct:+.1f}%) | Slip: {sell_slippage*100:.1f}% | {portfolio['name']}")
-                        results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL', 'symbol': symbol, 'pnl': real_pnl})
+                        # Sell succeeded
+                        actual_price = sell_result['execution_price']
+                        net_value = sell_result['net_proceeds']
+                        total_fees = sell_result['total_fees']
+                        sell_slippage = sell_result['slippage_pct'] / 100
+
+                        # Calculate real PNL after fees
+                        entry_cost = pos['entry_price'] * qty + pos.get('fees_paid', 0)
+                        real_pnl = net_value - entry_cost
+                        real_pnl_pct = (real_pnl / entry_cost) * 100 if entry_cost > 0 else 0
+
+                        if net_value > total_fees:  # Only if we get something back
+                            asset = symbol.replace('/USDT', '')
+                            portfolio['balance']['USDT'] += net_value
+                            portfolio['balance'][asset] = 0
+                            del portfolio['positions'][symbol]
+
+                            # Build detailed reason
+                            reason_parts = [sell_reason, f"Net: {real_pnl_pct:.1f}%"]
+                            if sell_result.get('price_changed'):
+                                reason_parts.append("Price moved during TX")
+
+                            trade = {
+                                'timestamp': datetime.now().isoformat(),
+                                'action': 'SNIPE_SELL',
+                                'symbol': symbol,
+                                'price': actual_price,
+                                'quantity': qty,
+                                'amount_usdt': net_value,
+                                'fees': total_fees,
+                                'slippage_pct': sell_slippage * 100,
+                                'pnl': real_pnl,
+                                'reason': " | ".join(reason_parts)
+                            }
+                            portfolio['trades'].append(trade)
+
+                            pnl_emoji = "[WIN]" if real_pnl >= 0 else "[LOSS]"
+                            log(f"{pnl_emoji} SNIPE SELL: {symbol} | PNL: ${real_pnl:+.2f} ({real_pnl_pct:+.1f}%) | Slip: {sell_slippage*100:.1f}% | {portfolio['name']}")
+                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL', 'symbol': symbol, 'pnl': real_pnl})
 
         # Look for new snipes
         for token in new_tokens:
@@ -1940,40 +2198,54 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
             if token['address'] in [p.get('address') for p in portfolio['positions'].values()]:
                 continue
 
-            # === REALISTIC DEX SIMULATION ===
+            # === PRODUCTION-READY DEX SIMULATION ===
             chain = token.get('chain', 'ethereum')
 
-            # Check minimum trade size for this chain
-            min_trade = DEX_MIN_TRADE.get(chain, 50)
-            if portfolio['balance']['USDT'] < min_trade * 2:  # Need 2x min for safety
-                continue
-
-            # Calculate base amount
+            # Calculate desired trade size
             amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
             amount_usdt = min(amount_usdt, 500)  # Max $500 per snipe
-            amount_usdt = max(amount_usdt, min_trade)  # At least min trade
 
-            if amount_usdt < min_trade:
+            # Execute trade with ALL realistic constraints
+            trade_result = execute_dex_trade_realistic(
+                chain=chain,
+                token_address=token['address'],
+                token_price=token['price'],
+                trade_size_usd=amount_usdt,
+                liquidity_usd=token['liquidity'],
+                is_buy=True
+            )
+
+            # Check if trade failed
+            if not trade_result['success']:
+                if trade_result.get('tx_failed'):
+                    # Transaction failed - log it and count as loss
+                    gas_lost = trade_result.get('gas_lost', 0)
+                    if gas_lost > 0 and portfolio['balance']['USDT'] >= gas_lost:
+                        portfolio['balance']['USDT'] -= gas_lost
+                        trade = {
+                            'timestamp': datetime.now().isoformat(),
+                            'action': 'SNIPE_TX_FAILED',
+                            'symbol': symbol,
+                            'price': 0,
+                            'quantity': 0,
+                            'amount_usdt': -gas_lost,
+                            'pnl': -gas_lost,
+                            'reason': f"TX FAILED: {trade_result.get('fail_reason', 'Unknown')} | Gas lost: ${gas_lost:.2f}"
+                        }
+                        portfolio['trades'].append(trade)
+                        log(f"[TX FAIL] {symbol} | Lost ${gas_lost:.2f} gas | {trade_result.get('fail_reason')} | {portfolio['name']}")
                 continue
 
-            # Calculate DEX fees
-            fees = calculate_dex_fees(chain, amount_usdt)
-            total_fees = fees['total']
+            # Trade succeeded - apply results
+            execution_price = trade_result['execution_price']
+            tokens_received = trade_result['tokens_received']
+            total_cost = trade_result['total_cost']
+            total_fees = trade_result['total_fees']
+            slippage = trade_result['slippage_pct'] / 100
 
-            # Calculate slippage based on liquidity
-            slippage = calculate_dex_slippage(amount_usdt, token['liquidity'], is_buy=True)
-
-            # Get actual execution price (with slippage)
-            execution_price = get_realistic_entry_price(token['price'], slippage, is_buy=True)
-
-            # Total cost = amount + fees
-            total_cost = amount_usdt + total_fees
-
+            # Check if we have enough balance
             if portfolio['balance']['USDT'] < total_cost:
                 continue
-
-            # Tokens received (less due to slippage)
-            tokens_received = amount_usdt / execution_price
 
             # Deduct from balance
             portfolio['balance']['USDT'] -= total_cost
@@ -1982,7 +2254,7 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
             portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + tokens_received
 
             portfolio['positions'][symbol] = {
-                'entry_price': execution_price,  # Actual price paid
+                'entry_price': execution_price,
                 'quantity': tokens_received,
                 'entry_time': datetime.now().isoformat(),
                 'is_snipe': True,
@@ -1993,8 +2265,24 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                 'liquidity_at_entry': token['liquidity'],
                 'slippage_paid': slippage,
                 'fees_paid': total_fees,
-                'original_price': token['price']  # Market price before slippage
+                'original_price': token['price'],
+                'was_frontrun': trade_result.get('was_frontrun', False),
+                'size_reduced': trade_result.get('size_reduced', False),
+                'had_approval': trade_result.get('approval_gas', 0) > 0
             }
+
+            # Build reason with all simulation details
+            reason_parts = [f"DEX Snipe {chain.upper()}"]
+            reason_parts.append(f"Slip: {slippage*100:.1f}%")
+            reason_parts.append(f"Fees: ${total_fees:.2f}")
+            if trade_result.get('was_frontrun'):
+                reason_parts.append("FRONTRUN!")
+            if trade_result.get('size_reduced'):
+                reason_parts.append(f"Size reduced to 10% liq")
+            if trade_result.get('approval_gas', 0) > 0:
+                reason_parts.append(f"Approval: ${trade_result['approval_gas']:.2f}")
+            if trade_result.get('price_impact_pct', 0) > 1:
+                reason_parts.append(f"Impact: {trade_result['price_impact_pct']:.1f}%")
 
             trade = {
                 'timestamp': datetime.now().isoformat(),
@@ -2002,7 +2290,7 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                 'symbol': symbol,
                 'price': execution_price,
                 'quantity': tokens_received,
-                'amount_usdt': amount_usdt,
+                'amount_usdt': trade_result['actual_trade_size'],
                 'fees': total_fees,
                 'slippage_pct': slippage * 100,
                 'pnl': 0,
@@ -2012,11 +2300,16 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                 'risk_score': token['risk_score'],
                 'market_cap': token['market_cap'],
                 'liquidity': token['liquidity'],
-                'reason': f"DEX Snipe | Slip: {slippage*100:.1f}% | Fees: ${total_fees:.2f} | {chain.upper()}"
+                'was_frontrun': trade_result.get('was_frontrun', False),
+                'reason': " | ".join(reason_parts)
             }
             portfolio['trades'].append(trade)
 
-            log(f"🎯 SNIPE: {token['symbol']} @ ${execution_price:.6f} (slip {slippage*100:.1f}%) | Fees: ${total_fees:.2f} | {chain} | {portfolio['name']}")
+            # Log with details
+            log_msg = f"SNIPE: {token['symbol']} @ ${execution_price:.6f}"
+            if trade_result.get('was_frontrun'):
+                log_msg = f"[FRONTRUN] " + log_msg
+            log(f"{log_msg} | Slip: {slippage*100:.1f}% | Fees: ${total_fees:.2f} | {chain} | {portfolio['name']}")
             results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_BUY', 'symbol': symbol, 'token': token})
 
     return results
