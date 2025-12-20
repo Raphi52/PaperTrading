@@ -2342,26 +2342,40 @@ Moins de trades mais meilleure qualité."""
                                 else:
                                     price_str = f"${a_price:.6f}"
 
-                                if a_action == 'BUY':
+                                # Determine if buy or sell action
+                                is_buy_action = 'BUY' in a_action
+                                is_sell_action = 'SELL' in a_action or 'SOLD' in a_action
+                                is_rug = 'RUG' in a_action
+
+                                if is_rug:
+                                    bg_color = 'rgba(128,0,128,0.15)'
+                                    border_color = '#8B0000'
+                                    icon = '💀'
+                                elif is_buy_action:
                                     bg_color = 'rgba(0,255,136,0.08)'
                                     border_color = '#00ff88'
                                     icon = '🟢'
-                                else:
+                                elif is_sell_action:
                                     bg_color = 'rgba(255,68,68,0.08)'
                                     border_color = '#ff4444'
                                     icon = '🔴'
+                                else:
+                                    bg_color = 'rgba(100,100,100,0.08)'
+                                    border_color = '#888'
+                                    icon = '⚪'
 
                                 # Amount display (spent for BUY, received for SELL)
                                 amount_html = ""
                                 if a_amount > 0:
-                                    if a_action == 'BUY':
+                                    if is_buy_action:
                                         amount_html = f'<span style="color: #ffaa00; font-weight: bold; margin-left: 8px;">-${a_amount:.2f}</span>'
                                     else:
                                         amount_html = f'<span style="color: #00ccff; font-weight: bold; margin-left: 8px;">+${a_amount:.2f}</span>'
 
-                                # PNL display for sells
+                                # PNL display for sells (all types)
                                 pnl_html = ""
-                                if a_action == 'SELL' and a_pnl != 0:
+                                is_sell = 'SELL' in a_action or 'SOLD' in a_action or 'RUGGED' in a_action
+                                if is_sell and a_pnl != 0:
                                     pnl_color = '#00ff88' if a_pnl >= 0 else '#ff4444'
                                     pnl_html = f'<span style="color: {pnl_color}; font-size: 0.8rem; margin-left: 6px;">({a_pnl:+.2f})</span>'
 
