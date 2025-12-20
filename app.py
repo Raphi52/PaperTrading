@@ -2211,6 +2211,7 @@ Moins de trades mais meilleure qualité."""
                                 'symbol': t.get('symbol', '').replace('/USDT', ''),
                                 'price': t.get('price', 0),
                                 'pnl': t.get('pnl', 0),
+                                'amount': t.get('amount_usdt', 0),
                                 'reason': t.get('reason', '')
                             })
 
@@ -2224,6 +2225,7 @@ Moins de trades mais meilleure qualité."""
                                     'symbol': log.get('symbol', '').replace('/USDT', ''),
                                     'price': log.get('price', 0),
                                     'pnl': 0,
+                                    'amount': log.get('amount_usdt', 0),
                                     'reason': log.get('reason', '')
                                 })
 
@@ -2257,6 +2259,7 @@ Moins de trades mais meilleure qualité."""
                                 a_symbol = a['symbol']
                                 a_price = a['price']
                                 a_pnl = a['pnl']
+                                a_amount = a.get('amount', 0)
                                 a_reason = a['reason']
                                 a_type = a['type']
 
@@ -2279,11 +2282,19 @@ Moins de trades mais meilleure qualité."""
                                     border_color = '#ff4444'
                                     icon = '🔴'
 
+                                # Amount display (spent for BUY, received for SELL)
+                                amount_html = ""
+                                if a_amount > 0:
+                                    if a_action == 'BUY':
+                                        amount_html = f'<span style="color: #ffaa00; font-weight: bold; margin-left: 8px;">-${a_amount:.2f}</span>'
+                                    else:
+                                        amount_html = f'<span style="color: #00ccff; font-weight: bold; margin-left: 8px;">+${a_amount:.2f}</span>'
+
                                 # PNL display for sells
                                 pnl_html = ""
                                 if a_action == 'SELL' and a_pnl != 0:
                                     pnl_color = '#00ff88' if a_pnl >= 0 else '#ff4444'
-                                    pnl_html = f'<span style="color: {pnl_color}; font-weight: bold; margin-left: 8px;">{a_pnl:+.2f}$</span>'
+                                    pnl_html = f'<span style="color: {pnl_color}; font-size: 0.8rem; margin-left: 6px;">({a_pnl:+.2f})</span>'
 
                                 # Type badge
                                 type_badge = "📈" if a_type == 'trade' else "🎯"
@@ -2291,7 +2302,7 @@ Moins de trades mais meilleure qualité."""
                                 # Truncate reason
                                 reason_short = a_reason[:50] + "..." if len(a_reason) > 50 else a_reason
 
-                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> <b style="color: white;">{a_symbol}</b> <span style="color: #888;">{price_str}</span>{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
+                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> <b style="color: white;">{a_symbol}</b> <span style="color: #888;">{price_str}</span>{amount_html}{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
 
                             st.markdown('</div>', unsafe_allow_html=True)
 
