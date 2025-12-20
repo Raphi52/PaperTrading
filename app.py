@@ -2309,8 +2309,7 @@ Moins de trades mais meilleure qualité."""
 
                             display_activities = unique_activities if show_all_act else unique_activities[:10]
 
-                            # Build all HTML at once for faster rendering
-                            all_cards_html = '<div style="max-height: 350px; overflow-y: auto;">'
+                            st.markdown('<div style="max-height: 350px; overflow-y: auto;">', unsafe_allow_html=True)
 
                             for a in display_activities:
                                 a_time = a['timestamp'][-8:] if len(a['timestamp']) > 8 else a['timestamp']
@@ -2433,7 +2432,7 @@ Moins de trades mais meilleure qualité."""
                                     tpsl_html = f'<span style="color: #00ff88;">TP: {tp_str} (+{a_tp}%)</span> | <span style="color: #ff4444;">SL: {sl_str} (-{a_sl}%)</span>'
 
                                 # Build the activity card HTML
-                                all_cards_html += f'''
+                                st.markdown(f'''
                                 <div style="background: {bg_color}; padding: 10px 14px; border-radius: 10px; margin: 6px 0; border-left: 4px solid {border_color};">
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                         <div>
@@ -2455,10 +2454,9 @@ Moins de trades mais meilleure qualité."""
                                     </div>
                                     {f'<div style="color: #777; font-size: 0.7rem; margin-top: 6px; font-style: italic;">{a_reason}</div>' if a_reason else ''}
                                 </div>
-                                '''
+                                ''', unsafe_allow_html=True)
 
-                            all_cards_html += '</div>'
-                            st.markdown(all_cards_html, unsafe_allow_html=True)
+                            st.markdown('</div>', unsafe_allow_html=True)
 
                             if not show_all_act and total_count > 10:
                                 st.caption(f"Showing 10 of {total_count} activities")
