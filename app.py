@@ -432,7 +432,9 @@ def calculate_portfolio_value(portfolio: Dict) -> Dict:
             'current_price': current_price,
             'current_value': current_value,
             'pnl': pnl,
-            'pnl_pct': pnl_pct
+            'pnl_pct': pnl_pct,
+            'token_address': pos.get('address', ''),
+            'chain': pos.get('chain', '')
         })
 
     return {
@@ -2212,7 +2214,9 @@ Moins de trades mais meilleure qualité."""
                                 'price': t.get('price', 0),
                                 'pnl': t.get('pnl', 0),
                                 'amount': t.get('amount_usdt', 0),
-                                'reason': t.get('reason', '')
+                                'reason': t.get('reason', ''),
+                                'token_address': t.get('token_address', ''),
+                                'chain': t.get('chain', '')
                             })
 
                         # Add decision logs (only BUY/SELL, skip HOLD)
@@ -2262,6 +2266,8 @@ Moins de trades mais meilleure qualité."""
                                 a_amount = a.get('amount', 0)
                                 a_reason = a['reason']
                                 a_type = a['type']
+                                a_token_address = a.get('token_address', '')
+                                a_chain = a.get('chain', '')
 
                                 # Format price
                                 if a_price >= 1000:
@@ -2302,7 +2308,15 @@ Moins de trades mais meilleure qualité."""
                                 # Truncate reason
                                 reason_short = a_reason[:50] + "..." if len(a_reason) > 50 else a_reason
 
-                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> <b style="color: white;">{a_symbol}</b> <span style="color: #888;">{price_str}</span>{amount_html}{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
+                                # Create DexScreener link for symbol
+                                if a_token_address and a_chain:
+                                    dex_url = f"https://dexscreener.com/{a_chain}/{a_token_address}"
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: #00d4ff; font-weight: bold; text-decoration: none;">{a_symbol} 🔗</a>'
+                                else:
+                                    dex_url = f"https://dexscreener.com/search?q={a_symbol}"
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: white; font-weight: bold; text-decoration: none;">{a_symbol}</a>'
+
+                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> {symbol_html} <span style="color: #888;">{price_str}</span>{amount_html}{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
 
                             st.markdown('</div>', unsafe_allow_html=True)
 
@@ -2315,7 +2329,7 @@ Moins de trades mais meilleure qualité."""
                     if positions_count > 0:
                         with st.expander(f"📊 Open Positions ({positions_count})", expanded=False):
                             for pos_detail in pf_value['positions_details']:
-                                pos_symbol = pos_detail['symbol'].replace('/USDT', '')
+                                pos_symbol = pos_detail['symbol'].replace('/USDT', '').replace('\\USDT', '')
                                 pos_qty = pos_detail['quantity']
                                 pos_entry = pos_detail['entry_price']
                                 pos_current = pos_detail['current_price']
@@ -2323,12 +2337,22 @@ Moins de trades mais meilleure qualité."""
                                 pos_pnl = pos_detail['pnl']
                                 pos_pnl_pct = pos_detail['pnl_pct']
                                 pos_color = '#00ff88' if pos_pnl >= 0 else '#ff4444'
+                                pos_token_address = pos_detail.get('token_address', '')
+                                pos_chain = pos_detail.get('chain', '')
+
+                                # Create DexScreener link
+                                if pos_token_address and pos_chain:
+                                    dex_url = f"https://dexscreener.com/{pos_chain}/{pos_token_address}"
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="font-size: 1.1rem; font-weight: bold; color: #00d4ff; text-decoration: none;">{pos_symbol} 🔗</a>'
+                                else:
+                                    dex_url = f"https://dexscreener.com/search?q={pos_symbol}"
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="font-size: 1.1rem; font-weight: bold; color: white; text-decoration: none;">{pos_symbol}</a>'
 
                                 st.markdown(f"""
                                 <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; border-left: 3px solid {pos_color};">
                                     <div style="display: flex; justify-content: space-between; align-items: center;">
                                         <div>
-                                            <span style="font-size: 1.1rem; font-weight: bold; color: white;">{pos_symbol}</span>
+                                            {symbol_html}
                                             <span style="color: #888; margin-left: 0.5rem; font-size: 0.8rem;">{pos_qty:.6f} tokens</span>
                                         </div>
                                         <div style="text-align: right;">
@@ -2486,10 +2510,15 @@ def render_debug():
             for trade in reversed(trades):
                 action = trade.get('action', 'UNKNOWN')
                 color = '#00ff88' if 'BUY' in action else '#ff4444'
+                symbol = trade.get('symbol', '?')
+                # Clean symbol for DexScreener search (remove /USDT, \USDT, etc.)
+                clean_symbol = symbol.replace('/USDT', '').replace('\\USDT', '').replace('USDT', '')
+                dex_url = f"https://dexscreener.com/search?q={clean_symbol}"
+                symbol_link = f'<a href="{dex_url}" target="_blank" style="color: #00d4ff; text-decoration: none;">{symbol} 🔗</a>'
                 st.markdown(f"""
                 <div style="background: #1a1a2e; padding: 0.5rem 1rem; border-radius: 5px; margin-bottom: 0.5rem; border-left: 3px solid {color};">
                     <span style="color: {color}; font-weight: bold;">{action}</span>
-                    <span style="color: #fff;"> {trade.get('symbol', '?')}</span>
+                    <span> {symbol_link}</span>
                     <span style="color: #888;"> @ ${trade.get('price', 0):,.2f}</span>
                     <span style="color: #666; float: right;">{trade.get('timestamp', '')}</span>
                     <br><span style="color: #aaa; font-size: 0.8rem;">{trade.get('portfolio', '')} - {trade.get('reason', '')}</span>
