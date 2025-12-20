@@ -301,6 +301,108 @@ STRATEGIES = {
 
     # Combined Funding + OI
     "funding_oi_combo": {"auto": True, "use_funding": True, "use_oi": True, "mode": "combo"},
+
+    # ============ ADVANCED STRATEGIES ============
+
+    # Bollinger Squeeze - Trade volatility expansion
+    "bollinger_squeeze": {"auto": True, "use_bb_squeeze": True, "squeeze_threshold": 0.5},
+    "bollinger_squeeze_tight": {"auto": True, "use_bb_squeeze": True, "squeeze_threshold": 0.3},
+
+    # RSI Divergence - Spot trend reversals
+    "rsi_divergence": {"auto": True, "use_rsi_div": True, "lookback": 14},
+    "rsi_divergence_fast": {"auto": True, "use_rsi_div": True, "lookback": 7},
+
+    # ADX Trend Strength - Only trade strong trends
+    "adx_trend": {"auto": True, "use_adx": True, "threshold": 25},
+    "adx_strong": {"auto": True, "use_adx": True, "threshold": 35},
+
+    # MACD Histogram Reversal
+    "macd_reversal": {"auto": True, "use_macd": True, "mode": "histogram"},
+    "macd_crossover": {"auto": True, "use_macd": True, "mode": "crossover"},
+
+    # Parabolic SAR - Trend following with trailing stops
+    "parabolic_sar": {"auto": True, "use_psar": True, "af": 0.02, "max_af": 0.2},
+    "parabolic_sar_fast": {"auto": True, "use_psar": True, "af": 0.04, "max_af": 0.3},
+
+    # Williams %R - Momentum oscillator
+    "williams_r": {"auto": True, "use_williams": True, "oversold": -80, "overbought": -20},
+    "williams_r_extreme": {"auto": True, "use_williams": True, "oversold": -90, "overbought": -10},
+
+    # Donchian Channel Breakout - Turtle trading
+    "donchian_breakout": {"auto": True, "use_donchian": True, "period": 20},
+    "donchian_fast": {"auto": True, "use_donchian": True, "period": 10},
+
+    # Keltner Channel - ATR-based channel
+    "keltner_channel": {"auto": True, "use_keltner": True, "period": 20, "mult": 2.0},
+    "keltner_tight": {"auto": True, "use_keltner": True, "period": 10, "mult": 1.5},
+
+    # CCI Momentum - Commodity Channel Index
+    "cci_momentum": {"auto": True, "use_cci": True, "oversold": -100, "overbought": 100},
+    "cci_extreme": {"auto": True, "use_cci": True, "oversold": -150, "overbought": 150},
+
+    # Aroon Indicator - Trend direction
+    "aroon_trend": {"auto": True, "use_aroon": True, "period": 25},
+    "aroon_fast": {"auto": True, "use_aroon": True, "period": 14},
+
+    # OBV Trend - On Balance Volume
+    "obv_trend": {"auto": True, "use_obv": True, "signal_period": 20},
+    "obv_fast": {"auto": True, "use_obv": True, "signal_period": 10},
+
+    # Multi-indicator combos
+    "rsi_macd_combo": {"auto": True, "use_rsi": True, "use_macd": True, "mode": "combo"},
+    "bb_rsi_combo": {"auto": True, "use_bb": True, "use_rsi": True, "mode": "combo"},
+    "trend_momentum": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "slow_ema": 21},
+
+    # Volatility strategies
+    "atr_breakout": {"auto": True, "use_atr": True, "multiplier": 2.0},
+    "atr_trailing": {"auto": True, "use_atr": True, "multiplier": 3.0, "trailing": True},
+
+    # Scalping variants
+    "scalp_rsi": {"auto": True, "use_scalp": True, "indicator": "rsi", "timeframe": "5m"},
+    "scalp_bb": {"auto": True, "use_scalp": True, "indicator": "bb", "timeframe": "5m"},
+    "scalp_macd": {"auto": True, "use_scalp": True, "indicator": "macd", "timeframe": "5m"},
+
+    # Sector-specific
+    "defi_hunter": {"auto": True, "sector": "defi", "use_momentum": True},
+    "layer2_focus": {"auto": True, "sector": "layer2", "use_momentum": True},
+    "gaming_tokens": {"auto": True, "sector": "gaming", "use_momentum": True},
+    "ai_tokens": {"auto": True, "sector": "ai", "use_momentum": True},
+    "meme_hunter": {"auto": True, "sector": "meme", "use_momentum": True},
+
+    # Risk-adjusted
+    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "max_positions": 5},
+    "medium_risk_swing": {"auto": True, "use_swing": True, "risk_per_trade": 2},
+    "high_risk_leverage": {"auto": True, "use_leverage": True, "leverage": 3, "risk": 5},
+
+    # ============ MORE STRATEGIES ============
+
+    # Pivot Points - Classic S/R levels
+    "pivot_classic": {"auto": True, "use_pivot": True, "type": "classic"},
+    "pivot_fibonacci": {"auto": True, "use_pivot": True, "type": "fibonacci"},
+
+    # Volume Weighted
+    "volume_breakout": {"auto": True, "use_volume": True, "mode": "breakout"},
+    "volume_climax": {"auto": True, "use_volume": True, "mode": "climax"},
+
+    # Multi-timeframe
+    "mtf_trend": {"auto": True, "use_mtf": True, "timeframes": ["15m", "1h", "4h"]},
+    "mtf_momentum": {"auto": True, "use_mtf": True, "mode": "momentum"},
+
+    # Range trading
+    "range_sniper": {"auto": True, "use_range": True, "atr_mult": 1.5},
+    "range_breakout": {"auto": True, "use_range": True, "mode": "breakout"},
+
+    # Heikin Ashi
+    "heikin_ashi": {"auto": True, "use_ha": True, "mode": "trend"},
+    "heikin_ashi_reversal": {"auto": True, "use_ha": True, "mode": "reversal"},
+
+    # Order flow
+    "orderflow_delta": {"auto": True, "use_orderflow": True, "mode": "delta"},
+    "orderflow_imbalance": {"auto": True, "use_orderflow": True, "mode": "imbalance"},
+
+    # Sentiment
+    "social_sentiment": {"auto": True, "use_sentiment": True, "source": "social"},
+    "fear_greed_extreme": {"auto": True, "use_sentiment": True, "source": "fear_greed"},
 }
 
 # Timeframes per strategy type - optimized for each trading style
@@ -361,6 +463,50 @@ STRATEGY_TIMEFRAMES = {
     "oi_breakout": "1h",
     "oi_divergence": "1h",
     "funding_oi_combo": "1h",
+
+    # Advanced strategies - Fast (15m)
+    "bollinger_squeeze_tight": "15m",
+    "rsi_divergence_fast": "15m",
+    "parabolic_sar_fast": "15m",
+    "williams_r_extreme": "15m",
+    "donchian_fast": "15m",
+    "keltner_tight": "15m",
+    "cci_extreme": "15m",
+    "aroon_fast": "15m",
+    "obv_fast": "15m",
+    "scalp_rsi": "5m",
+    "scalp_bb": "5m",
+    "scalp_macd": "5m",
+
+    # Advanced strategies - Medium (1h)
+    "bollinger_squeeze": "1h",
+    "rsi_divergence": "1h",
+    "adx_trend": "1h",
+    "adx_strong": "1h",
+    "macd_reversal": "1h",
+    "macd_crossover": "1h",
+    "parabolic_sar": "1h",
+    "williams_r": "1h",
+    "donchian_breakout": "1h",
+    "keltner_channel": "1h",
+    "cci_momentum": "1h",
+    "aroon_trend": "1h",
+    "obv_trend": "1h",
+    "rsi_macd_combo": "1h",
+    "bb_rsi_combo": "1h",
+    "trend_momentum": "1h",
+    "atr_breakout": "1h",
+    "atr_trailing": "1h",
+    "defi_hunter": "1h",
+    "layer2_focus": "1h",
+    "gaming_tokens": "1h",
+    "ai_tokens": "1h",
+    "meme_hunter": "15m",
+    "medium_risk_swing": "1h",
+    "high_risk_leverage": "1h",
+
+    # Advanced strategies - Slow (4h)
+    "low_risk_dca": "4h",
 }
 
 DEFAULT_TIMEFRAME = "1h"
