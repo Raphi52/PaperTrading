@@ -357,6 +357,50 @@ class DexScreenerSniper:
         except:
             return None
 
+    def get_token_status(self, token_address: str) -> dict:
+        """
+        Get full token status to detect rugs.
+        Returns: {price, liquidity, volume_24h, is_rugged, rug_reason}
+        """
+        try:
+            url = f"https://api.dexscreener.com/latest/dex/tokens/{token_address}"
+            response = requests.get(url, timeout=5)
+
+            if response.status_code != 200:
+                return {'price': 0, 'liquidity': 0, 'is_rugged': True, 'rug_reason': 'Token not found (delisted)'}
+
+            data = response.json()
+            pairs = data.get('pairs', [])
+
+            if not pairs:
+                return {'price': 0, 'liquidity': 0, 'is_rugged': True, 'rug_reason': 'No liquidity pairs found'}
+
+            pair = pairs[0]
+            price = float(pair.get('priceUsd', 0) or 0)
+            liquidity = float(pair.get('liquidity', {}).get('usd', 0) or 0)
+            volume = float(pair.get('volume', {}).get('h24', 0) or 0)
+
+            # Detect rug conditions
+            is_rugged = False
+            rug_reason = None
+
+            if price == 0:
+                is_rugged = True
+                rug_reason = 'Price is $0'
+            elif liquidity < 100:  # Less than $100 liquidity
+                is_rugged = True
+                rug_reason = f'Liquidity dried up (${liquidity:.0f})'
+
+            return {
+                'price': price,
+                'liquidity': liquidity,
+                'volume_24h': volume,
+                'is_rugged': is_rugged,
+                'rug_reason': rug_reason
+            }
+        except Exception as e:
+            return {'price': 0, 'liquidity': 0, 'is_rugged': True, 'rug_reason': f'API error: {str(e)}'}
+
     def format_token(self, token: NewToken) -> str:
         """Formate un token pour l'affichage"""
         chain_info = self.CHAINS.get(token.chain, {'emoji': '?', 'name': token.chain})

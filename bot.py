@@ -1674,6 +1674,116 @@ def get_realistic_entry_price(token_price: float, slippage: float, is_buy: bool)
         return token_price * (1 - slippage)  # Get less when selling
 
 
+def check_sniper_positions_realtime(portfolios: dict) -> list:
+    """
+    Check real prices and detect rugs for all sniper positions.
+    Uses DexScreener API to get current prices.
+    """
+    results = []
+
+    try:
+        from sniper.dexscreener import DexScreenerSniper
+        sniper = DexScreenerSniper()
+    except Exception as e:
+        log(f"Error loading DexScreener: {e}")
+        return results
+
+    for port_id, portfolio in portfolios.items():
+        if not portfolio.get('active', True):
+            continue
+
+        strategy_id = portfolio.get('strategy_id', '')
+        strategy = STRATEGIES.get(strategy_id, {})
+
+        if not strategy.get('use_sniper', False):
+            continue
+
+        # Check each sniper position
+        for symbol, pos in list(portfolio['positions'].items()):
+            if not pos.get('is_snipe'):
+                continue
+
+            token_address = pos.get('address')
+            if not token_address:
+                continue
+
+            # Get real-time status from DexScreener
+            status = sniper.get_token_status(token_address)
+
+            current_price = status['price']
+            current_liquidity = status['liquidity']
+            is_rugged = status['is_rugged']
+            rug_reason = status.get('rug_reason', 'Unknown')
+
+            # Update position with current price
+            pos['current_price'] = current_price
+            pos['current_liquidity'] = current_liquidity
+
+            entry_price = pos.get('entry_price', 0)
+            qty = pos.get('quantity', 0)
+
+            # Handle rug pull
+            if is_rugged:
+                # Token rugged - lose everything
+                asset = symbol.replace('/USDT', '')
+                entry_cost = entry_price * qty + pos.get('fees_paid', 0)
+
+                portfolio['balance'][asset] = 0
+                del portfolio['positions'][symbol]
+
+                trade = {
+                    'timestamp': datetime.now().isoformat(),
+                    'action': 'RUGGED',
+                    'symbol': symbol,
+                    'price': 0,
+                    'quantity': qty,
+                    'amount_usdt': 0,
+                    'pnl': -entry_cost,
+                    'reason': f"RUG DETECTED: {rug_reason}"
+                }
+                portfolio['trades'].append(trade)
+
+                log(f"💀 RUG DETECTED: {symbol} | {rug_reason} | Lost ${entry_cost:.2f} | {portfolio['name']}")
+                results.append({'portfolio': portfolio['name'], 'action': 'RUGGED', 'symbol': symbol, 'loss': entry_cost})
+
+            # Check for massive loss (>90% down = effective rug)
+            elif current_price > 0 and entry_price > 0:
+                pnl_pct = ((current_price / entry_price) - 1) * 100
+
+                if pnl_pct <= -90:  # Down 90%+
+                    # Treat as rug - sell at current price
+                    chain = pos.get('chain', 'ethereum')
+                    fees = calculate_dex_fees(chain, current_price * qty)
+
+                    net_value = (current_price * qty) - fees['total']
+                    net_value = max(0, net_value)  # Can't be negative
+
+                    asset = symbol.replace('/USDT', '')
+                    portfolio['balance']['USDT'] += net_value
+                    portfolio['balance'][asset] = 0
+                    del portfolio['positions'][symbol]
+
+                    entry_cost = entry_price * qty + pos.get('fees_paid', 0)
+                    real_pnl = net_value - entry_cost
+
+                    trade = {
+                        'timestamp': datetime.now().isoformat(),
+                        'action': 'DUMP_SOLD',
+                        'symbol': symbol,
+                        'price': current_price,
+                        'quantity': qty,
+                        'amount_usdt': net_value,
+                        'pnl': real_pnl,
+                        'reason': f"DUMPED {pnl_pct:.0f}% - Emergency exit"
+                    }
+                    portfolio['trades'].append(trade)
+
+                    log(f"📉 DUMP EXIT: {symbol} | {pnl_pct:.0f}% | Got ${net_value:.2f} back | {portfolio['name']}")
+                    results.append({'portfolio': portfolio['name'], 'action': 'DUMP_SOLD', 'symbol': symbol})
+
+    return results
+
+
 def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
     """Run sniper strategy on new tokens with realistic DEX simulation"""
     results = []
@@ -2125,6 +2235,13 @@ def main():
                 for t in fresh_tokens:
                     sniper_tokens_seen.add(t['address'])
                     log(f"  🆕 {t['symbol']} | ${t['price']:.8f} | MC: ${t['market_cap']:,.0f} | Risk: {t['risk_score']}/100 | {t['dex']}")
+
+                # Check real prices and detect rugs for existing positions
+                log("🔍 Checking sniper positions (real prices)...")
+                rug_results = check_sniper_positions_realtime(portfolios)
+                total_results.extend(rug_results)
+                if rug_results:
+                    log(f"  ⚠️ {len(rug_results)} positions closed (rugs/dumps)")
 
                 sniper_results = run_sniper_engine(portfolios, new_tokens)
                 total_results.extend(sniper_results)
