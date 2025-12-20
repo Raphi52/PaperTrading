@@ -2135,13 +2135,11 @@ Moins de trades mais meilleure qualité."""
                             st.session_state[f'show_info_{pid}'] = not st.session_state.get(f'show_info_{pid}', False)
                             st.rerun()
                     with btn_col3:
-                        if st.button("📜", key=f"history_{pid}", use_container_width=True):
-                            st.session_state[f'show_history_{pid}'] = not st.session_state.get(f'show_history_{pid}', False)
+                        if st.button("📊", key=f"activity_{pid}", use_container_width=True, help="Activity & Trades"):
+                            st.session_state[f'show_activity_{pid}'] = not st.session_state.get(f'show_activity_{pid}', False)
                             st.rerun()
                     with btn_col4:
-                        if st.button("🔍", key=f"logs_{pid}", use_container_width=True):
-                            st.session_state[f'show_logs_{pid}'] = not st.session_state.get(f'show_logs_{pid}', False)
-                            st.rerun()
+                        pass  # Removed separate logs button
                     with btn_col5:
                         if st.button("🔄", key=f"reset_{pid}", use_container_width=True):
                             data['portfolios'][pid]['balance'] = {'USDT': initial}
@@ -2196,56 +2194,111 @@ Moins de trades mais meilleure qualité."""
                         fig = create_portfolio_chart(pid, p['name'], history_data)
                         st.plotly_chart(fig, use_container_width=True)
 
-                    # Show history if toggled
-                    if st.session_state.get(f'show_history_{pid}', False):
+                    # Show unified activity if toggled
+                    if st.session_state.get(f'show_activity_{pid}', False):
                         trades = p.get('trades', [])
-                        if trades:
-                            # Toggle for full history
-                            col_hist1, col_hist2 = st.columns([3, 1])
-                            with col_hist1:
-                                st.markdown(f"**📜 History ({len(trades)} trades)**")
-                            with col_hist2:
-                                show_all_pf = st.checkbox("All", key=f"show_all_{pid}", value=False)
+                        decision_logs = p.get('decision_logs', [])
 
-                            display_trades = trades if show_all_pf else trades[-10:]
+                        # Merge trades and decision logs into unified activity feed
+                        activities = []
 
-                            # Scrollable container for many trades
-                            if show_all_pf and len(trades) > 15:
-                                st.markdown(f"""<div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">""", unsafe_allow_html=True)
+                        # Add trades
+                        for t in trades:
+                            activities.append({
+                                'type': 'trade',
+                                'timestamp': t.get('timestamp', ''),
+                                'action': t.get('action', ''),
+                                'symbol': t.get('symbol', '').replace('/USDT', ''),
+                                'price': t.get('price', 0),
+                                'pnl': t.get('pnl', 0),
+                                'reason': t.get('reason', '')
+                            })
 
-                            for t in reversed(display_trades):
-                                t_time = t.get('timestamp', '')[:16].replace('T', ' ')
-                                t_action = t.get('action', '')
-                                t_symbol = t.get('symbol', '').replace('/USDT', '')
-                                t_price = t.get('price', 0)
-                                t_pnl = t.get('pnl', 0)
+                        # Add decision logs (only BUY/SELL, skip HOLD)
+                        for log in decision_logs:
+                            if log.get('action') in ['BUY', 'SELL']:
+                                activities.append({
+                                    'type': 'decision',
+                                    'timestamp': log.get('timestamp', ''),
+                                    'action': log.get('action', ''),
+                                    'symbol': log.get('symbol', '').replace('/USDT', ''),
+                                    'price': log.get('price', 0),
+                                    'pnl': 0,
+                                    'reason': log.get('reason', '')
+                                })
 
-                                if t_action == 'BUY':
-                                    st.markdown(f"""
-                                    <div style="background: rgba(0,255,136,0.1); padding: 0.5rem; border-radius: 8px; margin: 0.3rem 0; border-left: 3px solid #00ff88;">
-                                        <span style="color: #00ff88;">🟢 BUY</span>
-                                        <b>{t_symbol}</b> @ ${t_price:,.2f}
-                                        <span style="color: #666; float: right;">{t_time}</span>
-                                    </div>
-                                    """, unsafe_allow_html=True)
+                        # Sort by timestamp (most recent first)
+                        activities.sort(key=lambda x: x['timestamp'], reverse=True)
+
+                        # Deduplicate (same symbol, action, timestamp)
+                        seen = set()
+                        unique_activities = []
+                        for a in activities:
+                            key = f"{a['timestamp'][:16]}_{a['action']}_{a['symbol']}"
+                            if key not in seen:
+                                seen.add(key)
+                                unique_activities.append(a)
+
+                        if unique_activities:
+                            total_count = len(unique_activities)
+                            col_act1, col_act2 = st.columns([3, 1])
+                            with col_act1:
+                                st.markdown(f"**📊 Activity ({total_count})**")
+                            with col_act2:
+                                show_all_act = st.checkbox("All", key=f"act_all_{pid}", value=False)
+
+                            display_activities = unique_activities if show_all_act else unique_activities[:15]
+
+                            st.markdown('<div style="max-height: 350px; overflow-y: auto;">', unsafe_allow_html=True)
+
+                            for a in display_activities:
+                                a_time = a['timestamp'][-8:] if len(a['timestamp']) > 8 else a['timestamp']
+                                a_action = a['action']
+                                a_symbol = a['symbol']
+                                a_price = a['price']
+                                a_pnl = a['pnl']
+                                a_reason = a['reason']
+                                a_type = a['type']
+
+                                # Format price
+                                if a_price >= 1000:
+                                    price_str = f"${a_price:,.0f}"
+                                elif a_price >= 1:
+                                    price_str = f"${a_price:.2f}"
+                                elif a_price >= 0.01:
+                                    price_str = f"${a_price:.4f}"
                                 else:
-                                    pnl_color = '#00ff88' if t_pnl >= 0 else '#ff4444'
-                                    st.markdown(f"""
-                                    <div style="background: rgba(255,68,68,0.1); padding: 0.5rem; border-radius: 8px; margin: 0.3rem 0; border-left: 3px solid #ff4444;">
-                                        <span style="color: #ff4444;">🔴 SELL</span>
-                                        <b>{t_symbol}</b> @ ${t_price:,.2f}
-                                        <span style="color: {pnl_color}; margin-left: 1rem;">${t_pnl:+,.2f}</span>
-                                        <span style="color: #666; float: right;">{t_time}</span>
-                                    </div>
-                                    """, unsafe_allow_html=True)
+                                    price_str = f"${a_price:.6f}"
 
-                            if show_all_pf and len(trades) > 15:
-                                st.markdown("</div>", unsafe_allow_html=True)
+                                if a_action == 'BUY':
+                                    bg_color = 'rgba(0,255,136,0.08)'
+                                    border_color = '#00ff88'
+                                    icon = '🟢'
+                                else:
+                                    bg_color = 'rgba(255,68,68,0.08)'
+                                    border_color = '#ff4444'
+                                    icon = '🔴'
 
-                            if not show_all_pf and len(trades) > 10:
-                                st.caption(f"... and {len(trades) - 10} more trades (check 'All' to see)")
+                                # PNL display for sells
+                                pnl_html = ""
+                                if a_action == 'SELL' and a_pnl != 0:
+                                    pnl_color = '#00ff88' if a_pnl >= 0 else '#ff4444'
+                                    pnl_html = f'<span style="color: {pnl_color}; font-weight: bold; margin-left: 8px;">{a_pnl:+.2f}$</span>'
+
+                                # Type badge
+                                type_badge = "📈" if a_type == 'trade' else "🎯"
+
+                                # Truncate reason
+                                reason_short = a_reason[:50] + "..." if len(a_reason) > 50 else a_reason
+
+                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> <b style="color: white;">{a_symbol}</b> <span style="color: #888;">{price_str}</span>{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
+
+                            st.markdown('</div>', unsafe_allow_html=True)
+
+                            if not show_all_act and total_count > 15:
+                                st.caption(f"Showing 15 of {total_count} activities")
                         else:
-                            st.info("No trades yet")
+                            st.info("No activity yet")
 
                     # Show positions detail when there are open positions
                     if positions_count > 0:
@@ -2280,76 +2333,6 @@ Moins de trades mais meilleure qualité."""
                                 </div>
                                 """, unsafe_allow_html=True)
 
-                    # Show decision logs if toggled
-                    if st.session_state.get(f'show_logs_{pid}', False):
-                        decision_logs = p.get('decision_logs', [])
-                        if decision_logs:
-                            st.markdown(f"**🔍 Decision Logs ({len(decision_logs)} entries)**")
-                            st.caption("Shows what the bot analyzed and why it made (or didn't make) trades")
-
-                            # Filter options
-                            log_col1, log_col2 = st.columns([2, 1])
-                            with log_col1:
-                                filter_action = st.selectbox(
-                                    "Filter by action",
-                                    ["All", "BUY", "SELL", "HOLD"],
-                                    key=f"log_filter_{pid}"
-                                )
-                            with log_col2:
-                                show_all_logs = st.checkbox("Show all", key=f"logs_all_{pid}")
-
-                            # Filter logs
-                            filtered_logs = decision_logs
-                            if filter_action != "All":
-                                filtered_logs = [l for l in decision_logs if l.get('action') == filter_action]
-
-                            display_logs = filtered_logs if show_all_logs else filtered_logs[-20:]
-
-                            # Display logs in scrollable container
-                            st.markdown("""<div style="max-height: 400px; overflow-y: auto;">""", unsafe_allow_html=True)
-
-                            for log_entry in reversed(display_logs):
-                                log_time = log_entry.get('timestamp', '')[-8:]  # Just time
-                                log_symbol = log_entry.get('symbol', '?')
-                                log_action = log_entry.get('action', 'HOLD')
-                                log_reason = log_entry.get('reason', 'No reason')
-                                log_rsi = log_entry.get('rsi', 50)
-                                log_price = log_entry.get('price', 0)
-
-                                # Color based on action
-                                if log_action == 'BUY':
-                                    action_color = '#00ff88'
-                                    action_icon = '🟢'
-                                elif log_action == 'SELL':
-                                    action_color = '#ff4444'
-                                    action_icon = '🔴'
-                                else:
-                                    action_color = '#888888'
-                                    action_icon = '⚪'
-
-                                st.markdown(f"""
-                                <div style="background: rgba(255,255,255,0.03); padding: 0.6rem; border-radius: 6px; margin: 0.3rem 0; border-left: 3px solid {action_color};">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            <span style="color: {action_color}; font-weight: bold;">{action_icon} {log_action}</span>
-                                            <span style="color: white; margin-left: 0.5rem; font-weight: bold;">{log_symbol}</span>
-                                            <span style="color: #888; margin-left: 0.5rem;">${log_price:,.2f}</span>
-                                        </div>
-                                        <span style="color: #666; font-size: 0.75rem;">{log_time}</span>
-                                    </div>
-                                    <div style="color: #aaa; font-size: 0.8rem; margin-top: 0.3rem;">
-                                        {log_reason}
-                                    </div>
-                                </div>
-                                """, unsafe_allow_html=True)
-
-                            st.markdown("</div>", unsafe_allow_html=True)
-
-                            if not show_all_logs and len(filtered_logs) > 20:
-                                st.caption(f"Showing last 20 of {len(filtered_logs)} logs")
-                        else:
-                            st.info("No decision logs yet. Run the bot to generate logs.")
-                            st.caption("Logs show: timestamp, symbol, action (BUY/SELL/HOLD), reason, and indicators")
 
 
 def render_settings():
