@@ -2267,19 +2267,32 @@ Moins de trades mais meilleure qualité."""
                         # Merge trades and decision logs into unified activity feed
                         activities = []
 
-                        # Add trades
+                        # Get strategy config for TP/SL info
+                        strategy_id = portfolio.get('strategy_id', '')
+                        strategy_config = portfolio.get('config', {})
+
+                        # Add trades with full details
                         for t in trades:
                             activities.append({
                                 'type': 'trade',
                                 'timestamp': t.get('timestamp', ''),
                                 'action': t.get('action', ''),
-                                'symbol': t.get('symbol', '').replace('/USDT', ''),
+                                'symbol': t.get('symbol', '').replace('/USDT', '').replace('\\USDT', ''),
                                 'price': t.get('price', 0),
                                 'pnl': t.get('pnl', 0),
                                 'amount': t.get('amount_usdt', 0),
+                                'quantity': t.get('quantity', 0),
                                 'reason': t.get('reason', ''),
                                 'token_address': t.get('token_address', ''),
-                                'chain': t.get('chain', '')
+                                'chain': t.get('chain', ''),
+                                'dex': t.get('dex', ''),
+                                'risk_score': t.get('risk_score', 0),
+                                'market_cap': t.get('market_cap', 0),
+                                'liquidity': t.get('liquidity', 0),
+                                'fees': t.get('fees', 0),
+                                'slippage_pct': t.get('slippage_pct', 0),
+                                'take_profit': strategy_config.get('take_profit', 50),
+                                'stop_loss': strategy_config.get('stop_loss', 25),
                             })
 
                         # Add decision logs (only BUY/SELL, skip HOLD)
@@ -2322,25 +2335,39 @@ Moins de trades mais meilleure qualité."""
 
                             for a in display_activities:
                                 a_time = a['timestamp'][-8:] if len(a['timestamp']) > 8 else a['timestamp']
+                                a_full_time = a['timestamp'][:16] if len(a['timestamp']) > 16 else a['timestamp']
                                 a_action = a['action']
                                 a_symbol = a['symbol']
                                 a_price = a['price']
                                 a_pnl = a['pnl']
                                 a_amount = a.get('amount', 0)
-                                a_reason = a['reason']
+                                a_quantity = a.get('quantity', 0)
+                                a_reason = a.get('reason', '')
                                 a_type = a['type']
                                 a_token_address = a.get('token_address', '')
                                 a_chain = a.get('chain', '')
+                                a_dex = a.get('dex', '')
+                                a_risk = a.get('risk_score', 0)
+                                a_mcap = a.get('market_cap', 0)
+                                a_liq = a.get('liquidity', 0)
+                                a_fees = a.get('fees', 0)
+                                a_slip = a.get('slippage_pct', 0)
+                                a_tp = a.get('take_profit', 50)
+                                a_sl = a.get('stop_loss', 25)
 
                                 # Format price
                                 if a_price >= 1000:
                                     price_str = f"${a_price:,.0f}"
                                 elif a_price >= 1:
                                     price_str = f"${a_price:.2f}"
-                                elif a_price >= 0.01:
-                                    price_str = f"${a_price:.4f}"
-                                else:
+                                elif a_price >= 0.0001:
                                     price_str = f"${a_price:.6f}"
+                                else:
+                                    price_str = f"${a_price:.10f}"
+
+                                # Calculate TP/SL prices
+                                tp_price = a_price * (1 + a_tp/100) if a_price > 0 else 0
+                                sl_price = a_price * (1 - a_sl/100) if a_price > 0 else 0
 
                                 # Determine if buy or sell action
                                 is_buy_action = 'BUY' in a_action
@@ -2364,36 +2391,92 @@ Moins de trades mais meilleure qualité."""
                                     border_color = '#888'
                                     icon = '⚪'
 
-                                # Amount display (spent for BUY, received for SELL)
+                                # Amount display
                                 amount_html = ""
                                 if a_amount > 0:
                                     if is_buy_action:
-                                        amount_html = f'<span style="color: #ffaa00; font-weight: bold; margin-left: 8px;">-${a_amount:.2f}</span>'
+                                        amount_html = f'<span style="color: #ffaa00; font-weight: bold;">-${a_amount:.2f}</span>'
                                     else:
-                                        amount_html = f'<span style="color: #00ccff; font-weight: bold; margin-left: 8px;">+${a_amount:.2f}</span>'
+                                        amount_html = f'<span style="color: #00ccff; font-weight: bold;">+${a_amount:.2f}</span>'
 
-                                # PNL display for sells (all types)
+                                # PNL display for sells
                                 pnl_html = ""
                                 is_sell = 'SELL' in a_action or 'SOLD' in a_action or 'RUGGED' in a_action
                                 if is_sell and a_pnl != 0:
                                     pnl_color = '#00ff88' if a_pnl >= 0 else '#ff4444'
-                                    pnl_html = f'<span style="color: {pnl_color}; font-size: 0.8rem; margin-left: 6px;">({a_pnl:+.2f})</span>'
+                                    pnl_pct = (a_pnl / a_amount * 100) if a_amount > 0 else 0
+                                    pnl_html = f'<span style="color: {pnl_color}; font-weight: bold;">PnL: ${a_pnl:+.2f} ({pnl_pct:+.1f}%)</span>'
 
-                                # Type badge
-                                type_badge = "📈" if a_type == 'trade' else "🎯"
-
-                                # Truncate reason
-                                reason_short = a_reason[:50] + "..." if len(a_reason) > 50 else a_reason
-
-                                # Create DexScreener link for symbol
+                                # Create DexScreener link
                                 if a_token_address and a_chain:
                                     dex_url = f"https://dexscreener.com/{a_chain}/{a_token_address}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: #00d4ff; font-weight: bold; text-decoration: none;">{a_symbol} 🔗</a>'
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: #00d4ff; font-weight: bold; text-decoration: none; font-size: 1.1rem;">{a_symbol} 🔗</a>'
                                 else:
                                     dex_url = f"https://dexscreener.com/search?q={a_symbol}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: white; font-weight: bold; text-decoration: none;">{a_symbol}</a>'
+                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: white; font-weight: bold; text-decoration: none; font-size: 1.1rem;">{a_symbol}</a>'
 
-                                st.markdown(f'<div style="background: {bg_color}; padding: 8px 12px; border-radius: 8px; margin: 4px 0; border-left: 3px solid {border_color};"><div style="display: flex; justify-content: space-between; align-items: center;"><div><span style="color: {border_color}; font-weight: bold;">{icon} {a_action}</span> {symbol_html} <span style="color: #888;">{price_str}</span>{amount_html}{pnl_html}</div><span style="color: #666; font-size: 0.75rem;">{type_badge} {a_time}</span></div><div style="color: #777; font-size: 0.75rem; margin-top: 4px;">{reason_short}</div></div>', unsafe_allow_html=True)
+                                # Build details line
+                                details_parts = []
+                                if a_quantity > 0:
+                                    if a_quantity >= 1000000:
+                                        details_parts.append(f"Qty: {a_quantity/1e6:.2f}M")
+                                    elif a_quantity >= 1000:
+                                        details_parts.append(f"Qty: {a_quantity/1e3:.1f}K")
+                                    else:
+                                        details_parts.append(f"Qty: {a_quantity:.4f}")
+                                if a_risk > 0:
+                                    risk_color = '#00ff88' if a_risk < 40 else '#ffaa00' if a_risk < 70 else '#ff4444'
+                                    details_parts.append(f'<span style="color:{risk_color}">Risk: {a_risk}/100</span>')
+                                if a_liq > 0:
+                                    details_parts.append(f"Liq: ${a_liq/1000:.1f}K")
+                                if a_mcap > 0:
+                                    details_parts.append(f"MCap: ${a_mcap/1000:.1f}K")
+                                if a_dex:
+                                    details_parts.append(f"DEX: {a_dex}")
+                                if a_fees > 0:
+                                    details_parts.append(f"Fees: ${a_fees:.2f}")
+                                if a_slip > 0:
+                                    details_parts.append(f"Slip: {a_slip:.1f}%")
+
+                                details_html = ' | '.join(details_parts) if details_parts else ''
+
+                                # TP/SL info for buys
+                                tpsl_html = ""
+                                if is_buy_action and a_price > 0:
+                                    if tp_price >= 0.0001:
+                                        tp_str = f"${tp_price:.6f}"
+                                    else:
+                                        tp_str = f"${tp_price:.10f}"
+                                    if sl_price >= 0.0001:
+                                        sl_str = f"${sl_price:.6f}"
+                                    else:
+                                        sl_str = f"${sl_price:.10f}"
+                                    tpsl_html = f'<span style="color: #00ff88;">TP: {tp_str} (+{a_tp}%)</span> | <span style="color: #ff4444;">SL: {sl_str} (-{a_sl}%)</span>'
+
+                                # Build the activity card HTML
+                                st.markdown(f'''
+                                <div style="background: {bg_color}; padding: 10px 14px; border-radius: 10px; margin: 6px 0; border-left: 4px solid {border_color};">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                        <div>
+                                            <span style="color: {border_color}; font-weight: bold; font-size: 0.9rem;">{icon} {a_action}</span>
+                                            {symbol_html}
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div style="color: #888; font-size: 0.7rem;">{a_full_time}</div>
+                                            {amount_html}
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 6px; padding: 6px 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="color: #aaa;">Entry: <b style="color: white;">{price_str}</b></span>
+                                            {pnl_html if pnl_html else ''}
+                                        </div>
+                                        {f'<div style="margin-top: 4px; font-size: 0.75rem; color: #888;">{tpsl_html}</div>' if tpsl_html else ''}
+                                        {f'<div style="margin-top: 4px; font-size: 0.7rem; color: #666;">{details_html}</div>' if details_html else ''}
+                                    </div>
+                                    {f'<div style="color: #777; font-size: 0.7rem; margin-top: 6px; font-style: italic;">{a_reason}</div>' if a_reason else ''}
+                                </div>
+                                ''', unsafe_allow_html=True)
 
                             st.markdown('</div>', unsafe_allow_html=True)
 
