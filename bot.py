@@ -1577,8 +1577,105 @@ def scan_new_tokens() -> list:
     return new_tokens
 
 
+# ============ DEX TRADING SIMULATION ============
+
+# Gas fees per chain (in USD)
+DEX_GAS_FEES = {
+    'solana': 0.01,      # SOL is very cheap
+    'bsc': 0.30,         # BSC is cheap
+    'polygon': 0.05,     # Polygon is cheap
+    'arbitrum': 0.50,    # L2 moderate
+    'optimism': 0.40,    # L2 moderate
+    'base': 0.30,        # L2 cheap
+    'avalanche': 0.50,   # AVAX moderate
+    'ethereum': 15.00,   # ETH is expensive (varies a lot)
+}
+
+# Minimum trade sizes per chain (to cover gas)
+DEX_MIN_TRADE = {
+    'solana': 5,         # $5 min
+    'bsc': 10,           # $10 min
+    'polygon': 5,        # $5 min
+    'arbitrum': 20,      # $20 min
+    'optimism': 20,      # $20 min
+    'base': 15,          # $15 min
+    'avalanche': 20,     # $20 min
+    'ethereum': 100,     # $100 min (gas is expensive)
+}
+
+def calculate_dex_slippage(trade_size_usd: float, liquidity_usd: float, is_buy: bool = True) -> float:
+    """
+    Calculate realistic slippage based on trade size vs liquidity.
+    Returns slippage as a decimal (e.g., 0.05 = 5%)
+    """
+    if liquidity_usd <= 0:
+        return 0.50  # 50% slippage if no liquidity
+
+    # Price impact = (trade_size / liquidity) * impact_factor
+    # Impact is higher for sells (less buyers)
+    impact_factor = 0.5 if is_buy else 0.8
+
+    price_impact = (trade_size_usd / liquidity_usd) * impact_factor
+
+    # Base slippage (DEX swap fee ~0.3% + MEV + spread)
+    base_slippage = 0.01  # 1% minimum
+
+    # Total slippage capped at 30%
+    total_slippage = min(0.30, base_slippage + price_impact)
+
+    return total_slippage
+
+def calculate_dex_fees(chain: str, trade_size_usd: float) -> dict:
+    """
+    Calculate all DEX trading fees.
+    Returns dict with gas, swap_fee, and total
+    """
+    gas_fee = DEX_GAS_FEES.get(chain, 1.0)
+
+    # DEX swap fee (0.3% typical for Uniswap/Raydium)
+    swap_fee = trade_size_usd * 0.003
+
+    return {
+        'gas': gas_fee,
+        'swap_fee': swap_fee,
+        'total': gas_fee + swap_fee
+    }
+
+def simulate_rug_pull(risk_score: int, age_minutes: float) -> bool:
+    """
+    Simulate if a token rugs. Higher risk + newer = more likely to rug.
+    Returns True if token rugged.
+    """
+    import random
+
+    # Base rug chance based on risk score
+    if risk_score >= 90:
+        base_chance = 0.30  # 30% chance for very risky tokens
+    elif risk_score >= 75:
+        base_chance = 0.15  # 15% chance
+    elif risk_score >= 50:
+        base_chance = 0.05  # 5% chance
+    else:
+        base_chance = 0.01  # 1% chance for safer tokens
+
+    # Newer tokens more likely to rug
+    if age_minutes < 10:
+        base_chance *= 2
+    elif age_minutes < 30:
+        base_chance *= 1.5
+
+    return random.random() < base_chance
+
+def get_realistic_entry_price(token_price: float, slippage: float, is_buy: bool) -> float:
+    """Get the actual execution price after slippage"""
+    if is_buy:
+        return token_price * (1 + slippage)  # Pay more when buying
+    else:
+        return token_price * (1 - slippage)  # Get less when selling
+
+
 def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
-    """Run sniper strategy on new tokens"""
+    """Run sniper strategy on new tokens with realistic DEX simulation"""
     results = []
 
     for port_id, portfolio in portfolios.items():
@@ -1607,43 +1704,115 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
         # Get max hold time
         max_hold_hours = config.get('max_hold_hours', strategy.get('max_hold_hours', 0))
 
-        # Check existing positions for TP/SL/Time exit
+        # Check existing positions for TP/SL/Time exit/Rug
         for symbol, pos in list(portfolio['positions'].items()):
             if pos.get('is_snipe'):
-                # Find current price
+                chain = pos.get('chain', 'ethereum')
+                liquidity = pos.get('liquidity_at_entry', 1000)
+                risk_score = pos.get('risk_score', 50)
+
+                # Find current price and liquidity
                 current_price = pos.get('current_price', pos['entry_price'])
+                current_liquidity = liquidity
+                token_age = 60  # Default 1 hour
+
                 for token in new_tokens:
                     if token['address'] == pos.get('address'):
                         current_price = token['price']
+                        current_liquidity = token['liquidity']
+                        token_age = token.get('age_minutes', 60)
                         break
 
+                # Check hold time
+                entry_time = datetime.fromisoformat(pos.get('entry_time', datetime.now().isoformat()))
+                hold_hours = (datetime.now() - entry_time).total_seconds() / 3600
+
+                # === SIMULATE RUG PULL ===
+                if simulate_rug_pull(risk_score, token_age):
+                    # Token rugged - lose everything
+                    asset = symbol.replace('/USDT', '')
+                    qty = pos['quantity']
+                    portfolio['balance'][asset] = 0
+                    del portfolio['positions'][symbol]
+
+                    trade = {
+                        'timestamp': datetime.now().isoformat(),
+                        'action': 'SNIPE_RUGGED',
+                        'symbol': symbol,
+                        'price': 0,
+                        'quantity': qty,
+                        'amount_usdt': 0,
+                        'pnl': -(pos['entry_price'] * qty),
+                        'reason': f"RUG PULL | Lost 100% | Risk was {risk_score}/100"
+                    }
+                    portfolio['trades'].append(trade)
+                    log(f"💀 RUGGED: {symbol} | Lost ${pos['entry_price'] * qty:.2f} | {portfolio['name']}")
+                    results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_RUGGED', 'symbol': symbol})
+                    continue
+
                 if current_price > 0:
-                    pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
+                    # Calculate sell with realistic DEX conditions
+                    qty = pos['quantity']
+                    gross_value = qty * current_price
 
-                    # Check hold time
-                    entry_time = datetime.fromisoformat(pos.get('entry_time', datetime.now().isoformat()))
-                    hold_hours = (datetime.now() - entry_time).total_seconds() / 3600
+                    # Sell slippage (higher than buy)
+                    sell_slippage = calculate_dex_slippage(gross_value, current_liquidity, is_buy=False)
+                    actual_price = get_realistic_entry_price(current_price, sell_slippage, is_buy=False)
+                    net_value_before_fees = qty * actual_price
 
-                    # Take profit
-                    if pnl_pct >= take_profit:
-                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
-                        if result['success']:
-                            log(f"🎯 SNIPER TP: {symbol} +{pnl_pct:.1f}%")
-                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_TP', 'symbol': symbol})
+                    # Fees
+                    fees = calculate_dex_fees(chain, net_value_before_fees)
+                    net_value = net_value_before_fees - fees['total']
+
+                    # Real PNL including slippage and fees
+                    entry_cost = pos['entry_price'] * qty + pos.get('fees_paid', 0)
+                    real_pnl = net_value - entry_cost
+                    real_pnl_pct = (real_pnl / entry_cost) * 100 if entry_cost > 0 else 0
+
+                    # Gross PNL (without considering fees/slippage) for TP/SL trigger
+                    gross_pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
+
+                    should_sell = False
+                    sell_reason = ""
+
+                    # Take profit (use gross for trigger, but show real PNL)
+                    if gross_pnl_pct >= take_profit:
+                        should_sell = True
+                        sell_reason = f"TP hit {gross_pnl_pct:.1f}% | Net: {real_pnl_pct:.1f}% after fees"
 
                     # Stop loss
-                    elif pnl_pct <= -stop_loss:
-                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
-                        if result['success']:
-                            log(f"🎯 SNIPER SL: {symbol} {pnl_pct:.1f}%")
-                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_SL', 'symbol': symbol})
+                    elif gross_pnl_pct <= -stop_loss:
+                        should_sell = True
+                        sell_reason = f"SL hit {gross_pnl_pct:.1f}% | Net: {real_pnl_pct:.1f}%"
 
-                    # Time-based exit (if max_hold_hours is set)
+                    # Time-based exit
                     elif max_hold_hours > 0 and hold_hours >= max_hold_hours:
-                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
-                        if result['success']:
-                            log(f"🎯 SNIPER TIME EXIT: {symbol} after {hold_hours:.1f}h ({pnl_pct:+.1f}%)")
-                            results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL_TIME', 'symbol': symbol})
+                        should_sell = True
+                        sell_reason = f"Time exit {hold_hours:.1f}h | Net: {real_pnl_pct:.1f}%"
+
+                    if should_sell and net_value > fees['total']:  # Only sell if we get something back
+                        asset = symbol.replace('/USDT', '')
+                        portfolio['balance']['USDT'] += net_value
+                        portfolio['balance'][asset] = 0
+                        del portfolio['positions'][symbol]
+
+                        trade = {
+                            'timestamp': datetime.now().isoformat(),
+                            'action': 'SNIPE_SELL',
+                            'symbol': symbol,
+                            'price': actual_price,
+                            'quantity': qty,
+                            'amount_usdt': net_value,
+                            'fees': fees['total'],
+                            'slippage_pct': sell_slippage * 100,
+                            'pnl': real_pnl,
+                            'reason': sell_reason
+                        }
+                        portfolio['trades'].append(trade)
+
+                        pnl_emoji = "✅" if real_pnl >= 0 else "❌"
+                        log(f"{pnl_emoji} SNIPE SELL: {symbol} | PNL: ${real_pnl:+.2f} ({real_pnl_pct:+.1f}%) | Slip: {sell_slippage*100:.1f}% | {portfolio['name']}")
+                        results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_SELL', 'symbol': symbol, 'pnl': real_pnl})
 
         # Look for new snipes
         for token in new_tokens:
@@ -1661,54 +1830,83 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
             if token['address'] in [p.get('address') for p in portfolio['positions'].values()]:
                 continue
 
-            # Check balance
-            if portfolio['balance']['USDT'] < 100:
+            # === REALISTIC DEX SIMULATION ===
+            chain = token.get('chain', 'ethereum')
+
+            # Check minimum trade size for this chain
+            min_trade = DEX_MIN_TRADE.get(chain, 50)
+            if portfolio['balance']['USDT'] < min_trade * 2:  # Need 2x min for safety
                 continue
 
-            # Calculate amount
+            # Calculate base amount
             amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
             amount_usdt = min(amount_usdt, 500)  # Max $500 per snipe
+            amount_usdt = max(amount_usdt, min_trade)  # At least min trade
 
-            if amount_usdt < 50:
+            if amount_usdt < min_trade:
                 continue
 
-            # Execute snipe buy
-            qty = amount_usdt / token['price']
-            portfolio['balance']['USDT'] -= amount_usdt
+            # Calculate DEX fees
+            fees = calculate_dex_fees(chain, amount_usdt)
+            total_fees = fees['total']
+
+            # Calculate slippage based on liquidity
+            slippage = calculate_dex_slippage(amount_usdt, token['liquidity'], is_buy=True)
+
+            # Get actual execution price (with slippage)
+            execution_price = get_realistic_entry_price(token['price'], slippage, is_buy=True)
+
+            # Total cost = amount + fees
+            total_cost = amount_usdt + total_fees
+
+            if portfolio['balance']['USDT'] < total_cost:
+                continue
+
+            # Tokens received (less due to slippage)
+            tokens_received = amount_usdt / execution_price
+
+            # Deduct from balance
+            portfolio['balance']['USDT'] -= total_cost
 
             asset = token['symbol']
-            portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+            portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + tokens_received
 
             portfolio['positions'][symbol] = {
-                'entry_price': token['price'],
-                'quantity': qty,
+                'entry_price': execution_price,  # Actual price paid
+                'quantity': tokens_received,
                 'entry_time': datetime.now().isoformat(),
                 'is_snipe': True,
                 'address': token['address'],
-                'chain': token['chain'],
+                'chain': chain,
                 'dex': token['dex'],
                 'risk_score': token['risk_score'],
-                'liquidity_at_entry': token['liquidity']
+                'liquidity_at_entry': token['liquidity'],
+                'slippage_paid': slippage,
+                'fees_paid': total_fees,
+                'original_price': token['price']  # Market price before slippage
             }
 
             trade = {
                 'timestamp': datetime.now().isoformat(),
                 'action': 'SNIPE_BUY',
                 'symbol': symbol,
-                'price': token['price'],
-                'quantity': qty,
+                'price': execution_price,
+                'quantity': tokens_received,
                 'amount_usdt': amount_usdt,
+                'fees': total_fees,
+                'slippage_pct': slippage * 100,
                 'pnl': 0,
                 'token_address': token['address'],
-                'chain': token['chain'],
+                'chain': chain,
                 'dex': token['dex'],
                 'risk_score': token['risk_score'],
                 'market_cap': token['market_cap'],
-                'liquidity': token['liquidity']
+                'liquidity': token['liquidity'],
+                'reason': f"DEX Snipe | Slip: {slippage*100:.1f}% | Fees: ${total_fees:.2f} | {chain.upper()}"
             }
             portfolio['trades'].append(trade)
 
-            log(f"🎯 SNIPE BUY: {token['symbol']} @ ${token['price']:.8f} | MC: ${token['market_cap']:,.0f} | Risk: {token['risk_score']}/100 | {portfolio['name']}")
+            log(f"🎯 SNIPE: {token['symbol']} @ ${execution_price:.6f} (slip {slippage*100:.1f}%) | Fees: ${total_fees:.2f} | {chain} | {portfolio['name']}")
             results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_BUY', 'symbol': symbol, 'token': token})
 
     return results
