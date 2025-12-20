@@ -2261,15 +2261,15 @@ Moins de trades mais meilleure qualité."""
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
-                        trades = p.get('trades', [])
-                        decision_logs = p.get('decision_logs', [])
+                        # Get only recent trades (last 100 max for speed)
+                        all_trades = p.get('trades', [])
+                        trades = all_trades[-100:] if len(all_trades) > 100 else all_trades
 
-                        # Merge trades and decision logs into unified activity feed
+                        # Skip decision_logs for faster loading (trades already contain the info)
                         activities = []
 
                         # Get strategy config for TP/SL info
-                        strategy_id = portfolio.get('strategy_id', '')
-                        strategy_config = portfolio.get('config', {})
+                        strategy_config = p.get('config', {})
 
                         # Add trades with full details
                         for t in trades:
@@ -2295,31 +2295,9 @@ Moins de trades mais meilleure qualité."""
                                 'stop_loss': strategy_config.get('stop_loss', 25),
                             })
 
-                        # Add decision logs (only BUY/SELL, skip HOLD)
-                        for log in decision_logs:
-                            if log.get('action') in ['BUY', 'SELL']:
-                                activities.append({
-                                    'type': 'decision',
-                                    'timestamp': log.get('timestamp', ''),
-                                    'action': log.get('action', ''),
-                                    'symbol': log.get('symbol', '').replace('/USDT', ''),
-                                    'price': log.get('price', 0),
-                                    'pnl': 0,
-                                    'amount': log.get('amount_usdt', 0),
-                                    'reason': log.get('reason', '')
-                                })
-
-                        # Sort by timestamp (most recent first)
+                        # Sort by timestamp (most recent first) - trades already unique
                         activities.sort(key=lambda x: x['timestamp'], reverse=True)
-
-                        # Deduplicate (same symbol, action, timestamp)
-                        seen = set()
-                        unique_activities = []
-                        for a in activities:
-                            key = f"{a['timestamp'][:16]}_{a['action']}_{a['symbol']}"
-                            if key not in seen:
-                                seen.add(key)
-                                unique_activities.append(a)
+                        unique_activities = activities
 
                         if unique_activities:
                             total_count = len(unique_activities)
@@ -2329,9 +2307,10 @@ Moins de trades mais meilleure qualité."""
                             with col_act2:
                                 show_all_act = st.checkbox("All", key=f"act_all_{pid}", value=False)
 
-                            display_activities = unique_activities if show_all_act else unique_activities[:15]
+                            display_activities = unique_activities if show_all_act else unique_activities[:10]
 
-                            st.markdown('<div style="max-height: 350px; overflow-y: auto;">', unsafe_allow_html=True)
+                            # Build all HTML at once for faster rendering
+                            all_cards_html = '<div style="max-height: 350px; overflow-y: auto;">'
 
                             for a in display_activities:
                                 a_time = a['timestamp'][-8:] if len(a['timestamp']) > 8 else a['timestamp']
@@ -2454,7 +2433,7 @@ Moins de trades mais meilleure qualité."""
                                     tpsl_html = f'<span style="color: #00ff88;">TP: {tp_str} (+{a_tp}%)</span> | <span style="color: #ff4444;">SL: {sl_str} (-{a_sl}%)</span>'
 
                                 # Build the activity card HTML
-                                st.markdown(f'''
+                                all_cards_html += f'''
                                 <div style="background: {bg_color}; padding: 10px 14px; border-radius: 10px; margin: 6px 0; border-left: 4px solid {border_color};">
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                                         <div>
@@ -2476,12 +2455,13 @@ Moins de trades mais meilleure qualité."""
                                     </div>
                                     {f'<div style="color: #777; font-size: 0.7rem; margin-top: 6px; font-style: italic;">{a_reason}</div>' if a_reason else ''}
                                 </div>
-                                ''', unsafe_allow_html=True)
+                                '''
 
-                            st.markdown('</div>', unsafe_allow_html=True)
+                            all_cards_html += '</div>'
+                            st.markdown(all_cards_html, unsafe_allow_html=True)
 
-                            if not show_all_act and total_count > 15:
-                                st.caption(f"Showing 15 of {total_count} activities")
+                            if not show_all_act and total_count > 10:
+                                st.caption(f"Showing 10 of {total_count} activities")
                         else:
                             st.info("No activity yet")
 

@@ -12,7 +12,17 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(cat:*)",
-      "Bash(git check-ignore:*)"
+      "Bash(git check-ignore:*)",
+      "Bash(git pull:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(timeout /t 5 /nobreak)",
+      "Bash(streamlit run:*)",
+      "Bash(del \"C:\\\\Users\\\\viral\\\\Desktop\\\\PaperTrading\\\\test_dex.py\")",
+      "Bash(git config:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(tasklist:*)",
+      "Bash(findstr:*)"
     ]
   }
 }
