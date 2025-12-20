@@ -352,6 +352,31 @@ def get_all_prices_cached() -> Dict[str, float]:
     return prices
 
 
+def get_dexscreener_prices(addresses: List[str]) -> Dict[str, float]:
+    """Fetch prices from DexScreener for sniper tokens"""
+    prices = {}
+    if not addresses:
+        return prices
+
+    try:
+        # DexScreener accepts comma-separated addresses (max 30)
+        for i in range(0, len(addresses), 30):
+            batch = addresses[i:i+30]
+            addr_str = ','.join(batch)
+            url = f"https://api.dexscreener.com/latest/dex/tokens/{addr_str}"
+            response = requests.get(url, timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                for pair in data.get('pairs', []):
+                    addr = pair.get('baseToken', {}).get('address', '')
+                    price = float(pair.get('priceUsd', 0) or 0)
+                    if addr and price > 0:
+                        prices[addr.lower()] = price
+    except:
+        pass
+    return prices
+
+
 def get_current_prices(symbols: List[str]) -> Dict[str, float]:
     """Get prices from shared cache - NO API call per portfolio"""
     all_prices = get_all_prices_cached()
@@ -360,9 +385,20 @@ def get_current_prices(symbols: List[str]) -> Dict[str, float]:
 
 def calculate_all_portfolio_values(portfolios: Dict) -> Dict[str, Dict]:
     """Calculate ALL portfolio values in ONE pass - super fast"""
-    all_prices = get_all_prices_cached()
-    results = {}
+    binance_prices = get_all_prices_cached()
 
+    # Collect ALL sniper addresses across all portfolios
+    all_sniper_addresses = set()
+    for p in portfolios.values():
+        for pos in p.get('positions', {}).values():
+            addr = pos.get('address', '')
+            if addr:
+                all_sniper_addresses.add(addr)
+
+    # Get DexScreener prices for all sniper tokens
+    dex_prices = get_dexscreener_prices(list(all_sniper_addresses)) if all_sniper_addresses else {}
+
+    results = {}
     for pid, p in portfolios.items():
         usdt_balance = p['balance'].get('USDT', 0)
         positions = p.get('positions', {})
@@ -372,7 +408,14 @@ def calculate_all_portfolio_values(portfolios: Dict) -> Dict[str, Dict]:
         for symbol, pos in positions.items():
             entry_price = pos.get('entry_price', 0)
             quantity = pos.get('quantity', 0)
-            current_price = all_prices.get(symbol, entry_price)
+            addr = pos.get('address', '')
+
+            # Use DexScreener for sniper tokens, Binance for regular
+            if addr:
+                current_price = dex_prices.get(addr.lower(), entry_price)
+            else:
+                current_price = binance_prices.get(symbol, entry_price)
+
             current_value = quantity * current_price
             positions_value += current_value
             unrealized_pnl += current_value - (quantity * entry_price)
@@ -406,7 +449,19 @@ def calculate_portfolio_value(portfolio: Dict) -> Dict:
 
     # Get current prices for all positions
     symbols = list(positions.keys())
-    current_prices = get_current_prices(symbols)
+    binance_prices = get_current_prices(symbols)
+
+    # Collect sniper token addresses for DexScreener
+    sniper_addresses = []
+    sniper_addr_to_symbol = {}
+    for symbol, pos in positions.items():
+        addr = pos.get('address', '')
+        if addr:
+            sniper_addresses.append(addr)
+            sniper_addr_to_symbol[addr.lower()] = symbol
+
+    # Get DexScreener prices for sniper tokens
+    dex_prices = get_dexscreener_prices(sniper_addresses) if sniper_addresses else {}
 
     positions_value = 0
     unrealized_pnl = 0
@@ -415,7 +470,15 @@ def calculate_portfolio_value(portfolio: Dict) -> Dict:
     for symbol, pos in positions.items():
         entry_price = pos.get('entry_price', 0)
         quantity = pos.get('quantity', 0)
-        current_price = current_prices.get(symbol, entry_price)  # Fallback to entry if no price
+        addr = pos.get('address', '')
+
+        # Use DexScreener price for sniper tokens, Binance for regular tokens
+        if addr:
+            # Sniper token - use DexScreener price, fallback to entry
+            current_price = dex_prices.get(addr.lower(), entry_price)
+        else:
+            # Regular token - use Binance price
+            current_price = binance_prices.get(symbol, entry_price)
 
         current_value = quantity * current_price
         cost_basis = quantity * entry_price
