@@ -607,7 +607,8 @@ def calculate_portfolio_value(portfolio: Dict) -> Dict:
             'pnl': pnl,
             'pnl_pct': pnl_pct,
             'token_address': pos.get('address', ''),
-            'chain': pos.get('chain', '')
+            'chain': pos.get('chain', ''),
+            'entry_time': pos.get('entry_time', '')
         })
 
     return {
@@ -617,6 +618,78 @@ def calculate_portfolio_value(portfolio: Dict) -> Dict:
         'unrealized_pnl': unrealized_pnl,
         'positions_details': positions_details
     }
+
+
+@st.cache_data(ttl=60)
+def fetch_price_history(symbol: str, entry_time: str, current_price: float) -> List[Dict]:
+    """
+    Fetch price history from Binance klines API.
+    Returns list of {time, price} from entry_time until now.
+    """
+    try:
+        from datetime import datetime, timezone
+
+        # Parse entry time
+        if not entry_time:
+            return []
+
+        # Handle ISO format
+        entry_dt = datetime.fromisoformat(entry_time.replace('Z', '+00:00'))
+        now = datetime.now(timezone.utc)
+
+        # Calculate time difference in minutes
+        time_diff = (now - entry_dt.replace(tzinfo=timezone.utc)).total_seconds() / 60
+
+        # Determine interval based on time difference
+        if time_diff < 60:  # Less than 1 hour: 1m candles
+            interval = '1m'
+            limit = min(int(time_diff) + 1, 60)
+        elif time_diff < 1440:  # Less than 1 day: 5m candles
+            interval = '5m'
+            limit = min(int(time_diff / 5) + 1, 288)
+        elif time_diff < 10080:  # Less than 1 week: 1h candles
+            interval = '1h'
+            limit = min(int(time_diff / 60) + 1, 168)
+        else:  # More than 1 week: 4h candles
+            interval = '4h'
+            limit = min(int(time_diff / 240) + 1, 200)
+
+        # Convert to milliseconds timestamp
+        start_time = int(entry_dt.timestamp() * 1000)
+
+        # Fetch from Binance
+        clean_symbol = symbol.replace('/', '').replace('\\', '').upper()
+        if not clean_symbol.endswith('USDT'):
+            clean_symbol += 'USDT'
+
+        url = f"https://api.binance.com/api/v3/klines?symbol={clean_symbol}&interval={interval}&startTime={start_time}&limit={limit}"
+
+        response = requests.get(url, timeout=5)
+        if response.status_code != 200:
+            return []
+
+        data = response.json()
+        if not data:
+            return []
+
+        # Parse klines: [timestamp, open, high, low, close, ...]
+        prices = []
+        for kline in data:
+            prices.append({
+                'time': datetime.fromtimestamp(kline[0] / 1000),
+                'price': float(kline[4])  # Close price
+            })
+
+        # Add current price as last point
+        prices.append({
+            'time': datetime.now(),
+            'price': current_price
+        })
+
+        return prices
+
+    except Exception as e:
+        return []
 
 
 def load_degen_state() -> Dict:
@@ -2467,6 +2540,7 @@ Moins de trades mais meilleure qualité."""
                                 pos_pnl_pct = pos_detail['pnl_pct']
                                 pos_token_address = pos_detail.get('token_address', '')
                                 pos_chain = pos_detail.get('chain', '')
+                                pos_entry_time = pos_detail.get('entry_time', '')
 
                                 # Calculate TP and SL prices
                                 tp_price = pos_entry * (1 + tp_pct / 100)
@@ -2479,50 +2553,58 @@ Moins de trades mais meilleure qualité."""
                                 pnl_color = "green" if pos_pnl >= 0 else "red"
                                 st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | Qty: {pos_qty:.4f} | Value: ${pos_value:.2f}")
 
-                                # Create mini price chart with horizontal lines
+                                # Fetch real price history
+                                price_history = fetch_price_history(pos_symbol, pos_entry_time, pos_current)
+
+                                # Create price chart with horizontal TP/SL lines
                                 fig = go.Figure()
 
-                                # Simulated price line (from entry to current)
-                                fig.add_trace(go.Scatter(
-                                    x=[0, 1], y=[pos_entry, pos_current],
-                                    mode='lines+markers',
-                                    line=dict(color='#00d4ff', width=3),
-                                    marker=dict(size=[8, 12], color=['#888', '#00d4ff']),
-                                    name='Price',
-                                    hovertemplate='%{y:.8f}<extra></extra>'
-                                ))
+                                if price_history and len(price_history) > 1:
+                                    # Real price curve from historical data
+                                    times = [p['time'] for p in price_history]
+                                    prices = [p['price'] for p in price_history]
 
-                                # Entry line (horizontal)
-                                fig.add_hline(y=pos_entry, line_dash="dash", line_color="#888", line_width=2,
-                                             annotation_text=f"Entry: ${pos_entry:.8f}", annotation_position="left")
+                                    fig.add_trace(go.Scatter(
+                                        x=times, y=prices,
+                                        mode='lines',
+                                        line=dict(color='#00d4ff', width=2),
+                                        name='Price',
+                                        hovertemplate='%{x|%H:%M}<br>$%{y:.6f}<extra></extra>'
+                                    ))
 
-                                # Take Profit line (horizontal)
-                                fig.add_hline(y=tp_price, line_dash="solid", line_color="#00ff88", line_width=2,
-                                             annotation_text=f"TP +{tp_pct}%", annotation_position="right")
+                                    # Current price marker
+                                    fig.add_trace(go.Scatter(
+                                        x=[times[-1]], y=[prices[-1]],
+                                        mode='markers',
+                                        marker=dict(size=10, color='#00d4ff', symbol='diamond'),
+                                        name='Current',
+                                        showlegend=False
+                                    ))
+                                else:
+                                    # Fallback: simple line
+                                    fig.add_trace(go.Scatter(
+                                        x=[0, 1], y=[pos_entry, pos_current],
+                                        mode='lines+markers',
+                                        line=dict(color='#00d4ff', width=2),
+                                        marker=dict(size=[6, 10], color=['#888', '#00d4ff'])
+                                    ))
 
-                                # Stop Loss line (horizontal)
-                                fig.add_hline(y=sl_price, line_dash="solid", line_color="#ff4444", line_width=2,
-                                             annotation_text=f"SL -{sl_pct}%", annotation_position="right")
+                                # Entry, TP, SL horizontal lines
+                                fig.add_hline(y=pos_entry, line_dash="dash", line_color="#888", line_width=1,
+                                             annotation_text=f"Entry", annotation_position="left", annotation_font_size=9)
+                                fig.add_hline(y=tp_price, line_dash="solid", line_color="#00ff88", line_width=1,
+                                             annotation_text=f"TP +{tp_pct}%", annotation_position="right", annotation_font_size=9)
+                                fig.add_hline(y=sl_price, line_dash="solid", line_color="#ff4444", line_width=1,
+                                             annotation_text=f"SL -{sl_pct}%", annotation_position="right", annotation_font_size=9)
 
-                                # Current price marker
-                                fig.add_trace(go.Scatter(
-                                    x=[1], y=[pos_current],
-                                    mode='markers',
-                                    marker=dict(size=16, color='#00d4ff', symbol='diamond', line=dict(width=2, color='white')),
-                                    name=f'Current: ${pos_current:.8f}',
-                                    hovertemplate=f'Current: ${pos_current:.8f}<extra></extra>'
-                                ))
-
-                                # Layout
                                 fig.update_layout(
-                                    height=150,
-                                    margin=dict(l=10, r=10, t=10, b=10),
+                                    height=180,
+                                    margin=dict(l=10, r=60, t=10, b=30),
                                     paper_bgcolor='rgba(0,0,0,0)',
                                     plot_bgcolor='rgba(0,0,0,0.2)',
                                     showlegend=False,
-                                    xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
-                                    yaxis=dict(showticklabels=True, showgrid=True, gridcolor='rgba(255,255,255,0.1)',
-                                              tickformat='.8f', side='right'),
+                                    xaxis=dict(showticklabels=True, showgrid=False, tickfont=dict(size=9, color='#666')),
+                                    yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', tickformat='.6f', side='right', tickfont=dict(size=9)),
                                 )
 
                                 st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
