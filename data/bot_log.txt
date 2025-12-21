@@ -62074,3 +62074,191 @@
 [2025-12-21 09:37:47] Browser opened automatically
 [2025-12-21 09:37:48] Error loading portfolios: Expecting ',' delimiter: line 13255 column 10 (char 400397)
 [2025-12-21 09:37:48] No portfolios found! Run the dashboard first to create portfolios.
+[2025-12-21 09:59:22] Starting unified dashboard on port 8501...
+[2025-12-21 09:59:22] Dashboard started: http://localhost:8501
+[2025-12-21 09:59:22] Features: Dashboard | Degen Mode | Scanner | Portfolios | Settings
+[2025-12-21 09:59:24] Browser opened automatically
+[2025-12-21 09:59:24] Loaded 111 portfolios (104 classic, 7 sniper)
+[2025-12-21 09:59:24]   [ON]  Confluence Strict [confluence_strict]
+[2025-12-21 09:59:24]   [ON]  Conservative [conservative]
+[2025-12-21 09:59:24]   [ON]  RSI Strategy [rsi_strategy]
+[2025-12-21 09:59:24]   [ON]  Degen Momentum [degen_momentum]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper Safe [sniper_safe]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper Degen [sniper_degen]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper YOLO [sniper_yolo]
+[2025-12-21 09:59:24]   [ON]  EMA Crossover [ema_crossover]
+[2025-12-21 09:59:24]   [ON]  Mean Reversion [mean_reversion]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Cloud [ichimoku]
+[2025-12-21 09:59:24]   [ON]  Martingale [martingale]
+[2025-12-21 09:59:24]   [ON]  Martingale Safe [martingale_safe]
+[2025-12-21 09:59:24]   [ON]  God Mode [god_mode_only]
+[2025-12-21 09:59:24]   [ON]  Funding Contrarian [funding_contrarian]
+[2025-12-21 09:59:24]   [ON]  Funding Extreme [funding_extreme]
+[2025-12-21 09:59:24]   [ON]  OI Breakout [oi_breakout]
+[2025-12-21 09:59:24]   [ON]  OI Divergence [oi_divergence]
+[2025-12-21 09:59:24]   [ON]  Funding+OI Combo [funding_oi_combo]
+[2025-12-21 09:59:24]   [ON]  Bollinger Squeeze [bollinger_squeeze]
+[2025-12-21 09:59:24]   [ON]  BB Squeeze Tight [bollinger_squeeze_tight]
+[2025-12-21 09:59:24]   [ON]  RSI Divergence [rsi_divergence]
+[2025-12-21 09:59:24]   [ON]  RSI Div Fast [rsi_divergence_fast]
+[2025-12-21 09:59:24]   [ON]  ADX Trend [adx_trend]
+[2025-12-21 09:59:24]   [ON]  ADX Strong [adx_strong]
+[2025-12-21 09:59:24]   [ON]  MACD Reversal [macd_reversal]
+[2025-12-21 09:59:24]   [ON]  MACD Crossover [macd_crossover]
+[2025-12-21 09:59:24]   [ON]  Parabolic SAR [parabolic_sar]
+[2025-12-21 09:59:24]   [ON]  PSAR Fast [parabolic_sar_fast]
+[2025-12-21 09:59:24]   [ON]  Williams %R [williams_r]
+[2025-12-21 09:59:24]   [ON]  Williams Extreme [williams_r_extreme]
+[2025-12-21 09:59:24]   [ON]  Donchian Breakout [donchian_breakout]
+[2025-12-21 09:59:24]   [ON]  Grid Tight [grid_tight]
+[2025-12-21 09:59:24]   [ON]  Donchian Fast [donchian_fast]
+[2025-12-21 09:59:24]   [ON]  Keltner Channel [keltner_channel]
+[2025-12-21 09:59:24]   [ON]  Keltner Tight [keltner_tight]
+[2025-12-21 09:59:24]   [ON]  Scalp Memecoins [degen_scalp]
+[2025-12-21 09:59:24]   [ON]  CCI Momentum [cci_momentum]
+[2025-12-21 09:59:24]   [ON]  Aggressive DeFi [aggressive]
+[2025-12-21 09:59:24]   [ON]  CCI Extreme [cci_extreme]
+[2025-12-21 09:59:24]   [ON]  Aroon Trend [aroon_trend]
+[2025-12-21 09:59:24]   [ON]  Aroon Fast [aroon_fast]
+[2025-12-21 09:59:24]   [ON]  OBV Trend [obv_trend]
+[2025-12-21 09:59:24]   [ON]  OBV Fast [obv_fast]
+[2025-12-21 09:59:24]   [ON]  RSI+MACD Combo [rsi_macd_combo]
+[2025-12-21 09:59:24]   [ON]  BB+RSI Combo [bb_rsi_combo]
+[2025-12-21 09:59:24]   [ON]  Trend Momentum [trend_momentum]
+[2025-12-21 09:59:24]   [ON]  ATR Breakout [atr_breakout]
+[2025-12-21 09:59:24]   [ON]  ATR Trailing [atr_trailing]
+[2025-12-21 09:59:24]   [ON]  Scalp RSI [scalp_rsi]
+[2025-12-21 09:59:24]   [ON]  Scalp BB [scalp_bb]
+[2025-12-21 09:59:24]   [ON]  Scalp MACD [scalp_macd]
+[2025-12-21 09:59:24]   [ON]  DeFi Hunter [defi_hunter]
+[2025-12-21 09:59:24]   [ON]  Layer2 Focus [layer2_focus]
+[2025-12-21 09:59:24]   [ON]  Gaming Tokens [gaming_tokens]
+[2025-12-21 09:59:24]   [ON]  AI Tokens [ai_tokens]
+[2025-12-21 09:59:24]   [ON]  Meme Hunter [meme_hunter]
+[2025-12-21 09:59:24]   [ON]  Low Risk DCA [low_risk_dca]
+[2025-12-21 09:59:24]   [ON]  Grid DeFi [grid_trading]
+[2025-12-21 09:59:24]   [ON]  Medium Swing [medium_risk_swing]
+[2025-12-21 09:59:24]   [ON]  High Risk 3x [high_risk_leverage]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper Quickflip [sniper_quickflip]
+[2025-12-21 09:59:24]   [ON]  Breakout Memes [breakout_tight]
+[2025-12-21 09:59:24]   [ON]  Stoch Memes [stoch_rsi_aggressive]
+[2025-12-21 09:59:24]   [ON]  Supertrend Memes [supertrend_fast]
+[2025-12-21 09:59:24]   [ON]  VWAP Memes [vwap_bounce]
+[2025-12-21 09:59:24]   [ON]  EMA Slow L2 [ema_crossover_slow]
+[2025-12-21 09:59:24]   [ON]  GCR Layer2 [whale_gcr]
+[2025-12-21 09:59:24]   [ON]  DCA L2 [dca_accumulator]
+[2025-12-21 09:59:24]   [ON]  Confluence L2 [confluence_normal]
+[2025-12-21 09:59:24]   [ON]  VWAP Trend L2 [vwap_trend]
+[2025-12-21 09:59:24]   [ON]  Hsaka Gaming [whale_hsaka]
+[2025-12-21 09:59:24]   [ON]  Ansem SOL [whale_ansem]
+[2025-12-21 09:59:24]   [ON]  Copy GCR (Contrarian) [whale_gcr]
+[2025-12-21 09:59:24]   [ON]  Mean Rev Gaming [mean_reversion_tight]
+[2025-12-21 09:59:24]   [ON]  Copy Hsaka (Momentum) [whale_hsaka]
+[2025-12-21 09:59:24]   [ON]  Copy Cobie (Value) [whale_cobie]
+[2025-12-21 09:59:24]   [ON]  Copy Ansem (Memes) [whale_ansem]
+[2025-12-21 09:59:24]   [ON]  Breakout AI [breakout]
+[2025-12-21 09:59:24]   [ON]  Supertrend AI [supertrend]
+[2025-12-21 09:59:24]   [ON]  Copy Degen King [whale_degen]
+[2025-12-21 09:59:24]   [ON]  Smart Money [whale_smart_money]
+[2025-12-21 09:59:24]   [ON]  Full Degen New [degen_full]
+[2025-12-21 09:59:24]   [ON]  Stoch New Coins [stoch_rsi]
+[2025-12-21 09:59:24]   [ON]  VWAP New [vwap_bounce]
+[2025-12-21 09:59:24]   [ON]  Ichimoku New [ichimoku_fast]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper All-In [sniper_all_in]
+[2025-12-21 09:59:24]   [ON]  HODL Altcoins [hodl]
+[2025-12-21 09:59:24]   [ON]  DCA Aggro Alts [dca_aggressive]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper Spray [sniper_spray]
+[2025-12-21 09:59:24]   [ON] [SNIPE] Sniper Quickflip [sniper_quickflip]
+[2025-12-21 09:59:24]   [ON]  GCR Layer2 [whale_gcr]
+[2025-12-21 09:59:24]   [ON]  Full Degen DeFi [degen_full]
+[2025-12-21 09:59:24]   [ON]  Hsaka Gaming [whale_hsaka]
+[2025-12-21 09:59:24]   [ON]  Ansem SOL [whale_ansem]
+[2025-12-21 09:59:24]   [ON]  Breakout Mixed [breakout_tight]
+[2025-12-21 09:59:24]   [ON]  Fear Index Majors [dca_fear]
+[2025-12-21 09:59:24]   [ON]  Copy GCR (Contrarian) [whale_gcr]
+[2025-12-21 09:59:24]   [ON]  Copy Hsaka (Momentum) [whale_hsaka]
+[2025-12-21 09:59:24]   [ON]  Copy Cobie (Value) [whale_cobie]
+[2025-12-21 09:59:24]   [ON]  Copy Ansem (Memes) [whale_ansem]
+[2025-12-21 09:59:24]   [ON]  Copy Pelosi (Tech) [congress_pelosi]
+[2025-12-21 09:59:24]   [ON]  Copy Tuberville (Defense) [congress_tuberville]
+[2025-12-21 09:59:24]   [ON]  Congress All Stars [congress_all]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Scalp [ichimoku_scalp]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Swing [ichimoku_swing]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Long [ichimoku_long]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Kumo Break [ichimoku_kumo_break]
+[2025-12-21 09:59:24]   [ON]  Ichimoku TK Cross [ichimoku_tk_cross]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Chikou [ichimoku_chikou]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Momentum [ichimoku_momentum]
+[2025-12-21 09:59:24]   [ON]  Ichimoku Safe [ichimoku_conservative]
+[2025-12-21 09:59:24] Starting unified bot loop (scan every 60s)...
+[2025-12-21 09:59:24] 
+==================== SCAN #1 ====================
+[2025-12-21 09:59:24] 📊 Scanning existing cryptos...
+[2025-12-21 09:59:24] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 09:59:27]   BTC/USDT [1h]: $88,878.52 | RSI 68.3 | SELL
+[2025-12-21 09:59:30]   BTC/USDT [15m]: $88,862.00 | RSI 78.7 | SELL
+[2025-12-21 09:59:33]   BTC/USDT [4h]: $88,871.53 | RSI 78.6 | SELL
+[2025-12-21 09:59:36]   BTC/USDT [5m]: $88,872.62 | RSI 64.2 | HOLD
+[2025-12-21 09:59:40]   ETH/USDT [1h]: $3,001.64 | RSI 66.9 | SELL
+[2025-12-21 09:59:42]   ETH/USDT [15m]: $3,001.72 | RSI 84.3 | SELL
+[2025-12-21 09:59:44]   ETH/USDT [4h]: $3,001.73 | RSI 80.8 | SELL
+[2025-12-21 09:59:46]   ETH/USDT [5m]: $3,001.74 | RSI 59.6 | HOLD
+[2025-12-21 09:59:48]   SOL/USDT [1h]: $126.27 | RSI 52.7 | HOLD
+[2025-12-21 09:59:50]   SOL/USDT [15m]: $126.28 | RSI 72.2 | SELL
+[2025-12-21 09:59:52]   SOL/USDT [4h]: $126.28 | RSI 78.8 | STRONG_SELL
+[2025-12-21 09:59:54]   SOL/USDT [5m]: $126.26 | RSI 65.4 | SELL
+[2025-12-21 09:59:56]   AVAX/USDT [1h]: $12.27 | RSI 50.0 | HOLD
+[2025-12-21 09:59:58]   AVAX/USDT [15m]: $12.27 | RSI 75.0 | SELL
+[2025-12-21 10:00:00]   AVAX/USDT [4h]: $12.28 | RSI 74.8 | STRONG_SELL
+[2025-12-21 10:00:03]   AVAX/USDT [5m]: $12.28 | RSI 60.5 | HOLD
+[2025-12-21 10:00:05]   LINK/USDT [1h]: $12.67 | RSI 58.3 | HOLD
+[2025-12-21 10:00:07]   LINK/USDT [15m]: $12.67 | RSI 75.9 | SELL
+[2025-12-21 10:00:09]   LINK/USDT [4h]: $12.67 | RSI 71.8 | STRONG_SELL
+[2025-12-21 10:00:11]   LINK/USDT [5m]: $12.68 | RSI 62.2 | HOLD
+[2025-12-21 10:00:13]   AAVE/USDT [1h]: $179.56 | RSI 38.6 | HOLD
+[2025-12-21 10:00:15]   AAVE/USDT [15m]: $179.62 | RSI 77.1 | SELL
+[2025-12-21 10:00:17]   AAVE/USDT [4h]: $179.62 | RSI 53.1 | HOLD
+[2025-12-21 10:00:19]   AAVE/USDT [5m]: $179.69 | RSI 68.1 | SELL
+[2025-12-21 10:00:21]   UNI/USDT [1h]: $6.36 | RSI 58.2 | HOLD
+[2025-12-21 10:00:23]   UNI/USDT [15m]: $6.36 | RSI 37.8 | HOLD
+[2025-12-21 10:00:25]   UNI/USDT [4h]: $6.36 | RSI 93.0 | SELL
+[2025-12-21 10:00:27]   UNI/USDT [5m]: $6.36 | RSI 52.1 | HOLD
+[2025-12-21 10:00:29]   DOGE/USDT [1h]: $0.13 | RSI 56.6 | HOLD
+[2025-12-21 10:00:31]   DOGE/USDT [15m]: $0.13 | RSI 75.0 | SELL
+[2025-12-21 10:00:33]   DOGE/USDT [4h]: $0.13 | RSI 79.9 | SELL
+[2025-12-21 10:00:35]   SHIB/USDT [1h]: $0.00 | RSI 51.7 | HOLD
+[2025-12-21 10:00:37]   SHIB/USDT [15m]: $0.00 | RSI 70.6 | SELL
+[2025-12-21 10:00:39]   PEPE/USDT [1h]: $0.00 | RSI 55.6 | HOLD
+[2025-12-21 10:00:41]   PEPE/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:00:43]   PEPE/USDT [4h]: $0.00 | RSI 81.2 | SELL
+[2025-12-21 10:00:45]   BONK/USDT [1h]: $0.00 | RSI 42.9 | HOLD
+[2025-12-21 10:00:47]   BONK/USDT [15m]: $0.00 | RSI 54.2 | HOLD
+[2025-12-21 10:00:49]   TURBO/USDT [1h]: $0.00 | RSI 36.8 | HOLD
+[2025-12-21 10:00:51]   TURBO/USDT [15m]: $0.00 | RSI 61.1 | HOLD
+[2025-12-21 10:00:53]   FLOKI/USDT [1h]: $0.00 | RSI 53.5 | HOLD
+[2025-12-21 10:00:55]   FLOKI/USDT [15m]: $0.00 | RSI 64.6 | HOLD
+[2025-12-21 10:00:57]   BNB/USDT [1h]: $858.96 | RSI 61.7 | HOLD
+[2025-12-21 10:00:59]   BNB/USDT [15m]: $858.96 | RSI 80.4 | SELL
+[2025-12-21 10:01:01]   BNB/USDT [4h]: $858.95 | RSI 73.0 | STRONG_SELL
+[2025-12-21 10:01:03]   XRP/USDT [1h]: $1.95 | RSI 65.5 | SELL
+[2025-12-21 10:01:05]   XRP/USDT [15m]: $1.95 | RSI 79.0 | SELL
+[2025-12-21 10:01:07]   XRP/USDT [4h]: $1.95 | RSI 80.3 | SELL
+[2025-12-21 10:01:09]   ADA/USDT [1h]: $0.37 | RSI 44.0 | HOLD
+[2025-12-21 10:01:11]   ADA/USDT [15m]: $0.37 | RSI 76.7 | SELL
+[2025-12-21 10:01:13]   ADA/USDT [4h]: $0.37 | RSI 65.5 | SELL
+[2025-12-21 10:01:16]   DOT/USDT [1h]: $1.85 | RSI 58.1 | HOLD
+[2025-12-21 10:01:18]   DOT/USDT [15m]: $1.85 | RSI 85.1 | SELL
+[2025-12-21 10:01:20]   DOT/USDT [4h]: $1.85 | RSI 63.8 | HOLD
+[2025-12-21 10:01:22]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:01:25]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:01:27]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:01:29]   ATOM/USDT [1h]: $1.98 | RSI 50.0 | HOLD
+[2025-12-21 10:01:31]   ATOM/USDT [15m]: $1.98 | RSI 62.5 | HOLD
+[2025-12-21 10:01:33]   ATOM/USDT [4h]: $1.98 | RSI 67.7 | SELL
+[2025-12-21 10:01:36]   LTC/USDT [1h]: $77.75 | RSI 52.7 | HOLD
+[2025-12-21 10:01:38]   LTC/USDT [15m]: $77.75 | RSI 70.1 | SELL
+[2025-12-21 10:01:40]   LTC/USDT [4h]: $77.75 | RSI 66.2 | SELL
+[2025-12-21 10:01:42]   APT/USDT [1h]: $1.65 | RSI 71.4 | SELL
+[2025-12-21 10:01:44]   APT/USDT [15m]: $1.65 | RSI 65.2 | SELL
+[2025-12-21 10:01:46]   APT/USDT [4h]: $1.65 | RSI 78.5 | SELL
+[2025-12-21 10:01:48]   ARB/USDT [1h]: $0.19 | RSI 62.9 | HOLD

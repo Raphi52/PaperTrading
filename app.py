@@ -879,7 +879,9 @@ def render_portfolios():
 
     # ===================== SUMMARY DASHBOARD =====================
     if portfolios:
-        # Calculate aggregate stats
+        # Calculate aggregate stats using proper function (handles sniper tokens)
+        all_pf_values = calculate_all_portfolio_values(portfolios)
+
         total_aum = 0
         total_initial = 0
         total_pnl = 0
@@ -892,12 +894,8 @@ def render_portfolios():
         total_trades = 0
 
         for pid, p in portfolios.items():
-            usdt = p['balance'].get('USDT', 0)
-            pos_value = sum(
-                pos.get('quantity', 0) * all_prices.get(sym, pos.get('entry_price', 0))
-                for sym, pos in p.get('positions', {}).items()
-            )
-            total_val = usdt + pos_value
+            pf_val = all_pf_values.get(pid, {})
+            total_val = pf_val.get('total_value', p['balance'].get('USDT', 0))
             initial = p.get('initial_capital', 1000)
             pnl = total_val - initial
             pnl_pct = (pnl / initial * 100) if initial > 0 else 0
