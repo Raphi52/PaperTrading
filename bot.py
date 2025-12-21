@@ -925,6 +925,85 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['momentum_buy'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] > 0.3 and indicators['rsi'] < 70
     indicators['momentum_sell'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] < -0.3 and indicators['rsi'] > 30
 
+    # ============ ADDITIONAL INDICATORS FOR MISSING STRATEGIES ============
+
+    # MACD (12, 26, 9)
+    ema_12 = closes.ewm(span=12).mean()
+    ema_26 = closes.ewm(span=26).mean()
+    macd_line = ema_12 - ema_26
+    macd_signal = macd_line.ewm(span=9).mean()
+    macd_hist = macd_line - macd_signal
+    indicators['macd'] = macd_line.iloc[-1]
+    indicators['macd_signal'] = macd_signal.iloc[-1]
+    indicators['macd_histogram'] = macd_hist.iloc[-1]
+    indicators['macd_hist_prev'] = macd_hist.iloc[-2] if len(macd_hist) > 1 else 0
+
+    # Bollinger Band Width (for squeeze detection)
+    indicators['bb_width'] = (indicators['bb_upper'] - indicators['bb_lower']) / indicators['sma_20'] if indicators['sma_20'] > 0 else 0
+
+    # ADX (Average Directional Index)
+    tr1 = highs - lows
+    tr2 = abs(highs - closes.shift(1))
+    tr3 = abs(lows - closes.shift(1))
+    tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+    atr_14 = tr.rolling(window=14).mean()
+
+    plus_dm = highs.diff()
+    minus_dm = -lows.diff()
+    plus_dm[plus_dm < 0] = 0
+    minus_dm[minus_dm < 0] = 0
+
+    plus_di = 100 * (plus_dm.rolling(window=14).mean() / atr_14)
+    minus_di = 100 * (minus_dm.rolling(window=14).mean() / atr_14)
+    dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di + 0.0001)
+    adx = dx.rolling(window=14).mean()
+
+    indicators['adx'] = adx.iloc[-1] if not pd.isna(adx.iloc[-1]) else 0
+    indicators['plus_di'] = plus_di.iloc[-1] if not pd.isna(plus_di.iloc[-1]) else 0
+    indicators['minus_di'] = minus_di.iloc[-1] if not pd.isna(minus_di.iloc[-1]) else 0
+
+    # Parabolic SAR (simplified)
+    psar = closes.rolling(window=5).min()  # Simplified SAR approximation
+    indicators['psar'] = psar.iloc[-1]
+
+    # Williams %R
+    highest_high = highs.rolling(window=14).max()
+    lowest_low = lows.rolling(window=14).min()
+    williams_r = -100 * (highest_high - closes) / (highest_high - lowest_low + 0.0001)
+    indicators['williams_r'] = williams_r.iloc[-1] if not pd.isna(williams_r.iloc[-1]) else -50
+
+    # CCI (Commodity Channel Index)
+    tp = (highs + lows + closes) / 3
+    tp_sma = tp.rolling(window=20).mean()
+    tp_mad = tp.rolling(window=20).apply(lambda x: abs(x - x.mean()).mean())
+    cci = (tp - tp_sma) / (0.015 * tp_mad + 0.0001)
+    indicators['cci'] = cci.iloc[-1] if not pd.isna(cci.iloc[-1]) else 0
+
+    # Donchian Channel
+    indicators['donchian_high'] = highs.rolling(window=20).max().iloc[-1]
+    indicators['donchian_low'] = lows.rolling(window=20).min().iloc[-1]
+
+    # Keltner Channel
+    keltner_mid = closes.ewm(span=20).mean()
+    keltner_atr = atr_14 * 2
+    indicators['keltner_upper'] = (keltner_mid + keltner_atr).iloc[-1]
+    indicators['keltner_lower'] = (keltner_mid - keltner_atr).iloc[-1]
+
+    # Aroon
+    aroon_up = 100 * (14 - highs.rolling(window=14).apply(lambda x: 14 - x.argmax() - 1)) / 14
+    aroon_down = 100 * (14 - lows.rolling(window=14).apply(lambda x: 14 - x.argmin() - 1)) / 14
+    indicators['aroon_up'] = aroon_up.iloc[-1] if not pd.isna(aroon_up.iloc[-1]) else 50
+    indicators['aroon_down'] = aroon_down.iloc[-1] if not pd.isna(aroon_down.iloc[-1]) else 50
+
+    # OBV Signal
+    obv = (volumes * ((closes > closes.shift(1)).astype(int) * 2 - 1)).cumsum()
+    obv_ema = obv.ewm(span=20).mean()
+    indicators['obv_signal'] = obv.iloc[-1] - obv_ema.iloc[-1]
+
+    # RSI previous value (for divergence)
+    indicators['rsi_prev'] = rsi_values.iloc[-2] if len(rsi_values) > 1 else indicators['rsi']
+    indicators['close_prev'] = closes.iloc[-2] if len(closes) > 1 else closes.iloc[-1]
+
     return indicators
 
 
@@ -1383,6 +1462,214 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return ('BUY', f"TRAILING ENTRY: RSI={rsi:.0f} very oversold")
 
             return (None, f"TRAILING: Waiting for RSI < {entry_rsi} (currently {rsi:.0f})")
+
+    # ============ MISSING STRATEGY IMPLEMENTATIONS ============
+
+    # MACD Strategy
+    if strategy.get('use_macd'):
+        macd = analysis.get('macd', 0)
+        macd_signal = analysis.get('macd_signal', 0)
+        macd_hist = analysis.get('macd_histogram', 0)
+        mode = strategy.get('mode', 'crossover')
+
+        if mode == 'crossover':
+            if macd > macd_signal and macd_hist > 0 and has_cash:
+                return ('BUY', f"MACD CROSS: MACD crossed above signal")
+            elif macd < macd_signal and macd_hist < 0 and has_position:
+                return ('SELL', f"MACD CROSS: MACD crossed below signal")
+        else:  # histogram reversal
+            if macd_hist > 0 and analysis.get('macd_hist_prev', 0) < 0 and has_cash:
+                return ('BUY', f"MACD REVERSAL: Histogram turned positive")
+            elif macd_hist < 0 and analysis.get('macd_hist_prev', 0) > 0 and has_position:
+                return ('SELL', f"MACD REVERSAL: Histogram turned negative")
+        return (None, f"MACD: hist={macd_hist:.4f}")
+
+    # Bollinger Bands Strategy
+    if strategy.get('use_bb'):
+        bb_pos = analysis.get('bb_position', 0.5)
+        rsi = analysis.get('rsi', 50)
+
+        if strategy.get('mode') == 'combo':
+            if bb_pos < 0.2 and rsi < 35 and has_cash:
+                return ('BUY', f"BB+RSI: Near lower band + oversold")
+            elif bb_pos > 0.8 and rsi > 65 and has_position:
+                return ('SELL', f"BB+RSI: Near upper band + overbought")
+        else:
+            if bb_pos < 0.1 and has_cash:
+                return ('BUY', f"BB: Price at lower band ({bb_pos:.2f})")
+            elif bb_pos > 0.9 and has_position:
+                return ('SELL', f"BB: Price at upper band ({bb_pos:.2f})")
+        return (None, f"BB: position={bb_pos:.2f}")
+
+    # Bollinger Squeeze Strategy
+    if strategy.get('use_bb_squeeze'):
+        bb_width = analysis.get('bb_width', 0)
+        squeeze_threshold = strategy.get('threshold', 0.02)
+        momentum = analysis.get('momentum', 0)
+
+        if bb_width < squeeze_threshold:
+            if momentum > 0.3 and has_cash:
+                return ('BUY', f"BB SQUEEZE: Breakout up, momentum={momentum:.2f}%")
+            elif momentum < -0.3 and has_position:
+                return ('SELL', f"BB SQUEEZE: Breakout down")
+        return (None, f"BB SQUEEZE: width={bb_width:.4f}, waiting for squeeze")
+
+    # ADX Trend Strategy
+    if strategy.get('use_adx'):
+        adx = analysis.get('adx', 0)
+        plus_di = analysis.get('plus_di', 0)
+        minus_di = analysis.get('minus_di', 0)
+        threshold = strategy.get('threshold', 25)
+
+        if adx > threshold:
+            if plus_di > minus_di and has_cash:
+                return ('BUY', f"ADX TREND: Strong uptrend ADX={adx:.0f}")
+            elif minus_di > plus_di and has_position:
+                return ('SELL', f"ADX TREND: Strong downtrend ADX={adx:.0f}")
+        return (None, f"ADX: {adx:.0f} (need >{threshold} for trend)")
+
+    # Parabolic SAR Strategy
+    if strategy.get('use_psar'):
+        psar = analysis.get('psar', 0)
+        price = analysis.get('close', 0)
+
+        if price > psar and has_cash:
+            return ('BUY', f"PSAR: Price above SAR (bullish)")
+        elif price < psar and has_position:
+            return ('SELL', f"PSAR: Price below SAR (bearish)")
+        return (None, f"PSAR: price={price:.2f}, sar={psar:.2f}")
+
+    # Williams %R Strategy
+    if strategy.get('use_williams'):
+        williams = analysis.get('williams_r', -50)
+        oversold = strategy.get('oversold', -80)
+        overbought = strategy.get('overbought', -20)
+
+        if williams < oversold and has_cash:
+            return ('BUY', f"WILLIAMS: Oversold W%R={williams:.0f}")
+        elif williams > overbought and has_position:
+            return ('SELL', f"WILLIAMS: Overbought W%R={williams:.0f}")
+        return (None, f"WILLIAMS: W%R={williams:.0f}")
+
+    # CCI Strategy
+    if strategy.get('use_cci'):
+        cci = analysis.get('cci', 0)
+        oversold = strategy.get('oversold', -100)
+        overbought = strategy.get('overbought', 100)
+
+        if cci < oversold and has_cash:
+            return ('BUY', f"CCI: Oversold CCI={cci:.0f}")
+        elif cci > overbought and has_position:
+            return ('SELL', f"CCI: Overbought CCI={cci:.0f}")
+        return (None, f"CCI: {cci:.0f}")
+
+    # Donchian Channel Strategy
+    if strategy.get('use_donchian'):
+        price = analysis.get('close', 0)
+        donchian_high = analysis.get('donchian_high', 0)
+        donchian_low = analysis.get('donchian_low', 0)
+
+        if price >= donchian_high * 0.99 and has_cash:
+            return ('BUY', f"DONCHIAN: Breakout above channel")
+        elif price <= donchian_low * 1.01 and has_position:
+            return ('SELL', f"DONCHIAN: Breakdown below channel")
+        return (None, f"DONCHIAN: price in channel")
+
+    # Keltner Channel Strategy
+    if strategy.get('use_keltner'):
+        price = analysis.get('close', 0)
+        keltner_upper = analysis.get('keltner_upper', 0)
+        keltner_lower = analysis.get('keltner_lower', 0)
+
+        if price <= keltner_lower and has_cash:
+            return ('BUY', f"KELTNER: Price at lower band")
+        elif price >= keltner_upper and has_position:
+            return ('SELL', f"KELTNER: Price at upper band")
+        return (None, f"KELTNER: price in channel")
+
+    # Aroon Strategy
+    if strategy.get('use_aroon'):
+        aroon_up = analysis.get('aroon_up', 50)
+        aroon_down = analysis.get('aroon_down', 50)
+
+        if aroon_up > 70 and aroon_down < 30 and has_cash:
+            return ('BUY', f"AROON: Strong uptrend (up={aroon_up:.0f})")
+        elif aroon_down > 70 and aroon_up < 30 and has_position:
+            return ('SELL', f"AROON: Strong downtrend (down={aroon_down:.0f})")
+        return (None, f"AROON: up={aroon_up:.0f}, down={aroon_down:.0f}")
+
+    # OBV Strategy
+    if strategy.get('use_obv'):
+        obv_signal = analysis.get('obv_signal', 0)
+        price_trend = analysis.get('ema_9', 0) > analysis.get('ema_21', 0)
+
+        if obv_signal > 0 and price_trend and has_cash:
+            return ('BUY', f"OBV: Volume confirms uptrend")
+        elif obv_signal < 0 and not price_trend and has_position:
+            return ('SELL', f"OBV: Volume confirms downtrend")
+        return (None, f"OBV: signal={obv_signal:.0f}")
+
+    # RSI Divergence Strategy
+    if strategy.get('use_rsi_div'):
+        rsi = analysis.get('rsi', 50)
+        rsi_prev = analysis.get('rsi_prev', 50)
+        price = analysis.get('close', 0)
+        price_prev = analysis.get('close_prev', price)
+
+        # Bullish divergence: price lower low, RSI higher low
+        if price < price_prev and rsi > rsi_prev and rsi < 40 and has_cash:
+            return ('BUY', f"RSI DIV: Bullish divergence RSI={rsi:.0f}")
+        # Bearish divergence: price higher high, RSI lower high
+        elif price > price_prev and rsi < rsi_prev and rsi > 60 and has_position:
+            return ('SELL', f"RSI DIV: Bearish divergence RSI={rsi:.0f}")
+        return (None, f"RSI DIV: watching for divergence")
+
+    # Scalping Strategy
+    if strategy.get('use_scalp'):
+        indicator = strategy.get('indicator', 'rsi')
+        rsi = analysis.get('rsi', 50)
+        bb_pos = analysis.get('bb_position', 0.5)
+        macd_hist = analysis.get('macd_histogram', 0)
+
+        if indicator == 'rsi':
+            if rsi < 25 and has_cash:
+                return ('BUY', f"SCALP RSI: Very oversold RSI={rsi:.0f}")
+            elif rsi > 75 and has_position:
+                return ('SELL', f"SCALP RSI: Very overbought RSI={rsi:.0f}")
+        elif indicator == 'bb':
+            if bb_pos < 0.05 and has_cash:
+                return ('BUY', f"SCALP BB: At lower band")
+            elif bb_pos > 0.95 and has_position:
+                return ('SELL', f"SCALP BB: At upper band")
+        elif indicator == 'macd':
+            if macd_hist > 0 and analysis.get('macd_hist_prev', 0) < 0 and has_cash:
+                return ('BUY', f"SCALP MACD: Histogram flip positive")
+            elif macd_hist < 0 and analysis.get('macd_hist_prev', 0) > 0 and has_position:
+                return ('SELL', f"SCALP MACD: Histogram flip negative")
+        return (None, f"SCALP: waiting for signal")
+
+    # Momentum/Sector Strategy (for defi_hunter, gaming_tokens, etc.)
+    if strategy.get('use_momentum'):
+        momentum = analysis.get('momentum', 0)
+        rsi = analysis.get('rsi', 50)
+        volume_ratio = analysis.get('volume_ratio', 1)
+
+        if momentum > 0.5 and rsi < 60 and volume_ratio > 1.2 and has_cash:
+            return ('BUY', f"MOMENTUM: Strong move +{momentum:.2f}% with volume")
+        elif momentum < -0.5 and rsi > 40 and has_position:
+            return ('SELL', f"MOMENTUM: Weakness -{abs(momentum):.2f}%")
+        return (None, f"MOMENTUM: {momentum:+.2f}%")
+
+    # Volume Strategy
+    if strategy.get('use_volume'):
+        volume_ratio = analysis.get('volume_ratio', 1)
+        momentum = analysis.get('momentum', 0)
+
+        if volume_ratio > 2 and momentum > 0.3 and has_cash:
+            return ('BUY', f"VOLUME: Spike {volume_ratio:.1f}x with upward move")
+        elif volume_ratio > 2 and momentum < -0.3 and has_position:
+            return ('SELL', f"VOLUME: Spike {volume_ratio:.1f}x with downward move")
+        return (None, f"VOLUME: ratio={volume_ratio:.1f}x")
 
     # Martingale - assoupli (RSI < 40 au lieu de 35)
     if strategy.get('use_martingale'):
