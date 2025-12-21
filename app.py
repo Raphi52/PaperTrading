@@ -2461,27 +2461,55 @@ Moins de trades mais meilleure qualité."""
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
-                        # Get trades - already sorted by time (newest last)
-                        all_trades = p.get('trades', [])
+                        # Get trades - reversed for newest first
+                        all_trades = list(reversed(p.get('trades', [])))
                         total_count = len(all_trades)
 
-                        col_act1, col_act2 = st.columns([3, 1])
-                        with col_act1:
-                            st.markdown(f"**📊 Activity ({total_count})**")
-                        with col_act2:
-                            show_all_act = st.checkbox("All", key=f"act_all_{pid}", value=False)
+                        # Pagination settings
+                        TRADES_PER_PAGE = 10
+                        page_key = f'activity_page_{pid}'
+                        if page_key not in st.session_state:
+                            st.session_state[page_key] = 0
 
-                        # Get only what we need to display (reversed for newest first)
-                        if show_all_act:
-                            display_trades = list(reversed(all_trades[-50:]))  # Max 50 even for "all"
-                        else:
-                            display_trades = list(reversed(all_trades[-10:]))  # Last 10
+                        current_act_page = st.session_state[page_key]
+                        total_act_pages = max(1, (total_count + TRADES_PER_PAGE - 1) // TRADES_PER_PAGE)
+
+                        # Ensure valid page
+                        if current_act_page >= total_act_pages:
+                            current_act_page = total_act_pages - 1
+                            st.session_state[page_key] = current_act_page
+
+                        # Header with pagination
+                        st.markdown(f"**📊 Activity ({total_count})** • Page {current_act_page + 1}/{total_act_pages}")
+
+                        # Pagination controls
+                        if total_act_pages > 1:
+                            pc1, pc2, pc3, pc4, pc5 = st.columns([1, 1, 2, 1, 1])
+                            with pc1:
+                                if st.button("⏮", key=f"act_first_{pid}", disabled=current_act_page == 0):
+                                    st.session_state[page_key] = 0
+                                    st.rerun()
+                            with pc2:
+                                if st.button("◀", key=f"act_prev_{pid}", disabled=current_act_page == 0):
+                                    st.session_state[page_key] = current_act_page - 1
+                                    st.rerun()
+                            with pc3:
+                                st.caption(f"{current_act_page * TRADES_PER_PAGE + 1}-{min((current_act_page + 1) * TRADES_PER_PAGE, total_count)} of {total_count}")
+                            with pc4:
+                                if st.button("▶", key=f"act_next_{pid}", disabled=current_act_page >= total_act_pages - 1):
+                                    st.session_state[page_key] = current_act_page + 1
+                                    st.rerun()
+                            with pc5:
+                                if st.button("⏭", key=f"act_last_{pid}", disabled=current_act_page >= total_act_pages - 1):
+                                    st.session_state[page_key] = total_act_pages - 1
+                                    st.rerun()
+
+                        # Get trades for current page
+                        start_idx = current_act_page * TRADES_PER_PAGE
+                        end_idx = start_idx + TRADES_PER_PAGE
+                        display_trades = all_trades[start_idx:end_idx]
 
                         if display_trades:
-                            strategy_config = p.get('config', {})
-                            default_tp = strategy_config.get('take_profit', 50)
-                            default_sl = strategy_config.get('stop_loss', 25)
-
                             for t in display_trades:
                                 a_action = t.get('action', '')
                                 a_symbol = t.get('symbol', '').replace('/USDT', '').replace('\\USDT', '')
@@ -2521,18 +2549,13 @@ Moins de trades mais meilleure qualité."""
                                 else:
                                     dex_url = f"https://dexscreener.com/search?q={a_symbol}"
 
-                                # Build display line with clear visual distinction
+                                # Build display line
                                 if is_sell or is_rug:
-                                    # SELL/RUG trades - show prominently with PnL
                                     pnl_color = "green" if a_pnl >= 0 else "red"
                                     pnl_icon = "✅" if a_pnl >= 0 else "❌"
                                     st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → {pnl_icon} :{pnl_color}[**${a_pnl:+.2f}**] @ {price_str} • {a_time}")
                                 else:
-                                    # BUY trades
                                     st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → Spent **${a_amount:.2f}** @ {price_str} • {a_time}")
-
-                            if not show_all_act and total_count > 10:
-                                st.caption(f"Showing 10 of {total_count} trades")
                         else:
                             st.info("No trades yet")
 
