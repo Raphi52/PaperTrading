@@ -46,6 +46,69 @@ st.set_page_config(
 # Appliquer le theme
 apply_theme()
 
+# Token to DexScreener URL mapping (for Binance tokens without chain info)
+DEXSCREENER_TOKENS = {
+    'BTC': 'https://dexscreener.com/ethereum/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',  # WBTC
+    'ETH': 'https://dexscreener.com/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',  # WETH
+    'SOL': 'https://dexscreener.com/solana/so11111111111111111111111111111111111111112',
+    'BNB': 'https://dexscreener.com/bsc/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',
+    'DOGE': 'https://dexscreener.com/ethereum/0x4206931337dc273a630d328da6441786bfad668f',
+    'PEPE': 'https://dexscreener.com/ethereum/0x6982508145454ce325ddbe47a25d4ec3d2311933',
+    'SHIB': 'https://dexscreener.com/ethereum/0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce',
+    'LINK': 'https://dexscreener.com/ethereum/0x514910771af9ca656af840dff83e8264ecf986ca',
+    'UNI': 'https://dexscreener.com/ethereum/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+    'AAVE': 'https://dexscreener.com/ethereum/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9',
+    'ARB': 'https://dexscreener.com/arbitrum/0x912ce59144191c1204e64559fe8253a0e49e6548',
+    'OP': 'https://dexscreener.com/optimism/0x4200000000000000000000000000000000000042',
+    'MATIC': 'https://dexscreener.com/polygon/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
+    'AVAX': 'https://dexscreener.com/avalanche/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
+    'ATOM': 'https://dexscreener.com/ethereum/0x8d983cb9388eac77af0474fa441c4815500cb7bb',
+    'DOT': 'https://dexscreener.com/ethereum/0x7083609fce4d1d8dc0c979aab8c869ea2c873402',
+    'ADA': 'https://dexscreener.com/ethereum/0x3ee2200efb3400fabb9aacf31297cbdd1d435d47',
+    'XRP': 'https://dexscreener.com/ethereum/0x1d2f0da169ceb9fc7b3144628db156f3f6c60dbe',
+    'LTC': 'https://dexscreener.com/ethereum/0x4338665cbb7b2485a8855a139b75d5e34ab0db94',
+    'BONK': 'https://dexscreener.com/solana/DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263',
+    'WIF': 'https://dexscreener.com/solana/EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+    'JUP': 'https://dexscreener.com/solana/JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN',
+    'INJ': 'https://dexscreener.com/ethereum/0xe28b3b32b6c345a34ff64674606124dd5aceca30',
+    'SUI': 'https://dexscreener.com/ethereum/0x3f52b57840a0a40a72b2f35e4ba5e19a8e6e4d3d',
+    'APT': 'https://dexscreener.com/ethereum/0x3c8665472ec5af30981b06b4e0143663ebedcc1e',
+    'FTM': 'https://dexscreener.com/fantom/0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83',
+    'NEAR': 'https://dexscreener.com/ethereum/0x85f17cf997934a597031b2e18a9ab6ebd4b9f6a4',
+    'CRV': 'https://dexscreener.com/ethereum/0xd533a949740bb3306d119cc777fa900ba034cd52',
+    'MKR': 'https://dexscreener.com/ethereum/0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2',
+    'LDO': 'https://dexscreener.com/ethereum/0x5a98fcbea516cf06857215779fd812ca3bef1b32',
+    'APE': 'https://dexscreener.com/ethereum/0x4d224452801aced8b2f0aebe155379bb5d594381',
+    'SAND': 'https://dexscreener.com/ethereum/0x3845badade8e6dff049820680d1f14bd3903a5d0',
+    'MANA': 'https://dexscreener.com/ethereum/0x0f5d2fb29fb7d3cfee444a200298f468908cc942',
+    'AXS': 'https://dexscreener.com/ethereum/0xbb0e17ef65f82ab018d8edd776e8dd940327b28b',
+    'GALA': 'https://dexscreener.com/ethereum/0xd1d2eb1b1e90b638588728b4130137d262c87cae',
+    'IMX': 'https://dexscreener.com/ethereum/0xf57e7e7c23978c3caec3c3548e3d615c346e79ff',
+    'BLUR': 'https://dexscreener.com/ethereum/0x5283d291dbcf85356a21ba090e6db59121208b44',
+    'GMX': 'https://dexscreener.com/arbitrum/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a',
+    'PENDLE': 'https://dexscreener.com/ethereum/0x808507121b80c02388fad14726482e061b8da827',
+    'RUNE': 'https://dexscreener.com/ethereum/0x3155ba85d5f96b2d030a4966af206230e46849cb',
+    'FET': 'https://dexscreener.com/ethereum/0xaea46a60368a7bd060eec7df8cba43b7ef41ad85',
+    'RNDR': 'https://dexscreener.com/ethereum/0x6de037ef9ad2725eb40118bb1702ebb27e4aeb24',
+    'AGIX': 'https://dexscreener.com/ethereum/0x5b7533812759b45c2b44c19e320ba2cd2681b542',
+    'WLD': 'https://dexscreener.com/ethereum/0x163f8c2467924be0ae7b5347228cabf260318753',
+}
+
+def get_dexscreener_url(symbol: str, token_address: str = '', chain: str = '') -> str:
+    """Get DexScreener URL for a token"""
+    clean_symbol = symbol.replace('/USDT', '').replace('\\USDT', '').upper()
+
+    # If we have token address and chain, use direct link
+    if token_address and chain:
+        return f"https://dexscreener.com/{chain}/{token_address}"
+
+    # Check our mapping
+    if clean_symbol in DEXSCREENER_TOKENS:
+        return DEXSCREENER_TOKENS[clean_symbol]
+
+    # Fallback to search
+    return f"https://dexscreener.com/search?q={clean_symbol}"
+
 # Custom CSS for tooltips
 st.markdown("""
 <style>
@@ -2306,211 +2369,94 @@ Moins de trades mais meilleure qualité."""
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
-                        # Get only recent trades (last 100 max for speed)
+                        # Get trades - already sorted by time (newest last)
                         all_trades = p.get('trades', [])
-                        trades = all_trades[-100:] if len(all_trades) > 100 else all_trades
+                        total_count = len(all_trades)
 
-                        # Skip decision_logs for faster loading (trades already contain the info)
-                        activities = []
+                        col_act1, col_act2 = st.columns([3, 1])
+                        with col_act1:
+                            st.markdown(f"**📊 Activity ({total_count})**")
+                        with col_act2:
+                            show_all_act = st.checkbox("All", key=f"act_all_{pid}", value=False)
 
-                        # Get strategy config for TP/SL info
-                        strategy_config = p.get('config', {})
+                        # Get only what we need to display (reversed for newest first)
+                        if show_all_act:
+                            display_trades = list(reversed(all_trades[-50:]))  # Max 50 even for "all"
+                        else:
+                            display_trades = list(reversed(all_trades[-10:]))  # Last 10
 
-                        # Add trades with full details
-                        for t in trades:
-                            activities.append({
-                                'type': 'trade',
-                                'timestamp': t.get('timestamp', ''),
-                                'action': t.get('action', ''),
-                                'symbol': t.get('symbol', '').replace('/USDT', '').replace('\\USDT', ''),
-                                'price': t.get('price', 0),
-                                'pnl': t.get('pnl', 0),
-                                'amount': t.get('amount_usdt', 0),
-                                'quantity': t.get('quantity', 0),
-                                'reason': t.get('reason', ''),
-                                'token_address': t.get('token_address', ''),
-                                'chain': t.get('chain', ''),
-                                'dex': t.get('dex', ''),
-                                'risk_score': t.get('risk_score', 0),
-                                'market_cap': t.get('market_cap', 0),
-                                'liquidity': t.get('liquidity', 0),
-                                'fees': t.get('fees', 0),
-                                'slippage_pct': t.get('slippage_pct', 0),
-                                'take_profit': strategy_config.get('take_profit', 50),
-                                'stop_loss': strategy_config.get('stop_loss', 25),
-                            })
+                        if display_trades:
+                            strategy_config = p.get('config', {})
+                            default_tp = strategy_config.get('take_profit', 50)
+                            default_sl = strategy_config.get('stop_loss', 25)
 
-                        # Sort by timestamp (most recent first) - trades already unique
-                        activities.sort(key=lambda x: x['timestamp'], reverse=True)
-                        unique_activities = activities
-
-                        if unique_activities:
-                            total_count = len(unique_activities)
-                            col_act1, col_act2 = st.columns([3, 1])
-                            with col_act1:
-                                st.markdown(f"**📊 Activity ({total_count})**")
-                            with col_act2:
-                                show_all_act = st.checkbox("All", key=f"act_all_{pid}", value=False)
-
-                            display_activities = unique_activities if show_all_act else unique_activities[:10]
-
-                            st.markdown('<div style="max-height: 350px; overflow-y: auto;">', unsafe_allow_html=True)
-
-                            for a in display_activities:
-                                a_time = a['timestamp'][-8:] if len(a['timestamp']) > 8 else a['timestamp']
-                                a_full_time = a['timestamp'][:16] if len(a['timestamp']) > 16 else a['timestamp']
-                                a_action = a['action']
-                                a_symbol = a['symbol']
-                                a_price = a['price']
-                                a_pnl = a['pnl']
-                                a_amount = a.get('amount', 0)
-                                a_quantity = a.get('quantity', 0)
-                                a_reason = a.get('reason', '')
-                                a_type = a['type']
-                                a_token_address = a.get('token_address', '')
-                                a_chain = a.get('chain', '')
-                                a_dex = a.get('dex', '')
-                                a_risk = a.get('risk_score', 0)
-                                a_mcap = a.get('market_cap', 0)
-                                a_liq = a.get('liquidity', 0)
-                                a_fees = a.get('fees', 0)
-                                a_slip = a.get('slippage_pct', 0)
-                                a_tp = a.get('take_profit', 50)
-                                a_sl = a.get('stop_loss', 25)
+                            for t in display_trades:
+                                a_action = t.get('action', '')
+                                a_symbol = t.get('symbol', '').replace('/USDT', '').replace('\\USDT', '')
+                                a_price = t.get('price', 0)
+                                a_pnl = t.get('pnl', 0)
+                                a_amount = t.get('amount_usdt', 0)
+                                a_token_address = t.get('token_address', '')
+                                a_chain = t.get('chain', '')
+                                timestamp = t.get('timestamp', '')
+                                a_time = timestamp[11:16] if len(timestamp) > 16 else timestamp[-5:]
 
                                 # Format price
-                                if a_price >= 1000:
-                                    price_str = f"${a_price:,.0f}"
-                                elif a_price >= 1:
-                                    price_str = f"${a_price:.2f}"
+                                if a_price >= 1:
+                                    price_str = f"${a_price:.4f}"
                                 elif a_price >= 0.0001:
                                     price_str = f"${a_price:.6f}"
                                 else:
                                     price_str = f"${a_price:.10f}"
 
-                                # Calculate TP/SL prices
-                                tp_price = a_price * (1 + a_tp/100) if a_price > 0 else 0
-                                sl_price = a_price * (1 - a_sl/100) if a_price > 0 else 0
-
-                                # Determine if buy or sell action
-                                is_buy_action = 'BUY' in a_action
-                                is_sell_action = 'SELL' in a_action or 'SOLD' in a_action
+                                # Icon and colors
+                                is_buy = 'BUY' in a_action
+                                is_sell = 'SELL' in a_action or 'SOLD' in a_action
                                 is_rug = 'RUG' in a_action
 
                                 if is_rug:
-                                    bg_color = 'rgba(128,0,128,0.15)'
-                                    border_color = '#8B0000'
-                                    icon = '💀'
-                                elif is_buy_action:
-                                    bg_color = 'rgba(0,255,136,0.08)'
-                                    border_color = '#00ff88'
-                                    icon = '🟢'
-                                elif is_sell_action:
-                                    bg_color = 'rgba(255,68,68,0.08)'
-                                    border_color = '#ff4444'
-                                    icon = '🔴'
+                                    icon = "💀"
+                                elif is_buy:
+                                    icon = "🟢"
+                                elif is_sell:
+                                    icon = "🔴"
                                 else:
-                                    bg_color = 'rgba(100,100,100,0.08)'
-                                    border_color = '#888'
-                                    icon = '⚪'
+                                    icon = "⚪"
 
-                                # Amount display
-                                amount_html = ""
-                                if a_amount > 0:
-                                    if is_buy_action:
-                                        amount_html = f'<span style="color: #ffaa00; font-weight: bold;">-${a_amount:.2f}</span>'
-                                    else:
-                                        amount_html = f'<span style="color: #00ccff; font-weight: bold;">+${a_amount:.2f}</span>'
-
-                                # PNL display for sells
-                                pnl_html = ""
-                                is_sell = 'SELL' in a_action or 'SOLD' in a_action or 'RUGGED' in a_action
-                                if is_sell and a_pnl != 0:
-                                    pnl_color = '#00ff88' if a_pnl >= 0 else '#ff4444'
-                                    pnl_pct = (a_pnl / a_amount * 100) if a_amount > 0 else 0
-                                    pnl_html = f'<span style="color: {pnl_color}; font-weight: bold;">PnL: ${a_pnl:+.2f} ({pnl_pct:+.1f}%)</span>'
-
-                                # Create DexScreener link
+                                # DexScreener link
                                 if a_token_address and a_chain:
                                     dex_url = f"https://dexscreener.com/{a_chain}/{a_token_address}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: #00d4ff; font-weight: bold; text-decoration: none; font-size: 1.1rem;">{a_symbol} 🔗</a>'
                                 else:
                                     dex_url = f"https://dexscreener.com/search?q={a_symbol}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="color: white; font-weight: bold; text-decoration: none; font-size: 1.1rem;">{a_symbol}</a>'
 
-                                # Build details line
-                                details_parts = []
-                                if a_quantity > 0:
-                                    if a_quantity >= 1000000:
-                                        details_parts.append(f"Qty: {a_quantity/1e6:.2f}M")
-                                    elif a_quantity >= 1000:
-                                        details_parts.append(f"Qty: {a_quantity/1e3:.1f}K")
+                                # Build display line
+                                col1, col2, col3 = st.columns([2, 2, 1])
+                                with col1:
+                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url})")
+                                with col2:
+                                    if is_buy:
+                                        st.markdown(f"Entry: **{price_str}** | Spent: **${a_amount:.2f}**")
+                                    elif is_sell and a_pnl != 0:
+                                        pnl_color = "green" if a_pnl >= 0 else "red"
+                                        st.markdown(f"Exit: **{price_str}** | PnL: :{pnl_color}[**${a_pnl:+.2f}**]")
                                     else:
-                                        details_parts.append(f"Qty: {a_quantity:.4f}")
-                                if a_risk > 0:
-                                    risk_color = '#00ff88' if a_risk < 40 else '#ffaa00' if a_risk < 70 else '#ff4444'
-                                    details_parts.append(f'<span style="color:{risk_color}">Risk: {a_risk}/100</span>')
-                                if a_liq > 0:
-                                    details_parts.append(f"Liq: ${a_liq/1000:.1f}K")
-                                if a_mcap > 0:
-                                    details_parts.append(f"MCap: ${a_mcap/1000:.1f}K")
-                                if a_dex:
-                                    details_parts.append(f"DEX: {a_dex}")
-                                if a_fees > 0:
-                                    details_parts.append(f"Fees: ${a_fees:.2f}")
-                                if a_slip > 0:
-                                    details_parts.append(f"Slip: {a_slip:.1f}%")
-
-                                details_html = ' | '.join(details_parts) if details_parts else ''
-
-                                # TP/SL info for buys
-                                tpsl_html = ""
-                                if is_buy_action and a_price > 0:
-                                    if tp_price >= 0.0001:
-                                        tp_str = f"${tp_price:.6f}"
-                                    else:
-                                        tp_str = f"${tp_price:.10f}"
-                                    if sl_price >= 0.0001:
-                                        sl_str = f"${sl_price:.6f}"
-                                    else:
-                                        sl_str = f"${sl_price:.10f}"
-                                    tpsl_html = f'<span style="color: #00ff88;">TP: {tp_str} (+{a_tp}%)</span> | <span style="color: #ff4444;">SL: {sl_str} (-{a_sl}%)</span>'
-
-                                # Build the activity card HTML
-                                st.markdown(f'''
-                                <div style="background: {bg_color}; padding: 10px 14px; border-radius: 10px; margin: 6px 0; border-left: 4px solid {border_color};">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                                        <div>
-                                            <span style="color: {border_color}; font-weight: bold; font-size: 0.9rem;">{icon} {a_action}</span>
-                                            {symbol_html}
-                                        </div>
-                                        <div style="text-align: right;">
-                                            <div style="color: #888; font-size: 0.7rem;">{a_full_time}</div>
-                                            {amount_html}
-                                        </div>
-                                    </div>
-                                    <div style="margin-top: 6px; padding: 6px 8px; background: rgba(0,0,0,0.2); border-radius: 6px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                                            <span style="color: #aaa;">Entry: <b style="color: white;">{price_str}</b></span>
-                                            {pnl_html if pnl_html else ''}
-                                        </div>
-                                        {f'<div style="margin-top: 4px; font-size: 0.75rem; color: #888;">{tpsl_html}</div>' if tpsl_html else ''}
-                                        {f'<div style="margin-top: 4px; font-size: 0.7rem; color: #666;">{details_html}</div>' if details_html else ''}
-                                    </div>
-                                    {f'<div style="color: #777; font-size: 0.7rem; margin-top: 6px; font-style: italic;">{a_reason}</div>' if a_reason else ''}
-                                </div>
-                                ''', unsafe_allow_html=True)
-
-                            st.markdown('</div>', unsafe_allow_html=True)
+                                        st.markdown(f"Price: **{price_str}**")
+                                with col3:
+                                    st.caption(a_time)
 
                             if not show_all_act and total_count > 10:
-                                st.caption(f"Showing 10 of {total_count} activities")
+                                st.caption(f"Showing 10 of {total_count} trades")
                         else:
-                            st.info("No activity yet")
+                            st.info("No trades yet")
 
                     # Show positions detail when there are open positions
                     if positions_count > 0:
                         with st.expander(f"📊 Open Positions ({positions_count})", expanded=False):
+                            # Get TP/SL from strategy config
+                            strategy_config = p.get('config', {})
+                            tp_pct = strategy_config.get('take_profit', 50)
+                            sl_pct = strategy_config.get('stop_loss', 25)
+
                             for pos_detail in pf_value['positions_details']:
                                 pos_symbol = pos_detail['symbol'].replace('/USDT', '').replace('\\USDT', '')
                                 pos_qty = pos_detail['quantity']
@@ -2519,43 +2465,100 @@ Moins de trades mais meilleure qualité."""
                                 pos_value = pos_detail['current_value']
                                 pos_pnl = pos_detail['pnl']
                                 pos_pnl_pct = pos_detail['pnl_pct']
-                                pos_color = '#00ff88' if pos_pnl >= 0 else '#ff4444'
                                 pos_token_address = pos_detail.get('token_address', '')
                                 pos_chain = pos_detail.get('chain', '')
 
-                                # Create DexScreener link
-                                if pos_token_address and pos_chain:
-                                    dex_url = f"https://dexscreener.com/{pos_chain}/{pos_token_address}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="font-size: 1.1rem; font-weight: bold; color: #00d4ff; text-decoration: none;">{pos_symbol} 🔗</a>'
-                                else:
-                                    dex_url = f"https://dexscreener.com/search?q={pos_symbol}"
-                                    symbol_html = f'<a href="{dex_url}" target="_blank" style="font-size: 1.1rem; font-weight: bold; color: white; text-decoration: none;">{pos_symbol}</a>'
+                                # Calculate TP and SL prices
+                                tp_price = pos_entry * (1 + tp_pct / 100)
+                                sl_price = pos_entry * (1 - sl_pct / 100)
 
-                                st.markdown(f"""
-                                <div style="background: rgba(255,255,255,0.05); padding: 0.8rem; border-radius: 8px; margin: 0.5rem 0; border-left: 3px solid {pos_color};">
-                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                        <div>
-                                            {symbol_html}
-                                            <span style="color: #888; margin-left: 0.5rem; font-size: 0.8rem;">{pos_qty:.6f} tokens</span>
-                                        </div>
-                                        <div style="text-align: right;">
-                                            <span style="color: {pos_color}; font-size: 1.1rem; font-weight: bold;">{pos_pnl_pct:+.2f}%</span>
-                                            <span style="color: {pos_color}; margin-left: 0.5rem;">${pos_pnl:+.2f}</span>
-                                        </div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: #888;">
-                                        <span>Entry: ${pos_entry:,.4f}</span>
-                                        <span>Current: ${pos_current:,.4f}</span>
-                                        <span>Value: ${pos_value:,.2f}</span>
-                                    </div>
-                                </div>
-                                """, unsafe_allow_html=True)
+                                # DexScreener link
+                                dex_url = get_dexscreener_url(pos_symbol, pos_token_address, pos_chain)
+
+                                # Header with symbol and PnL
+                                pnl_color = "green" if pos_pnl >= 0 else "red"
+                                st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | Qty: {pos_qty:.4f} | Value: ${pos_value:.2f}")
+
+                                # Create mini price chart with horizontal lines
+                                fig = go.Figure()
+
+                                # Simulated price line (from entry to current)
+                                fig.add_trace(go.Scatter(
+                                    x=[0, 1], y=[pos_entry, pos_current],
+                                    mode='lines+markers',
+                                    line=dict(color='#00d4ff', width=3),
+                                    marker=dict(size=[8, 12], color=['#888', '#00d4ff']),
+                                    name='Price',
+                                    hovertemplate='%{y:.8f}<extra></extra>'
+                                ))
+
+                                # Entry line (horizontal)
+                                fig.add_hline(y=pos_entry, line_dash="dash", line_color="#888", line_width=2,
+                                             annotation_text=f"Entry: ${pos_entry:.8f}", annotation_position="left")
+
+                                # Take Profit line (horizontal)
+                                fig.add_hline(y=tp_price, line_dash="solid", line_color="#00ff88", line_width=2,
+                                             annotation_text=f"TP +{tp_pct}%", annotation_position="right")
+
+                                # Stop Loss line (horizontal)
+                                fig.add_hline(y=sl_price, line_dash="solid", line_color="#ff4444", line_width=2,
+                                             annotation_text=f"SL -{sl_pct}%", annotation_position="right")
+
+                                # Current price marker
+                                fig.add_trace(go.Scatter(
+                                    x=[1], y=[pos_current],
+                                    mode='markers',
+                                    marker=dict(size=16, color='#00d4ff', symbol='diamond', line=dict(width=2, color='white')),
+                                    name=f'Current: ${pos_current:.8f}',
+                                    hovertemplate=f'Current: ${pos_current:.8f}<extra></extra>'
+                                ))
+
+                                # Layout
+                                fig.update_layout(
+                                    height=150,
+                                    margin=dict(l=10, r=10, t=10, b=10),
+                                    paper_bgcolor='rgba(0,0,0,0)',
+                                    plot_bgcolor='rgba(0,0,0,0.2)',
+                                    showlegend=False,
+                                    xaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
+                                    yaxis=dict(showticklabels=True, showgrid=True, gridcolor='rgba(255,255,255,0.1)',
+                                              tickformat='.8f', side='right'),
+                                )
+
+                                st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
+
+def load_settings() -> Dict:
+    """Load settings from file"""
+    try:
+        with open("data/settings.json", 'r') as f:
+            return json.load(f)
+    except:
+        return {
+            "binance_api_key": "",
+            "binance_secret": "",
+            "binance_testnet": True,
+            "etherscan_api_key": "",
+            "helius_api_key": "",
+            "telegram_bot_token": "",
+            "telegram_chat_id": "",
+            "alert_types": ["Pump Detected", "Position Closed"],
+            "refresh_rate": 10
+        }
+
+def save_settings(settings: Dict):
+    """Save settings to file"""
+    os.makedirs("data", exist_ok=True)
+    with open("data/settings.json", 'w') as f:
+        json.dump(settings, f, indent=2)
 
 def render_settings():
     """Settings"""
     header("⚙️ Settings")
+
+    # Load current settings
+    settings = load_settings()
 
     tab1, tab2, tab3 = st.tabs(["🔑 API Keys", "🔔 Notifications", "🎨 Preferences"])
 
@@ -2563,39 +2566,76 @@ def render_settings():
         st.subheader("Exchange API")
         col1, col2 = st.columns(2)
         with col1:
-            st.text_input("Binance API Key", type="password", placeholder="Enter API key...")
+            binance_key = st.text_input("Binance API Key", value=settings.get("binance_api_key", ""), type="password", placeholder="Enter API key...")
         with col2:
-            st.text_input("Binance Secret", type="password", placeholder="Enter secret...")
+            binance_secret = st.text_input("Binance Secret", value=settings.get("binance_secret", ""), type="password", placeholder="Enter secret...")
 
-        st.checkbox("Testnet Mode", value=True)
+        testnet = st.checkbox("Testnet Mode", value=settings.get("binance_testnet", True))
 
         st.divider()
 
-        st.subheader("Blockchain APIs")
-        st.text_input("Etherscan API Key", type="password")
-        st.text_input("Helius API Key (Solana)", type="password")
+        st.subheader("Blockchain APIs (Whale Tracking)")
+        st.caption("Get free API keys:")
+        st.markdown("""
+        - **Etherscan**: [etherscan.io/apis](https://etherscan.io/apis) (100k calls/day free) - Works for ETH + BSC
+        - **Helius (Solana)**: [helius.dev](https://helius.dev) (100k credits/month free)
+        """)
+
+        col1, col2 = st.columns(2)
+        with col1:
+            etherscan_key = st.text_input("Etherscan API Key", value=settings.get("etherscan_api_key", ""), type="password", placeholder="For ETH + BSC whale tracking")
+        with col2:
+            helius_key = st.text_input("Helius API Key (Solana)", value=settings.get("helius_api_key", ""), type="password", placeholder="For SOL whale tracking")
+
+        # Show status
+        st.divider()
+        st.subheader("API Status")
+        col1, col2 = st.columns(2)
+        with col1:
+            if settings.get("etherscan_api_key"):
+                st.success("Etherscan (ETH+BSC): Connected")
+            else:
+                st.warning("Etherscan: Not configured")
+        with col2:
+            if settings.get("helius_api_key"):
+                st.success("Helius (Solana): Connected")
+            else:
+                st.warning("Helius: Not configured")
 
     with tab2:
         st.subheader("Telegram Alerts")
         col1, col2 = st.columns(2)
         with col1:
-            st.text_input("Bot Token", type="password")
+            telegram_token = st.text_input("Bot Token", value=settings.get("telegram_bot_token", ""), type="password")
         with col2:
-            st.text_input("Chat ID")
+            telegram_chat = st.text_input("Chat ID", value=settings.get("telegram_chat_id", ""))
 
-        st.multiselect("Alert Types", [
+        alert_types = st.multiselect("Alert Types", [
             "Pump Detected", "Dump Detected", "Position Opened",
-            "Position Closed", "Daily Summary"
-        ], default=["Pump Detected", "Position Closed"])
+            "Position Closed", "Daily Summary", "Whale Alert"
+        ], default=settings.get("alert_types", ["Pump Detected", "Position Closed"]))
 
     with tab3:
         st.subheader("Display")
         st.selectbox("Theme", ["Dark (Default)", "Degen Rainbow"])
         st.checkbox("Sound Alerts", value=False)
-        st.slider("Refresh Rate (seconds)", 5, 60, 10)
+        refresh_rate = st.slider("Refresh Rate (seconds)", 5, 60, settings.get("refresh_rate", 10))
 
     if st.button("💾 Save Settings", type="primary"):
+        new_settings = {
+            "binance_api_key": binance_key,
+            "binance_secret": binance_secret,
+            "binance_testnet": testnet,
+            "etherscan_api_key": etherscan_key,
+            "helius_api_key": helius_key,
+            "telegram_bot_token": telegram_token,
+            "telegram_chat_id": telegram_chat,
+            "alert_types": alert_types,
+            "refresh_rate": refresh_rate
+        }
+        save_settings(new_settings)
         st.success("Settings saved!")
+        st.rerun()
 
 
 def render_debug():

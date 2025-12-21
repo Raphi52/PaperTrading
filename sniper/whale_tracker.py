@@ -247,6 +247,21 @@ WHALE_WALLETS = {
     }
 }
 
+def load_api_keys() -> Dict:
+    """Load API keys from settings.json"""
+    try:
+        with open("data/settings.json", 'r') as f:
+            settings = json.load(f)
+            etherscan_key = settings.get('etherscan_api_key', '')
+            return {
+                'etherscan': etherscan_key,
+                'bscscan': etherscan_key,  # BSCScan uses same Etherscan key
+                'helius': settings.get('helius_api_key', '')
+            }
+    except:
+        return {'etherscan': '', 'bscscan': '', 'helius': ''}
+
+
 class WhaleTracker:
     """Track whale transactions and generate copy-trade signals"""
 
@@ -254,6 +269,7 @@ class WhaleTracker:
         self.config = config or {}
         self.last_transactions = {}
         self.cache_file = "data/whale_cache.json"
+        self.api_keys = load_api_keys()
         self._load_cache()
 
     def _load_cache(self):
@@ -796,10 +812,265 @@ class WhaleTracker:
         chain = whale.get('chain', 'ethereum')
         wallet = whale['wallet']
 
-        # For now, return empty - would need API keys for real tracking
-        # In production: use Etherscan, BSCScan, Solscan APIs
+        # Skip simulated wallets
+        if wallet.endswith('_simulated'):
+            return signals
+
+        try:
+            if chain == 'ethereum':
+                signals = self._track_ethereum_wallet(whale_id, whale)
+            elif chain == 'bsc':
+                signals = self._track_bsc_wallet(whale_id, whale)
+            elif chain == 'solana':
+                signals = self._track_solana_wallet(whale_id, whale)
+        except Exception as e:
+            print(f"Error tracking {whale['name']}: {e}")
 
         return signals
+
+    def _track_ethereum_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """Track Ethereum wallet via Etherscan API v2"""
+        signals = []
+        api_key = self.api_keys.get('etherscan', '')
+
+        if not api_key:
+            return signals
+
+        wallet = whale['wallet']
+        whale_name = whale['name']
+
+        try:
+            # Get recent token transfers - Etherscan API v2
+            url = f"https://api.etherscan.io/v2/api?chainid=1&module=account&action=tokentx&address={wallet}&page=1&offset=20&sort=desc&apikey={api_key}"
+            response = requests.get(url, timeout=10)
+            data = response.json()
+
+            if data.get('status') == '1' and data.get('result'):
+                for tx in data['result'][:10]:
+                    # Check if this is a new transaction
+                    tx_hash = tx.get('hash')
+                    cache_key = f"{whale_id}_{tx_hash}"
+
+                    if cache_key in self.last_transactions:
+                        continue
+
+                    # Determine if BUY or SELL
+                    is_incoming = tx.get('to', '').lower() == wallet.lower()
+                    action = 'BUY' if is_incoming else 'SELL'
+
+                    # Get token info
+                    token_symbol = tx.get('tokenSymbol', 'UNKNOWN')
+                    token_value = float(tx.get('value', 0)) / (10 ** int(tx.get('tokenDecimal', 18)))
+
+                    # Skip small transactions (< $100 equivalent)
+                    if token_value < 0.01:
+                        continue
+
+                    # Map to trading pair if known
+                    symbol = self._map_token_to_pair(token_symbol)
+                    if not symbol:
+                        continue
+
+                    signals.append({
+                        'action': action,
+                        'symbol': symbol,
+                        'whale': whale_name,
+                        'whale_id': whale_id,
+                        'confidence': 75,
+                        'reason': f"{whale_name} {action} {token_symbol}",
+                        'tx_hash': tx_hash,
+                        'chain': 'ethereum'
+                    })
+
+                    # Cache this transaction
+                    self.last_transactions[cache_key] = {
+                        'timestamp': datetime.now().isoformat(),
+                        'action': action
+                    }
+
+                self._save_cache()
+
+        except Exception as e:
+            print(f"Etherscan API error: {e}")
+
+        return signals
+
+    def _track_bsc_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """Track BSC wallet via Etherscan API v2 (BSC chain)"""
+        signals = []
+        api_key = self.api_keys.get('bscscan', '')
+
+        if not api_key:
+            return signals
+
+        wallet = whale['wallet']
+        whale_name = whale['name']
+
+        try:
+            # Etherscan API v2 with chainid=56 for BSC
+            url = f"https://api.etherscan.io/v2/api?chainid=56&module=account&action=tokentx&address={wallet}&page=1&offset=20&sort=desc&apikey={api_key}"
+            response = requests.get(url, timeout=10)
+            data = response.json()
+
+            if data.get('status') == '1' and data.get('result'):
+                for tx in data['result'][:10]:
+                    tx_hash = tx.get('hash')
+                    cache_key = f"{whale_id}_{tx_hash}"
+
+                    if cache_key in self.last_transactions:
+                        continue
+
+                    is_incoming = tx.get('to', '').lower() == wallet.lower()
+                    action = 'BUY' if is_incoming else 'SELL'
+
+                    token_symbol = tx.get('tokenSymbol', 'UNKNOWN')
+                    symbol = self._map_token_to_pair(token_symbol)
+                    if not symbol:
+                        continue
+
+                    signals.append({
+                        'action': action,
+                        'symbol': symbol,
+                        'whale': whale_name,
+                        'whale_id': whale_id,
+                        'confidence': 70,
+                        'reason': f"{whale_name} {action} {token_symbol} on BSC",
+                        'tx_hash': tx_hash,
+                        'chain': 'bsc'
+                    })
+
+                    self.last_transactions[cache_key] = {
+                        'timestamp': datetime.now().isoformat(),
+                        'action': action
+                    }
+
+                self._save_cache()
+
+        except Exception as e:
+            print(f"BSCScan API error: {e}")
+
+        return signals
+
+    def _track_solana_wallet(self, whale_id: str, whale: Dict) -> List[Dict]:
+        """Track Solana wallet via Helius API"""
+        signals = []
+        api_key = self.api_keys.get('helius', '')
+
+        if not api_key:
+            return signals
+
+        wallet = whale['wallet']
+        whale_name = whale['name']
+
+        try:
+            # Helius enhanced transactions API
+            url = f"https://api.helius.xyz/v0/addresses/{wallet}/transactions?api-key={api_key}&limit=20"
+            response = requests.get(url, timeout=10)
+            transactions = response.json()
+
+            if isinstance(transactions, list):
+                for tx in transactions[:10]:
+                    tx_sig = tx.get('signature', '')
+                    cache_key = f"{whale_id}_{tx_sig}"
+
+                    if cache_key in self.last_transactions:
+                        continue
+
+                    # Check for token transfers
+                    token_transfers = tx.get('tokenTransfers', [])
+                    for transfer in token_transfers:
+                        # Check if wallet received or sent
+                        is_incoming = transfer.get('toUserAccount') == wallet
+                        action = 'BUY' if is_incoming else 'SELL'
+
+                        token_symbol = transfer.get('tokenStandard', 'SPL')
+                        mint = transfer.get('mint', '')
+
+                        # Try to get token symbol from known mints
+                        symbol = self._solana_mint_to_pair(mint)
+                        if not symbol:
+                            continue
+
+                        signals.append({
+                            'action': action,
+                            'symbol': symbol,
+                            'whale': whale_name,
+                            'whale_id': whale_id,
+                            'confidence': 70,
+                            'reason': f"{whale_name} {action} on Solana",
+                            'tx_hash': tx_sig,
+                            'chain': 'solana'
+                        })
+
+                        self.last_transactions[cache_key] = {
+                            'timestamp': datetime.now().isoformat(),
+                            'action': action
+                        }
+
+                self._save_cache()
+
+        except Exception as e:
+            print(f"Helius API error: {e}")
+
+        return signals
+
+    def _map_token_to_pair(self, token_symbol: str) -> Optional[str]:
+        """Map token symbol to Binance trading pair"""
+        # Known mappings
+        mappings = {
+            'WETH': 'ETH/USDT',
+            'ETH': 'ETH/USDT',
+            'WBTC': 'BTC/USDT',
+            'BTC': 'BTC/USDT',
+            'USDC': None,  # Stablecoin
+            'USDT': None,  # Stablecoin
+            'DAI': None,   # Stablecoin
+            'LINK': 'LINK/USDT',
+            'UNI': 'UNI/USDT',
+            'AAVE': 'AAVE/USDT',
+            'CRV': 'CRV/USDT',
+            'MKR': 'MKR/USDT',
+            'SNX': 'SNX/USDT',
+            'COMP': 'COMP/USDT',
+            'SUSHI': 'SUSHI/USDT',
+            'YFI': 'YFI/USDT',
+            'PEPE': 'PEPE/USDT',
+            'SHIB': 'SHIB/USDT',
+            'DOGE': 'DOGE/USDT',
+            'ARB': 'ARB/USDT',
+            'OP': 'OP/USDT',
+            'MATIC': 'MATIC/USDT',
+            'LDO': 'LDO/USDT',
+            'APE': 'APE/USDT',
+            'BLUR': 'BLUR/USDT',
+            'ENS': 'ENS/USDT',
+            'FXS': 'FXS/USDT',
+            'RPL': 'RPL/USDT',
+            'GMX': 'GMX/USDT',
+            'RDNT': 'RDNT/USDT',
+            'PENDLE': 'PENDLE/USDT',
+            'BNB': 'BNB/USDT',
+            'CAKE': 'CAKE/USDT',
+            'XVS': 'XVS/USDT',
+        }
+        return mappings.get(token_symbol.upper())
+
+    def _solana_mint_to_pair(self, mint: str) -> Optional[str]:
+        """Map Solana mint address to trading pair"""
+        # Known Solana token mints
+        known_mints = {
+            'So11111111111111111111111111111111111111112': 'SOL/USDT',  # Wrapped SOL
+            'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v': None,  # USDC
+            'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB': None,  # USDT
+            'JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN': 'JUP/USDT',  # Jupiter
+            'DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263': 'BONK/USDT',  # Bonk
+            'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm': 'WIF/USDT',  # dogwifhat
+            '7vfCXTUXx5WJV5JADk17DUJ4ksgau7utNKj4b963voxs': 'ORCA/USDT',  # Orca
+            'MNDEFzGvMt87ueuHvVU9VcTqsAP5b3fTGPsHuuPA5ey': 'MNDE/USDT',  # Marinade
+            'RLBxxFkseAZ4RgJH3Sqn8jXxhmGoz9jWxDNJMh8pL7a': 'RLBUSDT',  # Raydium
+            'HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3': 'PYTH/USDT',  # Pyth
+        }
+        return known_mints.get(mint)
 
 
 # Whale-based strategies
