@@ -647,11 +647,19 @@ def get_funding_and_oi(symbol: str) -> dict:
     }
 
 
+def safe_print(text: str):
+    """Print that handles Unicode on Windows"""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        print(text.encode('ascii', 'replace').decode('ascii'))
+
+
 def log(message: str):
     """Log to console and file"""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     log_line = f"[{timestamp}] {message}"
-    print(log_line)
+    safe_print(log_line)
 
     try:
         os.makedirs("data", exist_ok=True)
@@ -2515,15 +2523,15 @@ def run_whale_engine(portfolios: dict) -> list:
 
 def main():
     """Main bot loop - All-in-one trading engine"""
-    print("\n" + "=" * 60)
-    print("  🚀 TRADING BOT - FULL DEGEN EDITION")
-    print("  Dashboard: http://localhost:8501")
-    print("  Ctrl+C to stop")
-    print("=" * 60)
-    print("  Strategies: Conservative | Aggressive | RSI | Confluence")
-    print("  Degen: Scalping | Momentum | Hybrid | Full Degen")
-    print("  Sniper: Safe | Degen | YOLO (New Token Hunter)")
-    print("=" * 60 + "\n")
+    safe_print("\n" + "=" * 60)
+    safe_print("  TRADING BOT - FULL DEGEN EDITION")
+    safe_print("  Dashboard: http://localhost:8501")
+    safe_print("  Ctrl+C to stop")
+    safe_print("=" * 60)
+    safe_print("  Strategies: Conservative | Aggressive | RSI | Confluence")
+    safe_print("  Degen: Scalping | Momentum | Hybrid | Full Degen")
+    safe_print("  Sniper: Safe | Degen | YOLO (New Token Hunter)")
+    safe_print("=" * 60 + "\n")
 
     # Start dashboard
     start_dashboard()
@@ -2541,14 +2549,14 @@ def main():
 
     log(f"Loaded {len(portfolios)} portfolios ({classic_count} classic, {sniper_count} sniper)")
     for pid, p in portfolios.items():
-        status = "✅" if p.get('active', True) else "⏸️"
+        status = "[ON]" if p.get('active', True) else "[OFF]"
         strategy = p.get('strategy_id', 'manual')
-        is_sniper = "🎯" if STRATEGIES.get(strategy, {}).get('use_sniper') else ""
+        is_sniper = "[SNIPE]" if STRATEGIES.get(strategy, {}).get('use_sniper') else ""
         log(f"  {status} {is_sniper} {p['name']} [{strategy}]")
 
-    print("=" * 60)
+    safe_print("=" * 60)
     log(f"Starting unified bot loop (scan every {SCAN_INTERVAL}s)...")
-    print("=" * 60)
+    safe_print("=" * 60)
 
     scan_count = 0
     sniper_tokens_seen = set()

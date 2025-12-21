@@ -62019,3 +62019,46 @@
 [2025-12-21 09:27:49]   🆕 Pusheen | $0.00002143 | MC: $0 | Risk: 100/100 | pumpfun
 [2025-12-21 09:27:49]   🆕 Flow | $0.00008083 | MC: $156,642 | Risk: 20/100 | uniswap
 [2025-12-21 09:27:49] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 09:29:47] 🐋 Checking whale signals...
+[2025-12-21 09:30:39] 💾 Saved 17 trades
+[2025-12-21 09:30:39] 📈 Classic: 17 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 2
+[2025-12-21 09:30:40] 📊 Portfolio history recorded
+[2025-12-21 09:30:40] ⏳ Next scan in 60s...
+[2025-12-21 09:31:40] 
+==================== SCAN #130 ====================
+[2025-12-21 09:31:40] 📊 Scanning existing cryptos...
+[2025-12-21 09:31:40] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 09:31:43]   BTC/USDT [1h]: $88,656.72 | RSI 63.7 | HOLD
+[2025-12-21 09:31:46]   BTC/USDT [5m]: $88,656.71 | RSI 70.4 | SELL
+[2025-12-21 09:31:49]   BTC/USDT [4h]: $88,656.72 | RSI 77.2 | SELL
+[2025-12-21 09:31:52]   BTC/USDT [15m]: $88,656.72 | RSI 73.2 | SELL
+[2025-12-21 09:31:55]   ETH/USDT [1h]: $2,995.29 | RSI 63.6 | HOLD
+[2025-12-21 09:31:58]   ETH/USDT [5m]: $2,995.31 | RSI 68.2 | SELL
+[2025-12-21 09:32:01]   ETH/USDT [4h]: $2,995.31 | RSI 80.0 | SELL
+[2025-12-21 09:32:04]   ETH/USDT [15m]: $2,996.36 | RSI 82.2 | SELL
+[2025-12-21 09:32:07]   SOL/USDT [1h]: $125.94 | RSI 48.5 | HOLD
+[2025-12-21 09:32:09]   SOL/USDT [5m]: $125.98 | RSI 71.0 | SELL
+[2025-12-21 09:32:11]   SOL/USDT [4h]: $125.98 | RSI 78.0 | STRONG_SELL
+[2025-12-21 09:32:13]   SOL/USDT [15m]: $125.99 | RSI 65.3 | SELL
+[2025-12-21 09:32:15]   AVAX/USDT [1h]: $12.28 | RSI 50.8 | HOLD
+[2025-12-21 09:32:18]   AVAX/USDT [5m]: $12.28 | RSI 75.0 | SELL
+[2025-12-21 09:32:20]   AVAX/USDT [4h]: $12.28 | RSI 74.8 | STRONG_SELL
+[2025-12-21 09:32:22]   AVAX/USDT [15m]: $12.30 | RSI 74.2 | SELL
+[2025-12-21 09:32:24]   LINK/USDT [1h]: $12.62 | RSI 53.5 | HOLD
+[2025-12-21 09:32:26]   LINK/USDT [5m]: $12.62 | RSI 62.9 | HOLD
+[2025-12-21 09:32:28]   LINK/USDT [4h]: $12.62 | RSI 70.4 | STRONG_SELL
+[2025-12-21 09:32:30]   LINK/USDT [15m]: $12.62 | RSI 70.8 | SELL
+[2025-12-21 09:32:32]   AAVE/USDT [1h]: $178.76 | RSI 32.9 | BUY
+[2025-12-21 09:32:34]   AAVE/USDT [4h]: $178.76 | RSI 50.9 | HOLD
+[2025-12-21 09:32:36]   AAVE/USDT [5m]: $178.76 | RSI 66.8 | SELL
+[2025-12-21 09:32:38]   AAVE/USDT [15m]: $178.76 | RSI 66.0 | SELL
+[2025-12-21 09:32:40]   UNI/USDT [1h]: $6.38 | RSI 62.1 | HOLD
+[2025-12-21 09:32:42]   UNI/USDT [5m]: $6.37 | RSI 56.7 | HOLD
+[2025-12-21 09:32:43] 
+🛑 Bot stopped by user
+[2025-12-21 09:32:47] Starting unified dashboard on port 8501...
+[2025-12-21 09:32:47] Dashboard started: http://localhost:8501
+[2025-12-21 09:32:47] Features: Dashboard | Degen Mode | Scanner | Portfolios | Settings
+[2025-12-21 09:32:49] Browser opened automatically
+[2025-12-21 09:32:49] Error loading portfolios: Expecting ',' delimiter: line 13255 column 10 (char 400397)
+[2025-12-21 09:32:49] No portfolios found! Run the dashboard first to create portfolios.
