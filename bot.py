@@ -739,8 +739,42 @@ def load_portfolios() -> dict:
     return {}, 0
 
 
+LOCK_FILE = "data/portfolios.lock"
+
+def acquire_lock(timeout=5):
+    """Acquire file lock with timeout"""
+    start = time.time()
+    while os.path.exists(LOCK_FILE):
+        if time.time() - start > timeout:
+            # Lock is stale, remove it
+            try:
+                os.remove(LOCK_FILE)
+            except:
+                pass
+            break
+        time.sleep(0.1)
+    try:
+        with open(LOCK_FILE, 'w') as f:
+            f.write(str(os.getpid()))
+        return True
+    except:
+        return False
+
+def release_lock():
+    """Release file lock"""
+    try:
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
+    except:
+        pass
+
+
 def save_portfolios(portfolios: dict, counter: int):
-    """Save portfolios - PROTECTION ABSOLUE"""
+    """Save portfolios - PROTECTION ABSOLUE with file locking"""
+    if not acquire_lock():
+        log("Could not acquire lock for saving portfolios")
+        return portfolios, counter
+
     try:
         os.makedirs("data", exist_ok=True)
         new_count = len(portfolios)
@@ -756,16 +790,30 @@ def save_portfolios(portfolios: dict, counter: int):
                         backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
                         with open(backup_file, 'w', encoding='utf-8') as bf:
                             json.dump(existing, bf, indent=2, default=str)
-                        log(f"🚫 BLOQUÉ! {existing_count} -> {new_count}")
+                        log(f"BLOCKED! {existing_count} -> {new_count}")
+                        release_lock()
                         return existing.get('portfolios', {}), existing.get('counter', 0)
             except:
+                release_lock()
                 return portfolios, counter  # En cas d'erreur, ne pas risquer
 
         data = {'portfolios': portfolios, 'counter': counter}
-        with open(PORTFOLIOS_FILE, 'w', encoding='utf-8') as f:
+
+        # Write to temp file first, then rename (atomic operation)
+        temp_file = PORTFOLIOS_FILE + '.tmp'
+        with open(temp_file, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, default=str)
+
+        # Atomic rename
+        if os.path.exists(PORTFOLIOS_FILE):
+            os.replace(temp_file, PORTFOLIOS_FILE)
+        else:
+            os.rename(temp_file, PORTFOLIOS_FILE)
+
     except Exception as e:
         log(f"Error saving portfolios: {e}")
+    finally:
+        release_lock()
 
 
 def calculate_indicators(df: pd.DataFrame) -> dict:
@@ -777,13 +825,16 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     lows = df['low']
     volumes = df['volume']
 
-    # RSI
+    # RSI (with division by zero protection)
     delta = closes.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
     loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / loss
+    # Protect against division by zero: if loss is 0, RSI = 100 (max overbought)
+    loss_safe = loss.replace(0, 0.0001)
+    rs = gain / loss_safe
     rsi = 100 - (100 / (1 + rs))
-    indicators['rsi'] = rsi.iloc[-1]
+    rsi_values = rsi.fillna(50)  # Fill NaN with neutral 50
+    indicators['rsi'] = rsi_values.iloc[-1]
 
     # EMAs (multiple periods)
     indicators['ema_9'] = closes.ewm(span=9).mean().iloc[-1]
@@ -1113,6 +1164,13 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
         if amount_usdt is None:
             allocation = portfolio['config'].get('allocation_percent', 10)
             amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
+
+            # Apply Martingale multiplier if set
+            martingale_mult = portfolio.pop('_martingale_multiplier', None)
+            martingale_level = portfolio.pop('_martingale_level', 0)
+            if martingale_mult and martingale_level > 0:
+                amount_usdt = amount_usdt * (martingale_mult ** martingale_level)
+                amount_usdt = min(amount_usdt, portfolio['balance']['USDT'] * 0.5)  # Cap at 50% of balance
 
         if portfolio['balance']['USDT'] >= amount_usdt and amount_usdt > 10:
             qty = amount_usdt / price

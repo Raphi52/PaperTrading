@@ -159,33 +159,80 @@ def load_portfolios() -> Dict:
     return {"portfolios": {}, "counter": 0}
 
 
+# ============ FILE LOCKING FOR RACE CONDITION PROTECTION ============
+LOCK_FILE = "data/portfolios.lock"
+
+def acquire_lock(timeout=5):
+    """Acquire file lock with timeout"""
+    start = time.time()
+    while os.path.exists(LOCK_FILE):
+        if time.time() - start > timeout:
+            # Lock is stale, remove it
+            try:
+                os.remove(LOCK_FILE)
+            except:
+                pass
+            break
+        time.sleep(0.1)
+    try:
+        with open(LOCK_FILE, 'w') as f:
+            f.write(str(os.getpid()))
+        return True
+    except:
+        return False
+
+def release_lock():
+    """Release file lock"""
+    try:
+        if os.path.exists(LOCK_FILE):
+            os.remove(LOCK_FILE)
+    except:
+        pass
+
+
 def save_portfolios(data: Dict):
-    """Sauvegarde les portfolios - PROTECTION ABSOLUE"""
-    os.makedirs("data", exist_ok=True)
-    new_count = len(data.get('portfolios', {}))
+    """Sauvegarde les portfolios - PROTECTION ABSOLUE with file locking"""
+    if not acquire_lock():
+        print("[WARN] Could not acquire lock for saving portfolios")
+        return
 
-    # PROTECTION ABSOLUE: JAMAIS sauvegarder si moins de 50 portfolios et le fichier en a plus
-    if os.path.exists("data/portfolios.json"):
-        try:
-            with open("data/portfolios.json", 'r', encoding='utf-8') as f:
-                existing = json.load(f)
-                existing_count = len(existing.get('portfolios', {}))
+    try:
+        os.makedirs("data", exist_ok=True)
+        new_count = len(data.get('portfolios', {}))
 
-                # Si on perdrait des portfolios, BLOQUER
-                if existing_count > new_count:
-                    backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
-                    with open(backup_file, 'w', encoding='utf-8') as bf:
-                        json.dump(existing, bf, indent=2, default=str)
-                    print(f"🚫 BLOQUÉ! Tentative d'écraser {existing_count} portfolios avec {new_count}")
-                    print(f"   Backup sauvé: {backup_file}")
-                    return  # NE PAS SAUVEGARDER
-        except Exception as e:
-            print(f"Erreur protection save: {e}")
-            return  # En cas d'erreur, ne pas risquer
+        # PROTECTION ABSOLUE: JAMAIS sauvegarder si moins de 50 portfolios et le fichier en a plus
+        if os.path.exists("data/portfolios.json"):
+            try:
+                with open("data/portfolios.json", 'r', encoding='utf-8') as f:
+                    existing = json.load(f)
+                    existing_count = len(existing.get('portfolios', {}))
 
-    with open("data/portfolios.json", 'w', encoding='utf-8') as f:
-        json.dump(data, f, indent=2, default=str)
-    print(f"[OK] Sauvegarde {new_count} portfolios")
+                    # Si on perdrait des portfolios, BLOQUER
+                    if existing_count > new_count:
+                        backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
+                        with open(backup_file, 'w', encoding='utf-8') as bf:
+                            json.dump(existing, bf, indent=2, default=str)
+                        print(f"[BLOCKED] Tentative d'ecraser {existing_count} portfolios avec {new_count}")
+                        print(f"   Backup sauve: {backup_file}")
+                        return  # NE PAS SAUVEGARDER
+            except Exception as e:
+                print(f"Erreur protection save: {e}")
+                return  # En cas d'erreur, ne pas risquer
+
+        # Write to temp file first, then rename (atomic operation)
+        temp_file = "data/portfolios.json.tmp"
+        with open(temp_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2, default=str)
+
+        # Atomic rename
+        if os.path.exists("data/portfolios.json"):
+            os.replace(temp_file, "data/portfolios.json")
+        else:
+            os.rename(temp_file, "data/portfolios.json")
+
+        print(f"[OK] Sauvegarde {new_count} portfolios")
+    finally:
+        release_lock()
 
 
 # ============ PORTFOLIO HISTORY FOR CHARTS ============
