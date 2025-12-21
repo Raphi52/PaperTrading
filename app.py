@@ -981,7 +981,8 @@ def render_portfolios():
             "Degen": ["degen_hybrid", "degen_scalp", "degen_momentum", "degen_full", "god_mode_only"],
             "EMA/Trend": ["ema_crossover", "ema_crossover_slow", "supertrend", "supertrend_fast"],
             "Oscillators": ["stoch_rsi", "stoch_rsi_aggressive", "vwap_bounce", "vwap_trend"],
-            "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion", "ichimoku"]
+            "Ichimoku": ["ichimoku", "ichimoku_fast", "ichimoku_scalp", "ichimoku_swing", "ichimoku_long", "ichimoku_kumo_break", "ichimoku_tk_cross", "ichimoku_chikou", "ichimoku_momentum", "ichimoku_conservative"],
+            "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion"]
         }
         selected_category = st.selectbox("📂 Category", list(strategy_categories.keys()), label_visibility="collapsed")
 
