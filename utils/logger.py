@@ -22,11 +22,11 @@ class ColoredFormatter(logging.Formatter):
     }
 
     ICONS = {
-        'DEBUG': '🔍',
-        'INFO': '✅',
-        'WARNING': '⚠️',
-        'ERROR': '❌',
-        'CRITICAL': '💀',
+        'DEBUG': '[DBG]',
+        'INFO': '[OK]',
+        'WARNING': '[WARN]',
+        'ERROR': '[ERR]',
+        'CRITICAL': '[CRIT]',
     }
 
     def format(self, record):
@@ -38,11 +38,11 @@ class ColoredFormatter(logging.Formatter):
         # Format spécial pour les signaux de trading
         if hasattr(record, 'signal_type'):
             if record.signal_type == 'BUY':
-                return f"{Fore.GREEN}🟢 [{timestamp}] BUY SIGNAL: {record.getMessage()}{Style.RESET_ALL}"
+                return f"{Fore.GREEN}[BUY] [{timestamp}] BUY SIGNAL: {record.getMessage()}{Style.RESET_ALL}"
             elif record.signal_type == 'SELL':
-                return f"{Fore.RED}🔴 [{timestamp}] SELL SIGNAL: {record.getMessage()}{Style.RESET_ALL}"
+                return f"{Fore.RED}[SELL] [{timestamp}] SELL SIGNAL: {record.getMessage()}{Style.RESET_ALL}"
             elif record.signal_type == 'CONFLUENCE':
-                return f"{Fore.MAGENTA}🎯 [{timestamp}] CONFLUENCE: {record.getMessage()}{Style.RESET_ALL}"
+                return f"{Fore.MAGENTA}[CONF] [{timestamp}] CONFLUENCE: {record.getMessage()}{Style.RESET_ALL}"
 
         return f"{color}{icon} [{timestamp}] {record.levelname}: {record.getMessage()}{Style.RESET_ALL}"
 
@@ -111,12 +111,12 @@ class TradingLogger:
 
     def trade_executed(self, side: str, symbol: str, amount: float, price: float):
         """Log une exécution de trade"""
-        emoji = "🟢" if side.upper() == "BUY" else "🔴"
-        self.info(f"{emoji} TRADE EXECUTED: {side.upper()} {amount} {symbol} @ ${price:,.2f}")
+        tag = "[BUY]" if side.upper() == "BUY" else "[SELL]"
+        self.info(f"{tag} TRADE EXECUTED: {side.upper()} {amount} {symbol} @ ${price:,.2f}")
 
     def balance_update(self, usdt: float, btc: float = 0):
         """Log mise à jour du solde"""
-        self.info(f"💰 Balance: ${usdt:,.2f} USDT | {btc:.6f} BTC")
+        self.info(f"[BAL] Balance: ${usdt:,.2f} USDT | {btc:.6f} BTC")
 
     def signal_summary(self, technical: int, sentiment: int, onchain: int):
         """Log résumé des signaux"""

@@ -80,7 +80,10 @@ class DexSniper:
         """Log sniper activity"""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_line = f"[{timestamp}] {message}"
-        print(f"🎯 {log_line}")
+        try:
+            print(f"[SNIPE] {log_line}")
+        except UnicodeEncodeError:
+            print(f"[SNIPE] {log_line}".encode('ascii', 'replace').decode('ascii'))
 
         try:
             log_data = []

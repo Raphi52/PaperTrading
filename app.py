@@ -128,11 +128,11 @@ def load_portfolios() -> Dict:
                     if not os.path.exists(backup_file):
                         with open(backup_file, 'w', encoding='utf-8') as bf:
                             json.dump(data, bf, indent=2, default=str)
-                        print(f"✅ MASTER backup: {backup_file}")
+                        print(f"[OK] MASTER backup: {backup_file}")
 
                 return data
     except Exception as e:
-        print(f"❌ Erreur load: {e}")
+        print(f"[ERROR] Erreur load: {e}")
 
     # Si erreur ou fichier vide -> chercher le meilleur backup
     backups = glob.glob("data/portfolios_MASTER_*.json") + glob.glob("data/portfolios_backup_*.json")
@@ -185,7 +185,7 @@ def save_portfolios(data: Dict):
 
     with open("data/portfolios.json", 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, default=str)
-    print(f"✅ Sauvegardé {new_count} portfolios")
+    print(f"[OK] Sauvegarde {new_count} portfolios")
 
 
 # ============ PORTFOLIO HISTORY FOR CHARTS ============

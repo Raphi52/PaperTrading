@@ -98,9 +98,9 @@ class TelegramAlerts:
         }
 
         if self.enabled:
-            print(f"✅ Telegram alerts enabled (chat_id: {self.chat_id[:4]}...)")
+            print(f"[OK] Telegram alerts enabled (chat_id: {self.chat_id[:4]}...)")
         else:
-            print("⚠️ Telegram alerts disabled (missing token or chat_id)")
+            print("[WARN] Telegram alerts disabled (missing token or chat_id)")
 
     async def send_message(self, text: str, parse_mode: str = "HTML",
                            disable_notification: bool = False) -> bool:
