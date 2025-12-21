@@ -462,14 +462,12 @@ def get_all_prices_cached() -> Dict[str, float]:
     return prices
 
 
-def get_dexscreener_prices(addresses: List[str]) -> Dict[str, float]:
-    """Fetch prices from DexScreener for sniper tokens"""
+@st.cache_data(ttl=15)
+def _fetch_dexscreener_batch(addr_tuple: tuple) -> Dict[str, float]:
+    """Cached DexScreener API call"""
     prices = {}
-    if not addresses:
-        return prices
-
+    addresses = list(addr_tuple)
     try:
-        # DexScreener accepts comma-separated addresses (max 30)
         for i in range(0, len(addresses), 30):
             batch = addresses[i:i+30]
             addr_str = ','.join(batch)
@@ -485,6 +483,14 @@ def get_dexscreener_prices(addresses: List[str]) -> Dict[str, float]:
     except:
         pass
     return prices
+
+def get_dexscreener_prices(addresses: List[str]) -> Dict[str, float]:
+    """Fetch prices from DexScreener for sniper tokens (cached)"""
+    if not addresses:
+        return {}
+    # Convert to sorted tuple for cache key consistency
+    addr_tuple = tuple(sorted(set(addresses)))
+    return _fetch_dexscreener_batch(addr_tuple)
 
 
 def get_current_prices(symbols: List[str]) -> Dict[str, float]:
