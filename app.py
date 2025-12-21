@@ -2461,9 +2461,57 @@ Moins de trades mais meilleure qualité."""
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
-                        # Get trades - reversed for newest first
-                        all_trades = list(reversed(p.get('trades', [])))
+                        # Get all trades
+                        raw_trades = p.get('trades', [])
+
+                        # Filter controls
+                        filter_key = f'activity_filter_{pid}'
+                        if filter_key not in st.session_state:
+                            st.session_state[filter_key] = "All"
+
+                        fc1, fc2, fc3, fc4 = st.columns(4)
+                        with fc1:
+                            if st.button("All", key=f"flt_all_{pid}", type="primary" if st.session_state[filter_key] == "All" else "secondary", use_container_width=True):
+                                st.session_state[filter_key] = "All"
+                                st.session_state[f'activity_page_{pid}'] = 0
+                                st.rerun()
+                        with fc2:
+                            if st.button("🟢 BUY", key=f"flt_buy_{pid}", type="primary" if st.session_state[filter_key] == "BUY" else "secondary", use_container_width=True):
+                                st.session_state[filter_key] = "BUY"
+                                st.session_state[f'activity_page_{pid}'] = 0
+                                st.rerun()
+                        with fc3:
+                            if st.button("🔴 SELL", key=f"flt_sell_{pid}", type="primary" if st.session_state[filter_key] == "SELL" else "secondary", use_container_width=True):
+                                st.session_state[filter_key] = "SELL"
+                                st.session_state[f'activity_page_{pid}'] = 0
+                                st.rerun()
+                        with fc4:
+                            if st.button("💀 RUG", key=f"flt_rug_{pid}", type="primary" if st.session_state[filter_key] == "RUG" else "secondary", use_container_width=True):
+                                st.session_state[filter_key] = "RUG"
+                                st.session_state[f'activity_page_{pid}'] = 0
+                                st.rerun()
+
+                        # Apply filter
+                        current_filter = st.session_state[filter_key]
+                        if current_filter == "BUY":
+                            filtered_trades = [t for t in raw_trades if 'BUY' in t.get('action', '')]
+                        elif current_filter == "SELL":
+                            filtered_trades = [t for t in raw_trades if 'SELL' in t.get('action', '') or 'SOLD' in t.get('action', '')]
+                        elif current_filter == "RUG":
+                            filtered_trades = [t for t in raw_trades if 'RUG' in t.get('action', '')]
+                        else:
+                            filtered_trades = raw_trades
+
+                        # Reverse for newest first
+                        all_trades = list(reversed(filtered_trades))
                         total_count = len(all_trades)
+
+                        # Build buy index for hold duration calculation
+                        buy_index = {}
+                        for t in raw_trades:
+                            if 'BUY' in t.get('action', ''):
+                                sym = t.get('symbol', '')
+                                buy_index[sym] = t.get('timestamp', '')
 
                         # Pagination settings
                         TRADES_PER_PAGE = 10
@@ -2474,12 +2522,11 @@ Moins de trades mais meilleure qualité."""
                         current_act_page = st.session_state[page_key]
                         total_act_pages = max(1, (total_count + TRADES_PER_PAGE - 1) // TRADES_PER_PAGE)
 
-                        # Ensure valid page
                         if current_act_page >= total_act_pages:
                             current_act_page = total_act_pages - 1
                             st.session_state[page_key] = current_act_page
 
-                        # Header with pagination
+                        # Header
                         st.markdown(f"**📊 Activity ({total_count})** • Page {current_act_page + 1}/{total_act_pages}")
 
                         # Pagination controls
@@ -2516,10 +2563,19 @@ Moins de trades mais meilleure qualité."""
                                 a_price = t.get('price', 0)
                                 a_pnl = t.get('pnl', 0)
                                 a_amount = t.get('amount_usdt', 0)
+                                a_qty = t.get('quantity', 0)
+                                a_reason = t.get('reason', '')
                                 a_token_address = t.get('token_address', '')
                                 a_chain = t.get('chain', '')
                                 timestamp = t.get('timestamp', '')
-                                a_time = timestamp[11:16] if len(timestamp) > 16 else timestamp[-5:]
+
+                                # Full date format: 20/12 14:35
+                                try:
+                                    from datetime import datetime
+                                    dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                                    a_date = dt.strftime("%d/%m %H:%M")
+                                except:
+                                    a_date = timestamp[:16] if len(timestamp) > 16 else timestamp
 
                                 # Format price
                                 if a_price >= 1:
@@ -2529,7 +2585,17 @@ Moins de trades mais meilleure qualité."""
                                 else:
                                     price_str = f"${a_price:.10f}"
 
-                                # Icon and colors
+                                # Format quantity
+                                if a_qty >= 1000000:
+                                    qty_str = f"{a_qty/1000000:.2f}M"
+                                elif a_qty >= 1000:
+                                    qty_str = f"{a_qty/1000:.2f}K"
+                                elif a_qty >= 1:
+                                    qty_str = f"{a_qty:.2f}"
+                                else:
+                                    qty_str = f"{a_qty:.6f}"
+
+                                # Icon and type detection
                                 is_buy = 'BUY' in a_action
                                 is_sell = 'SELL' in a_action or 'SOLD' in a_action
                                 is_rug = 'RUG' in a_action
@@ -2549,13 +2615,46 @@ Moins de trades mais meilleure qualité."""
                                 else:
                                     dex_url = f"https://dexscreener.com/search?q={a_symbol}"
 
-                                # Build display line
+                                # Calculate hold duration and % for SELL trades
+                                hold_str = ""
+                                pct_str = ""
+                                if is_sell or is_rug:
+                                    # % gain/loss
+                                    if a_amount > 0:
+                                        pct_change = (a_pnl / a_amount) * 100
+                                        pct_str = f" ({pct_change:+.1f}%)"
+
+                                    # Hold duration
+                                    buy_time = buy_index.get(t.get('symbol', ''), '')
+                                    if buy_time and timestamp:
+                                        try:
+                                            from datetime import datetime
+                                            buy_dt = datetime.fromisoformat(buy_time.replace('Z', '+00:00'))
+                                            sell_dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                                            duration = sell_dt - buy_dt
+                                            mins = int(duration.total_seconds() / 60)
+                                            if mins < 60:
+                                                hold_str = f" ⏱️{mins}m"
+                                            elif mins < 1440:
+                                                hold_str = f" ⏱️{mins//60}h{mins%60}m"
+                                            else:
+                                                hold_str = f" ⏱️{mins//1440}d"
+                                        except:
+                                            pass
+
+                                # Build display - Line 1: main info
                                 if is_sell or is_rug:
                                     pnl_color = "green" if a_pnl >= 0 else "red"
                                     pnl_icon = "✅" if a_pnl >= 0 else "❌"
-                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → {pnl_icon} :{pnl_color}[**${a_pnl:+.2f}**] @ {price_str} • {a_time}")
+                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) • {a_date}{hold_str}")
+                                    st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;{pnl_icon} :{pnl_color}[**${a_pnl:+.2f}**]{pct_str} @ {price_str} • Qty: {qty_str}")
+                                    if a_reason:
+                                        st.caption(f"&nbsp;&nbsp;&nbsp;&nbsp;📝 {a_reason}")
                                 else:
-                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → Spent **${a_amount:.2f}** @ {price_str} • {a_time}")
+                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) • {a_date}")
+                                    st.markdown(f"&nbsp;&nbsp;&nbsp;&nbsp;💵 Spent **${a_amount:.2f}** @ {price_str} • Qty: {qty_str}")
+
+                                st.divider()
                         else:
                             st.info("No trades yet")
 
