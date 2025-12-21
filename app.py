@@ -2502,20 +2502,15 @@ Moins de trades mais meilleure qualité."""
                                 else:
                                     dex_url = f"https://dexscreener.com/search?q={a_symbol}"
 
-                                # Build display line
-                                col1, col2, col3 = st.columns([2, 2, 1])
-                                with col1:
-                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url})")
-                                with col2:
-                                    if is_buy:
-                                        st.markdown(f"Entry: **{price_str}** | Spent: **${a_amount:.2f}**")
-                                    elif is_sell and a_pnl != 0:
-                                        pnl_color = "green" if a_pnl >= 0 else "red"
-                                        st.markdown(f"Exit: **{price_str}** | PnL: :{pnl_color}[**${a_pnl:+.2f}**]")
-                                    else:
-                                        st.markdown(f"Price: **{price_str}**")
-                                with col3:
-                                    st.caption(a_time)
+                                # Build display line with clear visual distinction
+                                if is_sell or is_rug:
+                                    # SELL/RUG trades - show prominently with PnL
+                                    pnl_color = "green" if a_pnl >= 0 else "red"
+                                    pnl_icon = "✅" if a_pnl >= 0 else "❌"
+                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → {pnl_icon} :{pnl_color}[**${a_pnl:+.2f}**] @ {price_str} • {a_time}")
+                                else:
+                                    # BUY trades
+                                    st.markdown(f"{icon} **{a_action}** [{a_symbol}]({dex_url}) → Spent **${a_amount:.2f}** @ {price_str} • {a_time}")
 
                             if not show_all_act and total_count > 10:
                                 st.caption(f"Showing 10 of {total_count} trades")
