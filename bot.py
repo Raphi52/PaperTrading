@@ -378,9 +378,12 @@ STRATEGIES = {
     "bb_rsi_combo": {"auto": True, "use_bb": True, "use_rsi": True, "mode": "combo"},
     "trend_momentum": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "slow_ema": 21},
 
-    # Volatility strategies
-    "atr_breakout": {"auto": True, "use_atr": True, "multiplier": 2.0},
-    "atr_trailing": {"auto": True, "use_atr": True, "multiplier": 3.0, "trailing": True},
+    # Trailing Stop strategies - tight entry, rising stop-loss
+    "trailing_tight": {"auto": True, "use_trailing": True, "initial_stop": 2, "trail_pct": 2, "entry_rsi": 35},
+    "trailing_medium": {"auto": True, "use_trailing": True, "initial_stop": 3, "trail_pct": 3, "entry_rsi": 40},
+    "trailing_wide": {"auto": True, "use_trailing": True, "initial_stop": 5, "trail_pct": 4, "entry_rsi": 45},
+    "trailing_scalp": {"auto": True, "use_trailing": True, "initial_stop": 1.5, "trail_pct": 1.5, "entry_rsi": 30},
+    "trailing_swing": {"auto": True, "use_trailing": True, "initial_stop": 4, "trail_pct": 5, "entry_rsi": 35},
 
     # Scalping variants
     "scalp_rsi": {"auto": True, "use_scalp": True, "indicator": "rsi", "timeframe": "5m"},
@@ -522,6 +525,11 @@ STRATEGY_TIMEFRAMES = {
     "scalp_rsi": "5m",
     "scalp_bb": "5m",
     "scalp_macd": "5m",
+    "trailing_scalp": "15m",
+    "trailing_tight": "15m",
+    "trailing_medium": "1h",
+    "trailing_wide": "1h",
+    "trailing_swing": "4h",
 
     # Advanced strategies - Medium (1h)
     "bollinger_squeeze": "1h",
@@ -1324,6 +1332,57 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         cloud_status = "above" if above else "below"
         trend = "bullish" if bullish else ("bearish" if bearish else "neutral")
         return (None, f"ICHIMOKU: {trend}, {cloud_status} cloud")
+
+    # Trailing Stop Strategy - tight entry, rising stop-loss that locks in gains
+    if strategy.get('use_trailing'):
+        initial_stop = strategy.get('initial_stop', 3)  # Initial stop-loss %
+        trail_pct = strategy.get('trail_pct', 3)  # Trailing stop %
+        entry_rsi = strategy.get('entry_rsi', 40)  # RSI level to enter
+        rsi = analysis.get('rsi', 50)
+        current_price = analysis.get('close', 0)
+        momentum = analysis.get('momentum', 0)
+
+        if has_position:
+            # Get position data
+            position = positions.get(symbol, {})
+            entry_price = position.get('entry_price', current_price)
+            highest_price = position.get('highest_price', entry_price)
+
+            # Update highest price if current is higher
+            if current_price > highest_price:
+                position['highest_price'] = current_price
+                highest_price = current_price
+
+            # Calculate stops
+            initial_stop_price = entry_price * (1 - initial_stop / 100)
+            trailing_stop_price = highest_price * (1 - trail_pct / 100)
+
+            # Use the higher of the two stops (more protective)
+            effective_stop = max(initial_stop_price, trailing_stop_price)
+
+            # Calculate current gain from entry
+            gain_pct = ((current_price / entry_price) - 1) * 100 if entry_price > 0 else 0
+            gain_from_peak = ((current_price / highest_price) - 1) * 100 if highest_price > 0 else 0
+
+            # SELL if price drops below effective stop
+            if current_price <= effective_stop:
+                if trailing_stop_price > initial_stop_price:
+                    return ('SELL', f"TRAILING STOP HIT: Locked {gain_pct:+.1f}% gain (peak was higher)")
+                else:
+                    return ('SELL', f"INITIAL STOP HIT: -{initial_stop}% from entry")
+
+            # Status update
+            stop_type = "trailing" if trailing_stop_price > initial_stop_price else "initial"
+            return (None, f"TRAILING: {gain_pct:+.1f}% gain, {stop_type} stop at ${effective_stop:.4f}")
+
+        else:
+            # Entry logic: buy on oversold RSI with positive momentum
+            if rsi < entry_rsi and momentum > 0 and has_cash:
+                return ('BUY', f"TRAILING ENTRY: RSI={rsi:.0f} < {entry_rsi}, momentum={momentum:.2f}%")
+            elif rsi < entry_rsi - 10 and has_cash:  # Very oversold, enter anyway
+                return ('BUY', f"TRAILING ENTRY: RSI={rsi:.0f} very oversold")
+
+            return (None, f"TRAILING: Waiting for RSI < {entry_rsi} (currently {rsi:.0f})")
 
     # Martingale - assoupli (RSI < 40 au lieu de 35)
     if strategy.get('use_martingale'):

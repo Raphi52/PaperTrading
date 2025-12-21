@@ -62285,3 +62285,2168 @@
 [2025-12-21 10:02:46]   JUP/USDT [15m]: $0.20 | RSI 66.0 | SELL
 [2025-12-21 10:02:49]   NEAR/USDT [15m]: $1.53 | RSI 75.6 | SELL
 [2025-12-21 10:02:52]   NEAR/USDT [1h]: $1.53 | RSI 57.7 | HOLD
+[2025-12-21 10:02:55]   NEAR/USDT [4h]: $1.53 | RSI 64.9 | HOLD
+[2025-12-21 10:02:58]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:03:01]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:03:04]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:03:07]   ALGO/USDT [15m]: $0.11 | RSI 69.6 | SELL
+[2025-12-21 10:03:10]   ALGO/USDT [1h]: $0.11 | RSI 58.1 | HOLD
+[2025-12-21 10:03:13]   ALGO/USDT [4h]: $0.11 | RSI 69.0 | SELL
+[2025-12-21 10:03:16]   VET/USDT [15m]: $0.01 | RSI 84.6 | SELL
+[2025-12-21 10:03:19]   VET/USDT [1h]: $0.01 | RSI 64.4 | HOLD
+[2025-12-21 10:03:22]   VET/USDT [4h]: $0.01 | RSI 76.7 | SELL
+[2025-12-21 10:03:25]   IMX/USDT [15m]: $0.23 | RSI 66.7 | SELL
+[2025-12-21 10:03:27]   IMX/USDT [1h]: $0.23 | RSI 38.9 | HOLD
+[2025-12-21 10:03:29]   IMX/USDT [4h]: $0.23 | RSI 58.3 | HOLD
+[2025-12-21 10:03:31]   LRC/USDT [15m]: $0.06 | RSI 53.3 | HOLD
+[2025-12-21 10:03:33]   LRC/USDT [1h]: $0.06 | RSI 40.0 | HOLD
+[2025-12-21 10:03:35]   LRC/USDT [4h]: $0.06 | RSI 61.1 | HOLD
+[2025-12-21 10:03:37]   METIS/USDT [15m]: $5.50 | RSI 63.6 | HOLD
+[2025-12-21 10:03:39]   METIS/USDT [1h]: $5.50 | RSI 44.2 | HOLD
+[2025-12-21 10:03:41]   METIS/USDT [4h]: $5.50 | RSI 69.0 | SELL
+[2025-12-21 10:03:46]   SEI/USDT [15m]: $0.11 | RSI 81.8 | SELL
+[2025-12-21 10:03:48]   SEI/USDT [1h]: $0.11 | RSI 49.1 | HOLD
+[2025-12-21 10:03:50]   TIA/USDT [15m]: $0.47 | RSI 60.2 | HOLD
+[2025-12-21 10:03:52]   TIA/USDT [1h]: $0.47 | RSI 45.2 | HOLD
+[2025-12-21 10:03:54]   PYTH/USDT [15m]: $0.06 | RSI 50.0 | HOLD
+[2025-12-21 10:03:55]   PYTH/USDT [1h]: $0.06 | RSI 46.5 | HOLD
+[2025-12-21 10:03:57]   JTO/USDT [15m]: $0.36 | RSI 60.0 | HOLD
+[2025-12-21 10:03:59]   JTO/USDT [1h]: $0.36 | RSI 30.0 | BUY
+[2025-12-21 10:04:02]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:04:04]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:04:06]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:04:08]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:04:10]   SNX/USDT [1h]: $0.42 | RSI 43.8 | HOLD
+[2025-12-21 10:04:12]   SNX/USDT [15m]: $0.42 | RSI 70.0 | SELL
+[2025-12-21 10:04:14]   SNX/USDT [4h]: $0.42 | RSI 74.4 | STRONG_SELL
+[2025-12-21 10:04:16]   SNX/USDT [5m]: $0.42 | RSI 50.0 | HOLD
+[2025-12-21 10:04:18]   COMP/USDT [1h]: $24.14 | RSI 21.3 | BUY
+[2025-12-21 10:04:20]   COMP/USDT [15m]: $24.14 | RSI 36.4 | HOLD
+[2025-12-21 10:04:22]   COMP/USDT [5m]: $24.14 | RSI 48.1 | HOLD
+[2025-12-21 10:04:24]   CRV/USDT [1h]: $0.35 | RSI 47.3 | HOLD
+[2025-12-21 10:04:26]   CRV/USDT [15m]: $0.35 | RSI 70.3 | SELL
+[2025-12-21 10:04:28]   CRV/USDT [4h]: $0.35 | RSI 61.3 | HOLD
+[2025-12-21 10:04:30]   CRV/USDT [5m]: $0.35 | RSI 53.6 | HOLD
+[2025-12-21 10:04:32]   SUSHI/USDT [1h]: $0.30 | RSI 57.2 | HOLD
+[2025-12-21 10:04:34]   SUSHI/USDT [15m]: $0.30 | RSI 56.8 | HOLD
+[2025-12-21 10:04:36]   SUSHI/USDT [4h]: $0.30 | RSI 76.1 | SELL
+[2025-12-21 10:04:38]   SUSHI/USDT [5m]: $0.30 | RSI 53.2 | HOLD
+[2025-12-21 10:04:40]   1INCH/USDT [1h]: $0.16 | RSI 48.8 | HOLD
+[2025-12-21 10:04:42]   1INCH/USDT [15m]: $0.16 | RSI 65.5 | SELL
+[2025-12-21 10:04:44]   1INCH/USDT [4h]: $0.16 | RSI 69.1 | SELL
+[2025-12-21 10:04:46]   1INCH/USDT [5m]: $0.16 | RSI 56.5 | HOLD
+[2025-12-21 10:04:48]   YFI/USDT [1h]: $3,411.00 | RSI 54.0 | HOLD
+[2025-12-21 10:04:50]   YFI/USDT [15m]: $3,411.00 | RSI 76.8 | SELL
+[2025-12-21 10:04:52]   YFI/USDT [5m]: $3,411.00 | RSI 63.9 | HOLD
+[2025-12-21 10:04:54]   DYDX/USDT [1h]: $0.17 | RSI 39.7 | HOLD
+[2025-12-21 10:04:56]   DYDX/USDT [15m]: $0.17 | RSI 60.4 | HOLD
+[2025-12-21 10:04:58]   DYDX/USDT [4h]: $0.17 | RSI 55.1 | HOLD
+[2025-12-21 10:05:00]   DYDX/USDT [5m]: $0.17 | RSI 51.4 | HOLD
+[2025-12-21 10:05:03]   MEME/USDT [15m]: $0.00 | RSI 61.9 | HOLD
+[2025-12-21 10:05:05]   MEME/USDT [1h]: $0.00 | RSI 46.6 | HOLD
+[2025-12-21 10:05:06]   MANA/USDT [15m]: $0.13 | RSI 50.0 | HOLD
+[2025-12-21 10:05:08]   MANA/USDT [1h]: $0.13 | RSI 49.3 | HOLD
+[2025-12-21 10:05:10]   ENJ/USDT [15m]: $0.03 | RSI 57.9 | HOLD
+[2025-12-21 10:05:12]   ENJ/USDT [1h]: $0.03 | RSI 50.5 | HOLD
+[2025-12-21 10:05:14]   RONIN/USDT [15m]: $0.15 | RSI 63.0 | HOLD
+[2025-12-21 10:05:16]   RONIN/USDT [1h]: $0.15 | RSI 27.3 | BUY
+[2025-12-21 10:05:18]   ILV/USDT [15m]: $5.81 | RSI 40.0 | HOLD
+[2025-12-21 10:05:20]   ILV/USDT [1h]: $5.81 | RSI 44.2 | HOLD
+[2025-12-21 10:05:22]   LDO/USDT [15m]: $0.54 | RSI 78.6 | SELL
+[2025-12-21 10:05:24]   LDO/USDT [1h]: $0.54 | RSI 49.7 | HOLD
+[2025-12-21 10:05:27]   LDO/USDT [4h]: $0.54 | RSI 68.5 | SELL
+[2025-12-21 10:05:29]   GMX/USDT [15m]: $8.18 | RSI 68.8 | SELL
+[2025-12-21 10:05:31]   GMX/USDT [1h]: $8.18 | RSI 60.7 | HOLD
+[2025-12-21 10:05:32]   GMX/USDT [4h]: $8.18 | RSI 75.6 | SELL
+[2025-12-21 10:05:34]   SKL/USDT [1h]: $0.01 | RSI 55.3 | HOLD
+[2025-12-21 10:05:36]   SKL/USDT [15m]: $0.01 | RSI 51.7 | HOLD
+[2025-12-21 10:05:39]   SKL/USDT [4h]: $0.01 | RSI 63.7 | HOLD
+[2025-12-21 10:05:41]   CELR/USDT [1h]: $0.00 | RSI 48.5 | HOLD
+[2025-12-21 10:05:42]   CELR/USDT [15m]: $0.00 | RSI 74.2 | SELL
+[2025-12-21 10:05:44]   CELR/USDT [4h]: $0.00 | RSI 80.3 | STRONG_SELL
+[2025-12-21 10:05:46]   MAGIC/USDT [15m]: $0.10 | RSI 52.4 | HOLD
+[2025-12-21 10:05:48]   FET/USDT [1h]: $0.21 | RSI 50.0 | HOLD
+[2025-12-21 10:05:50]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:05:52]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:05:54]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:05:56]   TAO/USDT [1h]: $226.60 | RSI 42.6 | HOLD
+[2025-12-21 10:05:58]   WLD/USDT [1h]: $0.52 | RSI 48.2 | HOLD
+[2025-12-21 10:06:00]   ARKM/USDT [1h]: $0.20 | RSI 50.0 | HOLD
+[2025-12-21 10:06:02]   RENDER/USDT [1h]: $1.29 | RSI 48.6 | HOLD
+[2025-12-21 10:06:02]   >> Ichimoku Cloud: BUY 13.944207 UNI @ $6.36
+[2025-12-21 10:06:02]   >> Martingale: SELL 0.157372 ETH @ $3,001.64 | PnL: $+3.59
+[2025-12-21 10:06:02]   >> Martingale: SELL 1.283390 BNB @ $858.96 | PnL: $+8.50
+[2025-12-21 10:06:02]   >> Martingale: SELL 847.834237 ARB @ $0.19 | PnL: $+0.59
+[2025-12-21 10:06:02]   >> Martingale: SELL 474.325790 SUI @ $1.47 | PnL: $+1.06
+[2025-12-21 10:06:02]   >> Martingale Safe: SELL 0.157372 ETH @ $3,001.64 | PnL: $+3.59
+[2025-12-21 10:06:02]   >> Martingale Safe: SELL 1.283390 BNB @ $858.96 | PnL: $+8.50
+[2025-12-21 10:06:02]   >> Martingale Safe: SELL 847.834237 ARB @ $0.19 | PnL: $+0.59
+[2025-12-21 10:06:02]   >> Martingale Safe: SELL 474.325790 SUI @ $1.47 | PnL: $+1.06
+[2025-12-21 10:06:02]   >> OI Breakout: SELL 7.525464 SOL @ $126.27 | PnL: $+3.33
+[2025-12-21 10:06:02]   >> OI Breakout: SELL 73.171613 AVAX @ $12.27 | PnL: $+3.29
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 768.387383 DOGE @ $0.13
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 52.481025 DOT @ $1.85
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 7.268021 LINK @ $12.67
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 13.763615 UNI @ $6.36
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 42.015906 ATOM @ $1.98
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 1.015461 LTC @ $77.75
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 391.668324 ARB @ $0.19
+[2025-12-21 10:06:02]   >> OI Breakout: SELL 141.594500 INJ @ $4.74 | PnL: $-10.36
+[2025-12-21 10:06:02]   >> OI Breakout: BUY 71.121861 SUI @ $1.47
+[2025-12-21 10:06:02]   >> Grid Tight: SELL 0.001241 BTC @ $88,862.00 | PnL: $+0.81
+[2025-12-21 10:06:02]   >> Grid Tight: SELL 0.014402 ETH @ $3,001.72 | PnL: $+0.33
+[2025-12-21 10:06:02]   >> Grid Tight: SELL 0.254195 BNB @ $858.96 | PnL: $+1.57
+[2025-12-21 10:06:02]   >> Grid Tight: SELL 0.306996 SOL @ $126.28 | PnL: $+0.05
+[2025-12-21 10:06:02]   >> Grid Tight: BUY 94.296485 MATIC @ $0.38
+[2025-12-21 10:06:02]   >> Low Risk DCA: BUY 1785.142932 DYDX @ $0.17
+[2025-12-21 10:06:02]   >> Stoch Memes: SELL 31114655.344150 SHIB @ $0.00 | PnL: $+0.00
+[2025-12-21 10:06:02]   >> Stoch Memes: SELL 4549585.356779 FLOKI @ $0.00 | PnL: $+0.05
+[2025-12-21 10:06:02]   >> Stoch Memes: BUY 170610.901898 MEME @ $0.00
+[2025-12-21 10:06:02]   >> VWAP Memes: BUY 89015.152223 TURBO @ $0.00
+[2025-12-21 10:06:02]   >> VWAP Trend L2: SELL 29535.747978 LRC @ $0.06 | PnL: $-44.30
+[2025-12-21 10:06:02]   >> VWAP Trend L2: BUY 9061.739229 SKL @ $0.01
+[2025-12-21 10:06:02]   >> VWAP Trend L2: BUY 24683.464995 CELR @ $0.00
+[2025-12-21 10:06:02]   >> VWAP Trend L2: BUY 15.612965 METIS @ $5.50
+[2025-12-21 10:06:02]   >> Mean Rev Gaming: SELL 64917.727269 GALA @ $0.01 | PnL: $-3.25
+[2025-12-21 10:06:02]   >> Stoch New Coins: SELL 83.752159 APT @ $1.65 | PnL: $+0.79
+[2025-12-21 10:06:02]   >> Stoch New Coins: SELL 2472.928208 SUI @ $1.47 | PnL: $-17.89
+[2025-12-21 10:06:02]   >> Stoch New Coins: SELL 417.006637 INJ @ $4.74 | PnL: $-47.68
+[2025-12-21 10:06:02]   >> Stoch New Coins: BUY 893.409170 JTO @ $0.36
+[2025-12-21 10:06:02]   >> Ichimoku New: BUY 11.052017 APT @ $1.65
+[2025-12-21 10:06:02]   >> Ichimoku New: BUY 11.758662 SUI @ $1.47
+[2025-12-21 10:06:02]   >> Ichimoku New: BUY 147.471635 SEI @ $0.11
+[2025-12-21 10:06:02]   >> Ichimoku New: BUY 80.179194 JUP @ $0.20
+[2025-12-21 10:06:06]   >> Ichimoku Scalp: BUY 0.005627 BTC @ $88,862.00
+[2025-12-21 10:06:06]   >> Ichimoku Scalp: BUY 0.158243 ETH @ $3,001.72
+[2025-12-21 10:06:06]   >> Ichimoku Scalp: BUY 3.573408 SOL @ $126.28
+[2025-12-21 10:06:06]   >> Ichimoku Swing: BUY 0.005626 BTC @ $88,878.52
+[2025-12-21 10:06:06]   >> Ichimoku Kumo Break: BUY 0.005626 BTC @ $88,878.52
+[2025-12-21 10:06:06]   >> Ichimoku TK Cross: BUY 0.005626 BTC @ $88,878.52
+[2025-12-21 10:06:06]   >> Ichimoku Chikou: BUY 0.005626 BTC @ $88,878.52
+[2025-12-21 10:06:06]   >> Ichimoku Momentum: BUY 0.005627 BTC @ $88,862.00
+[2025-12-21 10:06:06]   >> Ichimoku Momentum: BUY 0.158243 ETH @ $3,001.72
+[2025-12-21 10:06:06]   >> Ichimoku Momentum: BUY 3.573408 SOL @ $126.28
+[2025-12-21 10:06:06] 🎯 Scanning for new tokens...
+[2025-12-21 10:06:39] 🔍 Scanned 139 new tokens across all chains
+[2025-12-21 10:06:39]   🆕 ZENT | $0.00003384 | MC: $40,363 | Risk: 70/100 | meteora
+[2025-12-21 10:06:39]   🆕 yuru-chara | $0.00000413 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 rik | $0.00001246 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 $PUMPN | $0.00000441 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Flow | $0.00023750 | MC: $273,789 | Risk: 20/100 | uniswap
+[2025-12-21 10:06:39]   🆕 WHAT’STHEDIFFERENCEIFIPOSTONBASE | $0.00000106 | MC: $2,080 | Risk: 95/100 | uniswap
+[2025-12-21 10:06:39]   🆕 Snoo | $0.00002284 | MC: $28,574 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 FAIR | $0.00000351 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Prawn | $0.00000352 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 YETI | $0.00016160 | MC: $77,816 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 BLUNT | $0.00004537 | MC: $40,737 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 FCOIN | $0.00000351 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 1011 | $0.00273800 | MC: $15,585 | Risk: 65/100 | uniswap
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000377 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 PIMP | $0.00000694 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Kit | $0.00001688 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 NEOXIA | $0.00051130 | MC: $371,591 | Risk: 20/100 | uniswap
+[2025-12-21 10:06:39]   🆕 US | $0.00000709 | MC: $15,917 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 FET | $0.44720000 | MC: $1,865,362 | Risk: 20/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 REK | $0.00004010 | MC: $39,158 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 sidekick | $0.00002445 | MC: $29,539 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Mana-kun | $0.00000361 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 YOTSUBA | $0.00001395 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 POLY | $0.00006123 | MC: $47,357 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 1 | $0.00000363 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 COPILOT | $0.00000361 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 MemeCoin  | $0.00000386 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 IRS | $0.00000886 | MC: $17,793 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 😂 | $0.00003320 | MC: $40,967 | Risk: 40/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 420 | $0.00002792 | MC: $31,742 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Lynx | $0.00000350 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 addicted | $0.00000356 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000351 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Mevici | $0.00001821 | MC: $25,538 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Grimace | $0.00000463 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 XD | $0.00000355 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Glasses | $0.00000358 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 CLIPZ | $0.00000659 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 MEEPCAT | $0.00030290 | MC: $111,170 | Risk: 20/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000352 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000350 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 FAIR | $0.00000352 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Bobo Show | $0.00018980 | MC: $87,256 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Retail | $0.00007754 | MC: $56,540 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000353 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000353 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000354 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000353 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000353 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Fair | $0.00000353 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 New | $0.00000352 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 PNN | $0.00000402 | MC: $0 | Risk: 70/100 | meteoradbc
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | meteoradbc
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | meteoradbc
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | meteoradbc
+[2025-12-21 10:06:39]   🆕 Ryan | $0.00027180 | MC: $106,873 | Risk: 20/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 NEW | $0.00000009 | MC: $0 | Risk: 95/100 | uniswap
+[2025-12-21 10:06:39]   🆕 42 | $0.00040620 | MC: $139,611 | Risk: 20/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 NEW | $0.00000005 | MC: $95 | Risk: 95/100 | uniswap
+[2025-12-21 10:06:39]   🆕 69 | $0.00001556 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 BURG | $0.00002425 | MC: $30,597 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 bubs | $0.00001586 | MC: $0 | Risk: 80/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 ARCR | $0.00003774 | MC: $33,323 | Risk: 40/100 | meteora
+[2025-12-21 10:06:39]   🆕 NEW | $0.00000355 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 NEW | $0.00000023 | MC: $448 | Risk: 95/100 | uniswap
+[2025-12-21 10:06:39]   🆕 WHITE | $0.00003185 | MC: $35,202 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 $NYRES | $0.00000829 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:06:39]   🆕 Chud | $0.00003137 | MC: $36,189 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 FUD | $0.00000579 | MC: $14,931 | Risk: 50/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 Fair | $0.00295800 | MC: $59,161 | Risk: 65/100 | uniswap
+[2025-12-21 10:06:39]   🆕 BASEX | $0.00020240 | MC: $1,888 | Risk: 95/100 | raydium
+[2025-12-21 10:06:39]   🆕 snowball | $0.00136200 | MC: $292,007 | Risk: 20/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 SCP | $0.00007852 | MC: $53,812 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 FUN | $0.00059080 | MC: $46,514 | Risk: 65/100 | orca
+[2025-12-21 10:06:39]   🆕 esdeekid | $0.00009361 | MC: $58,679 | Risk: 40/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 静下心来 | $0.00010170 | MC: $79,958 | Risk: 40/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 ARIAIP | $0.02979000 | MC: $146,131 | Risk: 45/100 | storyhunt
+[2025-12-21 10:06:39]   🆕 NotifAi | $0.00058680 | MC: $191,584 | Risk: 30/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 ARIAIP | $0.02985000 | MC: $162,806 | Risk: 45/100 | piperx
+[2025-12-21 10:06:39]   🆕 SPSC | $0.00417500 | MC: $598,756 | Risk: 20/100 | raydium
+[2025-12-21 10:06:39]   🆕 STRAX | $0.03379000 | MC: $139,686,930 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 LAUNCHCOIN | $0.08071000 | MC: $159,361,645 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 BDX | $0.08368000 | MC: $1,249,371,290 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 SUN | $0.02587000 | MC: $1,027,905,495 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 RENDER | $3.61000000 | MC: $4,655,526,091 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00002756 | MC: $0 | Risk: 95/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 IDIA | $0.02063000 | MC: $39,228,028 | Risk: 45/100 | orca
+[2025-12-21 10:06:39]   🆕 FAIREMAIL | $0.00003206 | MC: $35,458 | Risk: 50/100 | uniswap
+[2025-12-21 10:06:39]   🆕 tSAT | $0.00088490 | MC: $362,778 | Risk: 45/100 | raydium
+[2025-12-21 10:06:39]   🆕 FAIR3 | $0.00849600 | MC: $733 | Risk: 95/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 Pixie | $0.00008373 | MC: $58,159 | Risk: 65/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 MELT | $355.54000000 | MC: $16,867 | Risk: 65/100 | meteora
+[2025-12-21 10:06:39]   🆕 NEW | $0.00006562 | MC: $263 | Risk: 95/100 | quickswap
+[2025-12-21 10:06:39]   🆕 BTT | $0.00000067 | MC: $10,059,093 | Risk: 45/100 | meteora
+[2025-12-21 10:06:39]   🆕 NEW | $0.00006550 | MC: $80 | Risk: 95/100 | quickswap
+[2025-12-21 10:06:39]   🆕 NEW | $0.00006541 | MC: $5,120 | Risk: 95/100 | quickswap
+[2025-12-21 10:06:39]   🆕 NEWT | $0.52120000 | MC: $1,040,417,974 | Risk: 45/100 | meteora
+[2025-12-21 10:06:39]   🆕 FAIR3 | $0.00843000 | MC: $228 | Risk: 95/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 LIQD | $0.00612100 | MC: $42,155 | Risk: 65/100 | prjx
+[2025-12-21 10:06:39]   🆕 fair | $0.00035430 | MC: $120,181 | Risk: 45/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 stAPL | $0.49030000 | MC: $1,064,147 | Risk: 45/100 | piperx
+[2025-12-21 10:06:39]   🆕 FAIR | $0.00002858 | MC: $41,297 | Risk: 65/100 | uniswap
+[2025-12-21 10:06:39]   🆕 FAIR | $0.00002881 | MC: $843,360 | Risk: 45/100 | uniswap
+[2025-12-21 10:06:39]   🆕 APL | $0.46690000 | MC: $200,110 | Risk: 45/100 | storyhunt
+[2025-12-21 10:06:39]   🆕 APL | $0.46730000 | MC: $585,393 | Risk: 45/100 | piperx
+[2025-12-21 10:06:39]   🆕 FAIR3 | $0.00853600 | MC: $513,162 | Risk: 30/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 FAIR | $0.00022300 | MC: $147,416 | Risk: 45/100 | sunswap
+[2025-12-21 10:06:39]   🆕 XAVA | $0.15110000 | MC: $161,405 | Risk: 45/100 | traderjoe
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00004104 | MC: $77,421 | Risk: 65/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 LAUNCHCOIN | $0.21560000 | MC: $429,246,814 | Risk: 45/100 | raydium
+[2025-12-21 10:06:39]   🆕 SPLAT | $0.00102800 | MC: $612,976 | Risk: 45/100 | meteora
+[2025-12-21 10:06:39]   🆕 gork | $0.00118700 | MC: $731,462 | Risk: 30/100 | pumpswap
+[2025-12-21 10:06:39]   🆕 STRAX | $0.06330000 | MC: $245,788,524 | Risk: 45/100 | meteora
+[2025-12-21 10:06:39]   🆕 FUN | $0.00172900 | MC: $262,930 | Risk: 45/100 | uniswap
+[2025-12-21 10:06:39]   🆕 FAIR3 | $0.00853700 | MC: $1,087,539 | Risk: 30/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 LIQD | $0.00182700 | MC: $51,777 | Risk: 65/100 | hyperswap
+[2025-12-21 10:06:39]   🆕 LAUNCHCOIN | $0.00014940 | MC: $87,831 | Risk: 50/100 | raydium
+[2025-12-21 10:06:39]   🆕 NEW | $0.00604200 | MC: $1,191,924,209 | Risk: 45/100 | meteora
+[2025-12-21 10:06:39]   🆕 LAKKHI | $0.00013080 | MC: $80,777 | Risk: 65/100 | raydium
+[2025-12-21 10:06:39]   🆕 NEWME | $0.00002928 | MC: $37,659 | Risk: 50/100 | raydium
+[2025-12-21 10:06:39]   🆕 Citadail | $0.00013540 | MC: $179,009 | Risk: 45/100 | raydium
+[2025-12-21 10:06:39]   🆕 XDC | $0.00000147 | MC: $204,159 | Risk: 45/100 | uniswap
+[2025-12-21 10:06:39]   🆕 SUEDE | $0.00238800 | MC: $339,646 | Risk: 45/100 | raydium
+[2025-12-21 10:06:39]   🆕 ✨ | $0.00000000 | MC: $0 | Risk: 95/100 | pulsex
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 XAVA | $0.15010000 | MC: $58,212 | Risk: 65/100 | pangolin
+[2025-12-21 10:06:39]   🆕 TFS | $0.00347500 | MC: $361,554 | Risk: 30/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 STARS | $0.00439800 | MC: $73,740 | Risk: 65/100 | raydium
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000213 | MC: $1,328 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000219 | MC: $437 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000222 | MC: $558 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000000 | MC: $0 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.00000223 | MC: $3,329 | Risk: 95/100 | radioshack
+[2025-12-21 10:06:39]   🆕 XAVA | $0.14980000 | MC: $709,695 | Risk: 30/100 | traderjoe
+[2025-12-21 10:06:39]   🆕 TFS | $0.00346200 | MC: $2,109 | Risk: 95/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 NFTL | $0.00076480 | MC: $252,635 | Risk: 45/100 | pancakeswap
+[2025-12-21 10:06:39]   🆕 LAUNCH | $0.11630000 | MC: $19,402 | Risk: 65/100 | pancakeswap
+[2025-12-21 10:06:39] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 10:06:40] 📉 DUMP EXIT: Pepstein/USDT | -90% | Got $47.35 back | Sniper Safe
+[2025-12-21 10:06:41] 📉 DUMP EXIT: JEFFREY/USDT | -91% | Got $44.70 back | Sniper Safe
+[2025-12-21 10:06:42] 📉 DUMP EXIT: epstoon/USDT | -91% | Got $42.42 back | Sniper Safe
+[2025-12-21 10:06:44] 📉 DUMP EXIT: NAILONG/USDT | -100% | Got $0.00 back | Sniper Safe
+[2025-12-21 10:06:45] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper Safe
+[2025-12-21 10:06:45] 📉 DUMP EXIT: Muhehehe/USDT | -96% | Got $14.34 back | Sniper Safe
+[2025-12-21 10:06:56] 📉 DUMP EXIT: Pepstein/USDT | -90% | Got $42.74 back | Sniper Degen
+[2025-12-21 10:06:57] 📉 DUMP EXIT: JEFFREY/USDT | -91% | Got $36.41 back | Sniper Degen
+[2025-12-21 10:07:01] 📉 DUMP EXIT: epstoon/USDT | -91% | Got $24.12 back | Sniper Degen
+[2025-12-21 10:07:02] 📉 DUMP EXIT: NAILONG/USDT | -100% | Got $0.00 back | Sniper Degen
+[2025-12-21 10:07:03] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper Degen
+[2025-12-21 10:07:03] 📉 DUMP EXIT: Muhehehe/USDT | -96% | Got $7.40 back | Sniper Degen
+[2025-12-21 10:07:19] 📉 DUMP EXIT: Pepstein/USDT | -90% | Got $42.74 back | Sniper YOLO
+[2025-12-21 10:07:20] 📉 DUMP EXIT: JEFFREY/USDT | -91% | Got $36.41 back | Sniper YOLO
+[2025-12-21 10:07:23] 📉 DUMP EXIT: epstoon/USDT | -91% | Got $24.12 back | Sniper YOLO
+[2025-12-21 10:07:24] 📉 DUMP EXIT: NAILONG/USDT | -100% | Got $0.00 back | Sniper YOLO
+[2025-12-21 10:07:25] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper YOLO
+[2025-12-21 10:07:25] 📉 DUMP EXIT: Muhehehe/USDT | -96% | Got $7.40 back | Sniper YOLO
+[2025-12-21 10:07:27] 💀 RUG DETECTED: New/USDT | No liquidity pairs found | Lost $188.68 | Sniper YOLO
+[2025-12-21 10:07:40] 💀 RUG DETECTED: PTxSOL/USDT | No liquidity pairs found | Lost $52.34 | Sniper YOLO
+[2025-12-21 10:07:44] 💀 RUG DETECTED: ZLD/USDT | No liquidity pairs found | Lost $500.00 | Sniper Quickflip
+[2025-12-21 10:07:45] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper Quickflip
+[2025-12-21 10:07:46] 📉 DUMP EXIT: Muhehehe/USDT | -95% | Got $19.94 back | Sniper Quickflip
+[2025-12-21 10:07:46] 💀 RUG DETECTED: New/USDT | No liquidity pairs found | Lost $295.25 | Sniper Quickflip
+[2025-12-21 10:07:50] 📉 DUMP EXIT: 王佩奇/USDT | -90% | Got $14.00 back | Sniper Quickflip
+[2025-12-21 10:07:53] 💀 RUG DETECTED: KRAW /USDT | No liquidity pairs found | Lost $75.05 | Sniper Quickflip
+[2025-12-21 10:07:59] 💀 RUG DETECTED: ZLD/USDT | No liquidity pairs found | Lost $228.07 | Sniper All-In
+[2025-12-21 10:08:00] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper All-In
+[2025-12-21 10:08:00] 📉 DUMP EXIT: Muhehehe/USDT | -95% | Got $11.04 back | Sniper All-In
+[2025-12-21 10:08:02] 💀 RUG DETECTED: New/USDT | No liquidity pairs found | Lost $189.98 | Sniper All-In
+[2025-12-21 10:08:04] 💀 RUG DETECTED: FAIR/USDT | No liquidity pairs found | Lost $168.18 | Sniper All-In
+[2025-12-21 10:08:05] 📉 DUMP EXIT: 王佩奇/USDT | -90% | Got $14.76 back | Sniper All-In
+[2025-12-21 10:08:08] 💀 RUG DETECTED: KRAW /USDT | No liquidity pairs found | Lost $124.02 | Sniper All-In
+[2025-12-21 10:08:16] 💀 RUG DETECTED: PTxSOL/USDT | No liquidity pairs found | Lost $83.47 | Sniper All-In
+[2025-12-21 10:08:21] 💀 RUG DETECTED: LAUNCH/USDT | No liquidity pairs found | Lost $63.46 | Sniper All-In
+[2025-12-21 10:08:23] 💀 RUG DETECTED: fairy /USDT | No liquidity pairs found | Lost $54.49 | Sniper All-In
+[2025-12-21 10:08:24] 💀 RUG DETECTED: FLNCHY/USDT | No liquidity pairs found | Lost $52.86 | Sniper All-In
+[2025-12-21 10:08:29] 💀 RUG DETECTED: ZLD/USDT | No liquidity pairs found | Lost $315.12 | Sniper Spray
+[2025-12-21 10:08:30] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper Spray
+[2025-12-21 10:08:31] 📉 DUMP EXIT: Muhehehe/USDT | -95% | Got $14.04 back | Sniper Spray
+[2025-12-21 10:08:31] 💀 RUG DETECTED: New/USDT | No liquidity pairs found | Lost $231.65 | Sniper Spray
+[2025-12-21 10:08:33] 💀 RUG DETECTED: FAIR/USDT | No liquidity pairs found | Lost $188.68 | Sniper Spray
+[2025-12-21 10:08:35] 📉 DUMP EXIT: 王佩奇/USDT | -90% | Got $15.23 back | Sniper Spray
+[2025-12-21 10:08:39] 💀 RUG DETECTED: KRAW /USDT | No liquidity pairs found | Lost $112.97 | Sniper Spray
+[2025-12-21 10:08:44] 💀 RUG DETECTED: PTxSOL/USDT | No liquidity pairs found | Lost $57.99 | Sniper Spray
+[2025-12-21 10:08:49] 💀 RUG DETECTED: ZLD/USDT | No liquidity pairs found | Lost $315.12 | Sniper Quickflip
+[2025-12-21 10:08:50] 📉 DUMP EXIT: BTCPEPE/USDT | -100% | Got $0.00 back | Sniper Quickflip
+[2025-12-21 10:08:51] 📉 DUMP EXIT: Muhehehe/USDT | -95% | Got $14.04 back | Sniper Quickflip
+[2025-12-21 10:08:52] 💀 RUG DETECTED: New/USDT | No liquidity pairs found | Lost $231.65 | Sniper Quickflip
+[2025-12-21 10:08:55] 📉 DUMP EXIT: 王佩奇/USDT | -90% | Got $16.03 back | Sniper Quickflip
+[2025-12-21 10:08:58] 💀 RUG DETECTED: KRAW /USDT | No liquidity pairs found | Lost $118.91 | Sniper Quickflip
+[2025-12-21 10:09:04] 💀 RUG DETECTED: PTxSOL/USDT | No liquidity pairs found | Lost $61.04 | Sniper Quickflip
+[2025-12-21 10:09:06]   ⚠️ 52 positions closed (rugs/dumps)
+[2025-12-21 10:09:06] 🐋 Checking whale signals...
+[2025-12-21 10:09:13] 🐋 WHALE SL: SOPH/USDT -15.3% [Hsaka Gaming]
+[2025-12-21 10:09:13] 🐋 WHALE BUY: ASR/USDT @ $1.8120 | Hsaka (simulated) (85%) | Hsaka Gaming
+[2025-12-21 10:09:13] 🐋 WHALE BUY: ACT/USDT @ $0.0406 | Hsaka (simulated) (83.993%) | Hsaka Gaming
+[2025-12-21 10:09:13] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | Hsaka (simulated) (76.092%) | Hsaka Gaming
+[2025-12-21 10:09:21] 🐋 WHALE SL: SOPH/USDT -15.3% [Copy Hsaka (Momentum)]
+[2025-12-21 10:09:21] 🐋 WHALE BUY: ASR/USDT @ $1.8090 | Hsaka (simulated) (85%) | Copy Hsaka (Momentum)
+[2025-12-21 10:09:21] 🐋 WHALE BUY: ACT/USDT @ $0.0406 | Hsaka (simulated) (83.993%) | Copy Hsaka (Momentum)
+[2025-12-21 10:09:21] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | Hsaka (simulated) (75.85%) | Copy Hsaka (Momentum)
+[2025-12-21 10:09:29] 🐋 WHALE BUY: ASR/USDT @ $1.8060 | CryptoCobain (simulated) (70%) | Copy Degen King
+[2025-12-21 10:09:29] 🐋 WHALE BUY: ACT/USDT @ $0.0405 | CryptoCobain (simulated) (70%) | Copy Degen King
+[2025-12-21 10:09:29] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | CryptoCobain (simulated) (65.72800000000001%) | Copy Degen King
+[2025-12-21 10:09:36] 🐋 WHALE BUY: ASR/USDT @ $1.8000 | Hsaka (simulated) (85%) | Smart Money
+[2025-12-21 10:09:36] 🐋 WHALE BUY: ACT/USDT @ $0.0406 | Hsaka (simulated) (83.663%) | Smart Money
+[2025-12-21 10:09:36] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | Hsaka (simulated) (75.485%) | Smart Money
+[2025-12-21 10:09:41] 🐋 WHALE SL: SOPH/USDT -15.5% [Hsaka Gaming]
+[2025-12-21 10:09:41] 🐋 WHALE BUY: ASR/USDT @ $1.8040 | Hsaka (simulated) (85%) | Hsaka Gaming
+[2025-12-21 10:09:41] 🐋 WHALE BUY: ACT/USDT @ $0.0405 | Hsaka (simulated) (83.663%) | Hsaka Gaming
+[2025-12-21 10:09:41] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | Hsaka (simulated) (75.364%) | Hsaka Gaming
+[2025-12-21 10:09:52] 🐋 WHALE SL: SOPH/USDT -15.5% [Copy Hsaka (Momentum)]
+[2025-12-21 10:09:52] 🐋 WHALE BUY: ASR/USDT @ $1.8030 | Hsaka (simulated) (85%) | Copy Hsaka (Momentum)
+[2025-12-21 10:09:52] 🐋 WHALE BUY: ACT/USDT @ $0.0405 | Hsaka (simulated) (84.106%) | Copy Hsaka (Momentum)
+[2025-12-21 10:09:52] 🐋 WHALE BUY: VTHO/USDT @ $0.0010 | Hsaka (simulated) (75.243%) | Copy Hsaka (Momentum)
+[2025-12-21 10:10:08] 💾 Saved 127 trades
+[2025-12-21 10:10:08] 📈 Classic: 53 | 🎯 Sniper: 0 | 🐋 Whale: 22 | 🆕 New: 139
+[2025-12-21 10:10:08] 📊 Portfolio history recorded
+[2025-12-21 10:10:08] ⏳ Next scan in 60s...
+[2025-12-21 10:11:08] 
+==================== SCAN #2 ====================
+[2025-12-21 10:11:09] 📊 Scanning existing cryptos...
+[2025-12-21 10:11:09] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 10:11:11]   BTC/USDT [1h]: $88,830.09 | RSI 65.5 | SELL
+[2025-12-21 10:11:12]   BTC/USDT [15m]: $88,830.10 | RSI 78.4 | SELL
+[2025-12-21 10:11:14]   BTC/USDT [4h]: $88,829.22 | RSI 78.3 | SELL
+[2025-12-21 10:11:16]   BTC/USDT [5m]: $88,829.21 | RSI 55.1 | HOLD
+[2025-12-21 10:11:18]   ETH/USDT [1h]: $3,003.01 | RSI 63.9 | HOLD
+[2025-12-21 10:11:20]   ETH/USDT [15m]: $3,003.01 | RSI 85.7 | SELL
+[2025-12-21 10:11:22]   ETH/USDT [4h]: $3,002.46 | RSI 80.9 | SELL
+[2025-12-21 10:11:24]   ETH/USDT [5m]: $3,002.47 | RSI 57.0 | HOLD
+[2025-12-21 10:11:26]   SOL/USDT [1h]: $126.39 | RSI 49.2 | HOLD
+[2025-12-21 10:11:28]   SOL/USDT [15m]: $126.35 | RSI 72.5 | SELL
+[2025-12-21 10:11:30]   SOL/USDT [4h]: $126.35 | RSI 79.0 | STRONG_SELL
+[2025-12-21 10:11:32]   SOL/USDT [5m]: $126.33 | RSI 59.5 | HOLD
+[2025-12-21 10:11:34]   AVAX/USDT [1h]: $12.27 | RSI 50.0 | HOLD
+[2025-12-21 10:11:36]   AVAX/USDT [15m]: $12.27 | RSI 75.0 | SELL
+[2025-12-21 10:11:38]   AVAX/USDT [4h]: $12.27 | RSI 74.5 | STRONG_SELL
+[2025-12-21 10:11:40]   AVAX/USDT [5m]: $12.27 | RSI 48.5 | HOLD
+[2025-12-21 10:11:42]   LINK/USDT [1h]: $12.66 | RSI 57.4 | HOLD
+[2025-12-21 10:11:44]   LINK/USDT [15m]: $12.66 | RSI 75.0 | SELL
+[2025-12-21 10:11:46]   LINK/USDT [4h]: $12.66 | RSI 71.6 | STRONG_SELL
+[2025-12-21 10:11:48]   LINK/USDT [5m]: $12.66 | RSI 54.1 | HOLD
+[2025-12-21 10:11:50]   AAVE/USDT [1h]: $179.28 | RSI 37.0 | HOLD
+[2025-12-21 10:11:52]   AAVE/USDT [15m]: $179.28 | RSI 72.8 | SELL
+[2025-12-21 10:11:54]   AAVE/USDT [4h]: $179.24 | RSI 52.2 | HOLD
+[2025-12-21 10:11:56]   AAVE/USDT [5m]: $179.24 | RSI 57.3 | HOLD
+[2025-12-21 10:11:58]   UNI/USDT [1h]: $6.33 | RSI 55.0 | HOLD
+[2025-12-21 10:12:00]   UNI/USDT [15m]: $6.33 | RSI 33.8 | BUY
+[2025-12-21 10:12:02]   UNI/USDT [4h]: $6.33 | RSI 92.9 | SELL
+[2025-12-21 10:12:04]   UNI/USDT [5m]: $6.33 | RSI 35.4 | HOLD
+[2025-12-21 10:12:06]   DOGE/USDT [1h]: $0.13 | RSI 53.7 | HOLD
+[2025-12-21 10:12:08]   DOGE/USDT [15m]: $0.13 | RSI 69.8 | SELL
+[2025-12-21 10:12:10]   DOGE/USDT [4h]: $0.13 | RSI 79.5 | SELL
+[2025-12-21 10:12:12]   SHIB/USDT [1h]: $0.00 | RSI 48.3 | HOLD
+[2025-12-21 10:12:14]   SHIB/USDT [15m]: $0.00 | RSI 64.7 | HOLD
+[2025-12-21 10:12:16]   PEPE/USDT [1h]: $0.00 | RSI 53.8 | HOLD
+[2025-12-21 10:12:18]   PEPE/USDT [15m]: $0.00 | RSI 45.5 | HOLD
+[2025-12-21 10:12:20]   PEPE/USDT [4h]: $0.00 | RSI 80.9 | SELL
+[2025-12-21 10:12:22]   BONK/USDT [1h]: $0.00 | RSI 40.0 | HOLD
+[2025-12-21 10:12:24]   BONK/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:12:25]   TURBO/USDT [1h]: $0.00 | RSI 35.3 | HOLD
+[2025-12-21 10:12:27]   TURBO/USDT [15m]: $0.00 | RSI 55.9 | HOLD
+[2025-12-21 10:12:29]   FLOKI/USDT [1h]: $0.00 | RSI 54.2 | HOLD
+[2025-12-21 10:12:31]   FLOKI/USDT [15m]: $0.00 | RSI 65.9 | SELL
+[2025-12-21 10:12:33]   BNB/USDT [1h]: $857.45 | RSI 59.1 | HOLD
+[2025-12-21 10:12:35]   BNB/USDT [15m]: $857.45 | RSI 78.2 | SELL
+[2025-12-21 10:12:37]   BNB/USDT [4h]: $857.46 | RSI 72.1 | STRONG_SELL
+[2025-12-21 10:12:39]   XRP/USDT [1h]: $1.95 | RSI 63.3 | HOLD
+[2025-12-21 10:12:41]   XRP/USDT [15m]: $1.95 | RSI 76.5 | SELL
+[2025-12-21 10:12:43]   XRP/USDT [4h]: $1.95 | RSI 79.9 | SELL
+[2025-12-21 10:12:45]   ADA/USDT [1h]: $0.37 | RSI 41.9 | HOLD
+[2025-12-21 10:12:47]   ADA/USDT [15m]: $0.37 | RSI 70.7 | SELL
+[2025-12-21 10:12:49]   ADA/USDT [4h]: $0.37 | RSI 64.7 | HOLD
+[2025-12-21 10:12:51]   DOT/USDT [1h]: $1.84 | RSI 55.2 | HOLD
+[2025-12-21 10:12:53]   DOT/USDT [15m]: $1.84 | RSI 79.2 | SELL
+[2025-12-21 10:12:55]   DOT/USDT [4h]: $1.84 | RSI 62.9 | HOLD
+[2025-12-21 10:12:57]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:12:59]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:13:01]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:13:03]   ATOM/USDT [1h]: $1.98 | RSI 49.0 | HOLD
+[2025-12-21 10:13:04]   ATOM/USDT [15m]: $1.98 | RSI 60.0 | HOLD
+[2025-12-21 10:13:06]   ATOM/USDT [4h]: $1.98 | RSI 67.4 | SELL
+[2025-12-21 10:13:09]   LTC/USDT [1h]: $77.70 | RSI 52.0 | HOLD
+[2025-12-21 10:13:11]   LTC/USDT [15m]: $77.70 | RSI 69.2 | SELL
+[2025-12-21 10:13:13]   LTC/USDT [4h]: $77.71 | RSI 66.0 | SELL
+[2025-12-21 10:13:15]   APT/USDT [1h]: $1.65 | RSI 71.1 | SELL
+[2025-12-21 10:13:17]   APT/USDT [15m]: $1.65 | RSI 64.6 | HOLD
+[2025-12-21 10:13:19]   APT/USDT [4h]: $1.65 | RSI 78.4 | SELL
+[2025-12-21 10:13:21]   ARB/USDT [1h]: $0.19 | RSI 58.8 | HOLD
+[2025-12-21 10:13:23]   ARB/USDT [15m]: $0.19 | RSI 66.7 | SELL
+[2025-12-21 10:13:25]   ARB/USDT [4h]: $0.19 | RSI 71.2 | STRONG_SELL
+[2025-12-21 10:13:26]   OP/USDT [1h]: $0.28 | RSI 35.8 | HOLD
+[2025-12-21 10:13:28]   OP/USDT [15m]: $0.28 | RSI 55.6 | HOLD
+[2025-12-21 10:13:30]   OP/USDT [4h]: $0.28 | RSI 67.4 | SELL
+[2025-12-21 10:13:32]   INJ/USDT [1h]: $4.73 | RSI 39.0 | HOLD
+[2025-12-21 10:13:34]   INJ/USDT [15m]: $4.73 | RSI 59.2 | HOLD
+[2025-12-21 10:13:36]   INJ/USDT [4h]: $4.73 | RSI 63.7 | HOLD
+[2025-12-21 10:13:38]   SUI/USDT [1h]: $1.47 | RSI 55.6 | HOLD
+[2025-12-21 10:13:40]   SUI/USDT [15m]: $1.47 | RSI 70.4 | SELL
+[2025-12-21 10:13:42]   SUI/USDT [4h]: $1.47 | RSI 74.4 | STRONG_SELL
+[2025-12-21 10:13:44]   AXS/USDT [1h]: $0.87 | RSI 42.9 | HOLD
+[2025-12-21 10:13:46]   AXS/USDT [15m]: $0.87 | RSI 57.9 | HOLD
+[2025-12-21 10:13:48]   SAND/USDT [1h]: $0.12 | RSI 50.0 | HOLD
+[2025-12-21 10:13:50]   SAND/USDT [15m]: $0.12 | RSI 67.9 | SELL
+[2025-12-21 10:13:52]   GALA/USDT [1h]: $0.01 | RSI 38.2 | HOLD
+[2025-12-21 10:13:54]   GALA/USDT [15m]: $0.01 | RSI 58.8 | HOLD
+[2025-12-21 10:13:56]   WIF/USDT [1h]: $0.35 | RSI 52.0 | HOLD
+[2025-12-21 10:13:58]   WIF/USDT [15m]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 10:14:00]   JUP/USDT [1h]: $0.19 | RSI 41.8 | HOLD
+[2025-12-21 10:14:02]   JUP/USDT [15m]: $0.19 | RSI 63.3 | HOLD
+[2025-12-21 10:14:04]   NEAR/USDT [15m]: $1.52 | RSI 65.1 | SELL
+[2025-12-21 10:14:06]   NEAR/USDT [1h]: $1.52 | RSI 52.5 | HOLD
+[2025-12-21 10:14:08]   NEAR/USDT [4h]: $1.52 | RSI 63.4 | HOLD
+[2025-12-21 10:14:10]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:14:12]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:14:14]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:14:16]   ALGO/USDT [15m]: $0.11 | RSI 65.0 | SELL
+[2025-12-21 10:14:17]   ALGO/USDT [1h]: $0.11 | RSI 55.9 | HOLD
+[2025-12-21 10:14:19]   ALGO/USDT [4h]: $0.11 | RSI 68.5 | SELL
+[2025-12-21 10:14:21]   VET/USDT [15m]: $0.01 | RSI 82.6 | SELL
+[2025-12-21 10:14:23]   VET/USDT [1h]: $0.01 | RSI 62.9 | HOLD
+[2025-12-21 10:14:25]   VET/USDT [4h]: $0.01 | RSI 76.2 | SELL
+[2025-12-21 10:14:27]   IMX/USDT [15m]: $0.23 | RSI 66.7 | SELL
+[2025-12-21 10:14:29]   IMX/USDT [1h]: $0.23 | RSI 38.9 | HOLD
+[2025-12-21 10:14:31]   IMX/USDT [4h]: $0.23 | RSI 58.3 | HOLD
+[2025-12-21 10:14:33]   LRC/USDT [15m]: $0.06 | RSI 47.1 | HOLD
+[2025-12-21 10:14:35]   LRC/USDT [1h]: $0.06 | RSI 38.7 | HOLD
+[2025-12-21 10:14:37]   LRC/USDT [4h]: $0.06 | RSI 60.7 | HOLD
+[2025-12-21 10:14:39]   METIS/USDT [15m]: $5.48 | RSI 53.8 | HOLD
+[2025-12-21 10:14:41]   METIS/USDT [1h]: $5.48 | RSI 42.2 | HOLD
+[2025-12-21 10:14:43]   METIS/USDT [4h]: $5.48 | RSI 68.2 | SELL
+[2025-12-21 10:14:48]   SEI/USDT [15m]: $0.11 | RSI 77.3 | SELL
+[2025-12-21 10:14:50]   SEI/USDT [1h]: $0.11 | RSI 47.3 | HOLD
+[2025-12-21 10:14:51]   TIA/USDT [15m]: $0.47 | RSI 54.1 | HOLD
+[2025-12-21 10:14:53]   TIA/USDT [1h]: $0.47 | RSI 42.4 | HOLD
+[2025-12-21 10:14:55]   PYTH/USDT [15m]: $0.06 | RSI 46.2 | HOLD
+[2025-12-21 10:14:57]   PYTH/USDT [1h]: $0.06 | RSI 45.2 | HOLD
+[2025-12-21 10:14:59]   JTO/USDT [15m]: $0.36 | RSI 66.7 | SELL
+[2025-12-21 10:15:02]   JTO/USDT [1h]: $0.36 | RSI 33.3 | BUY
+[2025-12-21 10:15:04]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:15:05]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:15:07]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:15:09]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:15:11]   SNX/USDT [1h]: $0.42 | RSI 40.0 | HOLD
+[2025-12-21 10:15:14]   SNX/USDT [15m]: $0.42 | RSI 62.5 | HOLD
+[2025-12-21 10:15:16]   SNX/USDT [4h]: $0.42 | RSI 73.7 | STRONG_SELL
+[2025-12-21 10:15:18]   SNX/USDT [5m]: $0.42 | RSI 54.5 | HOLD
+[2025-12-21 10:15:20]   COMP/USDT [1h]: $24.13 | RSI 21.1 | BUY
+[2025-12-21 10:15:22]   COMP/USDT [15m]: $24.13 | RSI 40.0 | HOLD
+[2025-12-21 10:15:24]   COMP/USDT [5m]: $24.13 | RSI 40.9 | HOLD
+[2025-12-21 10:15:26]   CRV/USDT [1h]: $0.35 | RSI 45.5 | HOLD
+[2025-12-21 10:15:28]   CRV/USDT [15m]: $0.35 | RSI 62.7 | HOLD
+[2025-12-21 10:15:30]   CRV/USDT [4h]: $0.35 | RSI 60.6 | HOLD
+[2025-12-21 10:15:32]   CRV/USDT [5m]: $0.35 | RSI 54.3 | HOLD
+[2025-12-21 10:15:34]   SUSHI/USDT [1h]: $0.30 | RSI 55.2 | HOLD
+[2025-12-21 10:15:36]   SUSHI/USDT [15m]: $0.30 | RSI 51.4 | HOLD
+[2025-12-21 10:15:38]   SUSHI/USDT [4h]: $0.30 | RSI 74.1 | SELL
+[2025-12-21 10:15:40]   SUSHI/USDT [5m]: $0.30 | RSI 45.6 | HOLD
+[2025-12-21 10:15:42]   1INCH/USDT [1h]: $0.16 | RSI 46.9 | HOLD
+[2025-12-21 10:15:44]   1INCH/USDT [15m]: $0.16 | RSI 57.7 | HOLD
+[2025-12-21 10:15:46]   1INCH/USDT [4h]: $0.16 | RSI 68.5 | SELL
+[2025-12-21 10:15:48]   1INCH/USDT [5m]: $0.16 | RSI 57.9 | HOLD
+[2025-12-21 10:15:50]   YFI/USDT [1h]: $3,404.00 | RSI 51.4 | HOLD
+[2025-12-21 10:15:52]   YFI/USDT [15m]: $3,404.00 | RSI 64.0 | HOLD
+[2025-12-21 10:15:54]   YFI/USDT [5m]: $3,404.00 | RSI 64.2 | HOLD
+[2025-12-21 10:15:56]   DYDX/USDT [1h]: $0.17 | RSI 36.6 | HOLD
+[2025-12-21 10:15:58]   DYDX/USDT [15m]: $0.17 | RSI 52.8 | HOLD
+[2025-12-21 10:16:00]   DYDX/USDT [4h]: $0.17 | RSI 52.6 | HOLD
+[2025-12-21 10:16:02]   DYDX/USDT [5m]: $0.17 | RSI 47.1 | HOLD
+[2025-12-21 10:16:04]   MEME/USDT [15m]: $0.00 | RSI 52.4 | HOLD
+[2025-12-21 10:16:06]   MEME/USDT [1h]: $0.00 | RSI 44.8 | HOLD
+[2025-12-21 10:16:08]   MANA/USDT [15m]: $0.13 | RSI 46.2 | HOLD
+[2025-12-21 10:16:10]   MANA/USDT [1h]: $0.13 | RSI 47.1 | HOLD
+[2025-12-21 10:16:12]   ENJ/USDT [15m]: $0.03 | RSI 51.3 | HOLD
+[2025-12-21 10:16:15]   ENJ/USDT [1h]: $0.03 | RSI 48.4 | HOLD
+[2025-12-21 10:16:17]   RONIN/USDT [15m]: $0.15 | RSI 54.2 | HOLD
+[2025-12-21 10:16:19]   RONIN/USDT [1h]: $0.15 | RSI 24.1 | BUY
+[2025-12-21 10:16:21]   ILV/USDT [15m]: $5.80 | RSI 27.8 | BUY
+[2025-12-21 10:16:23]   ILV/USDT [1h]: $5.80 | RSI 43.4 | HOLD
+[2025-12-21 10:16:25]   LDO/USDT [15m]: $0.54 | RSI 74.8 | SELL
+[2025-12-21 10:16:27]   LDO/USDT [1h]: $0.54 | RSI 48.2 | HOLD
+[2025-12-21 10:16:39]   GMX/USDT [15m]: $8.17 | RSI 61.5 | HOLD
+[2025-12-21 10:16:41]   GMX/USDT [1h]: $8.17 | RSI 59.3 | HOLD
+[2025-12-21 10:16:43]   GMX/USDT [4h]: $8.17 | RSI 75.0 | SELL
+[2025-12-21 10:16:45]   SKL/USDT [1h]: $0.01 | RSI 51.1 | HOLD
+[2025-12-21 10:16:47]   SKL/USDT [15m]: $0.01 | RSI 42.9 | HOLD
+[2025-12-21 10:16:49]   SKL/USDT [4h]: $0.01 | RSI 61.8 | HOLD
+[2025-12-21 10:16:51]   CELR/USDT [1h]: $0.00 | RSI 49.4 | HOLD
+[2025-12-21 10:16:53]   CELR/USDT [15m]: $0.00 | RSI 70.2 | SELL
+[2025-12-21 10:16:55]   CELR/USDT [4h]: $0.00 | RSI 80.3 | STRONG_SELL
+[2025-12-21 10:16:57]   MAGIC/USDT [15m]: $0.09 | RSI 43.5 | HOLD
+[2025-12-21 10:16:59]   FET/USDT [1h]: $0.21 | RSI 48.8 | HOLD
+[2025-12-21 10:17:01]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:17:03]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:17:04]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:17:06]   TAO/USDT [1h]: $225.90 | RSI 40.0 | HOLD
+[2025-12-21 10:17:08]   WLD/USDT [1h]: $0.52 | RSI 48.8 | HOLD
+[2025-12-21 10:17:10]   ARKM/USDT [1h]: $0.19 | RSI 46.2 | HOLD
+[2025-12-21 10:17:12]   RENDER/USDT [1h]: $1.29 | RSI 46.1 | HOLD
+[2025-12-21 10:17:12]   >> EMA Crossover: BUY 3.956009 SOL @ $126.39
+[2025-12-21 10:17:12]   >> Ichimoku Cloud: BUY 12.603325 UNI @ $6.33
+[2025-12-21 10:17:12]   >> Martingale: BUY 917.355137 OP @ $0.28
+[2025-12-21 10:17:12]   >> Martingale: BUY 50.904292 INJ @ $4.73
+[2025-12-21 10:17:12]   >> Martingale Safe: BUY 917.355137 OP @ $0.28
+[2025-12-21 10:17:12]   >> Martingale Safe: BUY 50.904292 INJ @ $4.73
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 0.033148 ETH @ $3,003.01
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 0.110289 BNB @ $857.45
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 0.710808 SOL @ $126.39
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 43.877996 XRP @ $1.95
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 6.607965 AVAX @ $12.27
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 580.975631 DOGE @ $0.13
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 39.725549 DOT @ $1.84
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 5.490975 LINK @ $12.66
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 10.437799 UNI @ $6.33
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 31.749977 ATOM @ $1.98
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 0.767066 LTC @ $77.70
+[2025-12-21 10:17:12]   >> OI Breakout: BUY 296.600333 ARB @ $0.19
+[2025-12-21 10:17:12]   >> OI Breakout: SELL 511.160921 SUI @ $1.47 | PnL: $-2.33
+[2025-12-21 10:17:12]   >> Grid Tight: BUY 89.581661 MATIC @ $0.38
+[2025-12-21 10:17:12]   >> Low Risk DCA: BUY 1702.994288 DYDX @ $0.17
+[2025-12-21 10:17:12]   >> Stoch Memes: BUY 36252736.032570 PEPE @ $0.00
+[2025-12-21 10:17:12]   >> Stoch Memes: BUY 383.302567 WIF @ $0.35
+[2025-12-21 10:17:12]   >> Stoch Memes: BUY 124632.853379 MEME @ $0.00
+[2025-12-21 10:17:12]   >> VWAP Memes: BUY 80344.113517 TURBO @ $0.00
+[2025-12-21 10:17:12]   >> VWAP Trend L2: BUY 427.332326 ARB @ $0.19
+[2025-12-21 10:17:12]   >> VWAP Trend L2: BUY 204.266879 MATIC @ $0.38
+[2025-12-21 10:17:12]   >> VWAP Trend L2: BUY 7038.614847 SKL @ $0.01
+[2025-12-21 10:17:12]   >> VWAP Trend L2: BUY 19083.960637 CELR @ $0.00
+[2025-12-21 10:17:12]   >> VWAP Trend L2: BUY 12.125106 METIS @ $5.48
+[2025-12-21 10:17:12]   >> Stoch New Coins: BUY 641.707410 TIA @ $0.47
+[2025-12-21 10:17:12]   >> Stoch New Coins: BUY 804.055810 JTO @ $0.36
+[2025-12-21 10:17:12]   >> Ichimoku New: BUY 9.007396 APT @ $1.65
+[2025-12-21 10:17:12]   >> Ichimoku New: BUY 9.625195 SUI @ $1.47
+[2025-12-21 10:17:12]   >> Ichimoku New: BUY 120.332218 SEI @ $0.11
+[2025-12-21 10:17:16]   >> Ichimoku Scalp: BUY 0.004826 BTC @ $88,830.10
+[2025-12-21 10:17:16]   >> Ichimoku Scalp: BUY 0.135615 ETH @ $3,003.01
+[2025-12-21 10:17:16]   >> Ichimoku Scalp: BUY 3.062054 SOL @ $126.35
+[2025-12-21 10:17:16]   >> Ichimoku Swing: BUY 0.005347 BTC @ $88,830.09
+[2025-12-21 10:17:16]   >> Ichimoku Kumo Break: BUY 0.005347 BTC @ $88,830.09
+[2025-12-21 10:17:16]   >> Ichimoku TK Cross: BUY 0.005347 BTC @ $88,830.09
+[2025-12-21 10:17:16]   >> Ichimoku Chikou: BUY 0.005347 BTC @ $88,830.09
+[2025-12-21 10:17:16]   >> Ichimoku Momentum: BUY 0.004826 BTC @ $88,830.10
+[2025-12-21 10:17:16]   >> Ichimoku Momentum: BUY 0.135615 ETH @ $3,003.01
+[2025-12-21 10:17:16]   >> Ichimoku Momentum: BUY 3.062054 SOL @ $126.35
+[2025-12-21 10:17:16] 🎯 Scanning for new tokens...
+[2025-12-21 10:17:49] 🔍 Scanned 141 new tokens across all chains
+[2025-12-21 10:17:49]   🆕 Theter | $0.00001989 | MC: $0 | Risk: 90/100 | pumpfun
+[2025-12-21 10:17:49]   🆕 C-1 | $0.00001747 | MC: $24,950 | Risk: 60/100 | pumpswap
+[2025-12-21 10:17:49]   🆕 MVP | $0.00007699 | MC: $52,666 | Risk: 40/100 | pumpswap
+[2025-12-21 10:17:49]   🆕 TUNA | $0.00066560 | MC: $179,138 | Risk: 20/100 | pumpswap
+[2025-12-21 10:17:49]   🆕 CRYPTOKIDS | $0.00000795 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:17:49]   🆕 2026 | $0.00053970 | MC: $165,561 | Risk: 20/100 | pumpswap
+[2025-12-21 10:17:49]   🆕 FHE | $0.06089000 | MC: $119,763,704 | Risk: 45/100 | orca
+[2025-12-21 10:17:49]   🆕 SEI | $0.35430000 | MC: $3,139,641,620 | Risk: 45/100 | meteora
+[2025-12-21 10:17:49]   🆕 BMT | $0.14560000 | MC: $289,204,658 | Risk: 45/100 | meteora
+[2025-12-21 10:17:49] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 10:19:48] 🐋 Checking whale signals...
+[2025-12-21 10:20:45] 💾 Saved 45 trades
+[2025-12-21 10:20:45] 📈 Classic: 45 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 9
+[2025-12-21 10:20:46] 📊 Portfolio history recorded
+[2025-12-21 10:20:46] ⏳ Next scan in 60s...
+[2025-12-21 10:21:46] 
+==================== SCAN #3 ====================
+[2025-12-21 10:21:46] 📊 Scanning existing cryptos...
+[2025-12-21 10:21:46] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 10:21:48]   BTC/USDT [1h]: $88,811.00 | RSI 64.8 | HOLD
+[2025-12-21 10:21:50]   BTC/USDT [15m]: $88,810.99 | RSI 77.7 | SELL
+[2025-12-21 10:21:52]   BTC/USDT [4h]: $88,811.00 | RSI 78.2 | SELL
+[2025-12-21 10:21:54]   BTC/USDT [5m]: $88,810.99 | RSI 56.6 | HOLD
+[2025-12-21 10:21:56]   ETH/USDT [1h]: $3,004.56 | RSI 65.1 | SELL
+[2025-12-21 10:21:58]   ETH/USDT [15m]: $3,004.57 | RSI 85.2 | SELL
+[2025-12-21 10:22:00]   ETH/USDT [4h]: $3,004.56 | RSI 81.2 | SELL
+[2025-12-21 10:22:02]   ETH/USDT [5m]: $3,004.56 | RSI 65.1 | SELL
+[2025-12-21 10:22:04]   SOL/USDT [1h]: $126.35 | RSI 48.7 | HOLD
+[2025-12-21 10:22:06]   SOL/USDT [15m]: $126.36 | RSI 70.7 | SELL
+[2025-12-21 10:22:08]   SOL/USDT [4h]: $126.37 | RSI 79.0 | STRONG_SELL
+[2025-12-21 10:22:10]   SOL/USDT [5m]: $126.39 | RSI 65.4 | SELL
+[2025-12-21 10:22:12]   AVAX/USDT [1h]: $12.26 | RSI 49.2 | HOLD
+[2025-12-21 10:22:14]   AVAX/USDT [15m]: $12.26 | RSI 71.0 | SELL
+[2025-12-21 10:22:16]   AVAX/USDT [4h]: $12.26 | RSI 74.3 | STRONG_SELL
+[2025-12-21 10:22:18]   AVAX/USDT [5m]: $12.26 | RSI 47.1 | HOLD
+[2025-12-21 10:22:20]   LINK/USDT [1h]: $12.68 | RSI 59.2 | HOLD
+[2025-12-21 10:22:22]   LINK/USDT [15m]: $12.68 | RSI 75.9 | SELL
+[2025-12-21 10:22:24]   LINK/USDT [4h]: $12.68 | RSI 72.1 | STRONG_SELL
+[2025-12-21 10:22:26]   LINK/USDT [5m]: $12.68 | RSI 61.3 | HOLD
+[2025-12-21 10:22:27]   AAVE/USDT [1h]: $179.37 | RSI 37.4 | HOLD
+[2025-12-21 10:22:29]   AAVE/USDT [15m]: $179.36 | RSI 74.3 | SELL
+[2025-12-21 10:22:31]   AAVE/USDT [4h]: $179.36 | RSI 52.5 | HOLD
+[2025-12-21 10:22:33]   AAVE/USDT [5m]: $179.36 | RSI 61.3 | HOLD
+[2025-12-21 10:22:35]   UNI/USDT [1h]: $6.33 | RSI 55.6 | HOLD
+[2025-12-21 10:22:37]   UNI/USDT [15m]: $6.33 | RSI 42.5 | HOLD
+[2025-12-21 10:22:39]   UNI/USDT [4h]: $6.33 | RSI 92.9 | SELL
+[2025-12-21 10:22:41]   UNI/USDT [5m]: $6.33 | RSI 34.4 | BUY
+[2025-12-21 10:22:43]   DOGE/USDT [1h]: $0.13 | RSI 53.7 | HOLD
+[2025-12-21 10:22:45]   DOGE/USDT [15m]: $0.13 | RSI 69.5 | SELL
+[2025-12-21 10:22:47]   DOGE/USDT [4h]: $0.13 | RSI 79.5 | SELL
+[2025-12-21 10:22:49]   SHIB/USDT [1h]: $0.00 | RSI 48.3 | HOLD
+[2025-12-21 10:22:51]   SHIB/USDT [15m]: $0.00 | RSI 61.1 | HOLD
+[2025-12-21 10:22:53]   PEPE/USDT [1h]: $0.00 | RSI 55.6 | HOLD
+[2025-12-21 10:22:55]   PEPE/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:22:57]   PEPE/USDT [4h]: $0.00 | RSI 81.2 | SELL
+[2025-12-21 10:22:59]   BONK/USDT [1h]: $0.00 | RSI 40.0 | HOLD
+[2025-12-21 10:23:01]   BONK/USDT [15m]: $0.00 | RSI 45.8 | HOLD
+[2025-12-21 10:23:03]   TURBO/USDT [1h]: $0.00 | RSI 33.6 | BUY
+[2025-12-21 10:23:04]   TURBO/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:23:06]   FLOKI/USDT [1h]: $0.00 | RSI 53.5 | HOLD
+[2025-12-21 10:23:08]   FLOKI/USDT [15m]: $0.00 | RSI 57.5 | HOLD
+[2025-12-21 10:23:10]   BNB/USDT [1h]: $857.90 | RSI 59.9 | HOLD
+[2025-12-21 10:23:12]   BNB/USDT [15m]: $857.83 | RSI 78.6 | SELL
+[2025-12-21 10:23:14]   BNB/USDT [4h]: $857.75 | RSI 72.2 | STRONG_SELL
+[2025-12-21 10:23:16]   XRP/USDT [1h]: $1.94 | RSI 58.6 | HOLD
+[2025-12-21 10:23:18]   XRP/USDT [15m]: $1.94 | RSI 68.3 | SELL
+[2025-12-21 10:23:20]   XRP/USDT [4h]: $1.94 | RSI 79.1 | SELL
+[2025-12-21 10:23:22]   ADA/USDT [1h]: $0.37 | RSI 40.6 | HOLD
+[2025-12-21 10:23:24]   ADA/USDT [15m]: $0.37 | RSI 69.1 | SELL
+[2025-12-21 10:23:26]   ADA/USDT [4h]: $0.37 | RSI 64.3 | HOLD
+[2025-12-21 10:23:28]   DOT/USDT [1h]: $1.84 | RSI 53.9 | HOLD
+[2025-12-21 10:23:30]   DOT/USDT [15m]: $1.84 | RSI 71.4 | SELL
+[2025-12-21 10:23:32]   DOT/USDT [4h]: $1.84 | RSI 62.6 | HOLD
+[2025-12-21 10:23:34]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:23:36]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:23:38]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:23:40]   ATOM/USDT [1h]: $1.97 | RSI 46.9 | HOLD
+[2025-12-21 10:23:42]   ATOM/USDT [15m]: $1.97 | RSI 46.4 | HOLD
+[2025-12-21 10:23:44]   ATOM/USDT [4h]: $1.97 | RSI 66.8 | SELL
+[2025-12-21 10:23:46]   LTC/USDT [1h]: $77.59 | RSI 50.3 | HOLD
+[2025-12-21 10:23:48]   LTC/USDT [15m]: $77.59 | RSI 62.1 | HOLD
+[2025-12-21 10:23:49]   LTC/USDT [4h]: $77.60 | RSI 65.4 | SELL
+[2025-12-21 10:23:51]   APT/USDT [1h]: $1.64 | RSI 68.7 | SELL
+[2025-12-21 10:23:53]   APT/USDT [15m]: $1.64 | RSI 73.7 | SELL
+[2025-12-21 10:23:55]   APT/USDT [4h]: $1.64 | RSI 78.0 | SELL
+[2025-12-21 10:23:57]   ARB/USDT [1h]: $0.19 | RSI 59.7 | HOLD
+[2025-12-21 10:23:59]   ARB/USDT [15m]: $0.19 | RSI 65.9 | SELL
+[2025-12-21 10:24:01]   ARB/USDT [4h]: $0.19 | RSI 71.4 | STRONG_SELL
+[2025-12-21 10:24:03]   OP/USDT [1h]: $0.28 | RSI 36.5 | HOLD
+[2025-12-21 10:24:05]   OP/USDT [15m]: $0.28 | RSI 52.5 | HOLD
+[2025-12-21 10:24:07]   OP/USDT [4h]: $0.28 | RSI 67.6 | SELL
+[2025-12-21 10:24:09]   INJ/USDT [1h]: $4.72 | RSI 37.1 | HOLD
+[2025-12-21 10:24:11]   INJ/USDT [15m]: $4.72 | RSI 54.6 | HOLD
+[2025-12-21 10:24:13]   INJ/USDT [4h]: $4.72 | RSI 63.2 | HOLD
+[2025-12-21 10:24:15]   SUI/USDT [1h]: $1.47 | RSI 56.1 | HOLD
+[2025-12-21 10:24:25]   SUI/USDT [4h]: $1.47 | RSI 74.5 | STRONG_SELL
+[2025-12-21 10:24:27]   AXS/USDT [1h]: $0.87 | RSI 42.9 | HOLD
+[2025-12-21 10:24:29]   AXS/USDT [15m]: $0.87 | RSI 57.9 | HOLD
+[2025-12-21 10:24:31]   SAND/USDT [1h]: $0.12 | RSI 40.7 | HOLD
+[2025-12-21 10:24:33]   SAND/USDT [15m]: $0.12 | RSI 48.6 | HOLD
+[2025-12-21 10:24:35]   GALA/USDT [1h]: $0.01 | RSI 38.2 | HOLD
+[2025-12-21 10:24:37]   GALA/USDT [15m]: $0.01 | RSI 56.2 | HOLD
+[2025-12-21 10:24:39]   WIF/USDT [1h]: $0.35 | RSI 52.0 | HOLD
+[2025-12-21 10:24:41]   WIF/USDT [15m]: $0.35 | RSI 46.2 | HOLD
+[2025-12-21 10:24:43]   JUP/USDT [1h]: $0.19 | RSI 40.5 | HOLD
+[2025-12-21 10:24:45]   JUP/USDT [15m]: $0.19 | RSI 56.9 | HOLD
+[2025-12-21 10:24:47]   NEAR/USDT [15m]: $1.52 | RSI 63.4 | HOLD
+[2025-12-21 10:24:49]   NEAR/USDT [1h]: $1.52 | RSI 52.5 | HOLD
+[2025-12-21 10:24:51]   NEAR/USDT [4h]: $1.52 | RSI 63.2 | HOLD
+[2025-12-21 10:24:53]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:24:54]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:24:56]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:24:58]   ALGO/USDT [15m]: $0.11 | RSI 56.5 | HOLD
+[2025-12-21 10:25:00]   ALGO/USDT [1h]: $0.11 | RSI 53.3 | HOLD
+[2025-12-21 10:25:02]   ALGO/USDT [4h]: $0.11 | RSI 67.8 | SELL
+[2025-12-21 10:25:04]   VET/USDT [15m]: $0.01 | RSI 77.3 | SELL
+[2025-12-21 10:25:06]   VET/USDT [1h]: $0.01 | RSI 62.0 | HOLD
+[2025-12-21 10:25:08]   VET/USDT [4h]: $0.01 | RSI 76.0 | SELL
+[2025-12-21 10:25:10]   IMX/USDT [15m]: $0.23 | RSI 40.0 | HOLD
+[2025-12-21 10:25:12]   IMX/USDT [1h]: $0.23 | RSI 35.3 | HOLD
+[2025-12-21 10:25:15]   IMX/USDT [4h]: $0.23 | RSI 56.8 | HOLD
+[2025-12-21 10:25:17]   LRC/USDT [15m]: $0.06 | RSI 47.1 | HOLD
+[2025-12-21 10:25:19]   LRC/USDT [1h]: $0.06 | RSI 37.5 | HOLD
+[2025-12-21 10:25:21]   LRC/USDT [4h]: $0.06 | RSI 60.4 | HOLD
+[2025-12-21 10:25:22]   METIS/USDT [15m]: $5.47 | RSI 50.0 | HOLD
+[2025-12-21 10:25:24]   METIS/USDT [1h]: $5.47 | RSI 41.3 | HOLD
+[2025-12-21 10:25:26]   METIS/USDT [4h]: $5.47 | RSI 67.9 | SELL
+[2025-12-21 10:25:31]   SEI/USDT [15m]: $0.11 | RSI 77.3 | SELL
+[2025-12-21 10:25:33]   SEI/USDT [1h]: $0.11 | RSI 46.4 | HOLD
+[2025-12-21 10:25:35]   TIA/USDT [15m]: $0.47 | RSI 51.0 | HOLD
+[2025-12-21 10:25:37]   TIA/USDT [1h]: $0.47 | RSI 41.7 | HOLD
+[2025-12-21 10:25:39]   PYTH/USDT [15m]: $0.06 | RSI 38.5 | HOLD
+[2025-12-21 10:25:41]   PYTH/USDT [1h]: $0.06 | RSI 44.2 | HOLD
+[2025-12-21 10:25:43]   JTO/USDT [15m]: $0.36 | RSI 80.0 | SELL
+[2025-12-21 10:25:45]   JTO/USDT [1h]: $0.36 | RSI 33.3 | BUY
+[2025-12-21 10:25:47]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:25:49]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:25:51]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:25:52]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:25:54]   SNX/USDT [1h]: $0.42 | RSI 37.5 | HOLD
+[2025-12-21 10:25:56]   SNX/USDT [15m]: $0.42 | RSI 55.6 | HOLD
+[2025-12-21 10:25:58]   SNX/USDT [4h]: $0.42 | RSI 73.0 | STRONG_SELL
+[2025-12-21 10:26:00]   SNX/USDT [5m]: $0.42 | RSI 45.5 | HOLD
+[2025-12-21 10:26:02]   COMP/USDT [1h]: $24.10 | RSI 20.3 | BUY
+[2025-12-21 10:26:05]   COMP/USDT [15m]: $24.10 | RSI 34.8 | BUY
+[2025-12-21 10:26:07]   COMP/USDT [5m]: $24.10 | RSI 31.8 | BUY
+[2025-12-21 10:26:09]   CRV/USDT [1h]: $0.35 | RSI 43.7 | HOLD
+[2025-12-21 10:26:11]   CRV/USDT [15m]: $0.35 | RSI 58.1 | HOLD
+[2025-12-21 10:26:12]   CRV/USDT [4h]: $0.35 | RSI 59.8 | HOLD
+[2025-12-21 10:26:14]   CRV/USDT [5m]: $0.35 | RSI 45.2 | HOLD
+[2025-12-21 10:26:16]   SUSHI/USDT [1h]: $0.30 | RSI 53.8 | HOLD
+[2025-12-21 10:26:18]   SUSHI/USDT [15m]: $0.30 | RSI 46.9 | HOLD
+[2025-12-21 10:26:20]   SUSHI/USDT [4h]: $0.30 | RSI 73.0 | SELL
+[2025-12-21 10:26:22]   SUSHI/USDT [5m]: $0.30 | RSI 41.1 | HOLD
+[2025-12-21 10:26:24]   1INCH/USDT [1h]: $0.16 | RSI 45.8 | HOLD
+[2025-12-21 10:26:26]   1INCH/USDT [15m]: $0.16 | RSI 53.6 | HOLD
+[2025-12-21 10:26:28]   1INCH/USDT [4h]: $0.16 | RSI 68.0 | SELL
+[2025-12-21 10:26:30]   1INCH/USDT [5m]: $0.16 | RSI 47.4 | HOLD
+[2025-12-21 10:26:32]   YFI/USDT [1h]: $3,406.00 | RSI 52.1 | HOLD
+[2025-12-21 10:26:34]   YFI/USDT [15m]: $3,406.00 | RSI 65.4 | SELL
+[2025-12-21 10:26:36]   YFI/USDT [5m]: $3,406.00 | RSI 63.0 | HOLD
+[2025-12-21 10:26:38]   DYDX/USDT [1h]: $0.17 | RSI 35.7 | HOLD
+[2025-12-21 10:26:40]   DYDX/USDT [15m]: $0.17 | RSI 50.9 | HOLD
+[2025-12-21 10:26:42]   DYDX/USDT [4h]: $0.17 | RSI 52.2 | HOLD
+[2025-12-21 10:26:44]   DYDX/USDT [5m]: $0.17 | RSI 44.1 | HOLD
+[2025-12-21 10:26:46]   MEME/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:26:48]   MEME/USDT [1h]: $0.00 | RSI 44.1 | HOLD
+[2025-12-21 10:26:50]   MANA/USDT [15m]: $0.13 | RSI 41.4 | HOLD
+[2025-12-21 10:26:52]   MANA/USDT [1h]: $0.13 | RSI 45.1 | HOLD
+[2025-12-21 10:26:54]   ENJ/USDT [15m]: $0.03 | RSI 48.7 | HOLD
+[2025-12-21 10:26:56]   ENJ/USDT [1h]: $0.03 | RSI 47.5 | HOLD
+[2025-12-21 10:26:58]   RONIN/USDT [15m]: $0.15 | RSI 54.2 | HOLD
+[2025-12-21 10:27:00]   RONIN/USDT [1h]: $0.15 | RSI 24.1 | BUY
+[2025-12-21 10:27:01]   ILV/USDT [15m]: $5.80 | RSI 27.8 | BUY
+[2025-12-21 10:27:03]   ILV/USDT [1h]: $5.80 | RSI 43.4 | HOLD
+[2025-12-21 10:27:05]   LDO/USDT [15m]: $0.54 | RSI 72.6 | SELL
+[2025-12-21 10:27:07]   LDO/USDT [1h]: $0.54 | RSI 46.5 | HOLD
+[2025-12-21 10:27:09]   LDO/USDT [4h]: $0.54 | RSI 67.9 | SELL
+[2025-12-21 10:27:11]   GMX/USDT [15m]: $8.16 | RSI 57.1 | HOLD
+[2025-12-21 10:27:13]   GMX/USDT [1h]: $8.16 | RSI 57.7 | HOLD
+[2025-12-21 10:27:15]   GMX/USDT [4h]: $8.16 | RSI 74.4 | SELL
+[2025-12-21 10:27:17]   SKL/USDT [1h]: $0.01 | RSI 49.0 | HOLD
+[2025-12-21 10:27:19]   SKL/USDT [15m]: $0.01 | RSI 40.0 | HOLD
+[2025-12-21 10:27:21]   SKL/USDT [4h]: $0.01 | RSI 60.4 | HOLD
+[2025-12-21 10:27:23]   CELR/USDT [1h]: $0.00 | RSI 48.0 | HOLD
+[2025-12-21 10:27:25]   CELR/USDT [15m]: $0.00 | RSI 65.5 | SELL
+[2025-12-21 10:27:27]   CELR/USDT [4h]: $0.00 | RSI 80.2 | STRONG_SELL
+[2025-12-21 10:27:29]   MAGIC/USDT [15m]: $0.09 | RSI 40.9 | HOLD
+[2025-12-21 10:27:31]   FET/USDT [1h]: $0.21 | RSI 48.8 | HOLD
+[2025-12-21 10:27:33]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:27:35]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:27:37]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:27:39]   TAO/USDT [1h]: $225.30 | RSI 38.4 | HOLD
+[2025-12-21 10:27:41]   WLD/USDT [1h]: $0.52 | RSI 47.1 | HOLD
+[2025-12-21 10:27:43]   ARKM/USDT [1h]: $0.19 | RSI 46.2 | HOLD
+[2025-12-21 10:27:45]   RENDER/USDT [1h]: $1.29 | RSI 45.5 | HOLD
+[2025-12-21 10:27:45]   >> EMA Crossover: BUY 3.759398 SOL @ $126.35
+[2025-12-21 10:27:45]   >> Ichimoku Cloud: BUY 11.337618 UNI @ $6.33
+[2025-12-21 10:27:45]   >> Martingale: BUY 827.314375 OP @ $0.28
+[2025-12-21 10:27:45]   >> Martingale: BUY 46.018924 INJ @ $4.72
+[2025-12-21 10:27:45]   >> Martingale Safe: BUY 827.314375 OP @ $0.28
+[2025-12-21 10:27:45]   >> Martingale Safe: BUY 46.018924 INJ @ $4.72
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 0.001028 BTC @ $88,811.00
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 0.101055 BNB @ $857.90
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 0.651843 SOL @ $126.35
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 40.335277 XRP @ $1.94
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 6.062826 AVAX @ $12.26
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 532.612299 DOGE @ $0.13
+[2025-12-21 10:27:45]   >> OI Breakout: SELL 540.680563 DOT @ $1.84 | PnL: $-1.91
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 9.213380 LINK @ $12.68
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 17.527540 UNI @ $6.33
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 53.466106 ATOM @ $1.97
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 1.290932 LTC @ $77.59
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 498.194937 ARB @ $0.19
+[2025-12-21 10:27:45]   >> OI Breakout: BUY 61.633239 SUI @ $1.47
+[2025-12-21 10:27:45]   >> Grid Tight: BUY 85.102578 MATIC @ $0.38
+[2025-12-21 10:27:45]   >> Low Risk DCA: BUY 1618.813923 DYDX @ $0.17
+[2025-12-21 10:27:45]   >> Stoch Memes: BUY 2624898.321893 FLOKI @ $0.00
+[2025-12-21 10:27:45]   >> Stoch Memes: BUY 11878224.415953 BONK @ $0.00
+[2025-12-21 10:27:45]   >> Stoch Memes: BUY 251.484814 WIF @ $0.35
+[2025-12-21 10:27:45]   >> Stoch Memes: BUY 81856.352527 MEME @ $0.00
+[2025-12-21 10:27:45]   >> Stoch Memes: BUY 41046.329197 TURBO @ $0.00
+[2025-12-21 10:27:45]   >> VWAP Memes: BUY 72560.197669 TURBO @ $0.00
+[2025-12-21 10:27:45]   >> VWAP Trend L2: BUY 330.488487 ARB @ $0.19
+[2025-12-21 10:27:45]   >> VWAP Trend L2: BUY 158.057817 MATIC @ $0.38
+[2025-12-21 10:27:45]   >> VWAP Trend L2: BUY 5456.779608 SKL @ $0.01
+[2025-12-21 10:27:45]   >> VWAP Trend L2: BUY 14786.978184 CELR @ $0.00
+[2025-12-21 10:27:45]   >> VWAP Trend L2: BUY 9.399328 METIS @ $5.47
+[2025-12-21 10:27:45]   >> Mean Rev Gaming: BUY 2875.699796 MANA @ $0.13
+[2025-12-21 10:27:45]   >> Mean Rev Gaming: BUY 1557.311788 IMX @ $0.23
+[2025-12-21 10:27:45]   >> Stoch New Coins: BUY 579.630594 TIA @ $0.47
+[2025-12-21 10:27:45]   >> Stoch New Coins: BUY 725.660368 JTO @ $0.36
+[2025-12-21 10:27:45]   >> Stoch New Coins: BUY 1273.733755 JUP @ $0.19
+[2025-12-21 10:27:48]   >> Ichimoku Scalp: BUY 0.004139 BTC @ $88,810.99
+[2025-12-21 10:27:48]   >> Ichimoku Scalp: BUY 0.116213 ETH @ $3,004.57
+[2025-12-21 10:27:48]   >> Ichimoku Scalp: BUY 2.625120 SOL @ $126.36
+[2025-12-21 10:27:48]   >> Ichimoku Swing: BUY 0.005081 BTC @ $88,811.00
+[2025-12-21 10:27:48]   >> Ichimoku Kumo Break: BUY 0.005081 BTC @ $88,811.00
+[2025-12-21 10:27:48]   >> Ichimoku TK Cross: BUY 0.005081 BTC @ $88,811.00
+[2025-12-21 10:27:48]   >> Ichimoku Chikou: BUY 0.005081 BTC @ $88,811.00
+[2025-12-21 10:27:48]   >> Ichimoku Momentum: BUY 0.004139 BTC @ $88,810.99
+[2025-12-21 10:27:48]   >> Ichimoku Momentum: BUY 0.116213 ETH @ $3,004.57
+[2025-12-21 10:27:48]   >> Ichimoku Momentum: BUY 2.625120 SOL @ $126.36
+[2025-12-21 10:27:49] 🎯 Scanning for new tokens...
+[2025-12-21 10:28:21] 🔍 Scanned 140 new tokens across all chains
+[2025-12-21 10:28:21]   🆕 WHIGGA | $0.00002077 | MC: $0 | Risk: 100/100 | pumpfun
+[2025-12-21 10:28:21]   🆕 MEEPCAT | $0.00031530 | MC: $124,930 | Risk: 20/100 | pancakeswap
+[2025-12-21 10:28:21] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 10:30:20] 🐋 Checking whale signals...
+[2025-12-21 10:31:19] 💾 Saved 47 trades
+[2025-12-21 10:31:19] 📈 Classic: 47 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 2
+[2025-12-21 10:31:20] 📊 Portfolio history recorded
+[2025-12-21 10:31:20] ⏳ Next scan in 60s...
+[2025-12-21 10:32:20] 
+==================== SCAN #4 ====================
+[2025-12-21 10:32:20] 📊 Scanning existing cryptos...
+[2025-12-21 10:32:20] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 10:32:22]   BTC/USDT [1h]: $88,725.37 | RSI 61.9 | HOLD
+[2025-12-21 10:32:24]   BTC/USDT [15m]: $88,725.38 | RSI 73.1 | SELL
+[2025-12-21 10:32:26]   BTC/USDT [4h]: $88,725.37 | RSI 77.6 | SELL
+[2025-12-21 10:32:28]   BTC/USDT [5m]: $88,725.38 | RSI 51.6 | HOLD
+[2025-12-21 10:32:30]   ETH/USDT [1h]: $3,001.80 | RSI 62.7 | HOLD
+[2025-12-21 10:32:32]   ETH/USDT [15m]: $3,001.80 | RSI 82.8 | SELL
+[2025-12-21 10:32:34]   ETH/USDT [4h]: $3,001.80 | RSI 80.9 | SELL
+[2025-12-21 10:32:36]   ETH/USDT [5m]: $3,001.52 | RSI 59.6 | HOLD
+[2025-12-21 10:32:38]   SOL/USDT [1h]: $126.22 | RSI 46.9 | HOLD
+[2025-12-21 10:32:40]   SOL/USDT [15m]: $126.22 | RSI 67.6 | SELL
+[2025-12-21 10:32:42]   SOL/USDT [4h]: $126.23 | RSI 78.6 | STRONG_SELL
+[2025-12-21 10:32:44]   SOL/USDT [5m]: $126.20 | RSI 57.1 | HOLD
+[2025-12-21 10:32:46]   AVAX/USDT [1h]: $12.24 | RSI 47.7 | HOLD
+[2025-12-21 10:32:48]   AVAX/USDT [15m]: $12.24 | RSI 70.0 | SELL
+[2025-12-21 10:32:50]   AVAX/USDT [4h]: $12.24 | RSI 73.8 | STRONG_SELL
+[2025-12-21 10:32:52]   AVAX/USDT [5m]: $12.24 | RSI 44.1 | HOLD
+[2025-12-21 10:32:54]   LINK/USDT [1h]: $12.65 | RSI 56.3 | HOLD
+[2025-12-21 10:32:56]   LINK/USDT [15m]: $12.65 | RSI 75.0 | SELL
+[2025-12-21 10:32:58]   LINK/USDT [4h]: $12.64 | RSI 71.0 | STRONG_SELL
+[2025-12-21 10:33:00]   LINK/USDT [5m]: $12.64 | RSI 53.1 | HOLD
+[2025-12-21 10:33:01]   AAVE/USDT [1h]: $179.04 | RSI 35.9 | HOLD
+[2025-12-21 10:33:03]   AAVE/USDT [15m]: $178.99 | RSI 70.0 | SELL
+[2025-12-21 10:33:05]   AAVE/USDT [4h]: $178.99 | RSI 51.5 | HOLD
+[2025-12-21 10:33:07]   AAVE/USDT [5m]: $179.00 | RSI 54.0 | HOLD
+[2025-12-21 10:33:09]   UNI/USDT [1h]: $6.31 | RSI 53.6 | HOLD
+[2025-12-21 10:33:11]   UNI/USDT [15m]: $6.31 | RSI 44.5 | HOLD
+[2025-12-21 10:33:13]   UNI/USDT [4h]: $6.32 | RSI 92.6 | SELL
+[2025-12-21 10:33:15]   UNI/USDT [5m]: $6.32 | RSI 36.4 | HOLD
+[2025-12-21 10:33:17]   DOGE/USDT [1h]: $0.13 | RSI 50.2 | HOLD
+[2025-12-21 10:33:19]   DOGE/USDT [15m]: $0.13 | RSI 65.2 | SELL
+[2025-12-21 10:33:21]   DOGE/USDT [4h]: $0.13 | RSI 79.0 | SELL
+[2025-12-21 10:33:23]   SHIB/USDT [1h]: $0.00 | RSI 45.2 | HOLD
+[2025-12-21 10:33:25]   SHIB/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:33:27]   PEPE/USDT [1h]: $0.00 | RSI 52.0 | HOLD
+[2025-12-21 10:33:29]   PEPE/USDT [15m]: $0.00 | RSI 45.5 | HOLD
+[2025-12-21 10:33:31]   PEPE/USDT [4h]: $0.00 | RSI 80.4 | SELL
+[2025-12-21 10:33:33]   BONK/USDT [1h]: $0.00 | RSI 37.8 | HOLD
+[2025-12-21 10:33:35]   BONK/USDT [15m]: $0.00 | RSI 47.6 | HOLD
+[2025-12-21 10:33:37]   TURBO/USDT [1h]: $0.00 | RSI 32.6 | BUY
+[2025-12-21 10:33:39]   TURBO/USDT [15m]: $0.00 | RSI 47.1 | HOLD
+[2025-12-21 10:33:40]   FLOKI/USDT [1h]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 10:33:44]   FLOKI/USDT [15m]: $0.00 | RSI 50.6 | HOLD
+[2025-12-21 10:33:47]   BNB/USDT [1h]: $856.23 | RSI 56.3 | HOLD
+[2025-12-21 10:33:50]   BNB/USDT [15m]: $855.99 | RSI 70.2 | SELL
+[2025-12-21 10:33:54]   BNB/USDT [4h]: $855.69 | RSI 70.9 | STRONG_SELL
+[2025-12-21 10:33:57]   XRP/USDT [1h]: $1.93 | RSI 54.4 | HOLD
+[2025-12-21 10:34:01]   XRP/USDT [15m]: $1.94 | RSI 62.6 | HOLD
+[2025-12-21 10:34:04]   XRP/USDT [4h]: $1.94 | RSI 78.7 | SELL
+[2025-12-21 10:34:06]   ADA/USDT [1h]: $0.37 | RSI 38.5 | HOLD
+[2025-12-21 10:34:08]   ADA/USDT [15m]: $0.37 | RSI 61.9 | HOLD
+[2025-12-21 10:34:10]   ADA/USDT [4h]: $0.37 | RSI 63.5 | HOLD
+[2025-12-21 10:34:13]   DOT/USDT [1h]: $1.83 | RSI 50.5 | HOLD
+[2025-12-21 10:34:15]   DOT/USDT [15m]: $1.83 | RSI 61.7 | HOLD
+[2025-12-21 10:34:16]   DOT/USDT [4h]: $1.83 | RSI 61.6 | HOLD
+[2025-12-21 10:34:18]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:34:21]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:34:23]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:34:25]   ATOM/USDT [1h]: $1.97 | RSI 43.8 | HOLD
+[2025-12-21 10:34:27]   ATOM/USDT [15m]: $1.97 | RSI 38.2 | HOLD
+[2025-12-21 10:34:29]   ATOM/USDT [4h]: $1.97 | RSI 64.8 | HOLD
+[2025-12-21 10:34:32]   LTC/USDT [1h]: $77.49 | RSI 48.8 | HOLD
+[2025-12-21 10:34:34]   LTC/USDT [15m]: $77.50 | RSI 62.5 | HOLD
+[2025-12-21 10:34:36]   LTC/USDT [4h]: $77.50 | RSI 64.8 | HOLD
+[2025-12-21 10:34:38]   APT/USDT [1h]: $1.63 | RSI 61.1 | HOLD
+[2025-12-21 10:34:40]   APT/USDT [15m]: $1.63 | RSI 62.7 | HOLD
+[2025-12-21 10:34:42]   APT/USDT [4h]: $1.63 | RSI 77.0 | SELL
+[2025-12-21 10:34:44]   ARB/USDT [1h]: $0.19 | RSI 51.9 | HOLD
+[2025-12-21 10:34:46]   ARB/USDT [15m]: $0.19 | RSI 48.9 | HOLD
+[2025-12-21 10:34:48]   ARB/USDT [4h]: $0.19 | RSI 70.0 | SELL
+[2025-12-21 10:34:50]   OP/USDT [1h]: $0.28 | RSI 33.6 | BUY
+[2025-12-21 10:34:53]   OP/USDT [15m]: $0.28 | RSI 45.5 | HOLD
+[2025-12-21 10:34:55]   OP/USDT [4h]: $0.28 | RSI 66.0 | SELL
+[2025-12-21 10:34:57]   INJ/USDT [1h]: $4.71 | RSI 35.0 | HOLD
+[2025-12-21 10:34:59]   INJ/USDT [15m]: $4.71 | RSI 53.0 | HOLD
+[2025-12-21 10:35:01]   INJ/USDT [4h]: $4.71 | RSI 62.5 | HOLD
+[2025-12-21 10:35:03]   SUI/USDT [1h]: $1.46 | RSI 53.6 | HOLD
+[2025-12-21 10:35:05]   SUI/USDT [15m]: $1.46 | RSI 68.4 | SELL
+[2025-12-21 10:35:07]   SUI/USDT [4h]: $1.46 | RSI 73.9 | STRONG_SELL
+[2025-12-21 10:35:09]   AXS/USDT [1h]: $0.86 | RSI 39.7 | HOLD
+[2025-12-21 10:35:11]   AXS/USDT [15m]: $0.86 | RSI 47.8 | HOLD
+[2025-12-21 10:35:13]   SAND/USDT [1h]: $0.12 | RSI 36.1 | HOLD
+[2025-12-21 10:35:15]   SAND/USDT [15m]: $0.12 | RSI 40.9 | HOLD
+[2025-12-21 10:35:17]   GALA/USDT [1h]: $0.01 | RSI 36.1 | HOLD
+[2025-12-21 10:35:19]   GALA/USDT [15m]: $0.01 | RSI 52.9 | HOLD
+[2025-12-21 10:35:21]   WIF/USDT [1h]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 10:35:23]   WIF/USDT [15m]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 10:35:25]   JUP/USDT [1h]: $0.19 | RSI 37.8 | HOLD
+[2025-12-21 10:35:27]   JUP/USDT [15m]: $0.19 | RSI 50.9 | HOLD
+[2025-12-21 10:35:29]   NEAR/USDT [15m]: $1.52 | RSI 55.3 | HOLD
+[2025-12-21 10:35:31]   NEAR/USDT [1h]: $1.52 | RSI 48.8 | HOLD
+[2025-12-21 10:35:33]   NEAR/USDT [4h]: $1.52 | RSI 62.2 | HOLD
+[2025-12-21 10:35:35]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:35:37]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:35:38]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:35:40]   ALGO/USDT [15m]: $0.11 | RSI 54.2 | HOLD
+[2025-12-21 10:35:42]   ALGO/USDT [1h]: $0.11 | RSI 52.5 | HOLD
+[2025-12-21 10:35:44]   ALGO/USDT [4h]: $0.11 | RSI 67.5 | SELL
+[2025-12-21 10:35:46]   VET/USDT [15m]: $0.01 | RSI 58.6 | HOLD
+[2025-12-21 10:35:48]   VET/USDT [1h]: $0.01 | RSI 56.4 | HOLD
+[2025-12-21 10:35:50]   VET/USDT [4h]: $0.01 | RSI 74.8 | SELL
+[2025-12-21 10:35:52]   IMX/USDT [15m]: $0.23 | RSI 40.0 | HOLD
+[2025-12-21 10:35:54]   IMX/USDT [1h]: $0.23 | RSI 35.3 | HOLD
+[2025-12-21 10:35:56]   IMX/USDT [4h]: $0.23 | RSI 56.8 | HOLD
+[2025-12-21 10:35:58]   LRC/USDT [15m]: $0.06 | RSI 33.3 | BUY
+[2025-12-21 10:36:00]   LRC/USDT [1h]: $0.06 | RSI 35.3 | HOLD
+[2025-12-21 10:36:02]   LRC/USDT [4h]: $0.06 | RSI 58.8 | HOLD
+[2025-12-21 10:36:04]   METIS/USDT [15m]: $5.44 | RSI 43.8 | HOLD
+[2025-12-21 10:36:06]   METIS/USDT [1h]: $5.44 | RSI 38.8 | HOLD
+[2025-12-21 10:36:08]   METIS/USDT [4h]: $5.44 | RSI 65.9 | SELL
+[2025-12-21 10:36:13]   SEI/USDT [15m]: $0.11 | RSI 60.7 | HOLD
+[2025-12-21 10:36:15]   SEI/USDT [1h]: $0.11 | RSI 41.9 | HOLD
+[2025-12-21 10:36:17]   TIA/USDT [15m]: $0.47 | RSI 43.5 | HOLD
+[2025-12-21 10:36:19]   TIA/USDT [1h]: $0.47 | RSI 38.0 | HOLD
+[2025-12-21 10:36:21]   PYTH/USDT [15m]: $0.06 | RSI 31.3 | BUY
+[2025-12-21 10:36:23]   PYTH/USDT [1h]: $0.06 | RSI 41.3 | HOLD
+[2025-12-21 10:36:25]   JTO/USDT [15m]: $0.36 | RSI 57.1 | HOLD
+[2025-12-21 10:36:27]   JTO/USDT [1h]: $0.36 | RSI 28.6 | STRONG_BUY
+[2025-12-21 10:36:29]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:36:30]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:36:32]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:36:34]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:36:36]   SNX/USDT [1h]: $0.42 | RSI 35.3 | HOLD
+[2025-12-21 10:36:38]   SNX/USDT [15m]: $0.42 | RSI 50.0 | HOLD
+[2025-12-21 10:36:40]   SNX/USDT [4h]: $0.42 | RSI 71.1 | STRONG_SELL
+[2025-12-21 10:36:42]   SNX/USDT [5m]: $0.42 | RSI 45.5 | HOLD
+[2025-12-21 10:36:44]   COMP/USDT [1h]: $24.04 | RSI 18.8 | BUY
+[2025-12-21 10:36:46]   COMP/USDT [15m]: $24.04 | RSI 27.6 | BUY
+[2025-12-21 10:36:48]   COMP/USDT [5m]: $24.03 | RSI 30.0 | BUY
+[2025-12-21 10:36:50]   CRV/USDT [1h]: $0.35 | RSI 41.7 | HOLD
+[2025-12-21 10:36:52]   CRV/USDT [15m]: $0.35 | RSI 52.7 | HOLD
+[2025-12-21 10:36:54]   CRV/USDT [4h]: $0.35 | RSI 58.9 | HOLD
+[2025-12-21 10:36:56]   CRV/USDT [5m]: $0.35 | RSI 41.8 | HOLD
+[2025-12-21 10:36:58]   SUSHI/USDT [1h]: $0.30 | RSI 52.9 | HOLD
+[2025-12-21 10:37:00]   SUSHI/USDT [15m]: $0.30 | RSI 39.2 | HOLD
+[2025-12-21 10:37:02]   SUSHI/USDT [4h]: $0.30 | RSI 72.5 | SELL
+[2025-12-21 10:37:04]   SUSHI/USDT [5m]: $0.30 | RSI 41.7 | HOLD
+[2025-12-21 10:37:06]   1INCH/USDT [1h]: $0.16 | RSI 43.2 | HOLD
+[2025-12-21 10:37:08]   1INCH/USDT [15m]: $0.16 | RSI 45.5 | HOLD
+[2025-12-21 10:37:10]   1INCH/USDT [4h]: $0.16 | RSI 66.2 | SELL
+[2025-12-21 10:37:12]   1INCH/USDT [5m]: $0.16 | RSI 37.5 | HOLD
+[2025-12-21 10:37:14]   YFI/USDT [1h]: $3,403.00 | RSI 51.0 | HOLD
+[2025-12-21 10:37:16]   YFI/USDT [15m]: $3,406.00 | RSI 65.4 | SELL
+[2025-12-21 10:37:18]   YFI/USDT [5m]: $3,407.00 | RSI 57.8 | HOLD
+[2025-12-21 10:37:20]   DYDX/USDT [1h]: $0.17 | RSI 32.6 | BUY
+[2025-12-21 10:37:22]   DYDX/USDT [15m]: $0.17 | RSI 45.0 | HOLD
+[2025-12-21 10:37:24]   DYDX/USDT [4h]: $0.17 | RSI 49.3 | HOLD
+[2025-12-21 10:37:25]   DYDX/USDT [5m]: $0.17 | RSI 37.2 | HOLD
+[2025-12-21 10:37:27]   MEME/USDT [15m]: $0.00 | RSI 42.3 | HOLD
+[2025-12-21 10:37:29]   MEME/USDT [1h]: $0.00 | RSI 41.3 | HOLD
+[2025-12-21 10:37:31]   MANA/USDT [15m]: $0.13 | RSI 38.7 | HOLD
+[2025-12-21 10:37:33]   MANA/USDT [1h]: $0.13 | RSI 42.7 | HOLD
+[2025-12-21 10:37:35]   ENJ/USDT [15m]: $0.03 | RSI 43.5 | HOLD
+[2025-12-21 10:37:37]   ENJ/USDT [1h]: $0.03 | RSI 45.9 | HOLD
+[2025-12-21 10:37:39]   RONIN/USDT [15m]: $0.15 | RSI 43.3 | HOLD
+[2025-12-21 10:37:41]   RONIN/USDT [1h]: $0.15 | RSI 21.7 | BUY
+[2025-12-21 10:37:43]   ILV/USDT [15m]: $5.78 | RSI 29.4 | BUY
+[2025-12-21 10:37:45]   ILV/USDT [1h]: $5.78 | RSI 41.8 | HOLD
+[2025-12-21 10:37:47]   LDO/USDT [15m]: $0.54 | RSI 65.7 | SELL
+[2025-12-21 10:37:49]   LDO/USDT [1h]: $0.54 | RSI 42.4 | HOLD
+[2025-12-21 10:37:51]   LDO/USDT [4h]: $0.54 | RSI 66.9 | SELL
+[2025-12-21 10:37:53]   GMX/USDT [15m]: $8.16 | RSI 53.8 | HOLD
+[2025-12-21 10:37:55]   GMX/USDT [1h]: $8.16 | RSI 57.7 | HOLD
+[2025-12-21 10:37:57]   GMX/USDT [4h]: $8.16 | RSI 74.4 | SELL
+[2025-12-21 10:37:59]   SKL/USDT [1h]: $0.01 | RSI 47.1 | HOLD
+[2025-12-21 10:38:01]   SKL/USDT [15m]: $0.01 | RSI 41.4 | HOLD
+[2025-12-21 10:38:03]   SKL/USDT [4h]: $0.01 | RSI 59.1 | HOLD
+[2025-12-21 10:38:05]   CELR/USDT [1h]: $0.00 | RSI 45.9 | HOLD
+[2025-12-21 10:38:07]   CELR/USDT [15m]: $0.00 | RSI 54.1 | HOLD
+[2025-12-21 10:38:09]   CELR/USDT [4h]: $0.00 | RSI 79.7 | STRONG_SELL
+[2025-12-21 10:38:11]   MAGIC/USDT [15m]: $0.09 | RSI 45.5 | HOLD
+[2025-12-21 10:38:12]   FET/USDT [1h]: $0.21 | RSI 46.0 | HOLD
+[2025-12-21 10:38:14]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:38:16]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:38:18]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:38:20]   TAO/USDT [1h]: $224.70 | RSI 36.8 | HOLD
+[2025-12-21 10:38:22]   WLD/USDT [1h]: $0.52 | RSI 43.4 | HOLD
+[2025-12-21 10:38:24]   ARKM/USDT [1h]: $0.19 | RSI 42.9 | HOLD
+[2025-12-21 10:38:26]   RENDER/USDT [1h]: $1.29 | RSI 43.2 | HOLD
+[2025-12-21 10:38:26]   >> Ichimoku Cloud: BUY 10.231325 UNI @ $6.32
+[2025-12-21 10:38:26]   >> Martingale: BUY 556.667732 ADA @ $0.37
+[2025-12-21 10:38:26]   >> Martingale: BUY 711.634175 OP @ $0.28
+[2025-12-21 10:38:26]   >> Martingale: BUY 39.547563 INJ @ $4.71
+[2025-12-21 10:38:26]   >> Martingale Safe: BUY 556.667732 ADA @ $0.37
+[2025-12-21 10:38:26]   >> Martingale Safe: BUY 711.634175 OP @ $0.28
+[2025-12-21 10:38:26]   >> Martingale Safe: BUY 39.547563 INJ @ $4.71
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 0.000968 BTC @ $88,725.37
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 0.027178 ETH @ $3,001.80
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 0.090518 BNB @ $856.23
+[2025-12-21 10:38:26]   >> OI Breakout: SELL 1.362651 SOL @ $126.22 | PnL: $-0.21
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 42.508787 XRP @ $1.93
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 6.382153 AVAX @ $12.24
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 560.934776 DOGE @ $0.13
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 5.573208 LINK @ $12.65
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 10.609224 UNI @ $6.31
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 32.380270 ATOM @ $1.97
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 0.780047 LTC @ $77.49
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 35.186015 APT @ $1.63
+[2025-12-21 10:38:26]   >> OI Breakout: BUY 287.117881 ARB @ $0.19
+[2025-12-21 10:38:26]   >> OI Breakout: SELL 61.633239 SUI @ $1.46 | PnL: $-0.23
+[2025-12-21 10:38:26]   >> Grid Tight: BUY 80.847449 MATIC @ $0.38
+[2025-12-21 10:38:26]   >> Low Risk DCA: BUY 1545.280203 DYDX @ $0.17
+[2025-12-21 10:38:26]   >> Stoch Memes: BUY 8634685.283766 SHIB @ $0.00
+[2025-12-21 10:38:26]   >> Stoch Memes: BUY 1399385.568832 FLOKI @ $0.00
+[2025-12-21 10:38:26]   >> Stoch Memes: BUY 148.925990 WIF @ $0.35
+[2025-12-21 10:38:26]   >> Stoch Memes: BUY 48536.545356 MEME @ $0.00
+[2025-12-21 10:38:26]   >> Stoch Memes: BUY 24293.552129 TURBO @ $0.00
+[2025-12-21 10:38:26]   >> VWAP Memes: BUY 65455.344981 TURBO @ $0.00
+[2025-12-21 10:38:26]   >> VWAP Trend L2: BUY 257.071616 ARB @ $0.19
+[2025-12-21 10:38:26]   >> VWAP Trend L2: BUY 122.302126 MATIC @ $0.38
+[2025-12-21 10:38:26]   >> VWAP Trend L2: BUY 4230.456363 SKL @ $0.01
+[2025-12-21 10:38:26]   >> VWAP Trend L2: BUY 11466.946205 CELR @ $0.00
+[2025-12-21 10:38:26]   >> VWAP Trend L2: BUY 7.313129 METIS @ $5.44
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 390.051437 AXS @ $0.86
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 2681.030024 SAND @ $0.12
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 2349.538327 MANA @ $0.13
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 10391.047346 ENJ @ $0.03
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 1205.018176 IMX @ $0.23
+[2025-12-21 10:38:26]   >> Mean Rev Gaming: BUY 44.958853 ILV @ $5.78
+[2025-12-21 10:38:26]   >> Stoch New Coins: BUY 499.494678 TIA @ $0.47
+[2025-12-21 10:38:26]   >> Stoch New Coins: BUY 3728.823671 PYTH @ $0.06
+[2025-12-21 10:38:26]   >> Stoch New Coins: BUY 594.366137 JTO @ $0.36
+[2025-12-21 10:38:26]   >> Stoch New Coins: BUY 1041.753362 JUP @ $0.19
+[2025-12-21 10:38:26]   >> Ichimoku New: SELL 72188.555792 PYTH @ $0.06 | PnL: $+103.35
+[2025-12-21 10:38:30]   >> Ichimoku Scalp: BUY 0.104979 ETH @ $3,001.80
+[2025-12-21 10:38:30]   >> Ichimoku Scalp: BUY 2.371799 SOL @ $126.22
+[2025-12-21 10:38:30]   >> Ichimoku Swing: BUY 0.004832 BTC @ $88,725.37
+[2025-12-21 10:38:30]   >> Ichimoku Kumo Break: BUY 0.004832 BTC @ $88,725.37
+[2025-12-21 10:38:30]   >> Ichimoku TK Cross: BUY 0.004832 BTC @ $88,725.37
+[2025-12-21 10:38:30]   >> Ichimoku Chikou: BUY 0.004832 BTC @ $88,725.37
+[2025-12-21 10:38:30]   >> Ichimoku Momentum: BUY 0.104979 ETH @ $3,001.80
+[2025-12-21 10:38:30]   >> Ichimoku Momentum: BUY 2.371799 SOL @ $126.22
+[2025-12-21 10:38:30] 🎯 Scanning for new tokens...
+[2025-12-21 10:39:04] 🔍 Scanned 138 new tokens across all chains
+[2025-12-21 10:39:04]   🆕 FAIR | $0.00000353 | MC: $0 | Risk: 100/100 | pumpfun
+[2025-12-21 10:39:04]   🆕 fair | $0.00000353 | MC: $0 | Risk: 100/100 | pumpfun
+[2025-12-21 10:39:04]   🆕 Roge | $0.00001118 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 10:39:04]   🆕 REDACTED | $0.00005834 | MC: $51,114 | Risk: 40/100 | pumpswap
+[2025-12-21 10:39:04]   🆕 TRASH | $0.00002212 | MC: $29,514 | Risk: 40/100 | pumpswap
+[2025-12-21 10:39:04]   🆕 Meowl | $0.00002205 | MC: $28,242 | Risk: 50/100 | pumpswap
+[2025-12-21 10:39:04]   🆕 PUNDIX | $0.35580000 | MC: $181,991,942 | Risk: 45/100 | orca
+[2025-12-21 10:39:04] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 10:41:04] 🐋 Checking whale signals...
+[2025-12-21 10:42:01] 💾 Saved 53 trades
+[2025-12-21 10:42:01] 📈 Classic: 53 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 7
+[2025-12-21 10:42:02] 📊 Portfolio history recorded
+[2025-12-21 10:42:02] ⏳ Next scan in 60s...
+[2025-12-21 10:43:02] 
+==================== SCAN #5 ====================
+[2025-12-21 10:43:02] 📊 Scanning existing cryptos...
+[2025-12-21 10:43:02] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 10:43:04]   BTC/USDT [1h]: $88,783.01 | RSI 63.8 | HOLD
+[2025-12-21 10:43:06]   BTC/USDT [15m]: $88,768.11 | RSI 75.1 | SELL
+[2025-12-21 10:43:08]   BTC/USDT [4h]: $88,768.10 | RSI 77.9 | SELL
+[2025-12-21 10:43:10]   BTC/USDT [5m]: $88,768.10 | RSI 45.3 | HOLD
+[2025-12-21 10:43:12]   ETH/USDT [1h]: $2,999.62 | RSI 60.8 | HOLD
+[2025-12-21 10:43:14]   ETH/USDT [15m]: $2,999.43 | RSI 78.1 | SELL
+[2025-12-21 10:43:16]   ETH/USDT [4h]: $2,999.43 | RSI 80.5 | SELL
+[2025-12-21 10:43:18]   ETH/USDT [5m]: $2,999.43 | RSI 47.6 | HOLD
+[2025-12-21 10:43:20]   SOL/USDT [1h]: $126.00 | RSI 44.3 | HOLD
+[2025-12-21 10:43:22]   SOL/USDT [15m]: $126.00 | RSI 61.9 | HOLD
+[2025-12-21 10:43:24]   SOL/USDT [4h]: $126.00 | RSI 78.0 | STRONG_SELL
+[2025-12-21 10:43:26]   SOL/USDT [5m]: $125.96 | RSI 42.5 | HOLD
+[2025-12-21 10:43:28]   AVAX/USDT [1h]: $12.23 | RSI 47.0 | HOLD
+[2025-12-21 10:43:30]   AVAX/USDT [15m]: $12.23 | RSI 67.7 | SELL
+[2025-12-21 10:43:32]   AVAX/USDT [4h]: $12.23 | RSI 73.6 | STRONG_SELL
+[2025-12-21 10:43:34]   AVAX/USDT [5m]: $12.23 | RSI 32.3 | BUY
+[2025-12-21 10:43:36]   LINK/USDT [1h]: $12.60 | RSI 50.9 | HOLD
+[2025-12-21 10:43:38]   LINK/USDT [15m]: $12.60 | RSI 63.6 | HOLD
+[2025-12-21 10:43:40]   LINK/USDT [4h]: $12.60 | RSI 69.8 | SELL
+[2025-12-21 10:43:42]   LINK/USDT [5m]: $12.60 | RSI 40.0 | HOLD
+[2025-12-21 10:43:44]   AAVE/USDT [1h]: $178.95 | RSI 35.5 | HOLD
+[2025-12-21 10:43:46]   AAVE/USDT [15m]: $178.95 | RSI 69.4 | SELL
+[2025-12-21 10:43:48]   AAVE/USDT [4h]: $178.90 | RSI 51.3 | HOLD
+[2025-12-21 10:43:50]   AAVE/USDT [5m]: $178.90 | RSI 40.9 | HOLD
+[2025-12-21 10:43:52]   UNI/USDT [1h]: $6.29 | RSI 51.2 | HOLD
+[2025-12-21 10:43:53]   UNI/USDT [15m]: $6.29 | RSI 39.8 | HOLD
+[2025-12-21 10:43:55]   UNI/USDT [4h]: $6.29 | RSI 90.9 | SELL
+[2025-12-21 10:43:57]   UNI/USDT [5m]: $6.29 | RSI 12.5 | BUY
+[2025-12-21 10:43:59]   DOGE/USDT [1h]: $0.13 | RSI 48.0 | HOLD
+[2025-12-21 10:44:01]   DOGE/USDT [15m]: $0.13 | RSI 61.0 | HOLD
+[2025-12-21 10:44:03]   DOGE/USDT [4h]: $0.13 | RSI 78.6 | SELL
+[2025-12-21 10:44:05]   SHIB/USDT [1h]: $0.00 | RSI 43.8 | HOLD
+[2025-12-21 10:44:07]   SHIB/USDT [15m]: $0.00 | RSI 47.1 | HOLD
+[2025-12-21 10:44:09]   PEPE/USDT [1h]: $0.00 | RSI 52.0 | HOLD
+[2025-12-21 10:44:11]   PEPE/USDT [15m]: $0.00 | RSI 45.5 | HOLD
+[2025-12-21 10:44:13]   PEPE/USDT [4h]: $0.00 | RSI 80.4 | SELL
+[2025-12-21 10:44:15]   BONK/USDT [1h]: $0.00 | RSI 35.9 | HOLD
+[2025-12-21 10:44:17]   BONK/USDT [15m]: $0.00 | RSI 41.7 | HOLD
+[2025-12-21 10:44:19]   TURBO/USDT [1h]: $0.00 | RSI 31.6 | BUY
+[2025-12-21 10:44:21]   TURBO/USDT [15m]: $0.00 | RSI 44.4 | HOLD
+[2025-12-21 10:44:23]   FLOKI/USDT [1h]: $0.00 | RSI 46.8 | HOLD
+[2025-12-21 10:44:25]   FLOKI/USDT [15m]: $0.00 | RSI 43.7 | HOLD
+[2025-12-21 10:44:27]   BNB/USDT [1h]: $855.87 | RSI 55.4 | HOLD
+[2025-12-21 10:44:29]   BNB/USDT [15m]: $855.87 | RSI 69.6 | SELL
+[2025-12-21 10:44:31]   BNB/USDT [4h]: $855.86 | RSI 71.0 | STRONG_SELL
+[2025-12-21 10:44:33]   XRP/USDT [1h]: $1.94 | RSI 56.0 | HOLD
+[2025-12-21 10:44:35]   XRP/USDT [15m]: $1.94 | RSI 64.5 | HOLD
+[2025-12-21 10:44:37]   XRP/USDT [4h]: $1.94 | RSI 78.8 | SELL
+[2025-12-21 10:44:39]   ADA/USDT [1h]: $0.37 | RSI 38.3 | HOLD
+[2025-12-21 10:44:41]   ADA/USDT [15m]: $0.37 | RSI 61.3 | HOLD
+[2025-12-21 10:44:43]   ADA/USDT [4h]: $0.37 | RSI 63.4 | HOLD
+[2025-12-21 10:44:45]   DOT/USDT [1h]: $1.83 | RSI 49.5 | HOLD
+[2025-12-21 10:44:47]   DOT/USDT [15m]: $1.83 | RSI 59.2 | HOLD
+[2025-12-21 10:44:49]   DOT/USDT [4h]: $1.83 | RSI 61.2 | HOLD
+[2025-12-21 10:44:51]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:44:52]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:44:54]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:44:56]   ATOM/USDT [1h]: $1.96 | RSI 43.4 | HOLD
+[2025-12-21 10:44:58]   ATOM/USDT [15m]: $1.96 | RSI 37.1 | HOLD
+[2025-12-21 10:45:00]   ATOM/USDT [4h]: $1.96 | RSI 64.5 | HOLD
+[2025-12-21 10:45:03]   LTC/USDT [1h]: $77.48 | RSI 48.7 | HOLD
+[2025-12-21 10:45:05]   LTC/USDT [15m]: $77.49 | RSI 59.2 | HOLD
+[2025-12-21 10:45:07]   LTC/USDT [4h]: $77.49 | RSI 64.7 | HOLD
+[2025-12-21 10:45:09]   APT/USDT [1h]: $1.63 | RSI 60.6 | HOLD
+[2025-12-21 10:45:11]   APT/USDT [15m]: $1.63 | RSI 58.1 | HOLD
+[2025-12-21 10:45:13]   APT/USDT [4h]: $1.63 | RSI 76.9 | SELL
+[2025-12-21 10:45:15]   ARB/USDT [1h]: $0.19 | RSI 50.6 | HOLD
+[2025-12-21 10:45:17]   ARB/USDT [15m]: $0.19 | RSI 42.2 | HOLD
+[2025-12-21 10:45:19]   ARB/USDT [4h]: $0.19 | RSI 69.1 | SELL
+[2025-12-21 10:45:21]   OP/USDT [1h]: $0.28 | RSI 33.3 | BUY
+[2025-12-21 10:45:23]   OP/USDT [15m]: $0.28 | RSI 44.2 | HOLD
+[2025-12-21 10:45:25]   OP/USDT [4h]: $0.28 | RSI 65.8 | SELL
+[2025-12-21 10:45:27]   INJ/USDT [1h]: $4.71 | RSI 34.7 | BUY
+[2025-12-21 10:45:29]   INJ/USDT [15m]: $4.71 | RSI 50.4 | HOLD
+[2025-12-21 10:45:31]   INJ/USDT [4h]: $4.71 | RSI 62.3 | HOLD
+[2025-12-21 10:45:33]   SUI/USDT [1h]: $1.46 | RSI 53.5 | HOLD
+[2025-12-21 10:45:35]   SUI/USDT [15m]: $1.46 | RSI 66.6 | SELL
+[2025-12-21 10:45:37]   SUI/USDT [4h]: $1.46 | RSI 74.0 | STRONG_SELL
+[2025-12-21 10:45:39]   AXS/USDT [1h]: $0.86 | RSI 39.7 | HOLD
+[2025-12-21 10:45:41]   AXS/USDT [15m]: $0.86 | RSI 45.5 | HOLD
+[2025-12-21 10:45:43]   SAND/USDT [1h]: $0.12 | RSI 34.4 | BUY
+[2025-12-21 10:45:45]   SAND/USDT [15m]: $0.12 | RSI 37.8 | HOLD
+[2025-12-21 10:45:47]   GALA/USDT [1h]: $0.01 | RSI 36.1 | HOLD
+[2025-12-21 10:45:49]   GALA/USDT [15m]: $0.01 | RSI 50.0 | HOLD
+[2025-12-21 10:45:51]   WIF/USDT [1h]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 10:45:53]   WIF/USDT [15m]: $0.35 | RSI 45.5 | HOLD
+[2025-12-21 10:45:55]   JUP/USDT [1h]: $0.19 | RSI 38.5 | HOLD
+[2025-12-21 10:45:57]   JUP/USDT [15m]: $0.19 | RSI 44.7 | HOLD
+[2025-12-21 10:45:59]   NEAR/USDT [15m]: $1.52 | RSI 50.0 | HOLD
+[2025-12-21 10:46:01]   NEAR/USDT [1h]: $1.52 | RSI 47.7 | HOLD
+[2025-12-21 10:46:03]   NEAR/USDT [4h]: $1.52 | RSI 61.8 | HOLD
+[2025-12-21 10:46:04]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:46:06]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:46:08]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:46:10]   ALGO/USDT [15m]: $0.11 | RSI 54.2 | HOLD
+[2025-12-21 10:46:12]   ALGO/USDT [1h]: $0.11 | RSI 51.6 | HOLD
+[2025-12-21 10:46:14]   ALGO/USDT [4h]: $0.11 | RSI 67.2 | SELL
+[2025-12-21 10:46:16]   VET/USDT [15m]: $0.01 | RSI 56.3 | HOLD
+[2025-12-21 10:46:18]   VET/USDT [1h]: $0.01 | RSI 55.7 | HOLD
+[2025-12-21 10:46:20]   VET/USDT [4h]: $0.01 | RSI 74.6 | SELL
+[2025-12-21 10:46:22]   IMX/USDT [15m]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 10:46:24]   IMX/USDT [1h]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 10:46:26]   IMX/USDT [4h]: $0.23 | RSI 55.3 | HOLD
+[2025-12-21 10:46:28]   LRC/USDT [15m]: $0.06 | RSI 37.5 | HOLD
+[2025-12-21 10:46:30]   LRC/USDT [1h]: $0.06 | RSI 35.3 | HOLD
+[2025-12-21 10:46:32]   LRC/USDT [4h]: $0.06 | RSI 59.3 | HOLD
+[2025-12-21 10:46:34]   METIS/USDT [15m]: $5.46 | RSI 50.0 | HOLD
+[2025-12-21 10:46:36]   METIS/USDT [1h]: $5.46 | RSI 40.4 | HOLD
+[2025-12-21 10:46:38]   METIS/USDT [4h]: $5.46 | RSI 67.5 | SELL
+[2025-12-21 10:46:43]   SEI/USDT [15m]: $0.11 | RSI 59.3 | HOLD
+[2025-12-21 10:46:45]   SEI/USDT [1h]: $0.11 | RSI 41.9 | HOLD
+[2025-12-21 10:46:46]   TIA/USDT [15m]: $0.47 | RSI 40.4 | HOLD
+[2025-12-21 10:46:48]   TIA/USDT [1h]: $0.47 | RSI 37.7 | HOLD
+[2025-12-21 10:46:50]   PYTH/USDT [15m]: $0.06 | RSI 38.5 | HOLD
+[2025-12-21 10:46:52]   PYTH/USDT [1h]: $0.06 | RSI 43.2 | HOLD
+[2025-12-21 10:46:54]   JTO/USDT [15m]: $0.36 | RSI 50.0 | HOLD
+[2025-12-21 10:46:56]   JTO/USDT [1h]: $0.36 | RSI 28.6 | STRONG_BUY
+[2025-12-21 10:46:58]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:47:00]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:47:02]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:47:04]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:47:06]   SNX/USDT [1h]: $0.42 | RSI 33.3 | BUY
+[2025-12-21 10:47:08]   SNX/USDT [15m]: $0.42 | RSI 45.5 | HOLD
+[2025-12-21 10:47:10]   SNX/USDT [4h]: $0.42 | RSI 69.2 | SELL
+[2025-12-21 10:47:12]   SNX/USDT [5m]: $0.42 | RSI 30.0 | BUY
+[2025-12-21 10:47:14]   COMP/USDT [1h]: $24.01 | RSI 18.2 | BUY
+[2025-12-21 10:47:16]   COMP/USDT [15m]: $24.01 | RSI 25.0 | BUY
+[2025-12-21 10:47:18]   COMP/USDT [5m]: $24.01 | RSI 31.6 | BUY
+[2025-12-21 10:47:20]   CRV/USDT [1h]: $0.35 | RSI 39.8 | HOLD
+[2025-12-21 10:47:22]   CRV/USDT [15m]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 10:47:24]   CRV/USDT [4h]: $0.35 | RSI 57.6 | HOLD
+[2025-12-21 10:47:26]   CRV/USDT [5m]: $0.35 | RSI 28.4 | BUY
+[2025-12-21 10:47:27]   SUSHI/USDT [1h]: $0.30 | RSI 51.7 | HOLD
+[2025-12-21 10:47:29]   SUSHI/USDT [15m]: $0.30 | RSI 32.1 | BUY
+[2025-12-21 10:47:31]   SUSHI/USDT [4h]: $0.30 | RSI 71.1 | SELL
+[2025-12-21 10:47:33]   SUSHI/USDT [5m]: $0.30 | RSI 29.7 | BUY
+[2025-12-21 10:47:35]   1INCH/USDT [1h]: $0.16 | RSI 42.2 | HOLD
+[2025-12-21 10:47:37]   1INCH/USDT [15m]: $0.16 | RSI 42.9 | HOLD
+[2025-12-21 10:47:39]   1INCH/USDT [4h]: $0.16 | RSI 65.3 | SELL
+[2025-12-21 10:47:41]   1INCH/USDT [5m]: $0.16 | RSI 23.8 | BUY
+[2025-12-21 10:47:43]   YFI/USDT [1h]: $3,406.00 | RSI 52.1 | HOLD
+[2025-12-21 10:47:45]   YFI/USDT [15m]: $3,406.00 | RSI 63.0 | HOLD
+[2025-12-21 10:47:47]   YFI/USDT [5m]: $3,406.00 | RSI 52.7 | HOLD
+[2025-12-21 10:47:49]   DYDX/USDT [1h]: $0.17 | RSI 31.9 | BUY
+[2025-12-21 10:47:51]   DYDX/USDT [15m]: $0.17 | RSI 38.6 | HOLD
+[2025-12-21 10:47:53]   DYDX/USDT [4h]: $0.17 | RSI 48.6 | HOLD
+[2025-12-21 10:47:55]   DYDX/USDT [5m]: $0.17 | RSI 25.6 | BUY
+[2025-12-21 10:47:57]   MEME/USDT [15m]: $0.00 | RSI 44.0 | HOLD
+[2025-12-21 10:47:59]   MEME/USDT [1h]: $0.00 | RSI 40.6 | HOLD
+[2025-12-21 10:48:01]   MANA/USDT [15m]: $0.13 | RSI 30.0 | BUY
+[2025-12-21 10:48:03]   MANA/USDT [1h]: $0.13 | RSI 41.6 | HOLD
+[2025-12-21 10:48:05]   ENJ/USDT [15m]: $0.03 | RSI 40.4 | HOLD
+[2025-12-21 10:48:07]   ENJ/USDT [1h]: $0.03 | RSI 44.9 | HOLD
+[2025-12-21 10:48:09]   RONIN/USDT [15m]: $0.15 | RSI 34.4 | BUY
+[2025-12-21 10:48:11]   RONIN/USDT [1h]: $0.15 | RSI 20.3 | BUY
+[2025-12-21 10:48:13]   ILV/USDT [15m]: $5.77 | RSI 27.8 | BUY
+[2025-12-21 10:48:15]   ILV/USDT [1h]: $5.77 | RSI 41.1 | HOLD
+[2025-12-21 10:48:17]   LDO/USDT [15m]: $0.54 | RSI 60.3 | HOLD
+[2025-12-21 10:48:19]   LDO/USDT [1h]: $0.54 | RSI 40.9 | HOLD
+[2025-12-21 10:48:21]   LDO/USDT [4h]: $0.54 | RSI 66.5 | SELL
+[2025-12-21 10:48:23]   GMX/USDT [15m]: $8.17 | RSI 57.1 | HOLD
+[2025-12-21 10:48:25]   GMX/USDT [1h]: $8.17 | RSI 59.3 | HOLD
+[2025-12-21 10:48:27]   GMX/USDT [4h]: $8.17 | RSI 75.0 | SELL
+[2025-12-21 10:48:29]   SKL/USDT [1h]: $0.01 | RSI 49.0 | HOLD
+[2025-12-21 10:48:31]   SKL/USDT [15m]: $0.01 | RSI 42.9 | HOLD
+[2025-12-21 10:48:32]   SKL/USDT [4h]: $0.01 | RSI 60.4 | HOLD
+[2025-12-21 10:48:34]   CELR/USDT [1h]: $0.00 | RSI 43.9 | HOLD
+[2025-12-21 10:48:36]   CELR/USDT [15m]: $0.00 | RSI 48.5 | HOLD
+[2025-12-21 10:48:38]   CELR/USDT [4h]: $0.00 | RSI 79.1 | STRONG_SELL
+[2025-12-21 10:48:40]   MAGIC/USDT [15m]: $0.09 | RSI 42.9 | HOLD
+[2025-12-21 10:48:42]   FET/USDT [1h]: $0.21 | RSI 43.8 | HOLD
+[2025-12-21 10:48:44]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:48:46]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:48:48]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:48:50]   TAO/USDT [1h]: $223.90 | RSI 35.0 | HOLD
+[2025-12-21 10:48:52]   WLD/USDT [1h]: $0.52 | RSI 42.5 | HOLD
+[2025-12-21 10:48:54]   ARKM/USDT [1h]: $0.19 | RSI 42.9 | HOLD
+[2025-12-21 10:48:56]   RENDER/USDT [1h]: $1.28 | RSI 42.2 | HOLD
+[2025-12-21 10:48:56]   >> Ichimoku Cloud: BUY 9.247732 UNI @ $6.29
+[2025-12-21 10:48:56]   >> Martingale: BUY 477.401676 ADA @ $0.37
+[2025-12-21 10:48:56]   >> Martingale: BUY 610.358736 OP @ $0.28
+[2025-12-21 10:48:56]   >> Martingale: BUY 33.921487 INJ @ $4.71
+[2025-12-21 10:48:56]   >> Martingale Safe: BUY 477.401676 ADA @ $0.37
+[2025-12-21 10:48:56]   >> Martingale Safe: BUY 610.358736 OP @ $0.28
+[2025-12-21 10:48:56]   >> Martingale Safe: BUY 33.921487 INJ @ $4.71
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 0.000635 BTC @ $88,783.01
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 0.017841 ETH @ $2,999.62
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 0.059402 BNB @ $855.87
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 24.939956 XRP @ $1.94
+[2025-12-21 10:48:56]   >> OI Breakout: SELL 19.052944 AVAX @ $12.23 | PnL: $-0.51
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 435.538674 DOGE @ $0.13
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 4.337931 LINK @ $12.60
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 8.257797 UNI @ $6.29
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 25.116486 ATOM @ $1.96
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 0.604831 LTC @ $77.48
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 27.295661 APT @ $1.63
+[2025-12-21 10:48:56]   >> OI Breakout: BUY 222.830670 ARB @ $0.19
+[2025-12-21 10:48:56]   >> Grid Tight: BUY 76.805077 MATIC @ $0.38
+[2025-12-21 10:48:56]   >> Low Risk DCA: BUY 1469.785953 DYDX @ $0.17
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 5105585.442013 SHIB @ $0.00
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 828941.956212 FLOKI @ $0.00
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 3750352.835714 BONK @ $0.00
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 79.145377 WIF @ $0.35
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 25821.179274 MEME @ $0.00
+[2025-12-21 10:48:56]   >> Stoch Memes: BUY 12940.544601 TURBO @ $0.00
+[2025-12-21 10:48:56]   >> VWAP Memes: BUY 59046.492177 TURBO @ $0.00
+[2025-12-21 10:48:56]   >> VWAP Trend L2: BUY 199.126723 ARB @ $0.19
+[2025-12-21 10:48:56]   >> VWAP Trend L2: BUY 94.635054 MATIC @ $0.38
+[2025-12-21 10:48:56]   >> VWAP Trend L2: BUY 3267.175521 SKL @ $0.01
+[2025-12-21 10:48:56]   >> VWAP Trend L2: BUY 8892.383868 CELR @ $0.00
+[2025-12-21 10:48:56]   >> VWAP Trend L2: BUY 5.638032 METIS @ $5.46
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 286.723648 AXS @ $0.86
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 1974.121280 SAND @ $0.12
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 1729.808444 MANA @ $0.13
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 7652.182258 ENJ @ $0.03
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 889.718554 IMX @ $0.23
+[2025-12-21 10:48:56]   >> Mean Rev Gaming: BUY 33.106165 ILV @ $5.77
+[2025-12-21 10:48:56]   >> Stoch New Coins: BUY 407.014478 TIA @ $0.47
+[2025-12-21 10:48:56]   >> Stoch New Coins: BUY 509.594667 JTO @ $0.36
+[2025-12-21 10:48:56]   >> Stoch New Coins: BUY 892.251065 JUP @ $0.19
+[2025-12-21 10:48:59]   >> Ichimoku Scalp: BUY 0.094818 ETH @ $2,999.43
+[2025-12-21 10:48:59]   >> Ichimoku Swing: BUY 0.004587 BTC @ $88,783.01
+[2025-12-21 10:48:59]   >> Ichimoku Kumo Break: BUY 0.004587 BTC @ $88,783.01
+[2025-12-21 10:48:59]   >> Ichimoku TK Cross: BUY 0.004587 BTC @ $88,783.01
+[2025-12-21 10:48:59]   >> Ichimoku Chikou: BUY 0.004587 BTC @ $88,783.01
+[2025-12-21 10:48:59]   >> Ichimoku Momentum: BUY 0.094818 ETH @ $2,999.43
+[2025-12-21 10:49:00] 🎯 Scanning for new tokens...
+[2025-12-21 10:49:33] 🔍 Scanned 141 new tokens across all chains
+[2025-12-21 10:49:33]   🆕 Fair | $0.00002240 | MC: $43,793 | Risk: 85/100 | meteora
+[2025-12-21 10:49:33]   🆕 Fair | $0.00002182 | MC: $0 | Risk: 100/100 | meteoradbc
+[2025-12-21 10:49:33]   🆕 Fair | $0.00010180 | MC: $3 | Risk: 100/100 | meteora
+[2025-12-21 10:49:33]   🆕 Fair | $0.00004986 | MC: $0 | Risk: 100/100 | meteoradbc
+[2025-12-21 10:49:33]   🆕 Fair | $0.00001368 | MC: $0 | Risk: 100/100 | pumpfun
+[2025-12-21 10:49:33]   🆕 $KEVIN | $0.00000393 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:49:33]   🆕 BAN | $0.00000001 | MC: $56 | Risk: 95/100 | raydium
+[2025-12-21 10:49:33]   🆕 Faircoin | $0.00000454 | MC: $0 | Risk: 95/100 | pumpfun
+[2025-12-21 10:49:33]   🆕 HAEDAL | $0.13490000 | MC: $267,806,341 | Risk: 45/100 | raydium
+[2025-12-21 10:49:33]   🆕 CVAI | $0.00036320 | MC: $119,207 | Risk: 45/100 | raydium
+[2025-12-21 10:49:33] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 10:51:31] 🐋 Checking whale signals...
+[2025-12-21 10:52:29] 💾 Saved 48 trades
+[2025-12-21 10:52:29] 📈 Classic: 48 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 10
+[2025-12-21 10:52:30] 📊 Portfolio history recorded
+[2025-12-21 10:52:30] ⏳ Next scan in 60s...
+[2025-12-21 10:53:30] 
+==================== SCAN #6 ====================
+[2025-12-21 10:53:30] 📊 Scanning existing cryptos...
+[2025-12-21 10:53:30] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 10:53:32]   BTC/USDT [1h]: $88,650.43 | RSI 59.5 | HOLD
+[2025-12-21 10:53:34]   BTC/USDT [15m]: $88,650.44 | RSI 69.5 | SELL
+[2025-12-21 10:53:36]   BTC/USDT [4h]: $88,658.60 | RSI 77.2 | SELL
+[2025-12-21 10:53:38]   BTC/USDT [5m]: $88,668.14 | RSI 41.3 | HOLD
+[2025-12-21 10:53:40]   ETH/USDT [1h]: $2,997.21 | RSI 58.7 | HOLD
+[2025-12-21 10:53:42]   ETH/USDT [15m]: $2,997.22 | RSI 73.0 | SELL
+[2025-12-21 10:53:44]   ETH/USDT [4h]: $2,997.21 | RSI 80.3 | SELL
+[2025-12-21 10:53:46]   ETH/USDT [5m]: $2,997.22 | RSI 48.8 | HOLD
+[2025-12-21 10:53:48]   SOL/USDT [1h]: $125.85 | RSI 42.7 | HOLD
+[2025-12-21 10:53:50]   SOL/USDT [15m]: $125.85 | RSI 57.6 | HOLD
+[2025-12-21 10:53:52]   SOL/USDT [4h]: $125.84 | RSI 77.6 | STRONG_SELL
+[2025-12-21 10:53:54]   SOL/USDT [5m]: $125.84 | RSI 43.1 | HOLD
+[2025-12-21 10:53:56]   AVAX/USDT [1h]: $12.23 | RSI 47.0 | HOLD
+[2025-12-21 10:53:58]   AVAX/USDT [15m]: $12.23 | RSI 66.7 | SELL
+[2025-12-21 10:54:00]   AVAX/USDT [4h]: $12.23 | RSI 73.6 | STRONG_SELL
+[2025-12-21 10:54:02]   AVAX/USDT [5m]: $12.23 | RSI 40.0 | HOLD
+[2025-12-21 10:54:04]   LINK/USDT [1h]: $12.60 | RSI 50.9 | HOLD
+[2025-12-21 10:54:06]   LINK/USDT [15m]: $12.60 | RSI 62.5 | HOLD
+[2025-12-21 10:54:08]   LINK/USDT [4h]: $12.60 | RSI 69.8 | SELL
+[2025-12-21 10:54:10]   LINK/USDT [5m]: $12.60 | RSI 44.4 | HOLD
+[2025-12-21 10:54:12]   AAVE/USDT [1h]: $178.32 | RSI 33.0 | BUY
+[2025-12-21 10:54:14]   AAVE/USDT [15m]: $178.32 | RSI 58.6 | HOLD
+[2025-12-21 10:54:16]   AAVE/USDT [4h]: $178.32 | RSI 49.7 | HOLD
+[2025-12-21 10:54:18]   AAVE/USDT [5m]: $178.32 | RSI 41.1 | HOLD
+[2025-12-21 10:54:20]   UNI/USDT [1h]: $6.29 | RSI 51.1 | HOLD
+[2025-12-21 10:54:22]   UNI/USDT [15m]: $6.29 | RSI 35.1 | HOLD
+[2025-12-21 10:54:24]   UNI/USDT [4h]: $6.29 | RSI 90.8 | SELL
+[2025-12-21 10:54:26]   UNI/USDT [5m]: $6.29 | RSI 16.7 | BUY
+[2025-12-21 10:54:28]   DOGE/USDT [1h]: $0.13 | RSI 46.9 | HOLD
+[2025-12-21 10:54:29]   DOGE/USDT [15m]: $0.13 | RSI 58.1 | HOLD
+[2025-12-21 10:54:31]   DOGE/USDT [4h]: $0.13 | RSI 78.4 | SELL
+[2025-12-21 10:54:33]   SHIB/USDT [1h]: $0.00 | RSI 42.4 | HOLD
+[2025-12-21 10:54:35]   SHIB/USDT [15m]: $0.00 | RSI 41.2 | HOLD
+[2025-12-21 10:54:37]   PEPE/USDT [1h]: $0.00 | RSI 52.0 | HOLD
+[2025-12-21 10:54:39]   PEPE/USDT [15m]: $0.00 | RSI 46.2 | HOLD
+[2025-12-21 10:54:41]   PEPE/USDT [4h]: $0.00 | RSI 80.4 | SELL
+[2025-12-21 10:54:43]   BONK/USDT [1h]: $0.00 | RSI 33.3 | BUY
+[2025-12-21 10:54:45]   BONK/USDT [15m]: $0.00 | RSI 36.0 | HOLD
+[2025-12-21 10:54:47]   TURBO/USDT [1h]: $0.00 | RSI 30.7 | BUY
+[2025-12-21 10:54:49]   TURBO/USDT [15m]: $0.00 | RSI 38.0 | HOLD
+[2025-12-21 10:54:51]   FLOKI/USDT [1h]: $0.00 | RSI 46.8 | HOLD
+[2025-12-21 10:54:53]   FLOKI/USDT [15m]: $0.00 | RSI 43.2 | HOLD
+[2025-12-21 10:54:55]   BNB/USDT [1h]: $855.69 | RSI 55.0 | HOLD
+[2025-12-21 10:54:57]   BNB/USDT [15m]: $855.69 | RSI 68.5 | SELL
+[2025-12-21 10:54:59]   BNB/USDT [4h]: $855.68 | RSI 70.9 | STRONG_SELL
+[2025-12-21 10:55:01]   XRP/USDT [1h]: $1.94 | RSI 54.9 | HOLD
+[2025-12-21 10:55:03]   XRP/USDT [15m]: $1.93 | RSI 56.6 | HOLD
+[2025-12-21 10:55:05]   XRP/USDT [4h]: $1.93 | RSI 78.6 | SELL
+[2025-12-21 10:55:07]   ADA/USDT [1h]: $0.37 | RSI 38.6 | HOLD
+[2025-12-21 10:55:09]   ADA/USDT [15m]: $0.37 | RSI 62.3 | HOLD
+[2025-12-21 10:55:11]   ADA/USDT [4h]: $0.37 | RSI 63.5 | HOLD
+[2025-12-21 10:55:13]   DOT/USDT [1h]: $1.83 | RSI 49.0 | HOLD
+[2025-12-21 10:55:15]   DOT/USDT [15m]: $1.83 | RSI 55.3 | HOLD
+[2025-12-21 10:55:17]   DOT/USDT [4h]: $1.83 | RSI 61.0 | HOLD
+[2025-12-21 10:55:19]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 10:55:21]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 10:55:23]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 10:55:25]   ATOM/USDT [1h]: $1.96 | RSI 43.0 | HOLD
+[2025-12-21 10:55:27]   ATOM/USDT [15m]: $1.96 | RSI 34.3 | BUY
+[2025-12-21 10:55:29]   ATOM/USDT [4h]: $1.96 | RSI 64.2 | HOLD
+[2025-12-21 10:55:31]   LTC/USDT [1h]: $77.40 | RSI 47.6 | HOLD
+[2025-12-21 10:55:33]   LTC/USDT [15m]: $77.40 | RSI 56.0 | HOLD
+[2025-12-21 10:55:35]   LTC/USDT [4h]: $77.39 | RSI 64.1 | HOLD
+[2025-12-21 10:55:37]   APT/USDT [1h]: $1.63 | RSI 58.4 | HOLD
+[2025-12-21 10:55:39]   APT/USDT [15m]: $1.63 | RSI 54.5 | HOLD
+[2025-12-21 10:55:41]   APT/USDT [4h]: $1.63 | RSI 76.7 | SELL
+[2025-12-21 10:55:43]   ARB/USDT [1h]: $0.19 | RSI 47.6 | HOLD
+[2025-12-21 10:55:45]   ARB/USDT [15m]: $0.19 | RSI 38.8 | HOLD
+[2025-12-21 10:55:47]   ARB/USDT [4h]: $0.19 | RSI 67.9 | SELL
+[2025-12-21 10:55:49]   OP/USDT [1h]: $0.28 | RSI 31.7 | BUY
+[2025-12-21 10:55:51]   OP/USDT [15m]: $0.28 | RSI 41.0 | HOLD
+[2025-12-21 10:55:53]   OP/USDT [4h]: $0.28 | RSI 64.6 | HOLD
+[2025-12-21 10:55:55]   INJ/USDT [1h]: $4.70 | RSI 32.7 | BUY
+[2025-12-21 10:55:57]   INJ/USDT [15m]: $4.70 | RSI 46.2 | HOLD
+[2025-12-21 10:55:58]   INJ/USDT [4h]: $4.70 | RSI 61.2 | HOLD
+[2025-12-21 10:56:00]   SUI/USDT [1h]: $1.46 | RSI 51.7 | HOLD
+[2025-12-21 10:56:02]   SUI/USDT [15m]: $1.46 | RSI 63.3 | HOLD
+[2025-12-21 10:56:04]   SUI/USDT [4h]: $1.46 | RSI 73.5 | STRONG_SELL
+[2025-12-21 10:56:06]   AXS/USDT [1h]: $0.86 | RSI 38.6 | HOLD
+[2025-12-21 10:56:09]   AXS/USDT [15m]: $0.86 | RSI 41.7 | HOLD
+[2025-12-21 10:56:11]   SAND/USDT [1h]: $0.12 | RSI 33.3 | BUY
+[2025-12-21 10:56:13]   SAND/USDT [15m]: $0.12 | RSI 36.2 | HOLD
+[2025-12-21 10:56:15]   GALA/USDT [1h]: $0.01 | RSI 34.2 | BUY
+[2025-12-21 10:56:17]   GALA/USDT [15m]: $0.01 | RSI 44.4 | HOLD
+[2025-12-21 10:56:19]   WIF/USDT [1h]: $0.35 | RSI 48.1 | HOLD
+[2025-12-21 10:56:21]   WIF/USDT [15m]: $0.35 | RSI 41.7 | HOLD
+[2025-12-21 10:56:23]   JUP/USDT [1h]: $0.19 | RSI 36.9 | HOLD
+[2025-12-21 10:56:24]   JUP/USDT [15m]: $0.19 | RSI 40.4 | HOLD
+[2025-12-21 10:56:26]   NEAR/USDT [15m]: $1.51 | RSI 46.0 | HOLD
+[2025-12-21 10:56:28]   NEAR/USDT [1h]: $1.51 | RSI 45.7 | HOLD
+[2025-12-21 10:56:30]   NEAR/USDT [4h]: $1.51 | RSI 60.6 | HOLD
+[2025-12-21 10:56:32]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 10:56:34]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 10:56:36]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 10:56:38]   ALGO/USDT [15m]: $0.11 | RSI 48.1 | HOLD
+[2025-12-21 10:56:40]   ALGO/USDT [1h]: $0.11 | RSI 49.2 | HOLD
+[2025-12-21 10:56:42]   ALGO/USDT [4h]: $0.11 | RSI 66.1 | SELL
+[2025-12-21 10:56:44]   VET/USDT [15m]: $0.01 | RSI 48.6 | HOLD
+[2025-12-21 10:56:46]   VET/USDT [1h]: $0.01 | RSI 52.4 | HOLD
+[2025-12-21 10:56:48]   VET/USDT [4h]: $0.01 | RSI 72.7 | SELL
+[2025-12-21 10:56:50]   IMX/USDT [15m]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 10:56:52]   IMX/USDT [1h]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 10:56:54]   IMX/USDT [4h]: $0.23 | RSI 55.3 | HOLD
+[2025-12-21 10:56:56]   LRC/USDT [15m]: $0.06 | RSI 41.2 | HOLD
+[2025-12-21 10:56:58]   LRC/USDT [1h]: $0.06 | RSI 36.4 | HOLD
+[2025-12-21 10:57:00]   LRC/USDT [4h]: $0.06 | RSI 59.8 | HOLD
+[2025-12-21 10:57:02]   METIS/USDT [15m]: $5.45 | RSI 46.7 | HOLD
+[2025-12-21 10:57:04]   METIS/USDT [1h]: $5.45 | RSI 39.6 | HOLD
+[2025-12-21 10:57:06]   METIS/USDT [4h]: $5.45 | RSI 66.7 | SELL
+[2025-12-21 10:57:10]   SEI/USDT [15m]: $0.11 | RSI 60.7 | HOLD
+[2025-12-21 10:57:12]   SEI/USDT [1h]: $0.11 | RSI 42.6 | HOLD
+[2025-12-21 10:57:14]   TIA/USDT [15m]: $0.47 | RSI 36.7 | HOLD
+[2025-12-21 10:57:16]   TIA/USDT [1h]: $0.47 | RSI 35.8 | HOLD
+[2025-12-21 10:57:18]   PYTH/USDT [15m]: $0.06 | RSI 33.3 | BUY
+[2025-12-21 10:57:20]   PYTH/USDT [1h]: $0.06 | RSI 41.3 | HOLD
+[2025-12-21 10:57:22]   JTO/USDT [15m]: $0.36 | RSI 42.9 | HOLD
+[2025-12-21 10:57:24]   JTO/USDT [1h]: $0.36 | RSI 27.3 | STRONG_BUY
+[2025-12-21 10:57:26]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 10:57:28]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 10:57:30]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 10:57:32]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 10:57:34]   SNX/USDT [1h]: $0.42 | RSI 33.3 | BUY
+[2025-12-21 10:57:36]   SNX/USDT [15m]: $0.42 | RSI 45.5 | HOLD
+[2025-12-21 10:57:38]   SNX/USDT [4h]: $0.42 | RSI 69.2 | SELL
+[2025-12-21 10:57:40]   SNX/USDT [5m]: $0.42 | RSI 33.3 | BUY
+[2025-12-21 10:57:42]   COMP/USDT [1h]: $24.08 | RSI 19.8 | BUY
+[2025-12-21 10:57:44]   COMP/USDT [15m]: $24.08 | RSI 36.4 | HOLD
+[2025-12-21 10:57:46]   COMP/USDT [5m]: $24.08 | RSI 40.5 | HOLD
+[2025-12-21 10:57:48]   CRV/USDT [1h]: $0.35 | RSI 39.4 | HOLD
+[2025-12-21 10:57:50]   CRV/USDT [15m]: $0.35 | RSI 49.0 | HOLD
+[2025-12-21 10:57:52]   CRV/USDT [4h]: $0.35 | RSI 57.3 | HOLD
+[2025-12-21 10:57:54]   CRV/USDT [5m]: $0.35 | RSI 25.7 | BUY
+[2025-12-21 10:57:56]   SUSHI/USDT [1h]: $0.30 | RSI 51.3 | HOLD
+[2025-12-21 10:57:58]   SUSHI/USDT [15m]: $0.30 | RSI 31.3 | BUY
+[2025-12-21 10:58:00]   SUSHI/USDT [4h]: $0.30 | RSI 70.8 | SELL
+[2025-12-21 10:58:02]   SUSHI/USDT [5m]: $0.30 | RSI 31.9 | BUY
+[2025-12-21 10:58:04]   1INCH/USDT [1h]: $0.16 | RSI 41.3 | HOLD
+[2025-12-21 10:58:07]   1INCH/USDT [15m]: $0.16 | RSI 40.5 | HOLD
+[2025-12-21 10:58:10]   1INCH/USDT [4h]: $0.16 | RSI 64.5 | HOLD
+[2025-12-21 10:58:13]   1INCH/USDT [5m]: $0.16 | RSI 23.8 | BUY
+[2025-12-21 10:58:16]   YFI/USDT [1h]: $3,406.00 | RSI 52.1 | HOLD
+[2025-12-21 10:58:18]   YFI/USDT [15m]: $3,406.00 | RSI 63.0 | HOLD
+[2025-12-21 10:58:21]   YFI/USDT [5m]: $3,406.00 | RSI 52.2 | HOLD
+[2025-12-21 10:58:24]   DYDX/USDT [1h]: $0.17 | RSI 30.9 | BUY
+[2025-12-21 10:58:27]   DYDX/USDT [15m]: $0.17 | RSI 36.7 | HOLD
+[2025-12-21 10:58:31]   DYDX/USDT [4h]: $0.17 | RSI 47.6 | HOLD
+[2025-12-21 10:58:33]   DYDX/USDT [5m]: $0.17 | RSI 27.0 | BUY
+[2025-12-21 10:58:37]   MEME/USDT [15m]: $0.00 | RSI 40.7 | HOLD
+[2025-12-21 10:58:40]   MEME/USDT [1h]: $0.00 | RSI 39.4 | HOLD
+[2025-12-21 10:58:43]   MANA/USDT [15m]: $0.13 | RSI 29.0 | BUY
+[2025-12-21 10:58:46]   MANA/USDT [1h]: $0.13 | RSI 41.0 | HOLD
+[2025-12-21 10:58:49]   ENJ/USDT [15m]: $0.03 | RSI 39.1 | HOLD
+[2025-12-21 10:58:52]   ENJ/USDT [1h]: $0.03 | RSI 44.4 | HOLD
+[2025-12-21 10:58:55]   RONIN/USDT [15m]: $0.15 | RSI 32.4 | BUY
+[2025-12-21 10:58:57]   RONIN/USDT [1h]: $0.15 | RSI 19.7 | BUY
+[2025-12-21 10:58:59]   ILV/USDT [15m]: $5.77 | RSI 27.8 | BUY
+[2025-12-21 10:59:01]   ILV/USDT [1h]: $5.77 | RSI 41.1 | HOLD
+[2025-12-21 10:59:03]   LDO/USDT [15m]: $0.54 | RSI 54.7 | HOLD
+[2025-12-21 10:59:05]   LDO/USDT [1h]: $0.54 | RSI 38.7 | HOLD
+[2025-12-21 10:59:07]   LDO/USDT [4h]: $0.54 | RSI 65.8 | SELL
+[2025-12-21 10:59:09]   GMX/USDT [15m]: $8.15 | RSI 50.0 | HOLD
+[2025-12-21 10:59:11]   GMX/USDT [1h]: $8.15 | RSI 55.6 | HOLD
+[2025-12-21 10:59:13]   GMX/USDT [4h]: $8.15 | RSI 73.7 | SELL
+[2025-12-21 10:59:15]   SKL/USDT [1h]: $0.01 | RSI 49.0 | HOLD
+[2025-12-21 10:59:17]   SKL/USDT [15m]: $0.01 | RSI 42.9 | HOLD
+[2025-12-21 10:59:18]   SKL/USDT [4h]: $0.01 | RSI 60.4 | HOLD
+[2025-12-21 10:59:20]   CELR/USDT [1h]: $0.00 | RSI 42.1 | HOLD
+[2025-12-21 10:59:22]   CELR/USDT [15m]: $0.00 | RSI 43.4 | HOLD
+[2025-12-21 10:59:24]   CELR/USDT [4h]: $0.00 | RSI 77.4 | STRONG_SELL
+[2025-12-21 10:59:26]   MAGIC/USDT [15m]: $0.09 | RSI 39.1 | HOLD
+[2025-12-21 10:59:28]   FET/USDT [1h]: $0.21 | RSI 42.6 | HOLD
+[2025-12-21 10:59:30]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 10:59:32]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 10:59:34]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 10:59:36]   TAO/USDT [1h]: $223.90 | RSI 35.0 | HOLD
+[2025-12-21 10:59:39]   WLD/USDT [1h]: $0.52 | RSI 41.6 | HOLD
+[2025-12-21 10:59:41]   ARKM/USDT [1h]: $0.19 | RSI 46.2 | HOLD
+[2025-12-21 10:59:43]   RENDER/USDT [1h]: $1.28 | RSI 41.2 | HOLD
+[2025-12-21 10:59:43]   >> Ichimoku Cloud: BUY 8.325607 UNI @ $6.29
+[2025-12-21 10:59:43]   >> Martingale: BUY 409.091668 ADA @ $0.37
+[2025-12-21 10:59:43]   >> Martingale: BUY 524.448080 OP @ $0.28
+[2025-12-21 10:59:43]   >> Martingale: BUY 29.157706 INJ @ $4.70
+[2025-12-21 10:59:43]   >> Martingale Safe: BUY 409.091668 ADA @ $0.37
+[2025-12-21 10:59:43]   >> Martingale Safe: BUY 524.448080 OP @ $0.28
+[2025-12-21 10:59:43]   >> Martingale Safe: BUY 29.157706 INJ @ $4.70
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 0.000453 BTC @ $88,650.43
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 0.012735 ETH @ $2,997.21
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 0.042377 BNB @ $855.69
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 17.802649 XRP @ $1.94
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 247.940899 DOGE @ $0.13
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 2.467415 LINK @ $12.60
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 4.698530 UNI @ $6.29
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 14.293537 ATOM @ $1.96
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 0.344384 LTC @ $77.40
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 15.563945 APT @ $1.63
+[2025-12-21 10:59:43]   >> OI Breakout: BUY 127.080881 ARB @ $0.19
+[2025-12-21 10:59:43]   >> Grid Tight: BUY 72.964823 MATIC @ $0.38
+[2025-12-21 10:59:43]   >> Low Risk DCA: BUY 1398.826178 DYDX @ $0.17
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 152.121744 DOGE @ $0.13
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 2445290.135729 SHIB @ $0.00
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 396480.367936 FLOKI @ $0.00
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 1798189.462342 BONK @ $0.00
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 37.964081 WIF @ $0.35
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 12375.973279 MEME @ $0.00
+[2025-12-21 10:59:43]   >> Stoch Memes: BUY 6203.816373 TURBO @ $0.00
+[2025-12-21 10:59:43]   >> VWAP Memes: BUY 53265.428641 TURBO @ $0.00
+[2025-12-21 10:59:43]   >> VWAP Trend L2: BUY 154.487437 ARB @ $0.19
+[2025-12-21 10:59:43]   >> VWAP Trend L2: BUY 73.226801 MATIC @ $0.38
+[2025-12-21 10:59:43]   >> VWAP Trend L2: BUY 2528.078137 SKL @ $0.01
+[2025-12-21 10:59:43]   >> VWAP Trend L2: BUY 6895.896305 CELR @ $0.00
+[2025-12-21 10:59:43]   >> VWAP Trend L2: BUY 4.370606 METIS @ $5.45
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 211.258958 AXS @ $0.86
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 1453.607695 SAND @ $0.12
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 1272.556169 MANA @ $0.13
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 5631.164677 ENJ @ $0.03
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 654.024894 IMX @ $0.23
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 1485.916875 MAGIC @ $0.09
+[2025-12-21 10:59:43]   >> Mean Rev Gaming: BUY 23.119270 ILV @ $5.77
+[2025-12-21 10:59:43]   >> Stoch New Coins: BUY 350.080127 TIA @ $0.47
+[2025-12-21 10:59:43]   >> Stoch New Coins: BUY 2603.976640 PYTH @ $0.06
+[2025-12-21 10:59:43]   >> Stoch New Coins: BUY 416.233963 JTO @ $0.36
+[2025-12-21 10:59:43]   >> Stoch New Coins: BUY 728.624877 JUP @ $0.19
+[2025-12-21 10:59:47]   >> Ichimoku Swing: BUY 0.004364 BTC @ $88,650.43
+[2025-12-21 10:59:47]   >> Ichimoku Kumo Break: BUY 0.004364 BTC @ $88,650.43
+[2025-12-21 10:59:47]   >> Ichimoku TK Cross: BUY 0.004364 BTC @ $88,650.43
+[2025-12-21 10:59:47]   >> Ichimoku Chikou: BUY 0.004364 BTC @ $88,650.43
+[2025-12-21 10:59:47] 🎯 Scanning for new tokens...
+[2025-12-21 11:00:19] 🔍 Scanned 141 new tokens across all chains
+[2025-12-21 11:00:19]   🆕 Fair | $0.00006745 | MC: $41,367 | Risk: 70/100 | meteora
+[2025-12-21 11:00:19]   🆕 Fair | $0.00003597 | MC: $0 | Risk: 80/100 | meteoradbc
+[2025-12-21 11:00:19]   🆕 Fair | $0.00016320 | MC: $88,985 | Risk: 50/100 | pancakeswap
+[2025-12-21 11:00:19]   🆕 LION | $0.00002501 | MC: $0 | Risk: 70/100 | launchlab
+[2025-12-21 11:00:19]   🆕 XMAS | $0.00003947 | MC: $37,741 | Risk: 40/100 | pumpswap
+[2025-12-21 11:00:19] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 11:02:18] 🐋 Checking whale signals...
+[2025-12-21 11:03:18] 💾 Saved 48 trades
+[2025-12-21 11:03:18] 📈 Classic: 48 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 5
+[2025-12-21 11:03:19] 📊 Portfolio history recorded
+[2025-12-21 11:03:19] ⏳ Next scan in 60s...
+[2025-12-21 11:04:19] 
+==================== SCAN #7 ====================
+[2025-12-21 11:04:19] 📊 Scanning existing cryptos...
+[2025-12-21 11:04:19] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 11:04:21]   BTC/USDT [1h]: $88,616.80 | RSI 60.4 | HOLD
+[2025-12-21 11:04:23]   BTC/USDT [15m]: $88,616.80 | RSI 70.1 | SELL
+[2025-12-21 11:04:25]   BTC/USDT [4h]: $88,616.80 | RSI 76.9 | SELL
+[2025-12-21 11:04:27]   BTC/USDT [5m]: $88,600.27 | RSI 23.7 | STRONG_BUY
+[2025-12-21 11:04:28]   ETH/USDT [1h]: $2,994.62 | RSI 61.4 | HOLD
+[2025-12-21 11:04:30]   ETH/USDT [15m]: $2,994.61 | RSI 69.8 | SELL
+[2025-12-21 11:04:32]   ETH/USDT [4h]: $2,994.61 | RSI 79.9 | SELL
+[2025-12-21 11:04:34]   ETH/USDT [5m]: $2,994.61 | RSI 27.2 | STRONG_BUY
+[2025-12-21 11:04:36]   SOL/USDT [1h]: $125.66 | RSI 42.0 | HOLD
+[2025-12-21 11:04:38]   SOL/USDT [15m]: $125.66 | RSI 58.1 | HOLD
+[2025-12-21 11:04:40]   SOL/USDT [4h]: $125.66 | RSI 77.0 | STRONG_SELL
+[2025-12-21 11:04:42]   SOL/USDT [5m]: $125.67 | RSI 30.8 | BUY
+[2025-12-21 11:04:44]   AVAX/USDT [1h]: $12.22 | RSI 50.8 | HOLD
+[2025-12-21 11:04:46]   AVAX/USDT [15m]: $12.22 | RSI 66.7 | SELL
+[2025-12-21 11:04:48]   AVAX/USDT [4h]: $12.22 | RSI 73.3 | STRONG_SELL
+[2025-12-21 11:04:50]   AVAX/USDT [5m]: $12.22 | RSI 28.6 | STRONG_BUY
+[2025-12-21 11:04:52]   LINK/USDT [1h]: $12.59 | RSI 49.1 | HOLD
+[2025-12-21 11:04:54]   LINK/USDT [15m]: $12.59 | RSI 62.5 | HOLD
+[2025-12-21 11:04:56]   LINK/USDT [4h]: $12.59 | RSI 69.5 | SELL
+[2025-12-21 11:04:58]   LINK/USDT [5m]: $12.59 | RSI 23.8 | STRONG_BUY
+[2025-12-21 11:05:00]   AAVE/USDT [1h]: $177.96 | RSI 33.8 | BUY
+[2025-12-21 11:05:02]   AAVE/USDT [15m]: $177.95 | RSI 54.5 | HOLD
+[2025-12-21 11:05:04]   AAVE/USDT [4h]: $177.95 | RSI 48.6 | HOLD
+[2025-12-21 11:05:06]   AAVE/USDT [5m]: $177.97 | RSI 23.1 | BUY
+[2025-12-21 11:05:08]   UNI/USDT [1h]: $6.30 | RSI 54.1 | HOLD
+[2025-12-21 11:05:10]   UNI/USDT [15m]: $6.30 | RSI 44.8 | HOLD
+[2025-12-21 11:05:12]   UNI/USDT [4h]: $6.30 | RSI 91.6 | SELL
+[2025-12-21 11:05:14]   UNI/USDT [5m]: $6.30 | RSI 24.5 | BUY
+[2025-12-21 11:05:16]   DOGE/USDT [1h]: $0.13 | RSI 46.3 | HOLD
+[2025-12-21 11:05:18]   DOGE/USDT [15m]: $0.13 | RSI 58.9 | HOLD
+[2025-12-21 11:05:20]   DOGE/USDT [4h]: $0.13 | RSI 78.1 | SELL
+[2025-12-21 11:05:25]   SHIB/USDT [15m]: $0.00 | RSI 43.7 | HOLD
+[2025-12-21 11:05:27]   PEPE/USDT [1h]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 11:05:29]   PEPE/USDT [15m]: $0.00 | RSI 42.9 | HOLD
+[2025-12-21 11:05:31]   PEPE/USDT [4h]: $0.00 | RSI 78.3 | SELL
+[2025-12-21 11:05:33]   BONK/USDT [1h]: $0.00 | RSI 31.0 | BUY
+[2025-12-21 11:05:35]   BONK/USDT [15m]: $0.00 | RSI 37.5 | HOLD
+[2025-12-21 11:05:37]   TURBO/USDT [1h]: $0.00 | RSI 31.3 | BUY
+[2025-12-21 11:05:39]   TURBO/USDT [15m]: $0.00 | RSI 39.7 | HOLD
+[2025-12-21 11:05:41]   FLOKI/USDT [1h]: $0.00 | RSI 45.9 | HOLD
+[2025-12-21 11:05:43]   FLOKI/USDT [15m]: $0.00 | RSI 45.1 | HOLD
+[2025-12-21 11:05:45]   BNB/USDT [1h]: $856.44 | RSI 58.6 | HOLD
+[2025-12-21 11:05:47]   BNB/USDT [15m]: $856.44 | RSI 75.6 | SELL
+[2025-12-21 11:05:49]   BNB/USDT [4h]: $856.44 | RSI 71.4 | STRONG_SELL
+[2025-12-21 11:05:50]   XRP/USDT [1h]: $1.93 | RSI 50.5 | HOLD
+[2025-12-21 11:05:52]   XRP/USDT [15m]: $1.93 | RSI 58.7 | HOLD
+[2025-12-21 11:05:54]   XRP/USDT [4h]: $1.93 | RSI 78.3 | SELL
+[2025-12-21 11:05:56]   ADA/USDT [1h]: $0.37 | RSI 38.3 | HOLD
+[2025-12-21 11:05:58]   ADA/USDT [15m]: $0.37 | RSI 60.7 | HOLD
+[2025-12-21 11:06:00]   ADA/USDT [4h]: $0.37 | RSI 62.4 | HOLD
+[2025-12-21 11:06:02]   DOT/USDT [1h]: $1.83 | RSI 47.5 | HOLD
+[2025-12-21 11:06:04]   DOT/USDT [15m]: $1.83 | RSI 53.1 | HOLD
+[2025-12-21 11:06:06]   DOT/USDT [4h]: $1.83 | RSI 60.5 | HOLD
+[2025-12-21 11:06:08]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 11:06:10]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 11:06:12]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 11:06:14]   ATOM/USDT [1h]: $1.96 | RSI 36.4 | HOLD
+[2025-12-21 11:06:16]   ATOM/USDT [15m]: $1.96 | RSI 35.3 | HOLD
+[2025-12-21 11:06:18]   ATOM/USDT [4h]: $1.96 | RSI 63.7 | HOLD
+[2025-12-21 11:06:20]   LTC/USDT [1h]: $77.42 | RSI 42.6 | HOLD
+[2025-12-21 11:06:22]   LTC/USDT [15m]: $77.42 | RSI 65.0 | HOLD
+[2025-12-21 11:06:24]   LTC/USDT [4h]: $77.42 | RSI 64.3 | HOLD
+[2025-12-21 11:06:26]   APT/USDT [1h]: $1.62 | RSI 52.3 | HOLD
+[2025-12-21 11:06:28]   APT/USDT [15m]: $1.62 | RSI 50.7 | HOLD
+[2025-12-21 11:06:30]   APT/USDT [4h]: $1.62 | RSI 75.3 | SELL
+[2025-12-21 11:06:32]   ARB/USDT [1h]: $0.19 | RSI 45.2 | HOLD
+[2025-12-21 11:06:34]   ARB/USDT [15m]: $0.19 | RSI 39.6 | HOLD
+[2025-12-21 11:06:36]   ARB/USDT [4h]: $0.19 | RSI 67.4 | SELL
+[2025-12-21 11:06:38]   OP/USDT [1h]: $0.28 | RSI 33.6 | BUY
+[2025-12-21 11:06:40]   OP/USDT [15m]: $0.28 | RSI 45.9 | HOLD
+[2025-12-21 11:06:42]   OP/USDT [4h]: $0.28 | RSI 65.4 | SELL
+[2025-12-21 11:06:44]   INJ/USDT [1h]: $4.70 | RSI 32.7 | BUY
+[2025-12-21 11:06:46]   INJ/USDT [15m]: $4.70 | RSI 46.5 | HOLD
+[2025-12-21 11:06:48]   INJ/USDT [4h]: $4.70 | RSI 60.8 | HOLD
+[2025-12-21 11:06:50]   SUI/USDT [1h]: $1.46 | RSI 52.3 | HOLD
+[2025-12-21 11:06:52]   SUI/USDT [15m]: $1.46 | RSI 66.1 | SELL
+[2025-12-21 11:06:54]   SUI/USDT [4h]: $1.46 | RSI 73.5 | STRONG_SELL
+[2025-12-21 11:06:56]   AXS/USDT [1h]: $0.86 | RSI 39.7 | HOLD
+[2025-12-21 11:06:58]   AXS/USDT [15m]: $0.86 | RSI 41.7 | HOLD
+[2025-12-21 11:07:00]   SAND/USDT [1h]: $0.12 | RSI 32.3 | BUY
+[2025-12-21 11:07:02]   SAND/USDT [15m]: $0.12 | RSI 34.8 | BUY
+[2025-12-21 11:07:04]   GALA/USDT [1h]: $0.01 | RSI 33.3 | BUY
+[2025-12-21 11:07:06]   GALA/USDT [15m]: $0.01 | RSI 47.1 | HOLD
+[2025-12-21 11:07:08]   WIF/USDT [1h]: $0.35 | RSI 52.0 | HOLD
+[2025-12-21 11:07:10]   WIF/USDT [15m]: $0.35 | RSI 45.5 | HOLD
+[2025-12-21 11:07:12]   JUP/USDT [1h]: $0.19 | RSI 38.8 | HOLD
+[2025-12-21 11:07:14]   JUP/USDT [15m]: $0.19 | RSI 50.0 | HOLD
+[2025-12-21 11:07:16]   NEAR/USDT [15m]: $1.51 | RSI 50.0 | HOLD
+[2025-12-21 11:07:18]   NEAR/USDT [1h]: $1.51 | RSI 49.4 | HOLD
+[2025-12-21 11:07:20]   NEAR/USDT [4h]: $1.51 | RSI 61.2 | HOLD
+[2025-12-21 11:07:22]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 11:07:24]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 11:07:26]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 11:07:28]   ALGO/USDT [15m]: $0.11 | RSI 50.0 | HOLD
+[2025-12-21 11:07:30]   ALGO/USDT [1h]: $0.11 | RSI 51.6 | HOLD
+[2025-12-21 11:07:32]   ALGO/USDT [4h]: $0.11 | RSI 66.1 | SELL
+[2025-12-21 11:07:34]   VET/USDT [15m]: $0.01 | RSI 45.2 | HOLD
+[2025-12-21 11:07:36]   VET/USDT [1h]: $0.01 | RSI 53.7 | HOLD
+[2025-12-21 11:07:38]   VET/USDT [4h]: $0.01 | RSI 73.2 | SELL
+[2025-12-21 11:07:40]   IMX/USDT [15m]: $0.23 | RSI 28.6 | BUY
+[2025-12-21 11:07:42]   IMX/USDT [1h]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 11:07:43]   IMX/USDT [4h]: $0.23 | RSI 53.8 | HOLD
+[2025-12-21 11:07:45]   LRC/USDT [15m]: $0.06 | RSI 41.2 | HOLD
+[2025-12-21 11:07:47]   LRC/USDT [1h]: $0.06 | RSI 38.7 | HOLD
+[2025-12-21 11:07:49]   LRC/USDT [4h]: $0.06 | RSI 59.3 | HOLD
+[2025-12-21 11:07:51]   METIS/USDT [15m]: $5.43 | RSI 41.2 | HOLD
+[2025-12-21 11:07:53]   METIS/USDT [1h]: $5.43 | RSI 38.8 | HOLD
+[2025-12-21 11:07:56]   METIS/USDT [4h]: $5.43 | RSI 65.1 | SELL
+[2025-12-21 11:08:00]   SEI/USDT [15m]: $0.11 | RSI 62.1 | HOLD
+[2025-12-21 11:08:02]   SEI/USDT [1h]: $0.11 | RSI 44.3 | HOLD
+[2025-12-21 11:08:04]   TIA/USDT [15m]: $0.47 | RSI 41.1 | HOLD
+[2025-12-21 11:08:06]   TIA/USDT [1h]: $0.47 | RSI 37.1 | HOLD
+[2025-12-21 11:08:08]   PYTH/USDT [15m]: $0.06 | RSI 35.7 | HOLD
+[2025-12-21 11:08:10]   PYTH/USDT [1h]: $0.06 | RSI 41.3 | HOLD
+[2025-12-21 11:08:12]   JTO/USDT [15m]: $0.36 | RSI 57.1 | HOLD
+[2025-12-21 11:08:14]   JTO/USDT [1h]: $0.36 | RSI 33.3 | BUY
+[2025-12-21 11:08:16]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 11:08:18]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 11:08:20]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 11:08:22]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 11:08:24]   SNX/USDT [1h]: $0.42 | RSI 33.3 | BUY
+[2025-12-21 11:08:26]   SNX/USDT [15m]: $0.42 | RSI 40.0 | HOLD
+[2025-12-21 11:08:28]   SNX/USDT [4h]: $0.42 | RSI 69.2 | SELL
+[2025-12-21 11:08:30]   SNX/USDT [5m]: $0.42 | RSI 28.6 | BUY
+[2025-12-21 11:08:32]   COMP/USDT [1h]: $24.06 | RSI 18.3 | BUY
+[2025-12-21 11:08:34]   COMP/USDT [15m]: $24.06 | RSI 32.4 | BUY
+[2025-12-21 11:08:36]   COMP/USDT [5m]: $24.06 | RSI 38.5 | HOLD
+[2025-12-21 11:08:38]   CRV/USDT [1h]: $0.35 | RSI 43.3 | HOLD
+[2025-12-21 11:08:40]   CRV/USDT [15m]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 11:08:42]   CRV/USDT [4h]: $0.35 | RSI 57.7 | HOLD
+[2025-12-21 11:08:44]   CRV/USDT [5m]: $0.35 | RSI 24.6 | BUY
+[2025-12-21 11:08:46]   SUSHI/USDT [1h]: $0.30 | RSI 44.6 | HOLD
+[2025-12-21 11:08:48]   SUSHI/USDT [15m]: $0.30 | RSI 34.1 | BUY
+[2025-12-21 11:08:49]   SUSHI/USDT [4h]: $0.30 | RSI 70.6 | SELL
+[2025-12-21 11:08:51]   SUSHI/USDT [5m]: $0.30 | RSI 27.6 | BUY
+[2025-12-21 11:08:53]   1INCH/USDT [1h]: $0.16 | RSI 35.3 | HOLD
+[2025-12-21 11:08:55]   1INCH/USDT [15m]: $0.16 | RSI 40.5 | HOLD
+[2025-12-21 11:08:57]   1INCH/USDT [4h]: $0.16 | RSI 64.1 | HOLD
+[2025-12-21 11:08:59]   1INCH/USDT [5m]: $0.16 | RSI 11.8 | BUY
+[2025-12-21 11:09:01]   YFI/USDT [1h]: $3,398.00 | RSI 46.4 | HOLD
+[2025-12-21 11:09:03]   YFI/USDT [15m]: $3,398.00 | RSI 58.6 | HOLD
+[2025-12-21 11:09:05]   YFI/USDT [5m]: $3,398.00 | RSI 36.6 | HOLD
+[2025-12-21 11:09:07]   DYDX/USDT [1h]: $0.17 | RSI 33.0 | BUY
+[2025-12-21 11:09:09]   DYDX/USDT [15m]: $0.17 | RSI 41.1 | HOLD
+[2025-12-21 11:09:11]   DYDX/USDT [4h]: $0.17 | RSI 47.9 | HOLD
+[2025-12-21 11:09:13]   DYDX/USDT [5m]: $0.17 | RSI 14.8 | BUY
+[2025-12-21 11:09:15]   MEME/USDT [15m]: $0.00 | RSI 46.7 | HOLD
+[2025-12-21 11:09:17]   MEME/USDT [1h]: $0.00 | RSI 45.3 | HOLD
+[2025-12-21 11:09:19]   MANA/USDT [15m]: $0.13 | RSI 28.1 | BUY
+[2025-12-21 11:09:21]   MANA/USDT [1h]: $0.13 | RSI 36.5 | HOLD
+[2025-12-21 11:09:23]   ENJ/USDT [15m]: $0.03 | RSI 36.4 | HOLD
+[2025-12-21 11:09:25]   ENJ/USDT [1h]: $0.03 | RSI 39.0 | HOLD
+[2025-12-21 11:09:27]   RONIN/USDT [15m]: $0.15 | RSI 36.7 | HOLD
+[2025-12-21 11:09:29]   RONIN/USDT [1h]: $0.15 | RSI 22.8 | BUY
+[2025-12-21 11:09:31]   ILV/USDT [15m]: $5.77 | RSI 31.6 | BUY
+[2025-12-21 11:09:33]   ILV/USDT [1h]: $5.77 | RSI 41.4 | HOLD
+[2025-12-21 11:09:35]   LDO/USDT [15m]: $0.54 | RSI 59.5 | HOLD
+[2025-12-21 11:09:37]   LDO/USDT [1h]: $0.54 | RSI 44.5 | HOLD
+[2025-12-21 11:09:39]   LDO/USDT [4h]: $0.54 | RSI 66.3 | SELL
+[2025-12-21 11:09:41]   GMX/USDT [15m]: $8.15 | RSI 53.3 | HOLD
+[2025-12-21 11:09:43]   GMX/USDT [1h]: $8.15 | RSI 55.6 | HOLD
+[2025-12-21 11:09:45]   GMX/USDT [4h]: $8.15 | RSI 73.7 | SELL
+[2025-12-21 11:09:48]   SKL/USDT [1h]: $0.01 | RSI 47.9 | HOLD
+[2025-12-21 11:09:51]   SKL/USDT [15m]: $0.01 | RSI 46.2 | HOLD
+[2025-12-21 11:09:54]   SKL/USDT [4h]: $0.01 | RSI 60.4 | HOLD
+[2025-12-21 11:09:57]   CELR/USDT [1h]: $0.00 | RSI 43.0 | HOLD
+[2025-12-21 11:10:00]   CELR/USDT [15m]: $0.00 | RSI 44.9 | HOLD
+[2025-12-21 11:10:03]   CELR/USDT [4h]: $0.00 | RSI 78.0 | STRONG_SELL
+[2025-12-21 11:10:06]   MAGIC/USDT [15m]: $0.09 | RSI 39.1 | HOLD
+[2025-12-21 11:10:09]   FET/USDT [1h]: $0.21 | RSI 40.0 | HOLD
+[2025-12-21 11:10:12]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 11:10:14]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 11:10:17]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 11:10:20]   TAO/USDT [1h]: $223.90 | RSI 34.8 | BUY
+[2025-12-21 11:10:23]   WLD/USDT [1h]: $0.52 | RSI 39.9 | HOLD
+[2025-12-21 11:10:26]   ARKM/USDT [1h]: $0.19 | RSI 42.9 | HOLD
+[2025-12-21 11:10:29]   RENDER/USDT [1h]: $1.28 | RSI 42.7 | HOLD
+[2025-12-21 11:10:29]   >> Ichimoku Cloud: BUY 7.477582 UNI @ $6.30
+[2025-12-21 11:10:29]   >> Martingale: BUY 351.977983 ADA @ $0.37
+[2025-12-21 11:10:29]   >> Martingale: BUY 63.056290 ATOM @ $1.96
+[2025-12-21 11:10:29]   >> Martingale: BUY 426.545809 OP @ $0.28
+[2025-12-21 11:10:29]   >> Martingale: BUY 23.769367 INJ @ $4.70
+[2025-12-21 11:10:29]   >> Martingale Safe: BUY 351.977983 ADA @ $0.37
+[2025-12-21 11:10:29]   >> Martingale Safe: BUY 63.056290 ATOM @ $1.96
+[2025-12-21 11:10:29]   >> Martingale Safe: BUY 426.545809 OP @ $0.28
+[2025-12-21 11:10:29]   >> Martingale Safe: BUY 23.769367 INJ @ $4.70
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 0.000258 BTC @ $88,616.80
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 0.007250 ETH @ $2,994.62
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 0.024083 BNB @ $856.44
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 10.140298 XRP @ $1.93
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 1.523273 AVAX @ $12.22
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 134.190868 DOGE @ $0.13
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 1.334352 LINK @ $12.59
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 2.533256 UNI @ $6.30
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 7.731534 ATOM @ $1.96
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 0.186043 LTC @ $77.42
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 8.436060 APT @ $1.62
+[2025-12-21 11:10:29]   >> OI Breakout: SELL 2757.339100 ARB @ $0.19 | PnL: $-5.22
+[2025-12-21 11:10:29]   >> OI Breakout: BUY 26.769281 SUI @ $1.46
+[2025-12-21 11:10:29]   >> Grid Tight: BUY 69.316582 MATIC @ $0.38
+[2025-12-21 11:10:29]   >> Low Risk DCA: BUY 1328.082887 DYDX @ $0.17
+[2025-12-21 11:10:29]   >> VWAP Memes: BUY 48022.646206 TURBO @ $0.00
+[2025-12-21 11:10:29]   >> VWAP Trend L2: BUY 119.665863 ARB @ $0.19
+[2025-12-21 11:10:29]   >> VWAP Trend L2: BUY 56.661502 MATIC @ $0.38
+[2025-12-21 11:10:29]   >> VWAP Trend L2: BUY 1956.178671 SKL @ $0.01
+[2025-12-21 11:10:29]   >> VWAP Trend L2: BUY 5331.514169 CELR @ $0.00
+[2025-12-21 11:10:29]   >> VWAP Trend L2: BUY 3.394348 METIS @ $5.43
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 147.701956 AXS @ $0.86
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 1015.108467 SAND @ $0.12
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 889.364471 MANA @ $0.13
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 3932.452315 ENJ @ $0.03
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 16675.440158 GALA @ $0.01
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 435.821893 IMX @ $0.23
+[2025-12-21 11:10:29]   >> Mean Rev Gaming: BUY 987.878362 MAGIC @ $0.09
+[2025-12-21 11:10:29]   >> Stoch New Coins: BUY 284.717500 TIA @ $0.47
+[2025-12-21 11:10:29]   >> Stoch New Coins: BUY 2120.955248 PYTH @ $0.06
+[2025-12-21 11:10:29]   >> Stoch New Coins: BUY 338.075514 JTO @ $0.36
+[2025-12-21 11:10:29]   >> Stoch New Coins: BUY 592.855794 JUP @ $0.19
+[2025-12-21 11:10:29]   >> Full Degen DeFi: BUY 5028.609178 SUSHI @ $0.30
+[2025-12-21 11:10:32]   >> Ichimoku Swing: BUY 0.004148 BTC @ $88,616.80
+[2025-12-21 11:10:32]   >> Ichimoku Swing: BUY 0.116599 ETH @ $2,994.62
+[2025-12-21 11:10:32]   >> Ichimoku Kumo Break: BUY 0.004148 BTC @ $88,616.80
+[2025-12-21 11:10:32]   >> Ichimoku Kumo Break: BUY 0.116599 ETH @ $2,994.62
+[2025-12-21 11:10:32]   >> Ichimoku TK Cross: BUY 0.004148 BTC @ $88,616.80
+[2025-12-21 11:10:32]   >> Ichimoku TK Cross: BUY 0.116599 ETH @ $2,994.62
+[2025-12-21 11:10:32]   >> Ichimoku Chikou: BUY 0.004148 BTC @ $88,616.80
+[2025-12-21 11:10:32]   >> Ichimoku Chikou: BUY 0.116599 ETH @ $2,994.62
+[2025-12-21 11:10:33] 🎯 Scanning for new tokens...
+[2025-12-21 11:11:05] 🔍 Scanned 140 new tokens across all chains
+[2025-12-21 11:11:05]   🆕 Satoshi | $0.00003886 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 11:11:05]   🆕 CRYPTO | $0.01274000 | MC: $1,840,972 | Risk: 45/100 | uniswap
+[2025-12-21 11:11:05] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 11:11:59] 📉 DUMP EXIT: epstoon/USDT | -90% | Got $48.24 back | Sniper Quickflip
+[2025-12-21 11:12:10] 📉 DUMP EXIT: epstoon/USDT | -90% | Got $23.38 back | Sniper All-In
+[2025-12-21 11:12:33] 📉 DUMP EXIT: epstoon/USDT | -90% | Got $33.68 back | Sniper Spray
+[2025-12-21 11:12:51] 📉 DUMP EXIT: epstoon/USDT | -90% | Got $33.68 back | Sniper Quickflip
+[2025-12-21 11:13:04]   ⚠️ 4 positions closed (rugs/dumps)
+[2025-12-21 11:13:04] 🐋 Checking whale signals...
+[2025-12-21 11:14:05] 💾 Saved 54 trades
+[2025-12-21 11:14:05] 📈 Classic: 50 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 2
+[2025-12-21 11:14:06] 📊 Portfolio history recorded
+[2025-12-21 11:14:06] ⏳ Next scan in 60s...
+[2025-12-21 11:15:06] 
+==================== SCAN #8 ====================
+[2025-12-21 11:15:06] 📊 Scanning existing cryptos...
+[2025-12-21 11:15:06] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 11:15:08]   BTC/USDT [1h]: $88,642.42 | RSI 61.2 | HOLD
+[2025-12-21 11:15:10]   BTC/USDT [15m]: $88,642.42 | RSI 68.9 | SELL
+[2025-12-21 11:15:12]   BTC/USDT [4h]: $88,642.42 | RSI 77.1 | SELL
+[2025-12-21 11:15:14]   BTC/USDT [5m]: $88,642.42 | RSI 33.5 | BUY
+[2025-12-21 11:15:16]   ETH/USDT [1h]: $2,995.40 | RSI 62.1 | HOLD
+[2025-12-21 11:15:18]   ETH/USDT [15m]: $2,995.45 | RSI 67.9 | SELL
+[2025-12-21 11:15:20]   ETH/USDT [4h]: $2,995.45 | RSI 80.0 | SELL
+[2025-12-21 11:15:22]   ETH/USDT [5m]: $2,995.59 | RSI 35.0 | HOLD
+[2025-12-21 11:15:24]   SOL/USDT [1h]: $125.71 | RSI 42.5 | HOLD
+[2025-12-21 11:15:26]   SOL/USDT [15m]: $125.71 | RSI 57.9 | HOLD
+[2025-12-21 11:15:28]   SOL/USDT [4h]: $125.70 | RSI 77.1 | STRONG_SELL
+[2025-12-21 11:15:30]   SOL/USDT [5m]: $125.72 | RSI 29.3 | BUY
+[2025-12-21 11:15:32]   AVAX/USDT [1h]: $12.23 | RSI 51.7 | HOLD
+[2025-12-21 11:15:33]   AVAX/USDT [15m]: $12.23 | RSI 67.7 | SELL
+[2025-12-21 11:15:35]   AVAX/USDT [4h]: $12.23 | RSI 73.6 | STRONG_SELL
+[2025-12-21 11:15:37]   AVAX/USDT [5m]: $12.23 | RSI 35.3 | HOLD
+[2025-12-21 11:15:39]   LINK/USDT [1h]: $12.59 | RSI 49.1 | HOLD
+[2025-12-21 11:15:41]   LINK/USDT [15m]: $12.59 | RSI 60.6 | HOLD
+[2025-12-21 11:15:43]   LINK/USDT [4h]: $12.59 | RSI 69.5 | SELL
+[2025-12-21 11:15:45]   LINK/USDT [5m]: $12.59 | RSI 23.1 | BUY
+[2025-12-21 11:15:47]   AAVE/USDT [1h]: $178.07 | RSI 34.3 | BUY
+[2025-12-21 11:15:49]   AAVE/USDT [15m]: $178.07 | RSI 53.9 | HOLD
+[2025-12-21 11:15:51]   AAVE/USDT [4h]: $178.07 | RSI 49.0 | HOLD
+[2025-12-21 11:15:53]   AAVE/USDT [5m]: $178.07 | RSI 18.9 | BUY
+[2025-12-21 11:15:55]   UNI/USDT [1h]: $6.30 | RSI 54.4 | HOLD
+[2025-12-21 11:15:57]   UNI/USDT [15m]: $6.30 | RSI 46.1 | HOLD
+[2025-12-21 11:15:59]   UNI/USDT [4h]: $6.30 | RSI 91.9 | SELL
+[2025-12-21 11:16:01]   UNI/USDT [5m]: $6.30 | RSI 34.7 | BUY
+[2025-12-21 11:16:03]   DOGE/USDT [1h]: $0.13 | RSI 44.8 | HOLD
+[2025-12-21 11:16:05]   DOGE/USDT [15m]: $0.13 | RSI 54.0 | HOLD
+[2025-12-21 11:16:08]   DOGE/USDT [4h]: $0.13 | RSI 77.7 | SELL
+[2025-12-21 11:16:09]   SHIB/USDT [1h]: $0.00 | RSI 38.7 | HOLD
+[2025-12-21 11:16:11]   SHIB/USDT [15m]: $0.00 | RSI 46.7 | HOLD
+[2025-12-21 11:16:13]   PEPE/USDT [1h]: $0.00 | RSI 54.2 | HOLD
+[2025-12-21 11:16:15]   PEPE/USDT [15m]: $0.00 | RSI 53.8 | HOLD
+[2025-12-21 11:16:17]   PEPE/USDT [4h]: $0.00 | RSI 80.4 | SELL
+[2025-12-21 11:16:19]   BONK/USDT [1h]: $0.00 | RSI 31.0 | BUY
+[2025-12-21 11:16:22]   BONK/USDT [15m]: $0.00 | RSI 34.8 | BUY
+[2025-12-21 11:16:24]   TURBO/USDT [1h]: $0.00 | RSI 30.7 | BUY
+[2025-12-21 11:16:26]   TURBO/USDT [15m]: $0.00 | RSI 40.3 | HOLD
+[2025-12-21 11:16:28]   FLOKI/USDT [1h]: $0.00 | RSI 45.0 | HOLD
+[2025-12-21 11:16:30]   FLOKI/USDT [15m]: $0.00 | RSI 41.9 | HOLD
+[2025-12-21 11:16:32]   BNB/USDT [1h]: $856.21 | RSI 58.2 | HOLD
+[2025-12-21 11:16:34]   BNB/USDT [15m]: $856.21 | RSI 72.7 | SELL
+[2025-12-21 11:16:36]   BNB/USDT [4h]: $856.21 | RSI 71.3 | STRONG_SELL
+[2025-12-21 11:16:38]   XRP/USDT [1h]: $1.93 | RSI 50.6 | HOLD
+[2025-12-21 11:16:40]   XRP/USDT [15m]: $1.93 | RSI 58.3 | HOLD
+[2025-12-21 11:16:42]   XRP/USDT [4h]: $1.93 | RSI 78.4 | SELL
+[2025-12-21 11:16:44]   ADA/USDT [1h]: $0.37 | RSI 38.8 | HOLD
+[2025-12-21 11:16:46]   ADA/USDT [15m]: $0.37 | RSI 62.3 | HOLD
+[2025-12-21 11:16:48]   ADA/USDT [4h]: $0.37 | RSI 62.6 | HOLD
+[2025-12-21 11:16:50]   DOT/USDT [1h]: $1.83 | RSI 48.0 | HOLD
+[2025-12-21 11:16:52]   DOT/USDT [15m]: $1.83 | RSI 47.8 | HOLD
+[2025-12-21 11:16:54]   DOT/USDT [4h]: $1.83 | RSI 60.2 | HOLD
+[2025-12-21 11:16:56]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 11:16:58]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 11:17:00]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 11:17:02]   ATOM/USDT [1h]: $1.96 | RSI 35.6 | HOLD
+[2025-12-21 11:17:04]   ATOM/USDT [15m]: $1.96 | RSI 31.4 | BUY
+[2025-12-21 11:17:06]   ATOM/USDT [4h]: $1.96 | RSI 63.1 | HOLD
+[2025-12-21 11:17:08]   LTC/USDT [1h]: $77.50 | RSI 43.9 | HOLD
+[2025-12-21 11:17:10]   LTC/USDT [15m]: $77.50 | RSI 62.6 | HOLD
+[2025-12-21 11:17:12]   LTC/USDT [4h]: $77.51 | RSI 64.8 | HOLD
+[2025-12-21 11:17:14]   APT/USDT [1h]: $1.62 | RSI 52.3 | HOLD
+[2025-12-21 11:17:16]   APT/USDT [15m]: $1.62 | RSI 47.0 | HOLD
+[2025-12-21 11:17:18]   APT/USDT [4h]: $1.62 | RSI 75.3 | SELL
+[2025-12-21 11:17:20]   ARB/USDT [1h]: $0.19 | RSI 44.2 | HOLD
+[2025-12-21 11:17:22]   ARB/USDT [15m]: $0.19 | RSI 38.5 | HOLD
+[2025-12-21 11:17:23]   ARB/USDT [4h]: $0.19 | RSI 66.8 | SELL
+[2025-12-21 11:17:25]   OP/USDT [1h]: $0.28 | RSI 32.5 | BUY
+[2025-12-21 11:17:27]   OP/USDT [15m]: $0.28 | RSI 40.5 | HOLD
+[2025-12-21 11:17:29]   OP/USDT [4h]: $0.28 | RSI 64.6 | HOLD
+[2025-12-21 11:17:31]   INJ/USDT [1h]: $4.69 | RSI 32.2 | BUY
+[2025-12-21 11:17:33]   INJ/USDT [15m]: $4.69 | RSI 45.1 | HOLD
+[2025-12-21 11:17:35]   INJ/USDT [4h]: $4.69 | RSI 60.5 | HOLD
+[2025-12-21 11:17:37]   SUI/USDT [1h]: $1.46 | RSI 51.7 | HOLD
+[2025-12-21 11:17:39]   SUI/USDT [15m]: $1.46 | RSI 63.1 | HOLD
+[2025-12-21 11:17:41]   SUI/USDT [4h]: $1.46 | RSI 73.3 | STRONG_SELL
+[2025-12-21 11:17:43]   AXS/USDT [1h]: $0.86 | RSI 39.1 | HOLD
+[2025-12-21 11:17:45]   AXS/USDT [15m]: $0.86 | RSI 31.8 | BUY
+[2025-12-21 11:17:47]   SAND/USDT [1h]: $0.12 | RSI 31.8 | BUY
+[2025-12-21 11:17:49]   SAND/USDT [15m]: $0.12 | RSI 31.9 | BUY
+[2025-12-21 11:17:51]   GALA/USDT [1h]: $0.01 | RSI 33.3 | BUY
+[2025-12-21 11:17:53]   GALA/USDT [15m]: $0.01 | RSI 43.8 | HOLD
+[2025-12-21 11:17:56]   WIF/USDT [1h]: $0.35 | RSI 52.0 | HOLD
+[2025-12-21 11:17:58]   WIF/USDT [15m]: $0.35 | RSI 50.0 | HOLD
+[2025-12-21 11:18:00]   JUP/USDT [1h]: $0.19 | RSI 37.8 | HOLD
+[2025-12-21 11:18:02]   JUP/USDT [15m]: $0.19 | RSI 46.7 | HOLD
+[2025-12-21 11:18:04]   NEAR/USDT [15m]: $1.51 | RSI 45.8 | HOLD
+[2025-12-21 11:18:05]   NEAR/USDT [1h]: $1.51 | RSI 47.7 | HOLD
+[2025-12-21 11:18:07]   NEAR/USDT [4h]: $1.51 | RSI 60.2 | HOLD
+[2025-12-21 11:18:09]   FTM/USDT [15m]: $0.70 | RSI 50.9 | HOLD
+[2025-12-21 11:18:11]   FTM/USDT [1h]: $0.70 | RSI 46.7 | HOLD
+[2025-12-21 11:18:13]   FTM/USDT [4h]: $0.70 | RSI 50.0 | HOLD
+[2025-12-21 11:18:15]   ALGO/USDT [15m]: $0.11 | RSI 41.4 | HOLD
+[2025-12-21 11:18:17]   ALGO/USDT [1h]: $0.11 | RSI 48.5 | HOLD
+[2025-12-21 11:18:19]   ALGO/USDT [4h]: $0.11 | RSI 63.9 | HOLD
+[2025-12-21 11:18:21]   VET/USDT [15m]: $0.01 | RSI 45.2 | HOLD
+[2025-12-21 11:18:23]   VET/USDT [1h]: $0.01 | RSI 53.0 | HOLD
+[2025-12-21 11:18:25]   VET/USDT [4h]: $0.01 | RSI 72.7 | SELL
+[2025-12-21 11:18:27]   IMX/USDT [15m]: $0.23 | RSI 16.7 | BUY
+[2025-12-21 11:18:29]   IMX/USDT [1h]: $0.23 | RSI 33.3 | BUY
+[2025-12-21 11:18:31]   IMX/USDT [4h]: $0.23 | RSI 53.8 | HOLD
+[2025-12-21 11:18:33]   LRC/USDT [15m]: $0.06 | RSI 41.2 | HOLD
+[2025-12-21 11:18:35]   LRC/USDT [1h]: $0.06 | RSI 37.5 | HOLD
+[2025-12-21 11:18:37]   LRC/USDT [4h]: $0.06 | RSI 58.8 | HOLD
+[2025-12-21 11:18:39]   METIS/USDT [15m]: $5.41 | RSI 36.8 | HOLD
+[2025-12-21 11:18:41]   METIS/USDT [1h]: $5.41 | RSI 37.3 | HOLD
+[2025-12-21 11:18:43]   METIS/USDT [4h]: $5.41 | RSI 63.6 | HOLD
+[2025-12-21 11:18:47]   SEI/USDT [15m]: $0.11 | RSI 57.1 | HOLD
+[2025-12-21 11:18:49]   SEI/USDT [1h]: $0.11 | RSI 42.6 | HOLD
+[2025-12-21 11:18:51]   TIA/USDT [15m]: $0.47 | RSI 34.2 | BUY
+[2025-12-21 11:18:53]   TIA/USDT [1h]: $0.47 | RSI 35.9 | HOLD
+[2025-12-21 11:18:55]   PYTH/USDT [15m]: $0.06 | RSI 25.0 | BUY
+[2025-12-21 11:18:58]   PYTH/USDT [1h]: $0.06 | RSI 40.4 | HOLD
+[2025-12-21 11:19:00]   JTO/USDT [15m]: $0.36 | RSI 50.0 | HOLD
+[2025-12-21 11:19:02]   JTO/USDT [1h]: $0.36 | RSI 30.0 | BUY
+[2025-12-21 11:19:03]   MKR/USDT [1h]: $1,813.70 | RSI 43.0 | HOLD
+[2025-12-21 11:19:05]   MKR/USDT [15m]: $1,813.70 | RSI 59.1 | HOLD
+[2025-12-21 11:19:07]   MKR/USDT [4h]: $1,813.70 | RSI 56.3 | HOLD
+[2025-12-21 11:19:09]   MKR/USDT [5m]: $1,813.70 | RSI 50.5 | HOLD
+[2025-12-21 11:19:11]   SNX/USDT [1h]: $0.42 | RSI 31.6 | BUY
+[2025-12-21 11:19:13]   SNX/USDT [15m]: $0.42 | RSI 36.4 | HOLD
+[2025-12-21 11:19:15]   SNX/USDT [4h]: $0.42 | RSI 67.5 | SELL
+[2025-12-21 11:19:17]   SNX/USDT [5m]: $0.42 | RSI 14.3 | BUY
+[2025-12-21 11:19:19]   COMP/USDT [1h]: $24.06 | RSI 18.3 | BUY
+[2025-12-21 11:19:21]   COMP/USDT [15m]: $24.06 | RSI 34.3 | BUY
+[2025-12-21 11:19:23]   COMP/USDT [5m]: $24.06 | RSI 40.5 | HOLD
+[2025-12-21 11:19:25]   CRV/USDT [1h]: $0.35 | RSI 41.5 | HOLD
+[2025-12-21 11:19:33]   CRV/USDT [4h]: $0.35 | RSI 56.5 | HOLD
+[2025-12-21 11:19:35]   CRV/USDT [5m]: $0.35 | RSI 19.4 | BUY
+[2025-12-21 11:19:37]   SUSHI/USDT [1h]: $0.30 | RSI 42.7 | HOLD
+[2025-12-21 11:19:39]   SUSHI/USDT [15m]: $0.30 | RSI 22.9 | BUY
+[2025-12-21 11:19:41]   SUSHI/USDT [4h]: $0.30 | RSI 69.2 | SELL
+[2025-12-21 11:19:43]   SUSHI/USDT [5m]: $0.30 | RSI 15.3 | BUY
+[2025-12-21 11:19:45]   1INCH/USDT [1h]: $0.15 | RSI 34.5 | BUY
+[2025-12-21 11:19:47]   1INCH/USDT [15m]: $0.15 | RSI 36.8 | HOLD
+[2025-12-21 11:19:49]   1INCH/USDT [4h]: $0.15 | RSI 63.2 | HOLD
+[2025-12-21 11:19:51]   1INCH/USDT [5m]: $0.15 | RSI 0.0 | BUY
+[2025-12-21 11:19:53]   YFI/USDT [1h]: $3,396.00 | RSI 45.8 | HOLD
+[2025-12-21 11:19:55]   YFI/USDT [15m]: $3,396.00 | RSI 57.6 | HOLD
+[2025-12-21 11:19:57]   YFI/USDT [5m]: $3,396.00 | RSI 36.1 | HOLD
+[2025-12-21 11:19:59]   DYDX/USDT [1h]: $0.17 | RSI 31.9 | BUY
+[2025-12-21 11:20:01]   DYDX/USDT [15m]: $0.17 | RSI 35.2 | HOLD
+[2025-12-21 11:20:03]   DYDX/USDT [4h]: $0.17 | RSI 47.3 | HOLD
+[2025-12-21 11:20:05]   DYDX/USDT [5m]: $0.17 | RSI 14.3 | BUY
+[2025-12-21 11:20:07]   MEME/USDT [15m]: $0.00 | RSI 41.4 | HOLD
+[2025-12-21 11:20:09]   MEME/USDT [1h]: $0.00 | RSI 45.3 | HOLD
+[2025-12-21 11:20:11]   MANA/USDT [15m]: $0.13 | RSI 27.3 | BUY
+[2025-12-21 11:20:13]   MANA/USDT [1h]: $0.13 | RSI 36.0 | HOLD
+[2025-12-21 11:20:15]   ENJ/USDT [15m]: $0.03 | RSI 34.4 | BUY
+[2025-12-21 11:20:17]   ENJ/USDT [1h]: $0.03 | RSI 37.9 | HOLD
+[2025-12-21 11:20:19]   RONIN/USDT [15m]: $0.15 | RSI 31.0 | BUY
+[2025-12-21 11:20:21]   RONIN/USDT [1h]: $0.15 | RSI 22.4 | BUY
+[2025-12-21 11:20:23]   ILV/USDT [15m]: $5.76 | RSI 30.0 | BUY
+[2025-12-21 11:20:25]   ILV/USDT [1h]: $5.76 | RSI 40.4 | HOLD
+[2025-12-21 11:20:27]   LDO/USDT [15m]: $0.54 | RSI 54.7 | HOLD
+[2025-12-21 11:20:29]   LDO/USDT [1h]: $0.54 | RSI 43.5 | HOLD
+[2025-12-21 11:20:31]   LDO/USDT [4h]: $0.54 | RSI 66.1 | SELL
+[2025-12-21 11:20:33]   GMX/USDT [15m]: $8.14 | RSI 53.3 | HOLD
+[2025-12-21 11:20:35]   GMX/USDT [1h]: $8.14 | RSI 53.6 | HOLD
+[2025-12-21 11:20:37]   GMX/USDT [4h]: $8.14 | RSI 73.0 | SELL
+[2025-12-21 11:20:39]   SKL/USDT [1h]: $0.01 | RSI 46.9 | HOLD
+[2025-12-21 11:20:41]   SKL/USDT [15m]: $0.01 | RSI 42.3 | HOLD
+[2025-12-21 11:20:43]   SKL/USDT [4h]: $0.01 | RSI 59.8 | HOLD
+[2025-12-21 11:20:45]   CELR/USDT [1h]: $0.00 | RSI 43.0 | HOLD
+[2025-12-21 11:20:47]   CELR/USDT [15m]: $0.00 | RSI 46.1 | HOLD
+[2025-12-21 11:20:49]   CELR/USDT [4h]: $0.00 | RSI 78.0 | STRONG_SELL
+[2025-12-21 11:20:51]   MAGIC/USDT [15m]: $0.09 | RSI 30.4 | BUY
+[2025-12-21 11:20:53]   FET/USDT [1h]: $0.21 | RSI 40.0 | HOLD
+[2025-12-21 11:20:55]   AGIX/USDT [1h]: $0.61 | RSI 56.4 | HOLD
+[2025-12-21 11:20:57]   OCEAN/USDT [1h]: $0.61 | RSI 55.4 | HOLD
+[2025-12-21 11:20:59]   RNDR/USDT [1h]: $7.03 | RSI 56.6 | HOLD
+[2025-12-21 11:21:01]   TAO/USDT [1h]: $223.80 | RSI 34.4 | BUY
+[2025-12-21 11:21:03]   WLD/USDT [1h]: $0.52 | RSI 40.5 | HOLD
+[2025-12-21 11:21:05]   ARKM/USDT [1h]: $0.19 | RSI 42.9 | HOLD
+[2025-12-21 11:21:07]   RENDER/USDT [1h]: $1.28 | RSI 42.2 | HOLD
+[2025-12-21 11:21:07]   >> Ichimoku Cloud: BUY 6.724486 UNI @ $6.30
+[2025-12-21 11:21:07]   >> Martingale: BUY 286.455879 ADA @ $0.37
+[2025-12-21 11:21:07]   >> Martingale: BUY 51.412177 ATOM @ $1.96
+[2025-12-21 11:21:07]   >> Martingale: BUY 347.929572 OP @ $0.28
+[2025-12-21 11:21:07]   >> Martingale: BUY 19.372677 INJ @ $4.69
+[2025-12-21 11:21:07]   >> Martingale Safe: BUY 286.455879 ADA @ $0.37
+[2025-12-21 11:21:07]   >> Martingale Safe: BUY 51.412177 ATOM @ $1.96
+[2025-12-21 11:21:07]   >> Martingale Safe: BUY 347.929572 OP @ $0.28
+[2025-12-21 11:21:07]   >> Martingale Safe: BUY 19.372677 INJ @ $4.69
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 0.000419 BTC @ $88,642.42
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 0.011772 ETH @ $2,995.40
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 0.039123 BNB @ $856.21
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 16.467047 XRP @ $1.93
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 2.471908 AVAX @ $12.23
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 218.202916 DOGE @ $0.13
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 2.167107 LINK @ $12.59
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 4.111624 UNI @ $6.30
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 12.569524 ATOM @ $1.96
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 0.301839 LTC @ $77.50
+[2025-12-21 11:21:07]   >> OI Breakout: BUY 13.700916 APT @ $1.62
+[2025-12-21 11:21:07]   >> OI Breakout: SELL 26.769281 SUI @ $1.46 | PnL: $-0.03
+[2025-12-21 11:21:07]   >> Grid Tight: BUY 65.850753 MATIC @ $0.38
+[2025-12-21 11:21:07]   >> Low Risk DCA: BUY 1263.203430 DYDX @ $0.17
+[2025-12-21 11:21:07]   >> Stoch Memes: SELL 87511646.126556 PEPE @ $0.00 | PnL: $+0.66
+[2025-12-21 11:21:07]   >> Stoch Memes: BUY 1108565.836644 FLOKI @ $0.00
+[2025-12-21 11:21:07]   >> Stoch Memes: BUY 5025362.104492 BONK @ $0.00
+[2025-12-21 11:21:07]   >> Stoch Memes: BUY 38302.681790 MEME @ $0.00
+[2025-12-21 11:21:07]   >> Stoch Memes: BUY 19307.769584 TURBO @ $0.00
+[2025-12-21 11:21:07]   >> VWAP Memes: BUY 43296.029861 TURBO @ $0.00
+[2025-12-21 11:21:07]   >> VWAP Trend L2: BUY 92.693200 ARB @ $0.19
+[2025-12-21 11:21:07]   >> VWAP Trend L2: BUY 43.843590 MATIC @ $0.38
+[2025-12-21 11:21:07]   >> VWAP Trend L2: BUY 1515.105016 SKL @ $0.01
+[2025-12-21 11:21:07]   >> VWAP Trend L2: BUY 4125.424032 CELR @ $0.00
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 103.266141 AXS @ $0.86
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 710.085548 SAND @ $0.12
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 621.559708 MANA @ $0.13
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 2752.154565 ENJ @ $0.03
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 320.369139 IMX @ $0.23
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 727.724798 MAGIC @ $0.09
+[2025-12-21 11:21:07]   >> Mean Rev Gaming: BUY 11.294264 ILV @ $5.76
+[2025-12-21 11:21:07]   >> Stoch New Coins: BUY 232.349392 TIA @ $0.47
+[2025-12-21 11:21:07]   >> Stoch New Coins: BUY 1730.420154 PYTH @ $0.06
+[2025-12-21 11:21:07]   >> Stoch New Coins: BUY 276.138115 JTO @ $0.36
+[2025-12-21 11:21:07]   >> Stoch New Coins: BUY 483.634959 JUP @ $0.19
+[2025-12-21 11:21:10]   >> Ichimoku Swing: BUY 0.003742 BTC @ $88,642.42
+[2025-12-21 11:21:10]   >> Ichimoku Swing: BUY 0.105203 ETH @ $2,995.40
+[2025-12-21 11:21:10]   >> Ichimoku Kumo Break: BUY 0.003742 BTC @ $88,642.42
+[2025-12-21 11:21:10]   >> Ichimoku Kumo Break: BUY 0.105203 ETH @ $2,995.40
+[2025-12-21 11:21:10]   >> Ichimoku TK Cross: BUY 0.003742 BTC @ $88,642.42
+[2025-12-21 11:21:10]   >> Ichimoku TK Cross: BUY 0.105203 ETH @ $2,995.40
+[2025-12-21 11:21:10]   >> Ichimoku Chikou: BUY 0.003742 BTC @ $88,642.42
+[2025-12-21 11:21:10]   >> Ichimoku Chikou: BUY 0.105203 ETH @ $2,995.40
+[2025-12-21 11:21:11] 🎯 Scanning for new tokens...
+[2025-12-21 11:21:44] 🔍 Scanned 141 new tokens across all chains
+[2025-12-21 11:21:44]   🆕 UNKNOWN | $0.00270700 | MC: $309,762 | Risk: 40/100 | pumpswap
+[2025-12-21 11:21:44]   🆕 Voldemort | $0.00001287 | MC: $0 | Risk: 70/100 | pumpfun
+[2025-12-21 11:21:44]   🆕 HUSKY | $0.00003412 | MC: $34,848 | Risk: 40/100 | pumpswap
+[2025-12-21 11:21:44]   🆕 Bearly | $0.00003734 | MC: $36,474 | Risk: 50/100 | pumpswap
+[2025-12-21 11:21:44] 🔍 Checking sniper positions (real prices)...
+[2025-12-21 11:23:42] 🐋 Checking whale signals...
+[2025-12-21 11:24:43] 💾 Saved 52 trades
+[2025-12-21 11:24:43] 📈 Classic: 52 | 🎯 Sniper: 0 | 🐋 Whale: 0 | 🆕 New: 4
+[2025-12-21 11:24:44] 📊 Portfolio history recorded
+[2025-12-21 11:24:44] ⏳ Next scan in 60s...
+[2025-12-21 11:25:44] 
+==================== SCAN #9 ====================
+[2025-12-21 11:25:44] 📊 Scanning existing cryptos...
+[2025-12-21 11:25:44] Scanning 69 cryptos @ 4 timeframes (15m, 1h, 4h, 5m)...
+[2025-12-21 11:25:46]   BTC/USDT [1h]: $88,649.76 | RSI 61.5 | HOLD
+[2025-12-21 11:25:48]   BTC/USDT [15m]: $88,649.76 | RSI 69.0 | SELL
+[2025-12-21 11:25:50]   BTC/USDT [4h]: $88,649.76 | RSI 77.1 | SELL
+[2025-12-21 11:25:52]   BTC/USDT [5m]: $88,649.77 | RSI 38.9 | HOLD
+[2025-12-21 11:25:54]   ETH/USDT [1h]: $2,998.80 | RSI 64.4 | HOLD
+[2025-12-21 11:25:56]   ETH/USDT [15m]: $2,998.79 | RSI 70.3 | SELL
+[2025-12-21 11:25:58]   ETH/USDT [4h]: $2,998.79 | RSI 80.5 | SELL
+[2025-12-21 11:26:00]   ETH/USDT [5m]: $2,998.79 | RSI 41.1 | HOLD
+[2025-12-21 11:26:02]   SOL/USDT [1h]: $125.62 | RSI 41.6 | HOLD
+[2025-12-21 11:26:04]   SOL/USDT [15m]: $125.62 | RSI 56.1 | HOLD
+[2025-12-21 11:26:06]   SOL/USDT [4h]: $125.61 | RSI 76.9 | STRONG_SELL
+[2025-12-21 11:26:08]   SOL/USDT [5m]: $125.62 | RSI 27.1 | BUY
+[2025-12-21 11:26:10]   AVAX/USDT [1h]: $12.25 | RSI 53.2 | HOLD
+[2025-12-21 11:26:12]   AVAX/USDT [15m]: $12.25 | RSI 69.7 | SELL
+[2025-12-21 11:26:14]   AVAX/USDT [4h]: $12.25 | RSI 74.1 | STRONG_SELL
+[2025-12-21 11:26:16]   AVAX/USDT [5m]: $12.25 | RSI 42.9 | HOLD
+[2025-12-21 11:26:18]   LINK/USDT [1h]: $12.59 | RSI 49.1 | HOLD
+[2025-12-21 11:26:20]   LINK/USDT [15m]: $12.60 | RSI 61.8 | HOLD
+[2025-12-21 11:26:22]   LINK/USDT [4h]: $12.60 | RSI 69.8 | SELL
+[2025-12-21 11:26:24]   LINK/USDT [5m]: $12.60 | RSI 23.1 | BUY
+[2025-12-21 11:26:26]   AAVE/USDT [1h]: $178.54 | RSI 36.9 | HOLD
+[2025-12-21 11:26:28]   AAVE/USDT [15m]: $178.54 | RSI 57.9 | HOLD
+[2025-12-21 11:26:30]   AAVE/USDT [4h]: $178.54 | RSI 50.3 | HOLD
+[2025-12-21 11:26:32]   AAVE/USDT [5m]: $178.46 | RSI 32.4 | BUY
+[2025-12-21 11:26:34]   UNI/USDT [1h]: $6.33 | RSI 56.4 | HOLD
+[2025-12-21 11:26:36]   UNI/USDT [15m]: $6.33 | RSI 51.9 | HOLD
+[2025-12-21 11:26:38]   UNI/USDT [4h]: $6.33 | RSI 92.9 | SELL
+[2025-12-21 11:26:40]   UNI/USDT [5m]: $6.33 | RSI 49.2 | HOLD
+[2025-12-21 11:26:42]   DOGE/USDT [1h]: $0.13 | RSI 45.6 | HOLD
+[2025-12-21 11:26:44]   DOGE/USDT [15m]: $0.13 | RSI 55.3 | HOLD
+[2025-12-21 11:26:46]   DOGE/USDT [4h]: $0.13 | RSI 77.9 | SELL
+[2025-12-21 11:26:48]   SHIB/USDT [1h]: $0.00 | RSI 40.0 | HOLD
+[2025-12-21 11:26:50]   SHIB/USDT [15m]: $0.00 | RSI 50.0 | HOLD
+[2025-12-21 11:26:52]   PEPE/USDT [1h]: $0.00 | RSI 54.2 | HOLD
+[2025-12-21 11:26:54]   PEPE/USDT [15m]: $0.00 | RSI 53.8 | HOLD
+[2025-12-21 11:26:56]   PEPE/USDT [4h]: $0.00 | RSI 80.4 | SELL
+[2025-12-21 11:26:58]   BONK/USDT [1h]: $0.00 | RSI 31.0 | BUY
+[2025-12-21 11:27:00]   BONK/USDT [15m]: $0.00 | RSI 34.8 | BUY
+[2025-12-21 11:27:02]   TURBO/USDT [1h]: $0.00 | RSI 32.1 | BUY
+[2025-12-21 11:27:04]   TURBO/USDT [15m]: $0.00 | RSI 44.3 | HOLD
+[2025-12-21 11:27:06]   FLOKI/USDT [1h]: $0.00 | RSI 45.0 | HOLD
+[2025-12-21 11:27:08]   FLOKI/USDT [15m]: $0.00 | RSI 41.9 | HOLD
+[2025-12-21 11:27:10]   BNB/USDT [1h]: $856.95 | RSI 59.5 | HOLD
+[2025-12-21 11:27:13]   BNB/USDT [15m]: $857.01 | RSI 74.9 | SELL
+[2025-12-21 11:27:15]   BNB/USDT [4h]: $857.02 | RSI 71.8 | STRONG_SELL
+[2025-12-21 11:27:17]   XRP/USDT [1h]: $1.93 | RSI 52.0 | HOLD
+[2025-12-21 11:27:19]   XRP/USDT [15m]: $1.93 | RSI 59.8 | HOLD
+[2025-12-21 11:27:21]   XRP/USDT [4h]: $1.93 | RSI 78.6 | SELL
+[2025-12-21 11:27:23]   ADA/USDT [1h]: $0.37 | RSI 39.2 | HOLD
+[2025-12-21 11:27:25]   ADA/USDT [15m]: $0.37 | RSI 63.3 | HOLD
+[2025-12-21 11:27:27]   ADA/USDT [4h]: $0.37 | RSI 63.0 | HOLD
+[2025-12-21 11:27:29]   DOT/USDT [1h]: $1.83 | RSI 48.0 | HOLD
+[2025-12-21 11:27:31]   DOT/USDT [15m]: $1.83 | RSI 47.8 | HOLD
+[2025-12-21 11:27:33]   DOT/USDT [4h]: $1.83 | RSI 60.7 | HOLD
+[2025-12-21 11:27:35]   MATIC/USDT [1h]: $0.38 | RSI 55.7 | HOLD
+[2025-12-21 11:27:37]   MATIC/USDT [15m]: $0.38 | RSI 26.7 | BUY
+[2025-12-21 11:27:39]   MATIC/USDT [4h]: $0.38 | RSI 57.9 | HOLD
+[2025-12-21 11:27:41]   ATOM/USDT [1h]: $1.96 | RSI 36.4 | HOLD
+[2025-12-21 11:27:43]   ATOM/USDT [15m]: $1.96 | RSI 34.3 | BUY
+[2025-12-21 11:27:45]   ATOM/USDT [4h]: $1.96 | RSI 63.7 | HOLD
+[2025-12-21 11:27:47]   LTC/USDT [1h]: $77.49 | RSI 43.8 | HOLD
+[2025-12-21 11:27:49]   LTC/USDT [15m]: $77.49 | RSI 62.3 | HOLD
+[2025-12-21 11:27:51]   LTC/USDT [4h]: $77.49 | RSI 64.7 | HOLD
+[2025-12-21 11:27:52]   APT/USDT [1h]: $1.62 | RSI 52.8 | HOLD
+[2025-12-21 11:27:54]   APT/USDT [15m]: $1.62 | RSI 47.7 | HOLD
+[2025-12-21 11:27:56]   APT/USDT [4h]: $1.62 | RSI 75.6 | SELL
+[2025-12-21 11:27:58]   ARB/USDT [1h]: $0.19 | RSI 46.3 | HOLD
+[2025-12-21 11:28:01]   ARB/USDT [15m]: $0.19 | RSI 42.9 | HOLD
+[2025-12-21 11:28:03]   ARB/USDT [4h]: $0.19 | RSI 67.9 | SELL
+[2025-12-21 11:28:05]   OP/USDT [1h]: $0.28 | RSI 35.3 | HOLD
+[2025-12-21 11:28:07]   OP/USDT [15m]: $0.28 | RSI 45.6 | HOLD
+[2025-12-21 11:28:09]   OP/USDT [4h]: $0.28 | RSI 66.0 | SELL
+[2025-12-21 11:28:11]   INJ/USDT [1h]: $4.70 | RSI 33.2 | BUY
+[2025-12-21 11:28:12]   INJ/USDT [15m]: $4.70 | RSI 47.2 | HOLD
+[2025-12-21 11:28:15]   INJ/USDT [4h]: $4.70 | RSI 61.1 | HOLD
+[2025-12-21 11:28:17]   SUI/USDT [1h]: $1.46 | RSI 54.0 | HOLD
+[2025-12-21 11:28:19]   SUI/USDT [15m]: $1.46 | RSI 66.3 | SELL
+[2025-12-21 11:28:21]   SUI/USDT [4h]: $1.46 | RSI 73.9 | STRONG_SELL
+[2025-12-21 11:28:22]   AXS/USDT [1h]: $0.86 | RSI 39.1 | HOLD
+[2025-12-21 11:28:25]   AXS/USDT [15m]: $0.86 | RSI 31.8 | BUY
+[2025-12-21 11:28:27]   SAND/USDT [1h]: $0.12 | RSI 31.8 | BUY
+[2025-12-21 11:28:29]   SAND/USDT [15m]: $0.12 | RSI 32.6 | BUY
+[2025-12-21 11:28:31]   GALA/USDT [1h]: $0.01 | RSI 33.3 | BUY
+[2025-12-21 11:28:33]   GALA/USDT [15m]: $0.01 | RSI 43.8 | HOLD
+[2025-12-21 11:28:35]   WIF/USDT [1h]: $0.35 | RSI 52.0 | HOLD

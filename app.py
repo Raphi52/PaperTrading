@@ -980,6 +980,7 @@ def render_portfolios():
             "EMA/Trend": ["ema_crossover", "ema_crossover_slow", "supertrend", "supertrend_fast"],
             "Oscillators": ["stoch_rsi", "stoch_rsi_aggressive", "vwap_bounce", "vwap_trend"],
             "Ichimoku": ["ichimoku", "ichimoku_fast", "ichimoku_scalp", "ichimoku_swing", "ichimoku_long", "ichimoku_kumo_break", "ichimoku_tk_cross", "ichimoku_chikou", "ichimoku_momentum", "ichimoku_conservative"],
+            "Trailing": ["trailing_scalp", "trailing_tight", "trailing_medium", "trailing_wide", "trailing_swing"],
             "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion"]
         }
         selected_category = st.selectbox("📂 Category", list(strategy_categories.keys()), label_visibility="collapsed")
