@@ -2174,12 +2174,21 @@ Moins de trades mais meilleure qualité."""
         initial = p.get('initial_capital', 1000)
         return ((total - initial) / initial * 100) if initial > 0 else 0
 
+    def get_positions_count(item):
+        pid, p = item
+        return len(p.get('positions', {}))
+
+    def get_positions_value(item):
+        pid, p = item
+        pf_val = sort_pf_values.get(pid, {})
+        return pf_val.get('positions_value', 0)
+
     # Sort controls - more compact
     col_sort, col_page_info = st.columns([3, 2])
     with col_sort:
         sort_option = st.radio(
             "Sort",
-            ["📈 Best", "📉 Worst", "🔤 A-Z"],
+            ["📈 Best", "📉 Worst", "🔤 A-Z", "📊 Positions", "💰 Invested"],
             horizontal=True,
             key="pf_sort_radio",
             label_visibility="collapsed"
@@ -2192,6 +2201,10 @@ Moins de trades mais meilleure qualité."""
         portfolio_list.sort(key=get_pnl_pct, reverse=False)
     elif "A-Z" in sort_option:
         portfolio_list.sort(key=lambda x: x[1].get('name', ''))
+    elif "Positions" in sort_option:
+        portfolio_list.sort(key=get_positions_count, reverse=True)
+    elif "Invested" in sort_option:
+        portfolio_list.sort(key=get_positions_value, reverse=True)
 
     # Reset page on filter/sort change
     filter_key = f"{search_query}_{selected_category}_{sort_option}"
