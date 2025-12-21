@@ -2544,9 +2544,19 @@ Moins de trades mais meilleure qualité."""
                                 # DexScreener link
                                 dex_url = get_dexscreener_url(pos_symbol, pos_token_address, pos_chain)
 
-                                # Header with symbol and PnL
+                                # Parse entry time for display
+                                entry_dt_str = ""
+                                if pos_entry_time:
+                                    try:
+                                        from datetime import datetime
+                                        entry_dt = datetime.fromisoformat(pos_entry_time.replace('Z', '+00:00'))
+                                        entry_dt_str = entry_dt.strftime("%d/%m %H:%M")
+                                    except:
+                                        entry_dt_str = pos_entry_time[:16] if len(pos_entry_time) > 16 else pos_entry_time
+
+                                # Header with symbol, PnL and entry time
                                 pnl_color = "green" if pos_pnl >= 0 else "red"
-                                st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | Qty: {pos_qty:.4f} | Value: ${pos_value:.2f}")
+                                st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | Qty: {pos_qty:.4f} | Entry: {entry_dt_str}")
 
                                 # Fetch real price history
                                 price_history = fetch_price_history(pos_symbol, pos_entry_time, pos_current)
@@ -2559,34 +2569,55 @@ Moins de trades mais meilleure qualité."""
                                     times = [p['time'] for p in price_history]
                                     prices = [p['price'] for p in price_history]
 
+                                    # Price line
                                     fig.add_trace(go.Scatter(
                                         x=times, y=prices,
                                         mode='lines',
                                         line=dict(color='#00d4ff', width=2),
                                         name='Price',
-                                        hovertemplate='%{x|%H:%M}<br>$%{y:.6f}<extra></extra>'
+                                        hovertemplate='%{x|%d/%m %H:%M}<br>$%{y:.6f}<extra></extra>'
                                     ))
 
-                                    # Current price marker
+                                    # Entry point marker (first point)
+                                    fig.add_trace(go.Scatter(
+                                        x=[times[0]], y=[pos_entry],
+                                        mode='markers',
+                                        marker=dict(size=10, color='#ffaa00', symbol='triangle-up'),
+                                        name='Entry',
+                                        hovertemplate=f'Entry: {entry_dt_str}<br>${pos_entry:.6f}<extra></extra>'
+                                    ))
+
+                                    # Current price marker (last point)
                                     fig.add_trace(go.Scatter(
                                         x=[times[-1]], y=[prices[-1]],
                                         mode='markers',
                                         marker=dict(size=10, color='#00d4ff', symbol='diamond'),
-                                        name='Current',
-                                        showlegend=False
+                                        name='Now',
+                                        hovertemplate=f'Now<br>${pos_current:.6f}<extra></extra>'
                                     ))
                                 else:
-                                    # Fallback: simple line
-                                    fig.add_trace(go.Scatter(
-                                        x=[0, 1], y=[pos_entry, pos_current],
-                                        mode='lines+markers',
-                                        line=dict(color='#00d4ff', width=2),
-                                        marker=dict(size=[6, 10], color=['#888', '#00d4ff'])
-                                    ))
+                                    # Fallback: simple line with entry time
+                                    from datetime import datetime
+                                    try:
+                                        entry_dt = datetime.fromisoformat(pos_entry_time.replace('Z', '+00:00'))
+                                        now = datetime.now()
+                                        fig.add_trace(go.Scatter(
+                                            x=[entry_dt, now], y=[pos_entry, pos_current],
+                                            mode='lines+markers',
+                                            line=dict(color='#00d4ff', width=2),
+                                            marker=dict(size=[10, 10], color=['#ffaa00', '#00d4ff'], symbol=['triangle-up', 'diamond'])
+                                        ))
+                                    except:
+                                        fig.add_trace(go.Scatter(
+                                            x=[0, 1], y=[pos_entry, pos_current],
+                                            mode='lines+markers',
+                                            line=dict(color='#00d4ff', width=2),
+                                            marker=dict(size=[6, 10], color=['#888', '#00d4ff'])
+                                        ))
 
                                 # Entry, TP, SL horizontal lines
-                                fig.add_hline(y=pos_entry, line_dash="dash", line_color="#888", line_width=1,
-                                             annotation_text=f"Entry", annotation_position="left", annotation_font_size=9)
+                                fig.add_hline(y=pos_entry, line_dash="dash", line_color="#ffaa00", line_width=1,
+                                             annotation_text=f"Entry ${pos_entry:.6f}", annotation_position="left", annotation_font_size=9)
                                 fig.add_hline(y=tp_price, line_dash="solid", line_color="#00ff88", line_width=1,
                                              annotation_text=f"TP +{tp_pct}%", annotation_position="right", annotation_font_size=9)
                                 fig.add_hline(y=sl_price, line_dash="solid", line_color="#ff4444", line_width=1,
@@ -2598,7 +2629,8 @@ Moins de trades mais meilleure qualité."""
                                     paper_bgcolor='rgba(0,0,0,0)',
                                     plot_bgcolor='rgba(0,0,0,0.2)',
                                     showlegend=False,
-                                    xaxis=dict(showticklabels=True, showgrid=False, tickfont=dict(size=9, color='#666')),
+                                    xaxis=dict(showticklabels=True, showgrid=False, tickfont=dict(size=9, color='#666'),
+                                              tickformat='%d/%m %H:%M'),
                                     yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', tickformat='.6f', side='right', tickfont=dict(size=9)),
                                 )
 
