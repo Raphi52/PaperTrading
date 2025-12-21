@@ -1671,6 +1671,103 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             return ('SELL', f"VOLUME: Spike {volume_ratio:.1f}x with downward move")
         return (None, f"VOLUME: ratio={volume_ratio:.1f}x")
 
+    # Swing Trading Strategy
+    if strategy.get('use_swing'):
+        rsi = analysis.get('rsi', 50)
+        ema_cross = analysis.get('ema_9', 0) > analysis.get('ema_21', 0)
+        momentum = analysis.get('momentum', 0)
+
+        if rsi < 35 and momentum > 0.2 and has_cash:
+            return ('BUY', f"SWING: Oversold bounce RSI={rsi:.0f}")
+        elif rsi > 65 and momentum < -0.2 and has_position:
+            return ('SELL', f"SWING: Overbought reversal RSI={rsi:.0f}")
+        return (None, f"SWING: RSI={rsi:.0f}, waiting for setup")
+
+    # Leverage Strategy (high risk)
+    if strategy.get('use_leverage'):
+        rsi = analysis.get('rsi', 50)
+        momentum = analysis.get('momentum', 0)
+        volume_ratio = analysis.get('volume_ratio', 1)
+
+        # More aggressive entries for leverage
+        if rsi < 30 and momentum > 0.5 and volume_ratio > 1.5 and has_cash:
+            return ('BUY', f"LEVERAGE: Strong setup RSI={rsi:.0f}, vol={volume_ratio:.1f}x")
+        elif rsi > 70 or momentum < -1.0 and has_position:
+            return ('SELL', f"LEVERAGE: Exit signal")
+        return (None, f"LEVERAGE: waiting for high-conviction setup")
+
+    # Heikin Ashi Strategy
+    if strategy.get('use_ha'):
+        # Simplified HA logic using momentum and trend
+        ema_trend = analysis.get('ema_9', 0) > analysis.get('ema_21', 0)
+        momentum = analysis.get('momentum', 0)
+        rsi = analysis.get('rsi', 50)
+
+        if ema_trend and momentum > 0.3 and rsi < 65 and has_cash:
+            return ('BUY', f"HEIKIN ASHI: Bullish trend + momentum")
+        elif not ema_trend and momentum < -0.3 and has_position:
+            return ('SELL', f"HEIKIN ASHI: Bearish reversal")
+        return (None, f"HEIKIN ASHI: trend={'up' if ema_trend else 'down'}")
+
+    # Range Strategy
+    if strategy.get('use_range'):
+        bb_pos = analysis.get('bb_position', 0.5)
+        rsi = analysis.get('rsi', 50)
+
+        if bb_pos < 0.15 and rsi < 35 and has_cash:
+            return ('BUY', f"RANGE: Bottom of range, BB={bb_pos:.2f}")
+        elif bb_pos > 0.85 and rsi > 65 and has_position:
+            return ('SELL', f"RANGE: Top of range, BB={bb_pos:.2f}")
+        return (None, f"RANGE: position={bb_pos:.2f}")
+
+    # Pivot Strategy
+    if strategy.get('use_pivot'):
+        price = analysis.get('close', 0)
+        sma_20 = analysis.get('sma_20', price)
+        rsi = analysis.get('rsi', 50)
+
+        # Pivot around SMA as support/resistance
+        if price < sma_20 * 0.98 and rsi < 40 and has_cash:
+            return ('BUY', f"PIVOT: Below support, expecting bounce")
+        elif price > sma_20 * 1.02 and rsi > 60 and has_position:
+            return ('SELL', f"PIVOT: Above resistance")
+        return (None, f"PIVOT: price near SMA")
+
+    # Sentiment Strategy (using RSI as proxy)
+    if strategy.get('use_sentiment'):
+        rsi = analysis.get('rsi', 50)
+        volume_ratio = analysis.get('volume_ratio', 1)
+
+        # Extreme sentiment readings
+        if rsi < 20 and has_cash:
+            return ('BUY', f"SENTIMENT: Extreme fear RSI={rsi:.0f}")
+        elif rsi > 80 and has_position:
+            return ('SELL', f"SENTIMENT: Extreme greed RSI={rsi:.0f}")
+        return (None, f"SENTIMENT: neutral RSI={rsi:.0f}")
+
+    # Multi-Timeframe Strategy (simplified)
+    if strategy.get('use_mtf'):
+        ema_short = analysis.get('ema_9', 0) > analysis.get('ema_21', 0)
+        ema_long = analysis.get('sma_20', 0) < analysis.get('close', 0)
+        rsi = analysis.get('rsi', 50)
+
+        if ema_short and ema_long and rsi < 60 and has_cash:
+            return ('BUY', f"MTF: All timeframes aligned bullish")
+        elif not ema_short and not ema_long and has_position:
+            return ('SELL', f"MTF: All timeframes bearish")
+        return (None, f"MTF: waiting for alignment")
+
+    # Orderflow Strategy (simplified using volume)
+    if strategy.get('use_orderflow'):
+        volume_ratio = analysis.get('volume_ratio', 1)
+        momentum = analysis.get('momentum', 0)
+
+        if volume_ratio > 2.5 and momentum > 0.5 and has_cash:
+            return ('BUY', f"ORDERFLOW: Heavy buying pressure")
+        elif volume_ratio > 2.5 and momentum < -0.5 and has_position:
+            return ('SELL', f"ORDERFLOW: Heavy selling pressure")
+        return (None, f"ORDERFLOW: vol={volume_ratio:.1f}x")
+
     # Martingale - assoupli (RSI < 40 au lieu de 35)
     if strategy.get('use_martingale'):
         multiplier = strategy.get('multiplier', 2.0)
