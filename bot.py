@@ -301,6 +301,15 @@ STRATEGIES = {
     # Ichimoku Cloud - Japanese trend system
     "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52},
     "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44},
+    # Ichimoku Variants - all performing well
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40},
+    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60},
+    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120},
+    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True},
+    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True},
+    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50},
+    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True},
 
     # Martingale - Double down on losses (HIGH RISK!)
     "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4},
@@ -432,8 +441,14 @@ STRATEGY_TIMEFRAMES = {
     "mean_reversion_tight": "15m",
     "supertrend_fast": "15m",
     "ichimoku_fast": "15m",
+    "ichimoku_scalp": "15m",
+    "ichimoku_momentum": "15m",
 
     # Medium strategies - 1H (default)
+    "ichimoku_swing": "1h",
+    "ichimoku_kumo_break": "1h",
+    "ichimoku_tk_cross": "1h",
+    "ichimoku_chikou": "1h",
     "degen_momentum": "1h",
     "degen_hybrid": "1h",
     "aggressive": "1h",
@@ -479,6 +494,8 @@ STRATEGY_TIMEFRAMES = {
     "confluence_normal": "4h",
     "ema_crossover_slow": "4h",
     "ichimoku": "4h",
+    "ichimoku_long": "4h",
+    "ichimoku_conservative": "4h",
     "dca_fear": "4h",
     "dca_accumulator": "4h",
     "dca_aggressive": "4h",
@@ -1245,10 +1262,14 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             return ('BUY', f"DCA: 24h change={change:.1f}% < -{dip_threshold}% dip")
         return (None, f"DCA: 24h change={change:.1f}% (waiting for -{dip_threshold}% dip)")
 
-    # Ichimoku (normal vs fast)
+    # Ichimoku Cloud - Enhanced with variants
     if strategy.get('use_ichimoku'):
         tenkan = strategy.get('tenkan', 9)
-        if tenkan == 7:
+        rsi_filter = strategy.get('rsi_filter', 0)
+        rsi = analysis.get('rsi', 50)
+
+        # Use fast indicators for tenkan <= 7, normal otherwise
+        if tenkan <= 7:
             bullish = analysis.get('ichimoku_bullish_fast', False)
             bearish = analysis.get('ichimoku_bearish_fast', False)
             above = analysis.get('above_cloud_fast', False)
@@ -1257,8 +1278,39 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             bearish = analysis.get('ichimoku_bearish', False)
             above = analysis.get('above_cloud', False)
 
-        if bullish and above and has_cash:
-            return ('BUY', f"ICHIMOKU: Bullish + above cloud")
+        # Additional filters for variants
+        rsi_ok = rsi > rsi_filter if rsi_filter > 0 else True
+
+        # Kumo breakout - price just broke above cloud
+        if strategy.get('kumo_break'):
+            price = analysis.get('close', 0)
+            cloud_top = max(analysis.get('senkou_a', 0), analysis.get('senkou_b', 0))
+            if price > cloud_top * 1.005 and has_cash:  # 0.5% above cloud
+                return ('BUY', f"ICHIMOKU KUMO BREAK: Price broke above cloud")
+
+        # TK Cross - Tenkan crosses above Kijun
+        if strategy.get('tk_cross'):
+            tk = analysis.get('tenkan', 0)
+            kj = analysis.get('kijun', 0)
+            if tk > kj and above and has_cash:
+                return ('BUY', f"ICHIMOKU TK CROSS: Tenkan > Kijun + above cloud")
+
+        # Chikou confirmation - lagging span confirms
+        if strategy.get('chikou_confirm'):
+            if bullish and above and rsi > 45 and has_cash:
+                return ('BUY', f"ICHIMOKU CHIKOU: Bullish + RSI {rsi:.0f} confirms")
+
+        # Conservative - require all conditions
+        if strategy.get('require_all'):
+            if bullish and above and rsi > 50 and rsi < 70 and has_cash:
+                return ('BUY', f"ICHIMOKU SAFE: All conditions met, RSI={rsi:.0f}")
+            elif bearish and has_position:
+                return ('SELL', f"ICHIMOKU SAFE: Bearish signal")
+            return (None, f"ICHIMOKU SAFE: Waiting for all conditions")
+
+        # Standard Ichimoku logic with optional RSI filter
+        if bullish and above and rsi_ok and has_cash:
+            return ('BUY', f"ICHIMOKU: Bullish + above cloud" + (f" RSI={rsi:.0f}" if rsi_filter else ""))
         elif bearish and has_position:
             return ('SELL', f"ICHIMOKU: Bearish signal")
         cloud_status = "above" if above else "below"
