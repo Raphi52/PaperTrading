@@ -2567,9 +2567,12 @@ Moins de trades mais meilleure qualité."""
                                     except:
                                         entry_dt_str = pos_entry_time[:16] if len(pos_entry_time) > 16 else pos_entry_time
 
-                                # Header with symbol, PnL and entry time
+                                # Calculate invested amount (cost basis)
+                                pos_invested = pos_entry * pos_qty
+
+                                # Header with symbol, PnL, invested and entry time
                                 pnl_color = "green" if pos_pnl >= 0 else "red"
-                                st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | Qty: {pos_qty:.4f} | Entry: {entry_dt_str}")
+                                st.markdown(f"**[{pos_symbol}]({dex_url})** | :{pnl_color}[**{pos_pnl_pct:+.1f}%** (${pos_pnl:+.2f})] | 💵 **${pos_invested:.2f}** invested | {entry_dt_str}")
 
                                 # Fetch real price history
                                 price_history = fetch_price_history(pos_symbol, pos_entry_time, pos_current)
