@@ -1980,15 +1980,13 @@ Moins de trades mais meilleure qualité."""
             ]
 
     # ===================== SORTING =====================
-    # Calculer les valeurs pour le tri
+    # Calculate portfolio values properly (handles sniper tokens with DexScreener)
+    sort_pf_values = calculate_all_portfolio_values(portfolios)
+
     def get_pnl_pct(item):
         pid, p = item
-        usdt = p['balance'].get('USDT', 0)
-        pos_value = sum(
-            pos.get('quantity', 0) * all_prices.get(sym, pos.get('entry_price', 0))
-            for sym, pos in p.get('positions', {}).items()
-        )
-        total = usdt + pos_value
+        pf_val = sort_pf_values.get(pid, {})
+        total = pf_val.get('total_value', p['balance'].get('USDT', 0))
         initial = p.get('initial_capital', 1000)
         return ((total - initial) / initial * 100) if initial > 0 else 0
 
