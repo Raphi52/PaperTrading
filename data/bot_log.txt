@@ -62068,3 +62068,9 @@
 [2025-12-21 09:34:50] Browser opened automatically
 [2025-12-21 09:34:50] Error loading portfolios: Expecting ',' delimiter: line 13255 column 10 (char 400397)
 [2025-12-21 09:34:50] No portfolios found! Run the dashboard first to create portfolios.
+[2025-12-21 09:37:45] Starting unified dashboard on port 8501...
+[2025-12-21 09:37:45] Dashboard started: http://localhost:8501
+[2025-12-21 09:37:45] Features: Dashboard | Degen Mode | Scanner | Portfolios | Settings
+[2025-12-21 09:37:47] Browser opened automatically
+[2025-12-21 09:37:48] Error loading portfolios: Expecting ',' delimiter: line 13255 column 10 (char 400397)
+[2025-12-21 09:37:48] No portfolios found! Run the dashboard first to create portfolios.

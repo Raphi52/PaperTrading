@@ -152,7 +152,7 @@ def load_portfolios() -> Dict:
                 pass
 
         if best_backup:
-            print(f"🔄 Restauration: {best_backup} ({best_count} portfolios)")
+            print(f"[RESTORE] Restauration: {best_backup} ({best_count} portfolios)")
             with open(best_backup, 'r', encoding='utf-8') as f:
                 return json.load(f)
 
