@@ -1,0 +1,39 @@
+{
+  "binance_api_key": "",
+  "binance_secret": "",
+  "binance_testnet": true,
+  "etherscan_api_key": "XMDN6R9JIBHCZTTSQVHQ5G5YUHTIIHTV4E",
+  "helius_api_key": "935f4687-cb3b-4ee8-8d63-73a21d3868b0",
+  "telegram_bot_token": "",
+  "telegram_chat_id": "",
+  "alert_types": [
+    "Pump Detected",
+    "Position Closed"
+  ],
+  "refresh_rate": 10,
+  "wallets": {
+    "solana": {
+      "private_key_encrypted": "",
+      "public_key": "",
+      "enabled": false
+    },
+    "ethereum": {
+      "private_key_encrypted": "",
+      "public_key": "",
+      "rpc_url": "https://eth.llamarpc.com",
+      "enabled": false
+    },
+    "bsc": {
+      "private_key_encrypted": "",
+      "public_key": "",
+      "rpc_url": "https://bsc-dataseed.binance.org",
+      "enabled": false
+    }
+  },
+  "real_trading": {
+    "enabled": false,
+    "master_password_hash": "",
+    "global_daily_loss_limit": 500,
+    "emergency_stop_triggered": false
+  }
+}

@@ -12,8 +12,16 @@ dist/
 build/
 
 # Data
-data/*.json
+data/*.log
+data/*_MASTER_*.json
+data/*_corrupted*.json
+data/portfolio_history.json
+data/debug_log.json
 *.log
+
+# Keep these data files
+!data/portfolios.json
+!data/settings.json
 
 # IDE
 .idea/
