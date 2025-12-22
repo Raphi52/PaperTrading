@@ -431,6 +431,44 @@ STRATEGIES = {
     # Sentiment
     "social_sentiment": {"auto": True, "use_sentiment": True, "source": "social"},
     "fear_greed_extreme": {"auto": True, "use_sentiment": True, "source": "fear_greed"},
+
+    # ============ HIGH PRIORITY STRATEGIES ============
+
+    # Fibonacci Retracement - Trade at key fib levels
+    "fib_retracement": {"auto": True, "use_fib": True, "levels": [0.382, 0.5, 0.618]},
+    "fib_aggressive": {"auto": True, "use_fib": True, "levels": [0.236, 0.382, 0.5], "aggressive": True},
+    "fib_conservative": {"auto": True, "use_fib": True, "levels": [0.5, 0.618, 0.786]},
+
+    # Volume Profile - Trade at high volume nodes
+    "volume_profile": {"auto": True, "use_vpvr": True, "mode": "poc"},  # Point of Control
+    "volume_profile_vah": {"auto": True, "use_vpvr": True, "mode": "vah"},  # Value Area High
+    "volume_profile_val": {"auto": True, "use_vpvr": True, "mode": "val"},  # Value Area Low
+
+    # Order Blocks (ICT) - Institutional trading zones
+    "order_block_bull": {"auto": True, "use_ob": True, "mode": "bullish"},
+    "order_block_bear": {"auto": True, "use_ob": True, "mode": "bearish"},
+    "order_block_all": {"auto": True, "use_ob": True, "mode": "all"},
+
+    # Fair Value Gaps (FVG) - Imbalance zones to fill
+    "fvg_fill": {"auto": True, "use_fvg": True, "mode": "fill"},
+    "fvg_rejection": {"auto": True, "use_fvg": True, "mode": "rejection"},
+    "fvg_aggressive": {"auto": True, "use_fvg": True, "mode": "aggressive"},
+
+    # Liquidity Sweep - Stop hunt detection
+    "liquidity_sweep": {"auto": True, "use_liquidity": True, "mode": "sweep"},
+    "liquidity_grab": {"auto": True, "use_liquidity": True, "mode": "grab"},
+    "stop_hunt": {"auto": True, "use_liquidity": True, "mode": "hunt"},
+
+    # Session Trading - Trade specific sessions
+    "session_asian": {"auto": True, "use_session": True, "session": "asian"},
+    "session_london": {"auto": True, "use_session": True, "session": "london"},
+    "session_newyork": {"auto": True, "use_session": True, "session": "newyork"},
+    "session_overlap": {"auto": True, "use_session": True, "session": "overlap"},
+
+    # RSI Divergence - Divergence trading
+    "rsi_divergence_bull": {"auto": True, "use_divergence": True, "type": "bullish"},
+    "rsi_divergence_bear": {"auto": True, "use_divergence": True, "type": "bearish"},
+    "rsi_divergence_hidden": {"auto": True, "use_divergence": True, "type": "hidden"},
 }
 
 # Timeframes per strategy type - optimized for each trading style
@@ -770,33 +808,13 @@ def release_lock():
 
 
 def save_portfolios(portfolios: dict, counter: int):
-    """Save portfolios - PROTECTION ABSOLUE with file locking"""
+    """Save portfolios with file locking (no blocking)"""
     if not acquire_lock():
         log("Could not acquire lock for saving portfolios")
         return portfolios, counter
 
     try:
         os.makedirs("data", exist_ok=True)
-        new_count = len(portfolios)
-
-        # PROTECTION ABSOLUE
-        if os.path.exists(PORTFOLIOS_FILE):
-            try:
-                with open(PORTFOLIOS_FILE, 'r', encoding='utf-8') as f:
-                    existing = json.load(f)
-                    existing_count = len(existing.get('portfolios', {}))
-
-                    if existing_count > new_count:
-                        backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
-                        with open(backup_file, 'w', encoding='utf-8') as bf:
-                            json.dump(existing, bf, indent=2, default=str)
-                        log(f"BLOCKED! {existing_count} -> {new_count}")
-                        release_lock()
-                        return existing.get('portfolios', {}), existing.get('counter', 0)
-            except:
-                release_lock()
-                return portfolios, counter  # En cas d'erreur, ne pas risquer
-
         data = {'portfolios': portfolios, 'counter': counter}
 
         # Write to temp file first, then rename (atomic operation)
@@ -823,6 +841,7 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     closes = df['close']
     highs = df['high']
     lows = df['low']
+    opens = df['open']
     volumes = df['volume']
 
     # RSI (with division by zero protection)
@@ -892,6 +911,7 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['bb_upper'] = sma_20.iloc[-1] + (2 * std_20.iloc[-1])
     indicators['bb_lower'] = sma_20.iloc[-1] - (2 * std_20.iloc[-1])
     indicators['bb_mid'] = sma_20.iloc[-1]
+    indicators['sma_20'] = sma_20.iloc[-1]
     indicators['bb_position'] = (closes.iloc[-1] - indicators['bb_lower']) / (indicators['bb_upper'] - indicators['bb_lower']) if indicators['bb_upper'] != indicators['bb_lower'] else 0.5
 
     # Breakout detection (normal: lookback=20, vol=1.5x | tight: lookback=10, vol=2.0x)
@@ -1055,6 +1075,170 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['rsi_prev'] = rsi_values.iloc[-2] if len(rsi_values) > 1 else indicators['rsi']
     indicators['close_prev'] = closes.iloc[-2] if len(closes) > 1 else closes.iloc[-1]
 
+    # ============ HIGH PRIORITY INDICATORS ============
+
+    # 1. Fibonacci Retracement Levels
+    swing_high = highs.rolling(window=50).max().iloc[-1]
+    swing_low = lows.rolling(window=50).min().iloc[-1]
+    fib_range = swing_high - swing_low
+    indicators['fib_0'] = swing_low  # 0%
+    indicators['fib_236'] = swing_low + fib_range * 0.236
+    indicators['fib_382'] = swing_low + fib_range * 0.382
+    indicators['fib_500'] = swing_low + fib_range * 0.5
+    indicators['fib_618'] = swing_low + fib_range * 0.618
+    indicators['fib_786'] = swing_low + fib_range * 0.786
+    indicators['fib_100'] = swing_high  # 100%
+    indicators['swing_high'] = swing_high
+    indicators['swing_low'] = swing_low
+
+    # 2. Volume Profile (POC, VAH, VAL)
+    # Create price bins and sum volume at each level
+    price_bins = 20
+    price_range = highs.max() - lows.min()
+    bin_size = price_range / price_bins if price_range > 0 else 1
+    volume_by_price = {}
+    for i in range(len(closes)):
+        bin_idx = int((closes.iloc[i] - lows.min()) / bin_size) if bin_size > 0 else 0
+        bin_idx = min(bin_idx, price_bins - 1)
+        price_level = lows.min() + bin_idx * bin_size
+        volume_by_price[price_level] = volume_by_price.get(price_level, 0) + volumes.iloc[i]
+
+    if volume_by_price:
+        # POC = Price level with highest volume
+        poc = max(volume_by_price, key=volume_by_price.get)
+        indicators['vpvr_poc'] = poc
+
+        # Value Area (70% of volume)
+        total_vol = sum(volume_by_price.values())
+        sorted_levels = sorted(volume_by_price.items(), key=lambda x: x[1], reverse=True)
+        cumulative = 0
+        va_levels = []
+        for level, vol in sorted_levels:
+            cumulative += vol
+            va_levels.append(level)
+            if cumulative >= total_vol * 0.7:
+                break
+        indicators['vpvr_vah'] = max(va_levels) if va_levels else poc
+        indicators['vpvr_val'] = min(va_levels) if va_levels else poc
+    else:
+        indicators['vpvr_poc'] = closes.iloc[-1]
+        indicators['vpvr_vah'] = closes.iloc[-1]
+        indicators['vpvr_val'] = closes.iloc[-1]
+
+    # 3. Order Blocks Detection (ICT)
+    # Bullish OB = Last down candle before strong up move
+    # Bearish OB = Last up candle before strong down move
+    indicators['bullish_ob'] = None
+    indicators['bearish_ob'] = None
+    indicators['ob_bullish_top'] = None
+    indicators['ob_bullish_bottom'] = None
+    indicators['ob_bearish_top'] = None
+    indicators['ob_bearish_bottom'] = None
+
+    for i in range(len(closes) - 3, 5, -1):
+        # Check for bullish OB (down candle followed by strong up)
+        if opens.iloc[i] > closes.iloc[i]:  # Down candle
+            # Check next candles for strong upward move
+            if closes.iloc[i+1] > opens.iloc[i+1] and closes.iloc[i+2] > closes.iloc[i+1]:
+                move = (closes.iloc[i+2] - closes.iloc[i]) / closes.iloc[i] * 100
+                if move > 1:  # At least 1% move
+                    indicators['bullish_ob'] = lows.iloc[i]
+                    indicators['ob_bullish_top'] = opens.iloc[i]
+                    indicators['ob_bullish_bottom'] = closes.iloc[i]
+                    break
+
+    for i in range(len(closes) - 3, 5, -1):
+        # Check for bearish OB (up candle followed by strong down)
+        if closes.iloc[i] > opens.iloc[i]:  # Up candle
+            # Check next candles for strong downward move
+            if closes.iloc[i+1] < opens.iloc[i+1] and closes.iloc[i+2] < closes.iloc[i+1]:
+                move = (closes.iloc[i] - closes.iloc[i+2]) / closes.iloc[i] * 100
+                if move > 1:  # At least 1% move
+                    indicators['bearish_ob'] = highs.iloc[i]
+                    indicators['ob_bearish_top'] = closes.iloc[i]
+                    indicators['ob_bearish_bottom'] = opens.iloc[i]
+                    break
+
+    # 4. Fair Value Gaps (FVG) Detection
+    # Bullish FVG = Gap between candle 1 high and candle 3 low
+    # Bearish FVG = Gap between candle 1 low and candle 3 high
+    indicators['bullish_fvg'] = None
+    indicators['bearish_fvg'] = None
+    indicators['fvg_bull_top'] = None
+    indicators['fvg_bull_bottom'] = None
+    indicators['fvg_bear_top'] = None
+    indicators['fvg_bear_bottom'] = None
+
+    for i in range(len(closes) - 3, 0, -1):
+        # Bullish FVG
+        if lows.iloc[i+2] > highs.iloc[i]:
+            indicators['bullish_fvg'] = (highs.iloc[i] + lows.iloc[i+2]) / 2
+            indicators['fvg_bull_top'] = lows.iloc[i+2]
+            indicators['fvg_bull_bottom'] = highs.iloc[i]
+            break
+
+    for i in range(len(closes) - 3, 0, -1):
+        # Bearish FVG
+        if highs.iloc[i+2] < lows.iloc[i]:
+            indicators['bearish_fvg'] = (lows.iloc[i] + highs.iloc[i+2]) / 2
+            indicators['fvg_bear_top'] = lows.iloc[i]
+            indicators['fvg_bear_bottom'] = highs.iloc[i+2]
+            break
+
+    # 5. Liquidity Sweep Detection
+    # Detect sweeps of recent highs/lows followed by reversal
+    recent_high = highs.rolling(window=20).max().iloc[-2]
+    recent_low = lows.rolling(window=20).min().iloc[-2]
+    current_high = highs.iloc[-1]
+    current_low = lows.iloc[-1]
+    current_close = closes.iloc[-1]
+
+    # High sweep (price went above recent high but closed below)
+    indicators['high_swept'] = current_high > recent_high and current_close < recent_high
+    # Low sweep (price went below recent low but closed above)
+    indicators['low_swept'] = current_low < recent_low and current_close > recent_low
+    indicators['recent_high'] = recent_high
+    indicators['recent_low'] = recent_low
+
+    # 6. Session Time Detection (UTC)
+    from datetime import datetime
+    current_hour = datetime.utcnow().hour
+    indicators['session_asian'] = 0 <= current_hour < 8  # 00:00-08:00 UTC
+    indicators['session_london'] = 7 <= current_hour < 16  # 07:00-16:00 UTC
+    indicators['session_newyork'] = 13 <= current_hour < 22  # 13:00-22:00 UTC
+    indicators['session_overlap'] = 13 <= current_hour < 16  # London/NY overlap
+
+    # 7. RSI Divergence Detection
+    # Bullish divergence: Price makes lower low, RSI makes higher low
+    # Bearish divergence: Price makes higher high, RSI makes lower high
+    indicators['rsi_bullish_div'] = False
+    indicators['rsi_bearish_div'] = False
+    indicators['rsi_hidden_bull_div'] = False
+    indicators['rsi_hidden_bear_div'] = False
+
+    if len(rsi_values) > 10 and len(closes) > 10:
+        # Compare current vs 5 candles ago
+        price_now = closes.iloc[-1]
+        price_prev = closes.iloc[-6]
+        rsi_now = rsi_values.iloc[-1]
+        rsi_prev = rsi_values.iloc[-6]
+
+        # Regular bullish divergence
+        if price_now < price_prev and rsi_now > rsi_prev:
+            indicators['rsi_bullish_div'] = True
+
+        # Regular bearish divergence
+        if price_now > price_prev and rsi_now < rsi_prev:
+            indicators['rsi_bearish_div'] = True
+
+        # Hidden bullish divergence (trend continuation)
+        if price_now > price_prev and rsi_now < rsi_prev and rsi_now < 50:
+            indicators['rsi_hidden_bull_div'] = True
+
+        # Hidden bearish divergence (trend continuation)
+        if price_now < price_prev and rsi_now > rsi_prev and rsi_now > 50:
+            indicators['rsi_hidden_bear_div'] = True
+
     return indicators
 
 
@@ -1155,8 +1339,126 @@ def analyze_crypto(symbol: str, timeframe: str = "1h") -> dict:
         return None
 
 
+def execute_real_trade_wrapper(portfolio: dict, action: str, symbol: str, price: float, amount_usdt: float = None) -> dict:
+    """
+    Execute a REAL trade via the RealExecutor.
+    This is called when portfolio trading_mode == 'real'
+    """
+    try:
+        from core.real_executor import execute_real_trade, is_real_trading_ready
+
+        # Load settings
+        settings = {}
+        try:
+            with open('data/settings.json', 'r') as f:
+                settings = json.load(f)
+        except:
+            return {'success': False, 'message': 'Cannot load settings for real trading'}
+
+        # Check if ready
+        ready, reason = is_real_trading_ready(portfolio, settings)
+        if not ready:
+            log(f"[REAL] Not ready: {reason}")
+            return {'success': False, 'message': f'Real trading not ready: {reason}'}
+
+        # Calculate amount if not provided
+        if amount_usdt is None:
+            allocation = portfolio['config'].get('allocation_percent', 10)
+            amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
+
+        # Execute via RealExecutor
+        log(f"[REAL TRADE] {action} {symbol} ${amount_usdt:.2f}")
+        result = execute_real_trade(
+            portfolio=portfolio,
+            action=action,
+            symbol=symbol,
+            price=price,
+            amount_usdt=amount_usdt,
+            settings=settings
+        )
+
+        if result.get('success'):
+            # Update portfolio balance for successful real trade
+            asset = symbol.split('/')[0]
+            timestamp = datetime.now().isoformat()
+
+            if action == 'BUY':
+                qty = amount_usdt / price
+                portfolio['balance']['USDT'] -= amount_usdt
+                portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+
+                if symbol not in portfolio['positions']:
+                    portfolio['positions'][symbol] = {
+                        'entry_price': price,
+                        'quantity': qty,
+                        'entry_time': timestamp,
+                        'is_real': True
+                    }
+
+                trade = {
+                    'timestamp': timestamp,
+                    'action': 'BUY',
+                    'symbol': symbol,
+                    'price': price,
+                    'quantity': qty,
+                    'amount_usdt': amount_usdt,
+                    'pnl': 0,
+                    'is_real': True,
+                    'order_id': result.get('order_id')
+                }
+                portfolio['trades'].append(trade)
+                log(f"[REAL] BUY {qty:.6f} {asset} @ ${price:,.2f} - Order: {result.get('order_id')}")
+                return {'success': True, 'message': f"[REAL] BUY {qty:.6f} {asset} @ ${price:,.2f}"}
+
+            elif action == 'SELL':
+                qty = portfolio['balance'].get(asset, 0)
+                sell_value = qty * price
+                pnl = result.get('pnl', 0)
+
+                if symbol in portfolio['positions']:
+                    del portfolio['positions'][symbol]
+
+                portfolio['balance']['USDT'] += sell_value
+                portfolio['balance'][asset] = 0
+
+                trade = {
+                    'timestamp': timestamp,
+                    'action': 'SELL',
+                    'symbol': symbol,
+                    'price': price,
+                    'quantity': qty,
+                    'amount_usdt': sell_value,
+                    'pnl': pnl,
+                    'is_real': True,
+                    'order_id': result.get('order_id')
+                }
+                portfolio['trades'].append(trade)
+                log(f"[REAL] SELL {qty:.6f} {asset} @ ${price:,.2f} | PnL: ${pnl:+,.2f}")
+                return {'success': True, 'message': f"[REAL] SELL {qty:.6f} {asset} | PnL: ${pnl:+,.2f}"}
+
+        else:
+            error = result.get('error', 'Unknown error')
+            log(f"[REAL] Trade failed: {error}")
+            return {'success': False, 'message': f'Real trade failed: {error}'}
+
+    except ImportError as e:
+        log(f"[REAL] Import error: {e}")
+        return {'success': False, 'message': f'Real trading modules not available: {e}'}
+    except Exception as e:
+        log(f"[REAL] Execution error: {e}")
+        return {'success': False, 'message': f'Real trade error: {e}'}
+
+
 def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amount_usdt: float = None) -> dict:
-    """Execute a paper trade"""
+    """Execute a trade - paper or real based on portfolio trading_mode"""
+
+    # Check if this is a REAL trade
+    trading_mode = portfolio.get('trading_mode', 'paper')
+
+    if trading_mode == 'real':
+        return execute_real_trade_wrapper(portfolio, action, symbol, price, amount_usdt)
+
+    # Paper trading logic below
     asset = symbol.split('/')[0]
     timestamp = datetime.now().isoformat()
 
@@ -1976,6 +2278,252 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return ('SELL', f"OI DIVERGENCE: Price up {change_1h:.1f}% + overbought")
             return (None, f"OI DIVERGENCE: Change={change_1h:.1f}% | RSI={rsi:.0f}")
 
+    # ============ HIGH PRIORITY STRATEGY HANDLERS ============
+
+    # 1. Fibonacci Retracement Strategy
+    if strategy.get('use_fib'):
+        levels = strategy.get('levels', [0.382, 0.5, 0.618])
+        aggressive = strategy.get('aggressive', False)
+        price = analysis.get('close', 0)
+        fib_382 = analysis.get('fib_382', 0)
+        fib_500 = analysis.get('fib_500', 0)
+        fib_618 = analysis.get('fib_618', 0)
+        fib_236 = analysis.get('fib_236', 0)
+        fib_786 = analysis.get('fib_786', 0)
+        swing_high = analysis.get('swing_high', 0)
+        swing_low = analysis.get('swing_low', 0)
+
+        # Check if price is near any fib level (within 0.5%)
+        tolerance = 0.005 if aggressive else 0.003
+        near_382 = abs(price - fib_382) / fib_382 < tolerance if fib_382 > 0 else False
+        near_500 = abs(price - fib_500) / fib_500 < tolerance if fib_500 > 0 else False
+        near_618 = abs(price - fib_618) / fib_618 < tolerance if fib_618 > 0 else False
+        near_236 = abs(price - fib_236) / fib_236 < tolerance if fib_236 > 0 else False
+        near_786 = abs(price - fib_786) / fib_786 < tolerance if fib_786 > 0 else False
+
+        # Buy at support levels (fib retracement from high)
+        if has_cash:
+            if 0.618 in levels and near_618 and rsi < 45:
+                return ('BUY', f"FIB 61.8%: Price at golden ratio support | RSI={rsi:.0f}")
+            if 0.5 in levels and near_500 and rsi < 50:
+                return ('BUY', f"FIB 50%: Price at 50% retracement | RSI={rsi:.0f}")
+            if 0.382 in levels and near_382 and rsi < 55:
+                return ('BUY', f"FIB 38.2%: Price at key support | RSI={rsi:.0f}")
+            if aggressive and 0.236 in levels and near_236:
+                return ('BUY', f"FIB 23.6%: Aggressive entry at shallow pullback")
+
+        # Sell at resistance levels
+        if has_position:
+            if near_786 and rsi > 60:
+                return ('SELL', f"FIB 78.6%: Price at deep resistance")
+            if price >= swing_high * 0.99:
+                return ('SELL', f"FIB: Price near swing high, taking profit")
+
+        return (None, f"FIB: Price ${price:.4f} | 38.2%=${fib_382:.4f} | 61.8%=${fib_618:.4f}")
+
+    # 2. Volume Profile (VPVR) Strategy
+    if strategy.get('use_vpvr'):
+        mode = strategy.get('mode', 'poc')
+        price = analysis.get('close', 0)
+        poc = analysis.get('vpvr_poc', 0)
+        vah = analysis.get('vpvr_vah', 0)
+        val = analysis.get('vpvr_val', 0)
+        tolerance = 0.005  # 0.5%
+
+        if mode == 'poc':
+            # Trade at Point of Control (highest volume node)
+            near_poc = abs(price - poc) / poc < tolerance if poc > 0 else False
+            if near_poc and price > poc and has_cash and rsi < 55:
+                return ('BUY', f"VPVR POC: Price bouncing off POC=${poc:.4f}")
+            elif near_poc and price < poc and has_position:
+                return ('SELL', f"VPVR POC: Price rejected at POC=${poc:.4f}")
+
+        elif mode == 'vah':
+            # Trade at Value Area High (resistance)
+            near_vah = abs(price - vah) / vah < tolerance if vah > 0 else False
+            if price < vah * 0.99 and has_cash and rsi < 50:
+                return ('BUY', f"VPVR VAH: Price below VAH, room to run")
+            elif near_vah and has_position:
+                return ('SELL', f"VPVR VAH: Price at Value Area High=${vah:.4f}")
+
+        elif mode == 'val':
+            # Trade at Value Area Low (support)
+            near_val = abs(price - val) / val < tolerance if val > 0 else False
+            if near_val and has_cash and rsi < 45:
+                return ('BUY', f"VPVR VAL: Price at Value Area Low=${val:.4f}")
+            elif price > vah and has_position:
+                return ('SELL', f"VPVR: Price broke above VAH")
+
+        return (None, f"VPVR: POC=${poc:.4f} | VAH=${vah:.4f} | VAL=${val:.4f}")
+
+    # 3. Order Blocks (ICT) Strategy
+    if strategy.get('use_ob'):
+        mode = strategy.get('mode', 'bullish')
+        price = analysis.get('close', 0)
+        bullish_ob = analysis.get('bullish_ob')
+        bearish_ob = analysis.get('bearish_ob')
+        ob_bull_top = analysis.get('ob_bullish_top')
+        ob_bull_bottom = analysis.get('ob_bullish_bottom')
+
+        if mode in ['bullish', 'all'] and bullish_ob:
+            # Price entering bullish order block = buy zone
+            if ob_bull_bottom and ob_bull_top:
+                if price >= ob_bull_bottom * 0.995 and price <= ob_bull_top * 1.005 and has_cash:
+                    return ('BUY', f"ICT OB: Price in bullish order block ${ob_bull_bottom:.4f}-${ob_bull_top:.4f}")
+
+        if mode in ['bearish', 'all'] and bearish_ob:
+            # Price entering bearish order block = sell zone
+            ob_bear_top = analysis.get('ob_bearish_top')
+            ob_bear_bottom = analysis.get('ob_bearish_bottom')
+            if ob_bear_bottom and ob_bear_top:
+                if price >= ob_bear_bottom * 0.995 and price <= ob_bear_top * 1.005 and has_position:
+                    return ('SELL', f"ICT OB: Price in bearish order block")
+
+        return (None, f"ICT OB: Bull OB=${bullish_ob or 'none'} | Bear OB=${bearish_ob or 'none'}")
+
+    # 4. Fair Value Gap (FVG) Strategy
+    if strategy.get('use_fvg'):
+        mode = strategy.get('mode', 'fill')
+        price = analysis.get('close', 0)
+        bull_fvg = analysis.get('bullish_fvg')
+        bear_fvg = analysis.get('bearish_fvg')
+        fvg_bull_top = analysis.get('fvg_bull_top')
+        fvg_bull_bottom = analysis.get('fvg_bull_bottom')
+
+        if mode == 'fill':
+            # Buy when price fills bullish FVG (imbalance)
+            if bull_fvg and fvg_bull_bottom and fvg_bull_top:
+                if price >= fvg_bull_bottom and price <= fvg_bull_top and has_cash:
+                    return ('BUY', f"FVG FILL: Price filling bullish gap ${fvg_bull_bottom:.4f}-${fvg_bull_top:.4f}")
+
+        elif mode == 'rejection':
+            # Sell when price rejects at bearish FVG
+            if bear_fvg and has_position:
+                fvg_bear_bottom = analysis.get('fvg_bear_bottom')
+                fvg_bear_top = analysis.get('fvg_bear_top')
+                if fvg_bear_bottom and fvg_bear_top:
+                    if price >= fvg_bear_bottom and price <= fvg_bear_top:
+                        return ('SELL', f"FVG REJECTION: Price at bearish gap")
+
+        elif mode == 'aggressive':
+            # More aggressive FVG entries
+            if bull_fvg and has_cash and rsi < 50:
+                if price <= bull_fvg * 1.01:
+                    return ('BUY', f"FVG AGG: Near bullish FVG=${bull_fvg:.4f}")
+            if bear_fvg and has_position and rsi > 50:
+                if price >= bear_fvg * 0.99:
+                    return ('SELL', f"FVG AGG: Near bearish FVG=${bear_fvg:.4f}")
+
+        return (None, f"FVG: Bull=${bull_fvg or 'none'} | Bear=${bear_fvg or 'none'}")
+
+    # 5. Liquidity Sweep Strategy
+    if strategy.get('use_liquidity'):
+        mode = strategy.get('mode', 'sweep')
+        high_swept = analysis.get('high_swept', False)
+        low_swept = analysis.get('low_swept', False)
+        recent_high = analysis.get('recent_high', 0)
+        recent_low = analysis.get('recent_low', 0)
+        price = analysis.get('close', 0)
+
+        if mode == 'sweep':
+            # Liquidity sweep = price swept level then reversed
+            if low_swept and has_cash:
+                return ('BUY', f"LIQUIDITY SWEEP: Swept lows at ${recent_low:.4f}, now reversing up")
+            if high_swept and has_position:
+                return ('SELL', f"LIQUIDITY SWEEP: Swept highs at ${recent_high:.4f}, now reversing down")
+
+        elif mode == 'grab':
+            # Liquidity grab with momentum confirmation
+            momentum = analysis.get('momentum', 0)
+            if low_swept and momentum > 0.2 and has_cash:
+                return ('BUY', f"LIQUIDITY GRAB: Swept ${recent_low:.4f} + momentum={momentum:.2f}%")
+            if high_swept and momentum < -0.2 and has_position:
+                return ('SELL', f"LIQUIDITY GRAB: Swept ${recent_high:.4f} + reversal")
+
+        elif mode == 'hunt':
+            # Stop hunt detection
+            if low_swept and rsi < 40 and has_cash:
+                return ('BUY', f"STOP HUNT: Stops hit at ${recent_low:.4f}, RSI={rsi:.0f}")
+            if high_swept and rsi > 60 and has_position:
+                return ('SELL', f"STOP HUNT: Stops hit at ${recent_high:.4f}")
+
+        return (None, f"LIQUIDITY: High swept={high_swept} | Low swept={low_swept}")
+
+    # 6. Session Trading Strategy
+    if strategy.get('use_session'):
+        session = strategy.get('session', 'london')
+        is_asian = analysis.get('session_asian', False)
+        is_london = analysis.get('session_london', False)
+        is_ny = analysis.get('session_newyork', False)
+        is_overlap = analysis.get('session_overlap', False)
+        momentum = analysis.get('momentum', 0)
+
+        active_session = False
+        session_name = ""
+
+        if session == 'asian' and is_asian:
+            active_session = True
+            session_name = "ASIAN"
+        elif session == 'london' and is_london:
+            active_session = True
+            session_name = "LONDON"
+        elif session == 'newyork' and is_ny:
+            active_session = True
+            session_name = "NEW YORK"
+        elif session == 'overlap' and is_overlap:
+            active_session = True
+            session_name = "OVERLAP"
+
+        if active_session:
+            if momentum > 0.3 and has_cash and rsi < 60:
+                return ('BUY', f"SESSION {session_name}: Momentum={momentum:.2f}% + RSI={rsi:.0f}")
+            elif momentum < -0.3 and has_position:
+                return ('SELL', f"SESSION {session_name}: Negative momentum")
+            return (None, f"SESSION {session_name}: Active, waiting for momentum")
+
+        return (None, f"SESSION: Waiting for {session.upper()} session")
+
+    # 7. RSI Divergence Strategy (Enhanced)
+    if strategy.get('use_divergence'):
+        div_type = strategy.get('type', 'bullish')
+        bull_div = analysis.get('rsi_bullish_div', False)
+        bear_div = analysis.get('rsi_bearish_div', False)
+        hidden_bull = analysis.get('rsi_hidden_bull_div', False)
+        hidden_bear = analysis.get('rsi_hidden_bear_div', False)
+
+        if div_type == 'bullish':
+            if bull_div and has_cash:
+                return ('BUY', f"RSI DIVERGENCE: Bullish divergence detected | RSI={rsi:.0f}")
+        elif div_type == 'bearish':
+            if bear_div and has_position:
+                return ('SELL', f"RSI DIVERGENCE: Bearish divergence detected | RSI={rsi:.0f}")
+        elif div_type == 'hidden':
+            if hidden_bull and has_cash:
+                return ('BUY', f"HIDDEN DIVERGENCE: Bullish continuation | RSI={rsi:.0f}")
+            if hidden_bear and has_position:
+                return ('SELL', f"HIDDEN DIVERGENCE: Bearish continuation | RSI={rsi:.0f}")
+
+        return (None, f"RSI DIV: Bull={bull_div} | Bear={bear_div} | Hidden Bull={hidden_bull}")
+
+    # ============ EXTERNAL DATA STRATEGIES ============
+
+    # Sniper Strategy - Uses external token scanning (handled by degen_scanner.py)
+    if strategy.get('use_sniper'):
+        max_risk = strategy.get('max_risk', 60)
+        min_liq = strategy.get('min_liquidity', 1000)
+        return (None, f"SNIPER: Scanning new tokens (risk<{max_risk}, liq>${min_liq}) - see degen_scanner")
+
+    # Whale/Congress/Legend Strategy - Uses external wallet tracking
+    if strategy.get('use_whale'):
+        whale_ids = strategy.get('whale_ids', [])
+        whale_names = ', '.join(whale_ids[:3])
+        if 'congress' in whale_names:
+            return (None, f"CONGRESS: Tracking {whale_names} trades - external data")
+        elif 'legend' in whale_names:
+            return (None, f"LEGEND: Following {whale_names} style - external data")
+        else:
+            return (None, f"WHALE: Tracking {whale_names} wallets - external data")
+
     # Signal-based strategies (confluence, conservative, aggressive, etc.)
     buy_signals = strategy.get('buy_on', [])
     sell_signals = strategy.get('sell_on', [])
@@ -2600,6 +3148,73 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
     return results
 
 
+def update_all_position_prices(portfolios: dict) -> int:
+    """Update current_price and pnl_percent for ALL positions (Binance + DEX)"""
+    updated = 0
+
+    # 1. Get all Binance prices
+    binance_prices = {}
+    try:
+        response = requests.get("https://api.binance.com/api/v3/ticker/price", timeout=5)
+        if response.status_code == 200:
+            for p in response.json():
+                if p['symbol'].endswith('USDT'):
+                    sym = p['symbol'].replace('USDT', '/USDT')
+                    binance_prices[sym] = float(p['price'])
+    except:
+        pass
+
+    # 2. Collect all DEX token addresses
+    dex_addresses = set()
+    for portfolio in portfolios.values():
+        for pos in portfolio.get('positions', {}).values():
+            addr = pos.get('address', '')
+            if addr:
+                dex_addresses.add(addr)
+
+    # 3. Get DEX prices from DexScreener
+    dex_prices = {}
+    if dex_addresses:
+        try:
+            addrs = list(dex_addresses)
+            for i in range(0, len(addrs), 30):
+                batch = addrs[i:i+30]
+                addr_str = ','.join(batch)
+                url = f"https://api.dexscreener.com/latest/dex/tokens/{addr_str}"
+                response = requests.get(url, timeout=10)
+                if response.status_code == 200:
+                    for pair in response.json().get('pairs', []):
+                        addr = pair.get('baseToken', {}).get('address', '')
+                        price = float(pair.get('priceUsd', 0) or 0)
+                        if addr and price > 0:
+                            dex_prices[addr.lower()] = price
+        except:
+            pass
+
+    # 4. Update all positions
+    for portfolio in portfolios.values():
+        for symbol, pos in portfolio.get('positions', {}).items():
+            entry_price = pos.get('entry_price', 0)
+            if entry_price <= 0:
+                continue
+
+            addr = pos.get('address', '')
+
+            # Get current price
+            if addr:
+                current_price = dex_prices.get(addr.lower(), 0)
+            else:
+                current_price = binance_prices.get(symbol, 0)
+
+            if current_price > 0:
+                # Update position
+                pos['current_price'] = current_price
+                pos['pnl_percent'] = ((current_price / entry_price) - 1) * 100
+                updated += 1
+
+    return updated
+
+
 def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
     """Run sniper strategy on new tokens with realistic DEX simulation"""
     results = []
@@ -3145,9 +3760,17 @@ def main():
                 whale_results = []
                 api_errors += 1
 
-            # Save if any changes
+            # 4. Update ALL position prices (Binance + DEX)
+            try:
+                prices_updated = update_all_position_prices(portfolios)
+                if prices_updated > 0:
+                    log(f"💰 Updated {prices_updated} position prices")
+            except Exception as e:
+                log(f"Warning: Price update failed: {e}")
+
+            # Save portfolios (always save to keep prices updated)
+            save_portfolios(portfolios, counter)
             if total_results:
-                save_portfolios(portfolios, counter)
                 log(f"💾 Saved {len(total_results)} trades")
 
             # Summary

@@ -254,7 +254,7 @@ def release_lock():
 
 
 def save_portfolios(data: Dict):
-    """Sauvegarde les portfolios - PROTECTION ABSOLUE with file locking"""
+    """Sauvegarde les portfolios with file locking (no blocking)"""
     if not acquire_lock():
         print("[WARN] Could not acquire lock for saving portfolios")
         return
@@ -262,25 +262,6 @@ def save_portfolios(data: Dict):
     try:
         os.makedirs("data", exist_ok=True)
         new_count = len(data.get('portfolios', {}))
-
-        # PROTECTION ABSOLUE: JAMAIS sauvegarder si moins de 50 portfolios et le fichier en a plus
-        if os.path.exists("data/portfolios.json"):
-            try:
-                with open("data/portfolios.json", 'r', encoding='utf-8') as f:
-                    existing = json.load(f)
-                    existing_count = len(existing.get('portfolios', {}))
-
-                    # Si on perdrait des portfolios, BLOQUER
-                    if existing_count > new_count:
-                        backup_file = f"data/portfolios_BLOCKED_{existing_count}_vs_{new_count}.json"
-                        with open(backup_file, 'w', encoding='utf-8') as bf:
-                            json.dump(existing, bf, indent=2, default=str)
-                        print(f"[BLOCKED] Tentative d'ecraser {existing_count} portfolios avec {new_count}")
-                        print(f"   Backup sauve: {backup_file}")
-                        return  # NE PAS SAUVEGARDER
-            except Exception as e:
-                print(f"Erreur protection save: {e}")
-                return  # En cas d'erreur, ne pas risquer
 
         # Write to temp file first, then rename (atomic operation)
         temp_file = "data/portfolios.json.tmp"
@@ -1153,6 +1134,156 @@ def render_portfolios():
 
         st.markdown("<br>", unsafe_allow_html=True)
 
+        # ===================== MARKET REGIME & ANALYTICS =====================
+        col_regime, col_leaderboard = st.columns(2)
+
+        with col_regime:
+            st.markdown("##### 📊 Market Regime")
+            try:
+                from core.analytics import detect_market_regime
+                regime = detect_market_regime()
+
+                regime_colors = {'BULL': '#00ff88', 'BEAR': '#ff4444', 'SIDEWAYS': '#ffaa00', 'UNKNOWN': '#888'}
+                regime_icons = {'BULL': '🐂', 'BEAR': '🐻', 'SIDEWAYS': '↔️', 'UNKNOWN': '❓'}
+
+                regime_name = regime.get('regime', 'UNKNOWN')
+                regime_html = f'''<div style="background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1)); border-radius: 12px; padding: 1rem; border-left: 4px solid {regime_colors.get(regime_name, '#888')};">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<div>
+<span style="font-size: 2rem;">{regime_icons.get(regime_name, '❓')}</span>
+<span style="font-size: 1.5rem; font-weight: bold; color: {regime_colors.get(regime_name, '#888')}; margin-left: 0.5rem;">{regime_name}</span>
+</div>
+<div style="text-align: right;">
+<div style="font-size: 0.8rem; color: #888;">BTC ${regime.get('btc_price', 0):,.0f}</div>
+<div style="font-size: 0.8rem; color: {regime_colors.get(regime_name, '#888')};">{regime.get('price_change_20', 0):+.1f}% (20 bars)</div>
+</div>
+</div>
+<div style="margin-top: 0.8rem; font-size: 0.85rem; color: #aaa;">{regime.get('recommendation', '')}</div>
+<div style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.75rem; color: #666;">
+<span>Volatility: {regime.get('volatility', 'N/A')}</span>
+<span>Strength: {regime.get('strength', 0):.0f}%</span>
+</div>
+</div>'''
+                st.markdown(regime_html, unsafe_allow_html=True)
+            except Exception as e:
+                st.info("Market regime: Loading...")
+
+        with col_leaderboard:
+            st.markdown("##### 🏆 Top Strategies")
+            try:
+                from core.analytics import get_strategy_leaderboard
+                rankings = get_strategy_leaderboard(portfolios)[:5]
+
+                if rankings:
+                    for i, r in enumerate(rankings):
+                        medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][i]
+                        pnl_color = '#00ff88' if r['avg_pnl_pct'] >= 0 else '#ff4444'
+                        st.markdown(f'''<div style="display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #222;">
+<span>{medal} <b>{r['strategy'][:18]}</b></span>
+<span style="color: {pnl_color};">{r['avg_pnl_pct']:+.1f}%</span>
+<span style="color: #888;">{r['win_rate']:.0f}% WR</span>
+</div>''', unsafe_allow_html=True)
+                else:
+                    st.info("No trades yet for ranking")
+            except Exception as e:
+                st.info("Strategy rankings: Loading...")
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        # ===================== QUICK ACTIONS =====================
+        st.markdown("##### ⚡ Quick Actions")
+        qa_col1, qa_col2, qa_col3, qa_col4 = st.columns(4)
+
+        with qa_col1:
+            if st.button("📉 Close All Losers", use_container_width=True, help="Sell all positions with negative PnL"):
+                closed = 0
+                for pid, p in portfolios.items():
+                    for symbol, pos in list(p.get('positions', {}).items()):
+                        entry = pos.get('entry_price', 0)
+                        current = pos.get('current_price', entry)
+                        if current < entry and entry > 0:
+                            # Simulate sell
+                            qty = pos.get('quantity', 0)
+                            pnl = (current - entry) * qty
+                            p['balance']['USDT'] = p['balance'].get('USDT', 0) + (qty * current)
+                            asset = symbol.split('/')[0]
+                            p['balance'][asset] = 0
+                            p['trades'].append({
+                                'timestamp': datetime.now().isoformat(),
+                                'action': 'SELL',
+                                'symbol': symbol,
+                                'price': current,
+                                'quantity': qty,
+                                'pnl': pnl,
+                                'reason': 'Quick Action: Close Losers'
+                            })
+                            del p['positions'][symbol]
+                            closed += 1
+                if closed > 0:
+                    save_portfolios(data)
+                    st.success(f"Closed {closed} losing positions")
+                    st.rerun()
+                else:
+                    st.info("No losing positions found")
+
+        with qa_col2:
+            if st.button("💰 Take All Profits", use_container_width=True, help="Sell all positions with >10% profit"):
+                closed = 0
+                for pid, p in portfolios.items():
+                    for symbol, pos in list(p.get('positions', {}).items()):
+                        entry = pos.get('entry_price', 0)
+                        current = pos.get('current_price', entry)
+                        pnl_pct = ((current / entry) - 1) * 100 if entry > 0 else 0
+                        if pnl_pct > 10:
+                            qty = pos.get('quantity', 0)
+                            pnl = (current - entry) * qty
+                            p['balance']['USDT'] = p['balance'].get('USDT', 0) + (qty * current)
+                            asset = symbol.split('/')[0]
+                            p['balance'][asset] = 0
+                            p['trades'].append({
+                                'timestamp': datetime.now().isoformat(),
+                                'action': 'SELL',
+                                'symbol': symbol,
+                                'price': current,
+                                'quantity': qty,
+                                'pnl': pnl,
+                                'reason': 'Quick Action: Take Profit'
+                            })
+                            del p['positions'][symbol]
+                            closed += 1
+                if closed > 0:
+                    save_portfolios(data)
+                    st.success(f"Took profit on {closed} positions")
+                    st.rerun()
+                else:
+                    st.info("No positions with >10% profit")
+
+        with qa_col3:
+            if st.button("⏸️ Pause All Trading", use_container_width=True, help="Disable auto-trade on all portfolios"):
+                paused = 0
+                for p in portfolios.values():
+                    if p.get('active', True):
+                        p['active'] = False
+                        paused += 1
+                if paused > 0:
+                    save_portfolios(data)
+                    st.warning(f"Paused {paused} portfolios")
+                    st.rerun()
+
+        with qa_col4:
+            if st.button("▶️ Resume All Trading", use_container_width=True, help="Enable auto-trade on all portfolios"):
+                resumed = 0
+                for p in portfolios.values():
+                    if not p.get('active', True):
+                        p['active'] = True
+                        resumed += 1
+                if resumed > 0:
+                    save_portfolios(data)
+                    st.success(f"Resumed {resumed} portfolios")
+                    st.rerun()
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
     # ===================== SEARCH & FILTERS =====================
     col_search, col_category, col_create = st.columns([2, 2, 1])
 
@@ -1162,15 +1293,51 @@ def render_portfolios():
     with col_category:
         strategy_categories = {
             "All": [],
-            "Whale": ["whale_gcr", "whale_hsaka", "whale_cobie", "whale_ansem", "whale_degen", "whale_smart_money"],
-            "Sniper": ["sniper_safe", "sniper_degen", "sniper_yolo", "sniper_all_in", "sniper_spray", "sniper_quickflip"],
-            "Classic": ["confluence_normal", "confluence_strict", "conservative", "aggressive", "rsi_strategy", "hodl"],
-            "Degen": ["degen_hybrid", "degen_scalp", "degen_momentum", "degen_full", "god_mode_only"],
-            "EMA/Trend": ["ema_crossover", "ema_crossover_slow", "supertrend", "supertrend_fast"],
-            "Oscillators": ["stoch_rsi", "stoch_rsi_aggressive", "vwap_bounce", "vwap_trend"],
-            "Ichimoku": ["ichimoku", "ichimoku_fast", "ichimoku_scalp", "ichimoku_swing", "ichimoku_long", "ichimoku_kumo_break", "ichimoku_tk_cross", "ichimoku_chikou", "ichimoku_momentum", "ichimoku_conservative"],
-            "Trailing": ["trailing_scalp", "trailing_tight", "trailing_medium", "trailing_wide", "trailing_swing"],
-            "Advanced": ["grid_trading", "grid_tight", "breakout", "breakout_tight", "mean_reversion"]
+            # Copy Trading
+            "🐋 Whales": ["whale_gcr", "whale_hsaka", "whale_cobie", "whale_ansem", "whale_degen", "whale_smart_money"],
+            "🏛️ Congress": ["congress_pelosi", "congress_tuberville", "congress_crenshaw", "congress_all"],
+            "📖 Legends": ["legend_buffett", "legend_soros", "legend_dalio", "legend_simons", "legend_burry", "legend_cathie", "legend_ptj", "legend_ackman"],
+            # Sniper
+            "🎯 Sniper": ["sniper_safe", "sniper_degen", "sniper_yolo", "sniper_all_in", "sniper_spray", "sniper_quickflip"],
+            # Sectors
+            "🔗 Sectors": ["defi_hunter", "gaming_tokens", "ai_tokens", "meme_hunter", "layer2_focus"],
+            # Classic
+            "📊 Classic": ["confluence_normal", "confluence_strict", "conservative", "aggressive", "rsi_strategy", "hodl", "manual"],
+            "🔥 Degen": ["degen_hybrid", "degen_scalp", "degen_momentum", "degen_full", "god_mode_only"],
+            # Technical - Trend
+            "📈 EMA/Trend": ["ema_crossover", "ema_crossover_slow", "supertrend", "supertrend_fast", "trend_momentum", "adx_trend", "adx_strong", "aroon_trend", "aroon_fast"],
+            "☁️ Ichimoku": ["ichimoku", "ichimoku_fast", "ichimoku_scalp", "ichimoku_swing", "ichimoku_long", "ichimoku_kumo_break", "ichimoku_tk_cross", "ichimoku_chikou", "ichimoku_momentum", "ichimoku_conservative"],
+            # Technical - Oscillators
+            "📉 RSI/Stoch": ["stoch_rsi", "stoch_rsi_aggressive", "rsi_divergence", "rsi_divergence_fast", "rsi_divergence_bull", "rsi_divergence_bear", "rsi_divergence_hidden", "rsi_macd_combo"],
+            "📊 MACD": ["macd_crossover", "macd_reversal", "scalp_macd"],
+            "🔒 Bollinger": ["bollinger_squeeze", "bollinger_squeeze_tight", "bb_rsi_combo", "scalp_bb"],
+            # Technical - Other
+            "📏 Channels": ["donchian_breakout", "donchian_fast", "keltner_channel", "keltner_tight"],
+            "⏺️ SAR/Williams": ["parabolic_sar", "parabolic_sar_fast", "williams_r", "williams_r_extreme", "cci_momentum", "cci_extreme"],
+            # Volume
+            "📊 Volume": ["obv_trend", "obv_fast", "volume_breakout", "volume_climax", "volume_profile", "volume_profile_vah", "volume_profile_val"],
+            "💹 Orderflow": ["orderflow_delta", "orderflow_imbalance", "oi_breakout", "oi_divergence", "funding_contrarian", "funding_extreme", "funding_oi_combo"],
+            # Price Action
+            "📐 Fibonacci": ["fib_retracement", "fib_aggressive", "fib_conservative"],
+            "🧱 SMC": ["order_block_bull", "order_block_bear", "order_block_all", "fvg_fill", "fvg_rejection", "fvg_aggressive", "liquidity_sweep", "liquidity_grab", "stop_hunt"],
+            "🕯️ Candles": ["heikin_ashi", "heikin_ashi_reversal"],
+            "📍 Pivots": ["pivot_classic", "pivot_fibonacci"],
+            # Trading Styles
+            "⚡ Scalping": ["scalp_rsi", "scalp_bb", "scalp_macd", "trailing_scalp"],
+            "🎯 Trailing": ["trailing_tight", "trailing_medium", "trailing_wide", "trailing_scalp", "trailing_swing"],
+            "📏 Grid/Range": ["grid_trading", "grid_tight", "range_sniper", "range_breakout", "mean_reversion", "mean_reversion_tight"],
+            "💥 Breakout": ["breakout", "breakout_tight"],
+            "🌐 Session": ["session_asian", "session_london", "session_newyork", "session_overlap"],
+            # Multi-Timeframe
+            "📊 MTF": ["mtf_trend", "mtf_momentum"],
+            # VWAP
+            "🎯 VWAP": ["vwap_bounce", "vwap_trend"],
+            # DCA
+            "💰 DCA": ["dca_accumulator", "dca_aggressive", "dca_fear", "low_risk_dca"],
+            # Risk
+            "⚖️ Risk Mgmt": ["martingale", "martingale_safe", "medium_risk_swing", "high_risk_leverage"],
+            # Sentiment
+            "😱 Sentiment": ["social_sentiment", "fear_greed_extreme"]
         }
         selected_category = st.selectbox("📂 Category", list(strategy_categories.keys()), label_visibility="collapsed")
 
@@ -1192,12 +1359,46 @@ def render_portfolios():
                 ], key="new_pf_strategy")
                 cryptos = st.multiselect("Cryptos", ["BTC/USDT", "ETH/USDT", "SOL/USDT", "DOGE/USDT", "PEPE/USDT"], key="new_pf_cryptos")
 
+            # Trading Mode Selection
+            st.markdown("---")
+            col_mode1, col_mode2 = st.columns(2)
+            with col_mode1:
+                trading_mode = st.selectbox(
+                    "Trading Mode",
+                    ["paper", "real"],
+                    format_func=lambda x: "📝 Paper Trading (Simulation)" if x == "paper" else "💰 Real Money Trading",
+                    key="new_pf_trading_mode",
+                    help="Paper = simulated trades, Real = actual money"
+                )
+            with col_mode2:
+                if trading_mode == "real":
+                    market_type = st.selectbox(
+                        "Market",
+                        ["binance", "dex_solana", "dex_ethereum", "dex_bsc"],
+                        format_func=lambda x: {"binance": "Binance Spot", "dex_solana": "DEX Solana", "dex_ethereum": "DEX Ethereum", "dex_bsc": "DEX BSC"}.get(x, x),
+                        key="new_pf_market_type"
+                    )
+                else:
+                    market_type = "binance"
+
+            # Real Trading Warning & Risk Settings
+            if trading_mode == "real":
+                st.error("⚠️ REAL MONEY MODE - Trades will use actual funds! Configure risk limits below.")
+                col_risk1, col_risk2 = st.columns(2)
+                with col_risk1:
+                    max_daily_loss = st.number_input("Max Daily Loss ($)", value=100, min_value=10, key="new_pf_max_loss")
+                with col_risk2:
+                    max_trade_size = st.number_input("Max Trade Size ($)", value=500, min_value=10, key="new_pf_max_trade")
+            else:
+                max_daily_loss = 0
+                max_trade_size = 0
+
             col_create1, col_create2 = st.columns(2)
             with col_create1:
                 if st.button("Create Portfolio", type="primary", use_container_width=True):
                     if name and cryptos:
                         pid = f"p{data['counter'] + 1}"
-                        data['portfolios'][pid] = {
+                        new_portfolio = {
                             'name': name,
                             'balance': {'USDT': capital},
                             'initial_capital': capital,
@@ -1206,12 +1407,30 @@ def render_portfolios():
                             'config': {'cryptos': cryptos, 'allocation_percent': 10},
                             'strategy_id': strategy,
                             'active': True,
-                            'created_at': datetime.now().isoformat()
+                            'created_at': datetime.now().isoformat(),
+                            'trading_mode': trading_mode,
+                            'market_type': market_type
                         }
+                        # Add risk config for real trading
+                        if trading_mode == "real":
+                            new_portfolio['risk_config'] = {
+                                'max_daily_loss_usd': max_daily_loss,
+                                'max_trade_size_usd': max_trade_size,
+                                'enabled': True
+                            }
+                            new_portfolio['real_trading_stats'] = {
+                                'daily_pnl': 0,
+                                'daily_trades_count': 0,
+                                'daily_loss_locked': False,
+                                'last_reset_date': datetime.now().strftime('%Y-%m-%d')
+                            }
+                            new_portfolio['execution_log'] = []
+                        data['portfolios'][pid] = new_portfolio
                         data['counter'] += 1
                         save_portfolios(data)
                         st.session_state['show_create_portfolio'] = False
-                        st.success(f"Portfolio '{name}' created!")
+                        mode_label = "REAL MONEY" if trading_mode == "real" else "Paper"
+                        st.success(f"Portfolio '{name}' created! ({mode_label})")
                         st.rerun()
             with col_create2:
                 if st.button("Cancel", use_container_width=True):
@@ -2143,7 +2362,1677 @@ Deux confirmations valent mieux qu'une !
 
 💡 POUR QUI ?
 Pour ceux qui veulent des signaux très fiables.
-Moins de trades mais meilleure qualité."""
+Moins de trades mais meilleure qualité.""",
+
+        # ============ HIGH PRIORITY STRATEGIES ============
+
+        "fib_retracement": """📐 FIBONACCI GOLDEN - Niveaux Magiques
+
+🎓 C'EST QUOI ?
+Fibonacci = ratios mathématiques trouvés partout dans la nature.
+En trading, les niveaux 38.2%, 50%, 61.8% sont des zones de support/résistance clés.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche le niveau 61.8% (ratio d'or) avec RSI < 45
+• OU niveau 50% avec RSI < 50
+• OU niveau 38.2% avec RSI < 55
+
+📉 QUAND JE VENDS ?
+• Prix atteint le swing high précédent
+• OU niveau 78.6%
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Traders qui croient aux niveaux mathématiques du marché.""",
+
+        "fib_aggressive": """📐 FIB AGGRESSIVE - Entries Rapides
+
+🎓 C'EST QUOI ?
+Fibonacci mais avec des niveaux moins profonds.
+Entre plus tôt sur les pullbacks.
+
+📈 QUAND J'ACHÈTE ?
+• Niveau 23.6%, 38.2% ou 50%
+• Tolérance plus large (0.5%)
+
+📉 QUAND JE VENDS ?
+• Near swing high
+
+⚖️ NIVEAU DE RISQUE: Élevé
+📊 FRÉQUENCE DES TRADES: Haute""",
+
+        "fib_conservative": """📐 FIB CONSERVATIVE - Deep Pullbacks
+
+🎓 C'EST QUOI ?
+Fibonacci avec des niveaux profonds uniquement.
+Attend des retracements importants.
+
+📈 QUAND J'ACHÈTE ?
+• Niveau 50%, 61.8% ou 78.6% seulement
+• Confirmation RSI requise
+
+📉 QUAND JE VENDS ?
+• Prix revient au swing high
+
+⚖️ NIVEAU DE RISQUE: Faible
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "volume_profile": """📊 VPVR POC - Volume Profile
+
+🎓 C'EST QUOI ?
+Le Volume Profile montre OÙ le volume s'est échangé.
+POC = Point of Control = niveau avec le PLUS de volume.
+C'est un niveau de prix "magnétique".
+
+📈 QUAND J'ACHÈTE ?
+• Prix rebondit au-dessus du POC
+
+📉 QUAND JE VENDS ?
+• Prix rejeté en-dessous du POC
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Traders institutionnels utilisent le VPVR.""",
+
+        "volume_profile_vah": """📊 VPVR VAH - Value Area High
+
+🎓 C'EST QUOI ?
+VAH = limite haute de la zone où 70% du volume s'échange.
+Zone de résistance naturelle.
+
+📈 QUAND J'ACHÈTE ?
+• Prix sous le VAH avec room to run
+
+📉 QUAND JE VENDS ?
+• Prix touche le VAH (résistance)
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "volume_profile_val": """📊 VPVR VAL - Value Area Low
+
+🎓 C'EST QUOI ?
+VAL = limite basse de la zone où 70% du volume s'échange.
+Zone de support naturelle.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche le VAL (support)
+
+📉 QUAND JE VENDS ?
+• Prix casse au-dessus du VAH
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "order_block_bull": """🏛️ ICT ORDER BLOCK BULL - Zones Institutionnelles
+
+🎓 C'EST QUOI ?
+Order Block = dernière bougie avant un gros mouvement.
+C'est où les "smart money" (institutions) ont accumulé.
+Concept ICT (Inner Circle Trader).
+
+📈 QUAND J'ACHÈTE ?
+• Prix entre dans un Order Block haussier
+• Zone d'accumulation institutionnelle
+
+📉 QUAND JE VENDS ?
+• Take profit selon TP/SL
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Fans de ICT et Smart Money Concepts.""",
+
+        "order_block_bear": """🏛️ ICT ORDER BLOCK BEAR - Zones de Distribution
+
+🎓 C'EST QUOI ?
+Order Block baissier = zone où les institutions ont vendu
+avant une chute.
+
+📈 QUAND J'ACHÈTE ?
+• Selon conditions TP/SL
+
+📉 QUAND JE VENDS ?
+• Prix entre dans un Order Block baissier
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "order_block_all": """🏛️ ICT ORDER BLOCKS - Bull + Bear
+
+🎓 C'EST QUOI ?
+Combine Order Blocks haussiers ET baissiers.
+Trade dans les deux directions.
+
+📈 QUAND J'ACHÈTE ?
+• Prix dans un OB haussier
+
+📉 QUAND JE VENDS ?
+• Prix dans un OB baissier
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne-Haute""",
+
+        "fvg_fill": """📏 FVG FILL - Fair Value Gaps
+
+🎓 C'EST QUOI ?
+FVG = "déséquilibre" dans le prix.
+Quand le prix bouge trop vite, il laisse des gaps.
+Le marché tend à "remplir" ces gaps.
+
+📈 QUAND J'ACHÈTE ?
+• Prix remplit un FVG haussier
+
+📉 QUAND JE VENDS ?
+• Prix remplit un FVG baissier
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+Traders ICT/SMC.""",
+
+        "fvg_rejection": """📏 FVG REJECT - Rejection aux Gaps
+
+🎓 C'EST QUOI ?
+Au lieu de fill, trade les rejections aux FVG.
+Le prix touche le gap puis reverse.
+
+📈 QUAND J'ACHÈTE ?
+• Rejection au FVG haussier
+
+📉 QUAND JE VENDS ?
+• Rejection au FVG baissier
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "fvg_aggressive": """📏 FVG AGGRESSIVE - Entries Rapides
+
+🎓 C'EST QUOI ?
+FVG avec entries plus larges.
+Entre dès qu'on approche d'un gap.
+
+📈 QUAND J'ACHÈTE ?
+• Proche d'un FVG haussier + RSI < 50
+
+📉 QUAND JE VENDS ?
+• Proche d'un FVG baissier + RSI > 50
+
+⚖️ NIVEAU DE RISQUE: Élevé
+📊 FRÉQUENCE DES TRADES: Haute""",
+
+        "liquidity_sweep": """💧 LIQUIDITY SWEEP - Chasse aux Stops
+
+🎓 C'EST QUOI ?
+Les "smart money" poussent le prix pour déclencher les stop-loss
+des retail traders, puis reversent.
+Cette stratégie détecte ces sweeps.
+
+📈 QUAND J'ACHÈTE ?
+• Prix a swept les lows puis reverse UP
+• → Les shorts ont été liquidés, pump incoming
+
+📉 QUAND JE VENDS ?
+• Prix a swept les highs puis reverse DOWN
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse-Moyenne
+
+💡 POUR QUI ?
+Traders qui comprennent la manipulation de marché.""",
+
+        "liquidity_grab": """💧 LIQUIDITY GRAB - Avec Momentum
+
+🎓 C'EST QUOI ?
+Comme Liquidity Sweep mais confirme avec le momentum.
+Plus sûr car attend la confirmation du mouvement.
+
+📈 QUAND J'ACHÈTE ?
+• Sweep des lows + momentum positif > 0.2%
+
+📉 QUAND JE VENDS ?
+• Sweep des highs + momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "stop_hunt": """🎯 STOP HUNT - Chasse aux Stop-Loss
+
+🎓 C'EST QUOI ?
+Détecte quand le prix "chasse" les stop-loss évidents
+puis reverse. Classic manipulation.
+
+📈 QUAND J'ACHÈTE ?
+• Stops hit at recent lows + RSI < 40
+
+📉 QUAND JE VENDS ?
+• Stops hit at recent highs + RSI > 60
+
+⚖️ NIVEAU DE RISQUE: Élevé
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "session_asian": """🌏 ASIAN SESSION - Trading de Nuit
+
+🎓 C'EST QUOI ?
+Trade uniquement pendant la session asiatique (00:00-08:00 UTC).
+Généralement moins volatil, range trading.
+
+📈 QUAND J'ACHÈTE ?
+• Pendant session + momentum positif + RSI < 60
+
+📉 QUAND JE VENDS ?
+• Momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Faible-Moyen
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "session_london": """🇬🇧 LONDON SESSION - Volume Européen
+
+🎓 C'EST QUOI ?
+Trade pendant l'ouverture de Londres (07:00-16:00 UTC).
+Gros volume, mouvements directionnels.
+
+📈 QUAND J'ACHÈTE ?
+• Pendant session + momentum positif
+
+📉 QUAND JE VENDS ?
+• Momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne
+
+💡 POUR QUI ?
+La session la plus importante pour le forex et crypto.""",
+
+        "session_newyork": """🗽 NY SESSION - Wall Street
+
+🎓 C'EST QUOI ?
+Trade pendant l'ouverture de New York (13:00-22:00 UTC).
+Plus gros volume de la journée.
+
+📈 QUAND J'ACHÈTE ?
+• Pendant session + momentum positif
+
+📉 QUAND JE VENDS ?
+• Momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+📊 FRÉQUENCE DES TRADES: Moyenne-Haute""",
+
+        "session_overlap": """🔀 SESSION OVERLAP - Maximum Volume
+
+🎓 C'EST QUOI ?
+Trade uniquement pendant le chevauchement London/NY (13:00-16:00 UTC).
+C'est le moment avec le PLUS de volume et volatilité.
+
+📈 QUAND J'ACHÈTE ?
+• Pendant overlap + momentum positif
+
+📉 QUAND JE VENDS ?
+• Momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Élevé
+📊 FRÉQUENCE DES TRADES: Haute
+
+💡 POUR QUI ?
+Les 3 heures les plus actives du marché !""",
+
+        "rsi_divergence_bull": """📈 RSI DIVERGENCE BULL - Retournement Haussier
+
+🎓 C'EST QUOI ?
+Divergence = le prix et le RSI vont dans des directions opposées.
+Divergence haussière: prix fait lower low MAIS RSI fait higher low.
+→ Signal que la baisse s'essouffle.
+
+📈 QUAND J'ACHÈTE ?
+• Divergence haussière détectée
+
+📉 QUAND JE VENDS ?
+• Selon TP/SL
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse
+
+💡 POUR QUI ?
+Traders qui cherchent les retournements de tendance.""",
+
+        "rsi_divergence_bear": """📉 RSI DIVERGENCE BEAR - Retournement Baissier
+
+🎓 C'EST QUOI ?
+Divergence baissière: prix fait higher high MAIS RSI fait lower high.
+→ Signal que la hausse s'essouffle.
+
+📈 QUAND J'ACHÈTE ?
+• Selon TP/SL
+
+📉 QUAND JE VENDS ?
+• Divergence baissière détectée
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "rsi_divergence_hidden": """🔮 HIDDEN DIVERGENCE - Continuation
+
+🎓 C'EST QUOI ?
+Divergence cachée = signal de CONTINUATION de tendance.
+• Hidden bull: higher low price + lower low RSI
+• Hidden bear: lower high price + higher high RSI
+
+📈 QUAND J'ACHÈTE ?
+• Hidden bullish divergence
+
+📉 QUAND JE VENDS ?
+• Hidden bearish divergence
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse
+
+💡 POUR QUI ?
+Pour surfer les tendances existantes.""",
+
+        # ============ OTHER MISSING STRATEGIES ============
+
+        "adx_trend": """📊 ADX TREND - Force de Tendance
+
+🎓 C'EST QUOI ?
+L'ADX mesure la FORCE d'une tendance (pas sa direction).
+ADX > 25 = tendance forte.
+
+📈 QUAND J'ACHÈTE ?
+• ADX > 25 + DI+ > DI- (uptrend fort)
+
+📉 QUAND JE VENDS ?
+• DI- > DI+ (downtrend)
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "adx_strong": """💪 ADX STRONG - Tendances Fortes Only
+
+🎓 C'EST QUOI ?
+Comme ADX Trend mais attend ADX > 30.
+Que les tendances très fortes.
+
+📈 QUAND J'ACHÈTE ?
+• ADX > 30 + uptrend
+
+📉 QUAND JE VENDS ?
+• Trend reversal
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "aroon_trend": """🏹 AROON TREND - Nouvelle Tendance
+
+🎓 C'EST QUOI ?
+Aroon mesure le temps depuis le dernier high/low.
+Détecte le début des nouvelles tendances.
+
+📈 QUAND J'ACHÈTE ?
+• Aroon Up > 70, Aroon Down < 30
+
+📉 QUAND JE VENDS ?
+• Aroon Down > 70, Aroon Up < 30
+
+⚖️ NIVEAU DE RISQUE: Moyen
+📊 FRÉQUENCE DES TRADES: Moyenne""",
+
+        "aroon_fast": """⚡ AROON FAST - Version Rapide
+
+🎓 C'EST QUOI ?
+Version accélérée de l'indicateur Aroon.
+Périodes plus courtes = réaction plus rapide aux changements.
+
+📈 QUAND J'ACHÈTE ?
+• Aroon Up croise au-dessus de Aroon Down
+• Période courte (7-10 jours)
+
+📉 QUAND JE VENDS ?
+• Aroon Down croise au-dessus
+• Momentum inverse détecté
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé (plus de faux signaux)
+💡 POUR QUI ? Traders actifs qui veulent des signaux rapides.""",
+
+        "bollinger_squeeze": """🔒 BOLLINGER SQUEEZE - Explosion Imminente
+
+🎓 C'EST QUOI ?
+Quand les Bollinger Bands se resserrent, le prix "compresse".
+Une explosion (dans une direction) est imminente !
+
+📈 QUAND J'ACHÈTE ?
+• BB width < 2% + momentum positif
+
+📉 QUAND JE VENDS ?
+• Momentum négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+📊 FRÉQUENCE DES TRADES: Basse""",
+
+        "bollinger_squeeze_tight": """🔒 BB SQUEEZE TIGHT - Compression Extrême
+
+🎓 C'EST QUOI ?
+Détecte les compressions EXTRÊMES des Bollinger Bands.
+Plus la compression est forte, plus l'explosion sera puissante !
+
+📈 QUAND J'ACHÈTE ?
+• BB width < 1.5% (très serré)
+• Volatilité historiquement basse
+• Momentum commence à bouger vers le haut
+
+📉 QUAND JE VENDS ?
+• Expansion rapide + momentum négatif
+• Cassure vers le bas
+
+⚖️ NIVEAU DE RISQUE: Élevé (signaux rares mais puissants)
+💡 POUR QUI ? Traders patients qui attendent les setups parfaits.""",
+
+        "bb_rsi_combo": """📊 BB + RSI COMBO - Double Confirmation
+
+🎓 C'EST QUOI ?
+Combine deux indicateurs puissants pour filtrer les faux signaux.
+Bollinger Bands montre la volatilité, RSI montre le momentum.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche la bande basse + RSI < 30
+• Double confirmation de survente
+
+📉 QUAND JE VENDS ?
+• Prix touche la bande haute + RSI > 70
+• Double confirmation de surachat
+
+⚖️ NIVEAU DE RISQUE: Moyen (signaux filtrés = moins d'erreurs)
+💡 POUR QUI ? Traders qui préfèrent la qualité à la quantité.""",
+
+        "cci_momentum": """📈 CCI MOMENTUM - Force du Mouvement
+
+🎓 C'EST QUOI ?
+Le CCI (Commodity Channel Index) mesure l'écart du prix
+par rapport à sa moyenne. Indique la force du momentum.
+
+📈 QUAND J'ACHÈTE ?
+• CCI > +100 = fort momentum haussier
+• CCI revient de -100 vers 0 = rebond
+
+📉 QUAND JE VENDS ?
+• CCI < -100 = fort momentum baissier
+• CCI revient de +100 vers 0 = essoufflement
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de momentum qui suivent la force.""",
+
+        "cci_extreme": """⚡ CCI EXTREME - Seuils Extrêmes
+
+🎓 C'EST QUOI ?
+CCI avec des seuils plus élevés (±150 au lieu de ±100).
+Filtre les mouvements faibles, ne garde que les explosions.
+
+📈 QUAND J'ACHÈTE ?
+• CCI > +150 = momentum explosif
+• Mouvement très fort confirmé
+
+📉 QUAND JE VENDS ?
+• CCI < -150 = chute brutale
+• Retournement majeur
+
+⚖️ NIVEAU DE RISQUE: Élevé (signaux rares, mouvements forts)
+💡 POUR QUI ? Traders qui veulent attraper les gros mouvements.""",
+
+        "williams_r": """📉 WILLIAMS %R - Oscillateur de Larry Williams
+
+🎓 C'EST QUOI ?
+Créé par Larry Williams, mesure où le prix se situe
+dans sa fourchette récente. Inverse du Stochastic.
+
+📈 QUAND J'ACHÈTE ?
+• W%R < -80 = prix près du bas (survendu)
+• Rebond probable
+
+📉 QUAND JE VENDS ?
+• W%R > -20 = prix près du haut (suracheté)
+• Correction probable
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de range qui achètent bas et vendent haut.""",
+
+        "williams_r_extreme": """⚡ WILLIAMS %R EXTREME - Seuils Extrêmes
+
+🎓 C'EST QUOI ?
+Williams %R avec seuils plus stricts (-90/-10).
+Moins de signaux mais plus fiables.
+
+📈 QUAND J'ACHÈTE ?
+• W%R < -90 = extrêmement survendu
+• Prix au plancher de la fourchette
+
+📉 QUAND JE VENDS ?
+• W%R > -10 = extrêmement suracheté
+• Prix au plafond
+
+⚖️ NIVEAU DE RISQUE: Moyen (signaux de qualité)
+💡 POUR QUI ? Traders patients qui attendent les extrêmes.""",
+
+        "parabolic_sar": """⏺️ PARABOLIC SAR - Stop And Reverse
+
+🎓 C'EST QUOI ?
+Indicateur créé par Welles Wilder (créateur du RSI).
+Des points suivent le prix : au-dessus = tendance baissière,
+en-dessous = tendance haussière.
+
+📈 QUAND J'ACHÈTE ?
+• Points passent en-dessous du prix
+• Signal de retournement haussier
+
+📉 QUAND JE VENDS ?
+• Points passent au-dessus du prix
+• Signal de retournement baissier
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Suiveurs de tendance, bon pour trailing stop.""",
+
+        "parabolic_sar_fast": """⚡ PARABOLIC SAR FAST - Version Sensible
+
+🎓 C'EST QUOI ?
+Parabolic SAR avec accélération plus élevée.
+Réagit plus vite aux changements de tendance.
+
+📈 QUAND J'ACHÈTE ?
+• Points flip en-dessous rapidement
+• Signaux plus fréquents
+
+📉 QUAND JE VENDS ?
+• Points flip au-dessus rapidement
+• Sortie plus rapide
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé (plus de whipsaws)
+💡 POUR QUI ? Scalpers et traders court terme.""",
+
+        "donchian_breakout": """📊 DONCHIAN BREAKOUT - Canal de Richard Donchian
+
+🎓 C'EST QUOI ?
+Le canal Donchian trace le plus haut et le plus bas sur N périodes.
+Utilisé par les célèbres Turtle Traders. Simple mais efficace !
+
+📈 QUAND J'ACHÈTE ?
+• Prix casse au-dessus du canal (nouveau high)
+• Breakout confirmé
+
+📉 QUAND JE VENDS ?
+• Prix casse en-dessous du canal (nouveau low)
+• Ou touche le milieu du canal
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de tendance qui suivent les breakouts.""",
+
+        "donchian_fast": """⚡ DONCHIAN FAST - Version Rapide
+
+🎓 C'EST QUOI ?
+Canal Donchian avec période courte (10 au lieu de 20).
+Détecte les breakouts plus rapidement mais avec plus de bruit.
+
+📈 QUAND J'ACHÈTE ?
+• Prix casse le high de 10 périodes
+• Breakout court terme
+
+📉 QUAND JE VENDS ?
+• Prix casse le low de 10 périodes
+• Retournement rapide
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé (plus de faux signaux)
+💡 POUR QUI ? Traders actifs, swing trading court terme.""",
+
+        "keltner_channel": """📊 KELTNER CHANNEL - Canal de Volatilité
+
+🎓 C'EST QUOI ?
+Canal formé par EMA ± ATR. S'adapte à la volatilité.
+Plus propre que Bollinger Bands, moins de faux signaux.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche la bande basse
+• Rebond sur le support dynamique
+
+📉 QUAND JE VENDS ?
+• Prix touche la bande haute
+• Résistance dynamique
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de range avec volatilité adaptative.""",
+
+        "keltner_tight": """⚡ KELTNER TIGHT - Canal Serré
+
+🎓 C'EST QUOI ?
+Keltner Channel avec multiplicateur ATR réduit.
+Canal plus étroit = signaux plus fréquents.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche la bande basse (plus proche)
+• Plus d'opportunités de rebond
+
+📉 QUAND JE VENDS ?
+• Prix touche la bande haute
+• Sortie plus rapide
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé (plus de trades)
+💡 POUR QUI ? Scalpers et traders actifs.""",
+
+        "obv_trend": """📊 OBV TREND - On Balance Volume
+
+🎓 C'EST QUOI ?
+L'OBV accumule le volume quand le prix monte et le soustrait quand il baisse.
+Le volume précède souvent les mouvements de prix.
+
+📈 QUAND J'ACHÈTE ?
+• OBV monte + prix en tendance haussière
+• Volume confirme le mouvement
+
+📉 QUAND JE VENDS ?
+• OBV baisse + tendance baissière
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Confirmation par le volume.""",
+
+        "obv_fast": """⚡ OBV FAST - Version Rapide
+
+🎓 C'EST QUOI ?
+OBV avec une EMA plus courte pour réagir plus vite.
+Plus de signaux mais potentiellement plus de faux signaux.
+
+📈 STRATÉGIE
+• EMA courte sur l'OBV
+• Signaux plus fréquents
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+💡 POUR QUI ? Traders actifs.""",
+
+        "heikin_ashi": """🕯️ HEIKIN ASHI - Bougies Lissées
+
+🎓 C'EST QUOI ?
+Bougies japonaises modifiées qui lissent les mouvements.
+Plus facile de voir la tendance qu'avec des bougies normales.
+
+📈 QUAND J'ACHÈTE ?
+• Séquence de bougies vertes
+• Tendance haussière claire
+
+📉 QUAND JE VENDS ?
+• Changement de couleur vers rouge
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Suiveurs de tendance.""",
+
+        "heikin_ashi_reversal": """🔄 HEIKIN ASHI REVERSAL - Détection Retournements
+
+🎓 C'EST QUOI ?
+Détecte quand les bougies Heikin Ashi changent de couleur.
+Un changement de couleur = potentiel retournement.
+
+📈 QUAND J'ACHÈTE ?
+• Passage de rouge à vert
+• Doji après série rouge
+
+📉 QUAND JE VENDS ?
+• Passage de vert à rouge
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de retournement.""",
+
+        "macd_crossover": """📊 MACD CROSSOVER - Croisement Classique
+
+🎓 C'EST QUOI ?
+Le MACD (Moving Average Convergence Divergence) montre
+la relation entre deux moyennes mobiles.
+
+📈 QUAND J'ACHÈTE ?
+• MACD croise au-dessus de la ligne Signal
+• Histogramme devient positif
+
+📉 QUAND JE VENDS ?
+• MACD croise en-dessous du Signal
+• Histogramme devient négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Stratégie classique éprouvée.""",
+
+        "macd_reversal": """🔄 MACD REVERSAL - Retournement Histogramme
+
+🎓 C'EST QUOI ?
+Trade les retournements de l'histogramme MACD.
+Quand l'histogramme change de direction = signal.
+
+📈 QUAND J'ACHÈTE ?
+• Histogramme passe de négatif à positif
+• Momentum change de direction
+
+📉 QUAND JE VENDS ?
+• Histogramme passe de positif à négatif
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Signaux précoces.""",
+
+        "rsi_divergence": """📊 RSI DIVERGENCE - Divergences Prix/RSI
+
+🎓 C'EST QUOI ?
+Quand le prix et le RSI vont dans des directions opposées,
+c'est un signal de retournement potentiel.
+
+📈 QUAND J'ACHÈTE ?
+• Prix fait lower low, RSI fait higher low
+• = Divergence haussière
+
+📉 QUAND JE VENDS ?
+• Prix fait higher high, RSI fait lower high
+• = Divergence baissière
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de retournement.""",
+
+        "rsi_divergence_fast": """⚡ RSI DIVERGENCE FAST - Version Rapide
+
+🎓 C'EST QUOI ?
+Divergences RSI sur des périodes plus courtes.
+Détecte les divergences plus tôt mais moins fiables.
+
+📈 STRATÉGIE
+• RSI sur 7-9 périodes au lieu de 14
+• Signaux plus fréquents
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Scalpers.""",
+
+        "rsi_macd_combo": """🎯 RSI + MACD COMBO - Double Confirmation
+
+🎓 C'EST QUOI ?
+Combine RSI et MACD pour des signaux plus fiables.
+N'entre que quand les deux sont d'accord.
+
+📈 QUAND J'ACHÈTE ?
+• RSI < 30 (survendu)
+• ET MACD cross bullish
+
+📉 QUAND JE VENDS ?
+• RSI > 70 + MACD cross bearish
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Confirmation double.""",
+
+        "trailing_tight": """🎯 TRAILING TIGHT - Stop Serré 2%
+
+🎓 C'EST QUOI ?
+Trailing stop qui suit le prix à 2% de distance.
+Verrouille les gains rapidement mais peut sortir trop tôt.
+
+📈 STRATÉGIE
+• Entry sur signal technique
+• Stop remonte avec le prix, jamais ne descend
+• Sort si le prix baisse de 2% depuis le plus haut
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Scalpers, marchés volatils.""",
+
+        "trailing_medium": """🎯 TRAILING MEDIUM - Stop Moyen 4%
+
+🎓 C'EST QUOI ?
+Trailing stop à 4% - équilibre entre protection
+et laisser respirer le trade.
+
+📈 STRATÉGIE
+• Stop suit à 4% du plus haut
+• Bon pour swing trading
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Swing traders.""",
+
+        "trailing_wide": """🎯 TRAILING WIDE - Stop Large 6%
+
+🎓 C'EST QUOI ?
+Trailing stop à 6% - laisse beaucoup de marge.
+Pour les tendances fortes avec de la volatilité.
+
+📈 STRATÉGIE
+• Stop suit à 6% du plus haut
+• Reste dans les trades plus longtemps
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+💡 POUR QUI ? Position trading.""",
+
+        "trailing_scalp": """⚡ TRAILING SCALP - Stop Ultra-Serré
+
+🎓 C'EST QUOI ?
+Trailing stop très serré pour le scalping.
+Sort rapidement pour capturer de petits gains.
+
+📈 STRATÉGIE
+• Stop à 1-1.5%
+• Trades très courts
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Scalpers purs.""",
+
+        "trailing_swing": """📈 TRAILING SWING - Stop pour Swing
+
+🎓 C'EST QUOI ?
+Trailing stop optimisé pour le swing trading.
+Balance entre protection et tendance.
+
+📈 STRATÉGIE
+• Stop à 3-5%
+• Hold quelques jours
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Swing traders.""",
+
+        "scalp_rsi": """⚡ SCALP RSI - Scalping sur RSI
+
+🎓 C'EST QUOI ?
+Scalping basé sur les extrêmes du RSI.
+Entre sur RSI très bas, sort rapidement.
+
+📈 QUAND J'ACHÈTE ?
+• RSI < 25 (très survendu)
+• Petites positions, sorties rapides
+
+📉 QUAND JE VENDS ?
+• RSI > 75 ou petit profit atteint
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Scalpers.""",
+
+        "scalp_bb": """⚡ SCALP BB - Scalping Bollinger
+
+🎓 C'EST QUOI ?
+Scalping aux extrêmes des Bollinger Bands.
+Achète en bas, vend en haut du canal.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche la bande basse
+
+📉 QUAND JE VENDS ?
+• Prix touche la bande haute
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Range scalpers.""",
+
+        "scalp_macd": """⚡ SCALP MACD - Scalping MACD
+
+🎓 C'EST QUOI ?
+Scalping sur les changements de l'histogramme MACD.
+Entrées et sorties rapides.
+
+📈 QUAND J'ACHÈTE ?
+• Histogramme flip positif
+
+📉 QUAND JE VENDS ?
+• Histogramme flip négatif
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Scalpers momentum.""",
+
+        "range_sniper": """🎯 RANGE SNIPER - Trading de Range
+
+🎓 C'EST QUOI ?
+Identifie les ranges (consolidations) et trade
+les rebonds sur support/résistance.
+
+📈 QUAND J'ACHÈTE ?
+• Prix touche le support du range
+• RSI < 35
+
+📉 QUAND JE VENDS ?
+• Prix touche la résistance du range
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Marchés latéraux.""",
+
+        "range_breakout": """💥 RANGE BREAKOUT - Cassure de Range
+
+🎓 C'EST QUOI ?
+Attend qu'un range soit cassé puis entre
+dans la direction du breakout.
+
+📈 QUAND J'ACHÈTE ?
+• Prix casse la résistance du range
+• Volume confirme
+
+📉 QUAND JE VENDS ?
+• Prix casse le support
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+💡 POUR QUI ? Breakout traders.""",
+
+        "pivot_classic": """📊 PIVOT CLASSIC - Points Pivots
+
+🎓 C'EST QUOI ?
+Utilise les pivot points classiques comme
+niveaux de support et résistance.
+
+📈 QUAND J'ACHÈTE ?
+• Prix rebondit sur S1 ou S2 (supports)
+
+📉 QUAND JE VENDS ?
+• Prix rejette R1 ou R2 (résistances)
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Day traders.""",
+
+        "pivot_fibonacci": """📐 PIVOT FIBONACCI - Pivots + Fib
+
+🎓 C'EST QUOI ?
+Combine pivot points avec niveaux Fibonacci
+pour des zones S/R plus précises.
+
+📈 QUAND J'ACHÈTE ?
+• Confluence pivot + niveau Fib
+
+📉 QUAND JE VENDS ?
+• Résistance pivot + Fib
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders techniques.""",
+
+        "trend_momentum": """🚀 TREND MOMENTUM - Suivre la Tendance
+
+🎓 C'EST QUOI ?
+Suit les tendances confirmées par le momentum.
+N'entre que dans le sens de la tendance.
+
+📈 QUAND J'ACHÈTE ?
+• Tendance haussière (EMA cross)
+• Momentum positif confirmé
+
+📉 QUAND JE VENDS ?
+• Tendance s'inverse
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Trend followers.""",
+
+        "volume_breakout": """📊 VOLUME BREAKOUT - Breakout + Volume
+
+🎓 C'EST QUOI ?
+N'entre sur un breakout que si le volume confirme.
+Volume élevé = breakout plus fiable.
+
+📈 QUAND J'ACHÈTE ?
+• Prix casse résistance
+• Volume > 2x la moyenne
+
+📉 QUAND JE VENDS ?
+• Breakdown avec volume
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Confirmation volume.""",
+
+        "volume_climax": """💥 VOLUME CLIMAX - Spikes de Volume
+
+🎓 C'EST QUOI ?
+Détecte les spikes de volume extrêmes qui
+signalent souvent des retournements.
+
+📈 QUAND J'ACHÈTE ?
+• Volume spike + prix rebondit
+• Capitulation des vendeurs
+
+📉 QUAND JE VENDS ?
+• Volume spike en haut
+• Euphorie des acheteurs
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Contrarians.""",
+
+        "orderflow_delta": """📊 ORDERFLOW DELTA - Flux d'Ordres
+
+🎓 C'EST QUOI ?
+Analyse le delta (acheteurs vs vendeurs).
+Delta positif = plus d'achats que de ventes.
+
+📈 QUAND J'ACHÈTE ?
+• Delta positif + momentum up
+
+📉 QUAND JE VENDS ?
+• Delta négatif + momentum down
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders institutionnels.""",
+
+        "orderflow_imbalance": """⚖️ ORDERFLOW IMBALANCE - Déséquilibres
+
+🎓 C'EST QUOI ?
+Détecte les gros déséquilibres entre acheteurs
+et vendeurs. Signal de mouvement imminent.
+
+📈 QUAND J'ACHÈTE ?
+• Gros imbalance acheteur
+
+📉 QUAND JE VENDS ?
+• Gros imbalance vendeur
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Orderflow traders.""",
+
+        "mtf_trend": """📊 MTF TREND - Multi-Timeframe Tendance
+
+🎓 C'EST QUOI ?
+Confirme la tendance sur plusieurs timeframes.
+N'entre que quand tous sont alignés.
+
+📈 QUAND J'ACHÈTE ?
+• Tendance up sur 1h, 4h, et daily
+• Alignement total
+
+📉 QUAND JE VENDS ?
+• Tendance down sur tous les TFs
+
+⚖️ NIVEAU DE RISQUE: Faible-Moyen
+💡 POUR QUI ? Confirmation multi-TF.""",
+
+        "mtf_momentum": """🚀 MTF MOMENTUM - Momentum Multi-TF
+
+🎓 C'EST QUOI ?
+Momentum confirmé sur plusieurs timeframes.
+Plus fiable que single timeframe.
+
+📈 QUAND J'ACHÈTE ?
+• Momentum positif sur 15m, 1h, 4h
+
+📉 QUAND JE VENDS ?
+• Momentum négatif sur tous
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Swing traders.""",
+
+        "social_sentiment": """📱 SOCIAL SENTIMENT - Sentiment Social
+
+🎓 C'EST QUOI ?
+Trade basé sur le sentiment des réseaux sociaux.
+Mentions, likes, volume de discussion.
+
+📈 QUAND J'ACHÈTE ?
+• Sentiment positif en hausse
+• Buzz croissant
+
+📉 QUAND JE VENDS ?
+• Sentiment négatif ou euphorie extrême
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Social traders.""",
+
+        "high_risk_leverage": """⚠️ HIGH RISK LEVERAGE - Levier Simulé
+
+🎓 C'EST QUOI ?
+Simule du trading avec effet de levier.
+ATTENTION: Gains ET pertes amplifiés.
+
+📈 STRATÉGIE
+• Positions plus grosses que normal
+• Entry sur signaux forts uniquement
+
+⚠️ NIVEAU DE RISQUE: EXTRÊME
+💡 POUR QUI ? Test en paper trading uniquement.""",
+
+        "medium_risk_swing": """📈 MEDIUM RISK SWING - Swing Équilibré
+
+🎓 C'EST QUOI ?
+Swing trading avec risque modéré.
+Positions de quelques jours à semaines.
+
+📈 QUAND J'ACHÈTE ?
+• Signaux techniques + tendance favorable
+• RSI modéré + momentum
+
+📉 QUAND JE VENDS ?
+• TP ou tendance inverse
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Swing traders.""",
+
+        "low_risk_dca": """💰 LOW RISK DCA - Accumulation Prudente
+
+🎓 C'EST QUOI ?
+Stratégie DCA (Dollar Cost Average) avec faible risque.
+Achète régulièrement sur les petites baisses.
+
+📈 QUAND J'ACHÈTE ?
+• Quand le prix baisse de 2-3%
+• Petites positions régulières
+
+📉 QUAND JE VENDS ?
+• Rarement - accumulation long terme
+
+⚖️ NIVEAU DE RISQUE: Faible
+💡 POUR QUI ? Investisseurs prudents long terme.""",
+
+        # Whale Strategies
+        "whale_smart_money": """🐋 WHALE SMART MONEY - Suivre les Gros
+
+🎓 C'EST QUOI ?
+Suit les mouvements des plus gros portefeuilles crypto.
+Ces "whales" ont souvent accès à des infos privilégiées.
+
+📈 QUAND J'ACHÈTE ?
+• Quand plusieurs whales accumulent le même token
+• Détection de gros achats on-chain
+
+📉 QUAND JE VENDS ?
+• Quand les whales commencent à vendre
+• Take profit: +40%, Stop loss: -20%
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Copy-trading des meilleurs wallets.""",
+
+        "whale_ansem": """🐋 WHALE ANSEM - @blknoiz06
+
+🎓 C'EST QUOI ?
+Suit le wallet d'Ansem (@blknoiz06), un des traders
+Solana les plus suivis. Connu pour ses calls memecoins.
+
+📈 STRATÉGIE
+• Copy les achats d'Ansem avec un léger délai
+• Focus sur Solana et memecoins
+
+⚖️ NIVEAU DE RISQUE: Élevé (memecoins)
+💡 POUR QUI ? Fans de Solana et memecoins.""",
+
+        "whale_cobie": """🐋 WHALE COBIE - @coabordle
+
+🎓 C'EST QUOI ?
+Suit le wallet de Cobie, ex-Binance et fondateur de
+Echo. Connu pour ses positions DeFi et layer 1.
+
+📈 STRATÉGIE
+• Positions plus long terme
+• Focus sur les projets fondamentaux
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Approche plus réfléchie.""",
+
+        "whale_hsaka": """🐋 WHALE HSAKA - @HsakaTrades
+
+🎓 C'EST QUOI ?
+Suit Hsaka, trader technique reconnu sur CT.
+Positions courtes et moyennes durées.
+
+📈 STRATÉGIE
+• Swing trading technique
+• Mix de majors et alts
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Trading actif.""",
+
+        "whale_gcr": """🐋 WHALE GCR - @GCRClassic
+
+🎓 C'EST QUOI ?
+Suit GCR, trader légendaire de Crypto Twitter.
+Connu pour ses calls macro et ses shorts.
+
+📈 STRATÉGIE
+• Positions contrariantes
+• Macro trading
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Traders expérimentés.""",
+
+        "whale_degen": """🐋 WHALE DEGEN - Multi-Whales
+
+🎓 C'EST QUOI ?
+Agrège plusieurs wallets de "degen traders"
+connus pour leurs trades à haut risque.
+
+📈 STRATÉGIE
+• Détecte les tokens que plusieurs whales achètent
+• Entrées rapides, sorties rapides
+
+⚖️ NIVEAU DE RISQUE: Très Élevé
+💡 POUR QUI ? Degens assumés.""",
+
+        # Legend Strategies
+        "legend_buffett": """📖 LEGEND BUFFETT - Value Investing
+
+🎓 C'EST QUOI ?
+Simule le style de Warren Buffett: acheter des actifs
+sous-évalués et les garder très longtemps.
+
+📈 QUAND J'ACHÈTE ?
+• Actifs de qualité à prix réduit (RSI très bas)
+• Fondamentaux solides (BTC, ETH)
+
+📉 QUAND JE VENDS ?
+• Presque jamais - "Our favorite holding period is forever"
+
+⚖️ NIVEAU DE RISQUE: Faible (long terme)
+💡 CONSEIL: "Be fearful when others are greedy, greedy when others are fearful" """,
+
+        "legend_soros": """📖 LEGEND SOROS - Macro Trading
+
+🎓 C'EST QUOI ?
+Style George Soros: trading macro basé sur les grandes
+tendances économiques et la réflexivité des marchés.
+
+📈 QUAND J'ACHÈTE ?
+• Momentum fort + volume croissant
+• Tendances macro favorables
+
+📉 QUAND JE VENDS ?
+• Take profit rapide sur momentum
+• Positions plus courtes que Buffett
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+💡 CONSEIL: "Find the trend whose premise is false, and bet against it" """,
+
+        "legend_dalio": """📖 LEGEND DALIO - All Weather
+
+🎓 C'EST QUOI ?
+Style Ray Dalio: portfolio diversifié qui performe
+dans tous les environnements économiques.
+
+📈 STRATÉGIE
+• Mix de cryptos majeures
+• Rééquilibrage régulier
+• DCA sur les dips
+
+⚖️ NIVEAU DE RISQUE: Faible-Moyen
+💡 CONSEIL: "Diversifying well is the most important thing" """,
+
+        "legend_simons": """📖 LEGEND SIMONS - Quant Trading
+
+🎓 C'EST QUOI ?
+Style Jim Simons (Renaissance Technologies): trading
+quantitatif basé sur les patterns statistiques.
+
+📈 STRATÉGIE
+• Signaux techniques multiples
+• Entrées/sorties fréquentes
+• Petites positions, beaucoup de trades
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 CONSEIL: "Patterns in data are everywhere if you look hard enough" """,
+
+        "legend_burry": """📖 LEGEND BURRY - Contrarian
+
+🎓 C'EST QUOI ?
+Style Michael Burry (Big Short): positions contrariantes
+contre le consensus du marché.
+
+📈 QUAND J'ACHÈTE ?
+• Quand tout le monde vend (peur extrême)
+• RSI < 20 + divergences
+
+📉 QUAND JE VENDS ?
+• Quand l'euphorie revient
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 CONSEIL: "The stock market is filled with individuals who know the price of everything, but the value of nothing" """,
+
+        "legend_cathie": """📖 LEGEND CATHIE - Innovation
+
+🎓 C'EST QUOI ?
+Style Cathie Wood (ARK Invest): focus sur l'innovation
+disruptive et les technologies du futur.
+
+📈 STRATÉGIE
+• Focus sur les tokens "innovation" (AI, DeFi, L2)
+• Positions long terme malgré la volatilité
+• Conviction forte
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 CONSEIL: "Innovation solves problems. Cash is trash during innovation" """,
+
+        "legend_ptj": """📖 LEGEND PTJ - Macro Momentum
+
+🎓 C'EST QUOI ?
+Style Paul Tudor Jones: macro trading avec
+stops serrés et gestion du risque stricte.
+
+📈 STRATÉGIE
+• Suit les tendances macro
+• Trailing stops systématiques
+• Coupe les pertes rapidement
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 CONSEIL: "The secret to being successful is having a disciplined, systematic approach" """,
+
+        "legend_ackman": """📖 LEGEND ACKMAN - Activist
+
+🎓 C'EST QUOI ?
+Style Bill Ackman: positions concentrées avec
+conviction forte. Peu de trades mais gros.
+
+📈 STRATÉGIE
+• Positions concentrées (peu de cryptos)
+• Allocation importante par position
+• Hold long terme
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 CONSEIL: "Invest in businesses with strong competitive positions and great management" """,
+
+        # Congress Strategies
+        "congress_pelosi": """🏛️ CONGRESS PELOSI - Nancy Pelosi
+
+🎓 C'EST QUOI ?
+Réplique les trades de Nancy Pelosi.
+Son portfolio a souvent surperformé le S&P 500.
+
+📈 STRATÉGIE
+• Réplique ses achats d'actions tech
+• Appliqué aux cryptos équivalentes
+
+📉 TRADES
+• Suivi des déclarations publiques
+• TP: +50%, SL: -20%
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 Note: En paper trading seulement.""",
+
+        "congress_tuberville": """🏛️ CONGRESS TUBERVILLE - Tommy Tuberville
+
+🎓 C'EST QUOI ?
+Réplique les trades du sénateur Tuberville.
+Un des membres du Congrès les plus actifs.
+
+📈 STRATÉGIE
+• Focus sur ses secteurs favoris
+• Timing basé sur ses déclarations
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 Note: En paper trading seulement.""",
+
+        "congress_crenshaw": """🏛️ CONGRESS CRENSHAW - Dan Crenshaw
+
+🎓 C'EST QUOI ?
+Réplique les trades de Dan Crenshaw.
+Focus sur les secteurs énergie et tech.
+
+📈 STRATÉGIE
+• Mix de positions offensives/défensives
+• Suivi des déclarations publiques
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 Note: En paper trading seulement.""",
+
+        "congress_all": """🏛️ CONGRESS ALL - Consensus
+
+🎓 C'EST QUOI ?
+Agrège les trades de plusieurs membres du Congrès.
+Quand plusieurs achètent la même chose = signal fort.
+
+📈 STRATÉGIE
+• Détecte les consensus entre membres
+• Plus fiable que suivre un seul
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 Note: En paper trading seulement.""",
+
+        # Sector Strategies
+        "defi_hunter": """🦄 DEFI HUNTER - Finance Décentralisée
+
+🎓 C'EST QUOI ?
+Focus exclusif sur les tokens DeFi: DEX, lending,
+yield farming, derivatives...
+
+📈 TOKENS CIBLÉS
+• UNI, AAVE, CRV, MKR, LDO, SNX, COMP...
+• Nouveaux projets DeFi prometteurs
+
+📈 QUAND J'ACHÈTE ?
+• RSI bas + momentum positif
+• Nouveaux catalyseurs (upgrade, listing)
+
+⚖️ NIVEAU DE RISQUE: Moyen-Élevé
+💡 POUR QUI ? Fans de DeFi.""",
+
+        "gaming_tokens": """🎮 GAMING TOKENS - Gaming & Metaverse
+
+🎓 C'EST QUOI ?
+Focus sur les tokens gaming, metaverse et NFT.
+Secteur très volatil mais potentiel énorme.
+
+📈 TOKENS CIBLÉS
+• AXS, SAND, MANA, IMX, GALA, ENJ...
+• Nouveaux jeux blockchain
+
+📈 QUAND J'ACHÈTE ?
+• Annonces de jeux, partenariats
+• RSI oversold après corrections
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Gamers crypto.""",
+
+        "ai_tokens": """🤖 AI TOKENS - Intelligence Artificielle
+
+🎓 C'EST QUOI ?
+Focus sur les tokens liés à l'IA et au machine learning.
+Secteur en pleine explosion depuis ChatGPT.
+
+📈 TOKENS CIBLÉS
+• FET, AGIX, RNDR, OCEAN, TAO, WLD...
+• Nouveaux projets AI crypto
+
+📈 QUAND J'ACHÈTE ?
+• News IA positives
+• Momentum du secteur
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Bullish sur l'IA.""",
+
+        "layer2_focus": """🔗 LAYER 2 FOCUS - Scaling Solutions
+
+🎓 C'EST QUOI ?
+Focus sur les solutions de scaling Layer 2:
+rollups, sidechains, bridges...
+
+📈 TOKENS CIBLÉS
+• ARB, OP, MATIC, IMX, STRK, ZK...
+• Nouveaux L2 prometteurs
+
+📈 QUAND J'ACHÈTE ?
+• Croissance TVL/activité
+• Annonces d'upgrade
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Croyants en Ethereum.""",
+
+        "meme_hunter": """🐸 MEME HUNTER - Memecoins
+
+🎓 C'EST QUOI ?
+Chasse aux memecoins avec potentiel viral.
+Très risqué mais gains potentiels x10-x100.
+
+📈 TOKENS CIBLÉS
+• DOGE, SHIB, PEPE, WIF, BONK...
+• Nouveaux memes trending
+
+📈 QUAND J'ACHÈTE ?
+• Volume spike + mentions sociales
+• Early sur les nouveaux memes
+
+⚖️ NIVEAU DE RISQUE: EXTRÊME ⚠️
+💡 POUR QUI ? Degens only.""",
+
+        # Ichimoku variants
+        "ichimoku_kumo_break": """☁️ ICHIMOKU KUMO BREAK - Breakout du Nuage
+
+🎓 C'EST QUOI ?
+Achète uniquement quand le prix casse le nuage
+Ichimoku vers le haut. Signal très fort.
+
+📈 QUAND J'ACHÈTE ?
+• Prix casse au-dessus du Kumo (nuage)
+• Confirmation avec volume
+
+📉 QUAND JE VENDS ?
+• Prix repasse sous le nuage
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Traders de breakout.""",
+
+        "ichimoku_tk_cross": """☁️ ICHIMOKU TK CROSS - Croisement Tenkan/Kijun
+
+🎓 C'EST QUOI ?
+Trade les croisements entre Tenkan (ligne rapide)
+et Kijun (ligne lente). Classic Ichimoku signal.
+
+📈 QUAND J'ACHÈTE ?
+• Tenkan croise au-dessus de Kijun
+• Idéalement au-dessus du nuage
+
+📉 QUAND JE VENDS ?
+• Tenkan croise sous Kijun
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Puristes Ichimoku.""",
+
+        "ichimoku_chikou": """☁️ ICHIMOKU CHIKOU - Lagging Span
+
+🎓 C'EST QUOI ?
+Utilise le Chikou Span (26 périodes décalées)
+pour confirmer les signaux Ichimoku.
+
+📈 QUAND J'ACHÈTE ?
+• Chikou au-dessus du prix passé
+• Autres signaux Ichimoku bullish
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Confirmation supplémentaire.""",
+
+        "ichimoku_conservative": """☁️ ICHIMOKU CONSERVATIVE - Version Prudente
+
+🎓 C'EST QUOI ?
+Ichimoku avec toutes les conditions requises.
+Moins de signaux mais plus fiables.
+
+📈 QUAND J'ACHÈTE ?
+• Prix > nuage + TK cross bullish + Chikou confirme
+• RSI entre 40-60 (pas d'extrêmes)
+
+⚖️ NIVEAU DE RISQUE: Faible
+💡 POUR QUI ? Traders prudents.""",
+
+        "ichimoku_scalp": """☁️ ICHIMOKU SCALP - Scalping Rapide
+
+🎓 C'EST QUOI ?
+Ichimoku avec périodes raccourcies pour
+le scalping sur petits timeframes.
+
+📈 STRATÉGIE
+• Tenkan(5)/Kijun(15) au lieu de 9/26
+• Entrées/sorties rapides
+
+⚖️ NIVEAU DE RISQUE: Élevé
+💡 POUR QUI ? Scalpers.""",
+
+        "ichimoku_swing": """☁️ ICHIMOKU SWING - Swing Trading
+
+🎓 C'EST QUOI ?
+Ichimoku optimisé pour le swing trading
+(positions de quelques jours à semaines).
+
+📈 STRATÉGIE
+• Timeframe 4h ou daily
+• Suit les tendances moyennes
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Swing traders.""",
+
+        "ichimoku_long": """☁️ ICHIMOKU LONG - Long Terme
+
+🎓 C'EST QUOI ?
+Ichimoku sur timeframes élevés (daily/weekly)
+pour des positions long terme.
+
+📈 STRATÉGIE
+• Signaux hebdomadaires
+• Hold plusieurs semaines/mois
+
+⚖️ NIVEAU DE RISQUE: Faible-Moyen
+💡 POUR QUI ? Investisseurs patients.""",
+
+        "ichimoku_momentum": """☁️ ICHIMOKU MOMENTUM - Avec Momentum
+
+🎓 C'EST QUOI ?
+Combine Ichimoku avec indicateurs de momentum
+pour des entrées plus précises.
+
+📈 QUAND J'ACHÈTE ?
+• Signal Ichimoku bullish + RSI < 60
+• Momentum positif confirmé
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Double confirmation.""",
+
+        # Sniper variants
+        "sniper_quickflip": """🎯 SNIPER QUICKFLIP - Flip Rapide
+
+🎓 C'EST QUOI ?
+Achète des nouveaux tokens et les revend
+très rapidement (< 1 heure). Hit and run.
+
+📈 STRATÉGIE
+• TP: +20%, SL: -15%
+• Max hold: 1 heure
+
+⚖️ NIVEAU DE RISQUE: EXTRÊME ⚠️
+💡 POUR QUI ? Scalpers de memecoins.""",
+
+        "sniper_spray": """🎯 SNIPER SPRAY - Diversification
+
+🎓 C'EST QUOI ?
+Achète plusieurs nouveaux tokens en même temps.
+Plus de chances de trouver une pépite.
+
+📈 STRATÉGIE
+• Petites positions sur 5-10 tokens
+• Allocation 5% par token
+
+⚖️ NIVEAU DE RISQUE: EXTRÊME ⚠️
+💡 POUR QUI ? Lottery style.""",
+
+        "sniper_all_in": """🎯 SNIPER ALL IN - Tout sur Un
+
+🎓 C'EST QUOI ?
+Concentre tout le capital sur UN seul nouveau token.
+Maximum risk, maximum reward.
+
+📈 STRATÉGIE
+• Position unique concentrée
+• TP: +30%, SL: -20%
+
+⚖️ NIVEAU DE RISQUE: EXTRÊME ⚠️
+💡 POUR QUI ? True degens only.""",
+
+        # Fear & Greed
+        "fear_greed_extreme": """😱 FEAR GREED EXTREME - Extrêmes Only
+
+🎓 C'EST QUOI ?
+Trade uniquement quand le Fear & Greed Index
+atteint des niveaux extrêmes (< 10 ou > 90).
+
+📈 QUAND J'ACHÈTE ?
+• Index < 10 = Peur Extrême = BUY
+• Tout le monde panique = opportunité
+
+📉 QUAND JE VENDS ?
+• Index > 90 = Euphorie Extrême = SELL
+• FOMO maximum = temps de sortir
+
+⚖️ NIVEAU DE RISQUE: Moyen
+💡 POUR QUI ? Contrarians patients.""",
+
+        "manuel": """🎮 MANUEL - Trading Manuel
+
+🎓 C'EST QUOI ?
+Aucun trade automatique. Ce portfolio est là
+pour que tu puisses tester des trades manuellement.
+
+📈 UTILISATION
+• Ajoute des trades via l'interface
+• Test tes propres stratégies
+
+⚖️ NIVEAU DE RISQUE: Selon toi
+💡 POUR QUI ? Full control."""
     }
 
     # Display portfolios with pagination (10 per page)
@@ -2321,8 +4210,17 @@ Moins de trades mais meilleure qualité."""
                     pos_color = '#00aaff' if positions_count > 0 else '#666'
                     name_display = p['name'][:25] + ('...' if len(p['name']) > 25 else '')
 
+                    # Trading mode badge
+                    trading_mode = p.get('trading_mode', 'paper')
+                    if trading_mode == 'real':
+                        mode_badge = '<span style="background: #ff4444; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; margin-left: 8px;">REAL $</span>'
+                        card_border_extra = 'border-right: 4px solid #ff4444;'
+                    else:
+                        mode_badge = '<span style="background: #00aa44; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: bold; margin-left: 8px;">PAPER</span>'
+                        card_border_extra = ''
+
                     # Card HTML
-                    card_html = f'''<div style="background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 16px; padding: 1.2rem; margin-bottom: 0.5rem; border-left: 4px solid {pnl_color}; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
+                    card_html = f'''<div style="background: linear-gradient(145deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 16px; padding: 1.2rem; margin-bottom: 0.5rem; border-left: 4px solid {pnl_color}; {card_border_extra} box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: relative; overflow: hidden;">
 <div style="position: absolute; top: 0; {pnl_bar_dir}: 0; width: {pnl_bar_width}%; height: 100%; background: linear-gradient(90deg, {bar_bg} 0%, transparent 100%); pointer-events: none;"></div>
 <div style="position: relative; z-index: 1;">
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem;">
@@ -2330,7 +4228,7 @@ Moins de trades mais meilleure qualité."""
 <div style="display: flex; align-items: center; gap: 0.5rem;">
 <span style="font-size: 1.8rem;">{icon}</span>
 <div>
-<div style="font-size: 1.1rem; font-weight: bold; color: white;">{name_display}</div>
+<div style="font-size: 1.1rem; font-weight: bold; color: white;">{name_display}{mode_badge}</div>
 <div style="color: #666; font-size: 0.75rem;">{strategy}</div>
 </div>
 </div>
@@ -2813,7 +4711,7 @@ def render_settings():
     # Load current settings
     settings = load_settings()
 
-    tab1, tab2, tab3 = st.tabs(["🔑 API Keys", "🔔 Notifications", "🎨 Preferences"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔑 API Keys", "💰 Real Trading", "🔐 DEX Wallets", "🔔 Notifications", "🎨 Preferences"])
 
     with tab1:
         st.subheader("Exchange API")
@@ -2856,6 +4754,107 @@ def render_settings():
                 st.warning("Helius: Not configured")
 
     with tab2:
+        st.subheader("Real Trading Configuration")
+
+        real_trading = settings.get("real_trading", {})
+        real_enabled = st.checkbox(
+            "Enable Real Trading",
+            value=real_trading.get("enabled", False),
+            help="Master switch for real trading across all portfolios"
+        )
+
+        if real_enabled:
+            st.error("⚠️ DANGER: Real trading is ENABLED. Portfolios in 'real' mode will execute actual trades!")
+
+            # Emergency stop
+            if real_trading.get("emergency_stop_triggered", False):
+                st.warning(f"🚨 EMERGENCY STOP ACTIVE: {real_trading.get('emergency_stop_reason', 'Unknown')}")
+                if st.button("Clear Emergency Stop", type="secondary"):
+                    real_trading["emergency_stop_triggered"] = False
+                    real_trading.pop("emergency_stop_reason", None)
+                    st.rerun()
+            else:
+                if st.button("🚨 TRIGGER EMERGENCY STOP", type="secondary"):
+                    real_trading["emergency_stop_triggered"] = True
+                    real_trading["emergency_stop_reason"] = "Manual stop from UI"
+                    st.warning("Emergency stop triggered!")
+
+            st.divider()
+
+            # Master password
+            st.subheader("Master Password")
+            if real_trading.get("master_password_hash"):
+                st.success("Master password is set")
+                new_password = st.text_input("Change Master Password", type="password", key="new_master_pwd")
+                confirm_password = st.text_input("Confirm New Password", type="password", key="confirm_master_pwd")
+            else:
+                st.warning("No master password set - required for DEX trading")
+                new_password = st.text_input("Set Master Password", type="password", key="new_master_pwd")
+                confirm_password = st.text_input("Confirm Password", type="password", key="confirm_master_pwd")
+
+            st.divider()
+
+            # Global limits
+            st.subheader("Global Risk Limits")
+            global_daily_limit = st.number_input(
+                "Global Daily Loss Limit ($)",
+                value=real_trading.get("global_daily_loss_limit", 500),
+                min_value=50,
+                help="Max combined loss across ALL real portfolios per day"
+            )
+        else:
+            new_password = ""
+            confirm_password = ""
+            global_daily_limit = real_trading.get("global_daily_loss_limit", 500)
+
+    with tab3:
+        st.subheader("DEX Wallet Configuration")
+        st.info("Configure wallets for real DEX trading. Private keys are encrypted with your master password.")
+
+        wallets = settings.get("wallets", {})
+
+        # Solana
+        st.markdown("### Solana")
+        sol_wallet = wallets.get("solana", {})
+        sol_enabled = st.checkbox("Enable Solana Trading", value=sol_wallet.get("enabled", False), key="sol_enabled")
+        if sol_enabled:
+            if sol_wallet.get("public_key"):
+                st.success(f"Wallet: {sol_wallet['public_key'][:8]}...{sol_wallet['public_key'][-6:]}")
+            sol_private = st.text_input("Solana Private Key (Base58)", type="password", key="sol_private", help="Will be encrypted")
+        else:
+            sol_private = ""
+
+        st.divider()
+
+        # Ethereum
+        st.markdown("### Ethereum")
+        eth_wallet = wallets.get("ethereum", {})
+        eth_enabled = st.checkbox("Enable Ethereum Trading", value=eth_wallet.get("enabled", False), key="eth_enabled")
+        if eth_enabled:
+            if eth_wallet.get("public_key"):
+                st.success(f"Wallet: {eth_wallet['public_key'][:8]}...{eth_wallet['public_key'][-6:]}")
+            eth_private = st.text_input("Ethereum Private Key (0x...)", type="password", key="eth_private", help="Will be encrypted")
+            eth_rpc = st.text_input("RPC URL", value=eth_wallet.get("rpc_url", "https://eth.llamarpc.com"), key="eth_rpc")
+        else:
+            eth_private = ""
+            eth_rpc = eth_wallet.get("rpc_url", "https://eth.llamarpc.com")
+
+        st.divider()
+
+        # BSC
+        st.markdown("### BSC (BNB Chain)")
+        bsc_wallet = wallets.get("bsc", {})
+        bsc_enabled = st.checkbox("Enable BSC Trading", value=bsc_wallet.get("enabled", False), key="bsc_enabled")
+        if bsc_enabled:
+            if bsc_wallet.get("public_key"):
+                st.success(f"Wallet: {bsc_wallet['public_key'][:8]}...{bsc_wallet['public_key'][-6:]}")
+            bsc_private = st.text_input("BSC Private Key (0x...)", type="password", key="bsc_private", help="Will be encrypted")
+            bsc_rpc = st.text_input("RPC URL", value=bsc_wallet.get("rpc_url", "https://bsc-dataseed.binance.org"), key="bsc_rpc")
+        else:
+            bsc_private = ""
+            bsc_rpc = bsc_wallet.get("rpc_url", "https://bsc-dataseed.binance.org")
+
+    with tab4:
         st.subheader("Telegram Alerts")
         col1, col2 = st.columns(2)
         with col1:
@@ -2868,13 +4867,55 @@ def render_settings():
             "Position Closed", "Daily Summary", "Whale Alert"
         ], default=settings.get("alert_types", ["Pump Detected", "Position Closed"]))
 
-    with tab3:
+    with tab5:
         st.subheader("Display")
         st.selectbox("Theme", ["Dark (Default)", "Degen Rainbow"])
         st.checkbox("Sound Alerts", value=False)
         refresh_rate = st.slider("Refresh Rate (seconds)", 5, 60, settings.get("refresh_rate", 10))
 
     if st.button("💾 Save Settings", type="primary"):
+        # Build wallet config
+        wallets_config = settings.get("wallets", {})
+
+        # Update Solana wallet
+        wallets_config["solana"] = {
+            "enabled": sol_enabled,
+            "public_key": wallets_config.get("solana", {}).get("public_key", ""),
+            "private_key_encrypted": wallets_config.get("solana", {}).get("private_key_encrypted", "")
+        }
+        # Note: Private key encryption would happen here with master password
+
+        # Update Ethereum wallet
+        wallets_config["ethereum"] = {
+            "enabled": eth_enabled,
+            "public_key": wallets_config.get("ethereum", {}).get("public_key", ""),
+            "private_key_encrypted": wallets_config.get("ethereum", {}).get("private_key_encrypted", ""),
+            "rpc_url": eth_rpc if eth_enabled else "https://eth.llamarpc.com"
+        }
+
+        # Update BSC wallet
+        wallets_config["bsc"] = {
+            "enabled": bsc_enabled,
+            "public_key": wallets_config.get("bsc", {}).get("public_key", ""),
+            "private_key_encrypted": wallets_config.get("bsc", {}).get("private_key_encrypted", ""),
+            "rpc_url": bsc_rpc if bsc_enabled else "https://bsc-dataseed.binance.org"
+        }
+
+        # Build real trading config
+        real_trading_config = settings.get("real_trading", {})
+        real_trading_config["enabled"] = real_enabled
+        real_trading_config["global_daily_loss_limit"] = global_daily_limit
+
+        # Handle master password
+        if new_password and new_password == confirm_password and len(new_password) >= 8:
+            try:
+                from core.security import SecurityManager
+                sec = SecurityManager()
+                real_trading_config["master_password_hash"] = sec.hash_password(new_password)
+                st.info("Master password updated!")
+            except ImportError:
+                st.warning("Security module not available - password not saved")
+
         new_settings = {
             "binance_api_key": binance_key,
             "binance_secret": binance_secret,
@@ -2884,7 +4925,9 @@ def render_settings():
             "telegram_bot_token": telegram_token,
             "telegram_chat_id": telegram_chat,
             "alert_types": alert_types,
-            "refresh_rate": refresh_rate
+            "refresh_rate": refresh_rate,
+            "wallets": wallets_config,
+            "real_trading": real_trading_config
         }
         save_settings(new_settings)
         st.success("Settings saved!")
