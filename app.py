@@ -4677,7 +4677,7 @@ pour que tu puisses tester des trades manuellement.
 
                         # Show the chart
                         fig = create_portfolio_chart(pid, p['name'], history_data)
-                        st.plotly_chart(fig, use_container_width=True)
+                        st.plotly_chart(fig, use_container_width=True, key=f"portfolio_chart_{pid}")
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
@@ -4998,7 +4998,7 @@ pour que tu puisses tester des trades manuellement.
                                     yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.1)', tickformat='.6f', side='right', tickfont=dict(size=9)),
                                 )
 
-                                st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+                                st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key=f"position_chart_{pid}_{pos_symbol}")
 
 
 
