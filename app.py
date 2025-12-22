@@ -109,9 +109,278 @@ def get_dexscreener_url(symbol: str, token_address: str = '', chain: str = '') -
     # Fallback to search
     return f"https://dexscreener.com/search?q={clean_symbol}"
 
-# Custom CSS for tooltips
+# Custom CSS for tooltips + MOBILE RESPONSIVE
 st.markdown("""
 <style>
+/* ==================== MOBILE RESPONSIVE ==================== */
+
+/* Base responsive settings */
+:root {
+    --mobile-padding: 0.5rem;
+    --card-radius: 12px;
+}
+
+/* Hide sidebar on mobile by default */
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] {
+        min-width: 0 !important;
+        width: 0 !important;
+        transform: translateX(-100%);
+    }
+    [data-testid="stSidebar"][aria-expanded="true"] {
+        min-width: 280px !important;
+        width: 280px !important;
+        transform: translateX(0);
+    }
+
+    /* Main content full width */
+    .main .block-container {
+        padding: 0.5rem 0.8rem !important;
+        max-width: 100% !important;
+    }
+
+    /* Smaller headers */
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.25rem !important; }
+    h3 { font-size: 1.1rem !important; }
+
+    /* Stack columns vertically */
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+
+    /* Metrics cards */
+    [data-testid="stMetric"] {
+        background: linear-gradient(145deg, #1e1e2e, #2a2a3e) !important;
+        border-radius: 10px !important;
+        padding: 0.8rem !important;
+        margin: 0.3rem 0 !important;
+    }
+    [data-testid="stMetricValue"] {
+        font-size: 1.3rem !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.75rem !important;
+    }
+
+    /* Buttons more touch-friendly */
+    .stButton > button {
+        min-height: 48px !important;
+        font-size: 1rem !important;
+        padding: 0.6rem 1rem !important;
+        width: 100% !important;
+        margin: 0.2rem 0 !important;
+    }
+
+    /* Tables scroll horizontally */
+    [data-testid="stDataFrame"] {
+        overflow-x: auto !important;
+    }
+
+    /* Expanders full width */
+    .streamlit-expanderHeader {
+        font-size: 0.95rem !important;
+        padding: 0.8rem !important;
+    }
+
+    /* Charts responsive */
+    .js-plotly-plot {
+        width: 100% !important;
+    }
+
+    /* Hide less important elements on mobile */
+    .desktop-only {
+        display: none !important;
+    }
+
+    /* Tabs scrollable */
+    .stTabs [data-baseweb="tab-list"] {
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .stTabs [data-baseweb="tab"] {
+        white-space: nowrap !important;
+        padding: 0.5rem 0.8rem !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+    .main .block-container {
+        padding: 0.3rem 0.5rem !important;
+    }
+
+    h1 { font-size: 1.3rem !important; }
+    h2 { font-size: 1.1rem !important; }
+
+    [data-testid="stMetricValue"] {
+        font-size: 1.1rem !important;
+    }
+
+    /* Smaller text */
+    p, span, div {
+        font-size: 0.9rem !important;
+    }
+
+    /* Two column grid for metrics */
+    .metric-row {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ==================== PORTFOLIO CARDS MOBILE ==================== */
+
+.portfolio-card-mobile {
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: var(--card-radius);
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-left: 4px solid #00d4aa;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.portfolio-card-mobile.negative {
+    border-left-color: #ff4757;
+}
+
+.portfolio-card-mobile .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.portfolio-card-mobile .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.portfolio-card-mobile .stat-item {
+    background: rgba(255,255,255,0.05);
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+}
+
+.portfolio-card-mobile .stat-label {
+    color: #888;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+.portfolio-card-mobile .stat-value {
+    font-weight: 600;
+    color: #fff;
+}
+
+.portfolio-card-mobile .stat-value.positive { color: #00d4aa; }
+.portfolio-card-mobile .stat-value.negative { color: #ff4757; }
+
+/* ==================== QUICK STATS BAR ==================== */
+
+.quick-stats {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.quick-stats::-webkit-scrollbar {
+    display: none;
+}
+
+.quick-stat {
+    flex: 0 0 auto;
+    background: linear-gradient(145deg, #1e1e2e, #2a2a3e);
+    padding: 0.6rem 1rem;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.quick-stat .value {
+    font-weight: 700;
+    margin-left: 0.3rem;
+}
+
+.quick-stat .positive { color: #00d4aa; }
+.quick-stat .negative { color: #ff4757; }
+
+/* ==================== FLOATING ACTION BUTTON ==================== */
+
+.fab-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+.fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #6c5ce7, #a855f7);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(108, 92, 231, 0.4);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==================== ACTIVITY FEED MOBILE ==================== */
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    padding: 0.8rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    margin: 0.3rem 0;
+    gap: 0.8rem;
+}
+
+.activity-item .icon {
+    font-size: 1.5rem;
+    flex: 0 0 40px;
+    text-align: center;
+}
+
+.activity-item .details {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-item .title {
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.activity-item .subtitle {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.activity-item .amount {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ==================== TOOLTIPS ==================== */
+
 .tooltip-container {
     position: relative;
     display: inline-block;
@@ -151,6 +420,59 @@ st.markdown("""
     visibility: visible;
     opacity: 1;
 }
+
+/* Mobile: tooltips tap instead of hover */
+@media (max-width: 768px) {
+    .tooltip-container .tooltip-text {
+        width: 200px;
+        font-size: 0.8rem;
+    }
+}
+
+/* ==================== GENERAL IMPROVEMENTS ==================== */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Better touch targets */
+a, button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Loading states */
+.loading-pulse {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Status badges */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-success { background: rgba(0, 212, 170, 0.2); color: #00d4aa; }
+.badge-danger { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
+.badge-warning { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+.badge-info { background: rgba(0, 123, 255, 0.2); color: #007bff; }
+
+/* Pull to refresh indicator */
+.ptr-indicator {
+    text-align: center;
+    padding: 1rem;
+    color: #888;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
