@@ -11,3 +11,7 @@ colorama
 textblob
 python-dotenv
 websockets
+web3
+solana
+solders
+pycryptodome
