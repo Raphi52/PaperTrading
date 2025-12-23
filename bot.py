@@ -289,6 +289,296 @@ def should_take_partial_profit(entry_price: float, current_price: float,
     return (False, 0, None)
 
 
+# ============ ADVANCED TRADING FILTERS ============
+
+def check_rsi_entry_quality(rsi: float, strategy: dict) -> tuple:
+    """
+    Check if RSI supports a good entry.
+    Returns (is_good_entry, quality_score, reason)
+    """
+    # Degen strategies can ignore RSI
+    if strategy.get('use_degen') or strategy.get('use_sniper'):
+        return (True, 1.0, None)
+
+    # Optimal buy zones
+    if rsi < 30:
+        return (True, 1.3, f"RSI {rsi:.0f} - Oversold, excellent entry")
+    elif rsi < 40:
+        return (True, 1.1, f"RSI {rsi:.0f} - Good entry zone")
+    elif rsi < 50:
+        return (True, 1.0, f"RSI {rsi:.0f} - Neutral entry")
+    elif rsi < 60:
+        return (True, 0.8, f"RSI {rsi:.0f} - Slightly overbought")
+    elif rsi < 70:
+        return (False, 0.5, f"RSI {rsi:.0f} - Overbought, risky entry")
+    else:
+        return (False, 0.3, f"RSI {rsi:.0f} - Extremely overbought, skip")
+
+
+def check_volume_confirmation(analysis: dict, strategy: dict) -> tuple:
+    """
+    Check if volume supports the trade.
+    Returns (has_volume, reason)
+    """
+    # Skip for degen/sniper
+    if strategy.get('use_degen') or strategy.get('use_sniper'):
+        return (True, None)
+
+    volume_ratio = analysis.get('volume_ratio', 1.0)  # Current vs average
+
+    if volume_ratio < 0.5:
+        return (False, f"Low volume ({volume_ratio:.1f}x avg) - no conviction")
+    elif volume_ratio > 2.0:
+        return (True, f"High volume ({volume_ratio:.1f}x avg) - strong signal")
+
+    return (True, None)
+
+
+def detect_market_regime(btc_data: dict) -> str:
+    """
+    Detect overall market regime based on BTC.
+    Returns: 'bull', 'bear', or 'sideways'
+    """
+    if not btc_data:
+        return 'sideways'
+
+    change_24h = btc_data.get('change_24h', 0)
+    change_7d = btc_data.get('change_7d', 0)
+    rsi = btc_data.get('rsi', 50)
+    ema_9 = btc_data.get('ema_9', 0)
+    ema_21 = btc_data.get('ema_21', 0)
+    price = btc_data.get('price', 0)
+
+    # Strong bull: Price above EMAs, positive momentum, RSI healthy
+    if price > ema_9 > ema_21 and change_24h > 2 and rsi > 50:
+        return 'bull'
+
+    # Strong bear: Price below EMAs, negative momentum
+    if price < ema_9 < ema_21 and change_24h < -2 and rsi < 50:
+        return 'bear'
+
+    return 'sideways'
+
+
+def get_regime_multiplier(regime: str, strategy: dict) -> float:
+    """
+    Get position size multiplier based on market regime.
+    """
+    # Degen strategies ignore regime
+    if strategy.get('use_degen') or strategy.get('use_sniper'):
+        return 1.0
+
+    if regime == 'bull':
+        return 1.2  # Larger positions in bull market
+    elif regime == 'bear':
+        return 0.5  # Smaller positions in bear market
+    else:
+        return 0.8  # Cautious in sideways
+
+
+def check_loss_cooldown(portfolio: dict, cooldown_hours: float = 2) -> tuple:
+    """
+    Check if portfolio should pause after consecutive losses.
+    Returns (should_pause, reason)
+    """
+    trades = portfolio.get('trades', [])
+    if len(trades) < 2:
+        return (False, None)
+
+    # Check last 3 trades
+    recent_trades = trades[-3:]
+    consecutive_losses = 0
+
+    for trade in reversed(recent_trades):
+        if trade.get('pnl', 0) < 0:
+            consecutive_losses += 1
+        else:
+            break
+
+    # Pause after 3 consecutive losses
+    if consecutive_losses >= 3:
+        last_trade_time = trades[-1].get('timestamp', '')
+        if last_trade_time:
+            try:
+                last_time = datetime.fromisoformat(last_trade_time)
+                hours_since = (datetime.now() - last_time).total_seconds() / 3600
+                if hours_since < cooldown_hours:
+                    return (True, f"COOLDOWN: {consecutive_losses} losses in a row, wait {cooldown_hours - hours_since:.1f}h")
+            except:
+                pass
+
+    return (False, None)
+
+
+def get_dynamic_tp_sl(analysis: dict, base_tp: float, base_sl: float) -> tuple:
+    """
+    Calculate dynamic TP/SL based on ATR (volatility).
+    Returns (tp_pct, sl_pct)
+    """
+    atr_pct = analysis.get('atr_percent', 2.0)
+
+    # Scale TP/SL with volatility
+    # High ATR = wider stops, Low ATR = tighter stops
+    volatility_mult = max(0.5, min(2.0, atr_pct / 2.0))
+
+    dynamic_tp = base_tp * volatility_mult
+    dynamic_sl = base_sl * volatility_mult
+
+    # Maintain at least 1.5:1 reward-to-risk
+    if dynamic_tp < dynamic_sl * 1.5:
+        dynamic_tp = dynamic_sl * 1.5
+
+    return (round(dynamic_tp, 1), round(dynamic_sl, 1))
+
+
+def calculate_win_streak_bonus(portfolio: dict) -> float:
+    """
+    Calculate position size bonus based on win streak.
+    Returns multiplier (1.0 to 1.5)
+    """
+    trades = portfolio.get('trades', [])
+    if len(trades) < 3:
+        return 1.0
+
+    # Count recent wins
+    win_streak = 0
+    for trade in reversed(trades[-5:]):
+        if trade.get('pnl', 0) > 0:
+            win_streak += 1
+        else:
+            break
+
+    # Bonus: 5% per win, max 50%
+    bonus = min(1.5, 1.0 + (win_streak * 0.1))
+    return bonus
+
+
+def check_correlation_limit(portfolio: dict, symbol: str, max_correlated: int = 2) -> tuple:
+    """
+    Check if adding this position would over-expose to correlated assets.
+    Returns (is_ok, reason)
+    """
+    # Define correlated groups
+    CORRELATION_GROUPS = {
+        'BTC_RELATED': ['BTC', 'WBTC', 'BTCB'],
+        'ETH_RELATED': ['ETH', 'WETH', 'STETH', 'CBETH'],
+        'MEME_COINS': ['DOGE', 'SHIB', 'PEPE', 'FLOKI', 'BONK', 'WIF', 'MEME'],
+        'DEFI_BLUE': ['UNI', 'AAVE', 'COMP', 'MKR', 'SNX', 'CRV'],
+        'LAYER2': ['MATIC', 'ARB', 'OP', 'IMX', 'METIS'],
+        'SOLANA_ECO': ['SOL', 'RAY', 'SRM', 'MNGO', 'ORCA'],
+    }
+
+    asset = symbol.split('/')[0].upper()
+
+    # Find which group this asset belongs to
+    asset_group = None
+    for group_name, assets in CORRELATION_GROUPS.items():
+        if asset in assets:
+            asset_group = group_name
+            break
+
+    if not asset_group:
+        return (True, None)  # Not in any correlated group
+
+    # Count existing positions in same group
+    positions = portfolio.get('positions', {})
+    correlated_count = 0
+
+    for pos_symbol in positions.keys():
+        pos_asset = pos_symbol.split('/')[0].upper()
+        if pos_asset in CORRELATION_GROUPS.get(asset_group, []):
+            correlated_count += 1
+
+    if correlated_count >= max_correlated:
+        return (False, f"Already {correlated_count} {asset_group} positions (max {max_correlated})")
+
+    return (True, None)
+
+
+def get_best_entry_score(analysis: dict, strategy: dict, portfolio: dict) -> dict:
+    """
+    Calculate overall entry quality score combining all factors.
+    Returns dict with score (0-100), factors, and recommendation
+    """
+    score = 50  # Base score
+    factors = []
+
+    # 1. RSI quality (0-20 points)
+    rsi = analysis.get('rsi', 50)
+    if rsi < 30:
+        score += 20
+        factors.append(f"RSI oversold ({rsi:.0f}): +20")
+    elif rsi < 40:
+        score += 10
+        factors.append(f"RSI low ({rsi:.0f}): +10")
+    elif rsi > 70:
+        score -= 20
+        factors.append(f"RSI overbought ({rsi:.0f}): -20")
+    elif rsi > 60:
+        score -= 10
+        factors.append(f"RSI high ({rsi:.0f}): -10")
+
+    # 2. Trend alignment (0-15 points)
+    trend_ok, _ = check_trend_alignment(analysis, strategy)
+    if trend_ok:
+        score += 15
+        factors.append("Trend aligned: +15")
+    else:
+        score -= 15
+        factors.append("Trend not aligned: -15")
+
+    # 3. Volume (0-10 points)
+    volume_ratio = analysis.get('volume_ratio', 1.0)
+    if volume_ratio > 1.5:
+        score += 10
+        factors.append(f"High volume ({volume_ratio:.1f}x): +10")
+    elif volume_ratio < 0.7:
+        score -= 10
+        factors.append(f"Low volume ({volume_ratio:.1f}x): -10")
+
+    # 4. Momentum (0-10 points)
+    mom_1h = analysis.get('momentum_1h', 0)
+    if -2 < mom_1h < 2:
+        score += 5
+        factors.append(f"Stable momentum ({mom_1h:.1f}%): +5")
+    elif mom_1h > 5:
+        score -= 10
+        factors.append(f"Already pumped ({mom_1h:.1f}%): -10")
+
+    # 5. Win streak bonus (0-10 points)
+    win_bonus = calculate_win_streak_bonus(portfolio)
+    if win_bonus > 1.2:
+        score += 10
+        factors.append(f"Win streak bonus ({win_bonus:.1f}x): +10")
+
+    # 6. Loss cooldown penalty
+    should_pause, _ = check_loss_cooldown(portfolio)
+    if should_pause:
+        score -= 30
+        factors.append("Loss cooldown active: -30")
+
+    # Clamp score
+    score = max(0, min(100, score))
+
+    # Recommendation
+    if score >= 70:
+        recommendation = "STRONG_BUY"
+    elif score >= 55:
+        recommendation = "BUY"
+    elif score >= 45:
+        recommendation = "NEUTRAL"
+    elif score >= 30:
+        recommendation = "WEAK"
+    else:
+        recommendation = "SKIP"
+
+    return {
+        'score': score,
+        'factors': factors,
+        'recommendation': recommendation
+    }
+
+
 # ============ PORTFOLIO HISTORY TRACKING ============
 
 def get_portfolio_history() -> dict:
@@ -1633,12 +1923,14 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
             portfolio['balance']['USDT'] -= amount_usdt
             portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
 
-            # Track position
+            # Track position with highest_price for trailing stop
             if symbol not in portfolio['positions']:
                 portfolio['positions'][symbol] = {
                     'entry_price': price,
                     'quantity': qty,
-                    'entry_time': timestamp
+                    'entry_time': timestamp,
+                    'highest_price': price,  # For trailing stop
+                    'partial_profit_taken': False  # For partial TP
                 }
             else:
                 # Average down
@@ -1648,7 +1940,9 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
                 portfolio['positions'][symbol] = {
                     'entry_price': avg_price,
                     'quantity': total_qty,
-                    'entry_time': pos['entry_time']
+                    'entry_time': pos['entry_time'],
+                    'highest_price': max(pos.get('highest_price', avg_price), price),
+                    'partial_profit_taken': pos.get('partial_profit_taken', False)
                 }
 
             trade = {
@@ -1782,19 +2076,44 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     # ============ SMART ENTRY FILTERS ============
     # Only apply to new buys (not sells)
     if has_cash and symbol not in portfolio['positions']:
-        # 1. Check if token is safe for this strategy
+        # 1. Check loss cooldown (pause after 3 consecutive losses)
+        should_pause, cooldown_reason = check_loss_cooldown(portfolio)
+        if should_pause:
+            return (None, cooldown_reason)
+
+        # 2. Check if token is safe for this strategy
         if not is_safe_for_strategy(symbol, strategy):
             return (None, f"Token {asset} too risky for {strategy_id}")
 
-        # 2. Don't chase pumps (unless degen strategy)
+        # 3. Don't chase pumps (unless degen strategy)
         skip_pump, pump_reason = should_skip_pump_chase(analysis, strategy)
         if skip_pump:
             return (None, pump_reason)
 
-        # 3. Check trend alignment (EMA stack)
+        # 4. Check trend alignment (EMA stack)
         trend_ok, trend_reason = check_trend_alignment(analysis, strategy)
         if not trend_ok:
             return (None, trend_reason)
+
+        # 5. Check RSI entry quality (skip overbought)
+        rsi_ok, rsi_quality, rsi_reason = check_rsi_entry_quality(rsi, strategy)
+        if not rsi_ok:
+            return (None, rsi_reason)
+
+        # 6. Check volume confirmation
+        volume_ok, volume_reason = check_volume_confirmation(analysis, strategy)
+        if not volume_ok:
+            return (None, volume_reason)
+
+        # 7. Check correlation limit (don't overload similar assets)
+        corr_ok, corr_reason = check_correlation_limit(portfolio, symbol)
+        if not corr_ok:
+            return (None, corr_reason)
+
+        # 8. Calculate entry quality score
+        entry_score = get_best_entry_score(analysis, strategy, portfolio)
+        if entry_score['recommendation'] == 'SKIP':
+            return (None, f"Entry score too low: {entry_score['score']}/100")
 
     # ============ STRATEGY SIGNALS ============
 
