@@ -135,6 +135,160 @@ def debug_log_trade(portfolio_name: str, action: str, symbol: str, price: float,
     save_debug_state(state)
 
 
+# ============ SMART TRADING FILTERS ============
+
+# Risky tokens to avoid for non-degen strategies
+RISKY_TOKEN_PATTERNS = ['PEPE', 'SHIB', 'DOGE', 'FLOKI', 'BONK', 'WIF', 'MEME', 'BOME', 'COQ', 'SLERF']
+SAFE_MAJOR_TOKENS = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK', 'MATIC', 'UNI', 'AAVE', 'LTC']
+
+
+def is_safe_for_strategy(symbol: str, strategy: dict) -> bool:
+    """Check if token is safe for the given strategy"""
+    asset = symbol.split('/')[0].upper()
+
+    # Degen/sniper strategies can trade anything
+    if strategy.get('use_degen') or strategy.get('use_sniper') or strategy.get('use_whale'):
+        return True
+
+    # Conservative strategies only trade majors
+    if strategy.get('buy_on') == ["STRONG_BUY"]:  # Conservative/confluence_strict
+        return asset in SAFE_MAJOR_TOKENS
+
+    # Block risky memecoins for regular strategies
+    for risky in RISKY_TOKEN_PATTERNS:
+        if risky in asset:
+            return False
+
+    return True
+
+
+def should_skip_pump_chase(analysis: dict, strategy: dict) -> tuple:
+    """
+    Don't buy coins that already pumped too much.
+    Returns (should_skip, reason)
+    """
+    # Degen strategies are allowed to chase pumps
+    if strategy.get('use_degen') or strategy.get('use_sniper') or strategy.get('use_whale'):
+        return (False, None)
+
+    momentum_1h = analysis.get('momentum_1h', 0)
+    change_24h = analysis.get('change_24h', 0)
+
+    # Don't buy if already up >5% in last hour
+    if momentum_1h > 5:
+        return (True, f"Already pumped +{momentum_1h:.1f}% in 1h - too late")
+
+    # Don't buy if up >15% in 24h (likely overextended)
+    if change_24h > 15:
+        return (True, f"Already pumped +{change_24h:.1f}% in 24h - overextended")
+
+    return (False, None)
+
+
+def check_trend_alignment(analysis: dict, strategy: dict) -> tuple:
+    """
+    Check if trend supports the trade direction.
+    Returns (is_aligned, reason)
+    """
+    # Skip trend check for scalping/degen strategies
+    if strategy.get('use_degen') or strategy.get('use_sniper') or strategy.get('mode') == 'scalping':
+        return (True, None)
+
+    ema_9 = analysis.get('ema_9', 0)
+    ema_21 = analysis.get('ema_21', 0)
+    ema_50 = analysis.get('ema_50', 0)
+    price = analysis.get('price', 0)
+
+    if not all([ema_9, ema_21, price]):
+        return (True, None)  # Can't check, allow trade
+
+    # Bullish alignment: Price > EMA9 > EMA21 (> EMA50 if available)
+    bullish = price > ema_9 > ema_21
+    if ema_50 > 0:
+        bullish = bullish and ema_21 > ema_50
+
+    if not bullish:
+        return (False, f"Trend not aligned: Price={price:.2f}, EMA9={ema_9:.2f}, EMA21={ema_21:.2f}")
+
+    return (True, None)
+
+
+def calculate_smart_position_size(portfolio: dict, analysis: dict, base_percent: float = 10) -> float:
+    """
+    Calculate position size based on volatility and confidence.
+    Lower volatility = larger position, higher volatility = smaller position.
+    Returns percentage of portfolio to allocate.
+    """
+    atr_pct = analysis.get('atr_percent', 2)  # Default 2% ATR
+    rsi = analysis.get('rsi', 50)
+
+    # Base allocation from config or default
+    allocation = base_percent
+
+    # Adjust for volatility (ATR)
+    # High volatility (>4%) = reduce size, Low volatility (<2%) = increase size
+    if atr_pct > 4:
+        allocation *= 0.5  # Half size for very volatile
+    elif atr_pct > 3:
+        allocation *= 0.75
+    elif atr_pct < 1.5:
+        allocation *= 1.25  # Slightly larger for low volatility
+
+    # Adjust for RSI (better entries at extreme RSI)
+    if rsi < 30:  # Oversold = good entry
+        allocation *= 1.2
+    elif rsi > 70:  # Overbought = risky entry
+        allocation *= 0.7
+
+    # Cap at 20% max per position
+    return min(allocation, 20)
+
+
+def get_trailing_stop(entry_price: float, current_price: float, highest_price: float,
+                       initial_sl_pct: float = 10, trail_pct: float = 5) -> tuple:
+    """
+    Calculate trailing stop loss.
+    Returns (stop_price, triggered, reason)
+    """
+    if entry_price <= 0 or current_price <= 0:
+        return (0, False, None)
+
+    pnl_pct = ((current_price / entry_price) - 1) * 100
+
+    # If in profit, use trailing stop
+    if pnl_pct > 0 and highest_price > entry_price:
+        # Trail from highest price
+        trail_stop = highest_price * (1 - trail_pct / 100)
+
+        if current_price <= trail_stop:
+            return (trail_stop, True, f"TRAILING STOP: Price dropped {trail_pct}% from high ${highest_price:.4f}")
+
+    # If in loss, use regular stop loss
+    stop_price = entry_price * (1 - initial_sl_pct / 100)
+    if current_price <= stop_price:
+        return (stop_price, True, f"STOP LOSS: Down {-pnl_pct:.1f}% (limit {initial_sl_pct}%)")
+
+    return (stop_price, False, None)
+
+
+def should_take_partial_profit(entry_price: float, current_price: float,
+                                 partial_taken: bool, first_target_pct: float = 15) -> tuple:
+    """
+    Check if we should take partial profit (sell 50% at first target).
+    Returns (should_sell, percent_to_sell, reason)
+    """
+    if entry_price <= 0 or current_price <= 0 or partial_taken:
+        return (False, 0, None)
+
+    pnl_pct = ((current_price / entry_price) - 1) * 100
+
+    # First target hit - sell 50%
+    if pnl_pct >= first_target_pct:
+        return (True, 50, f"PARTIAL TP: +{pnl_pct:.1f}% hit first target {first_target_pct}%")
+
+    return (False, 0, None)
+
+
 # ============ PORTFOLIO HISTORY TRACKING ============
 
 def get_portfolio_history() -> dict:
@@ -230,23 +384,23 @@ STRATEGIES = {
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8},
 
-    # SNIPER STRATEGIES - New token hunting
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 10000, "take_profit": 100, "stop_loss": 50},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 1000, "take_profit": 75, "stop_loss": 40},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 500, "take_profit": 50, "stop_loss": 30},
+    # SNIPER STRATEGIES - New token hunting (MUCH MORE CONSERVATIVE)
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 50000, "take_profit": 50, "stop_loss": 20, "max_hold_hours": 24},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 20000, "take_profit": 40, "stop_loss": 15, "max_hold_hours": 12},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 75, "min_liquidity": 10000, "take_profit": 30, "stop_loss": 15, "max_hold_hours": 6},
 
-    # ULTRA DEGEN - Buy ALL new tokens, sell fast
-    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 100, "take_profit": 30, "stop_loss": 20, "max_hold_hours": 2},
-    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 50, "take_profit": 50, "stop_loss": 25, "max_hold_hours": 4, "allocation_percent": 5},
-    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 100, "min_liquidity": 200, "take_profit": 20, "stop_loss": 15, "max_hold_hours": 1},
+    # ULTRA DEGEN - Still risky but with better limits
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 5000, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 2},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 85, "min_liquidity": 5000, "take_profit": 30, "stop_loss": 15, "max_hold_hours": 4, "allocation_percent": 3},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 8000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1},
 
-    # WHALE COPY TRADING - Follow legendary traders
-    "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 50, "stop_loss": 20},
-    "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 30, "stop_loss": 15},
-    "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 100, "stop_loss": 25},
-    "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 100, "stop_loss": 30},
-    "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 50, "stop_loss": 25},
-    "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 40, "stop_loss": 20},
+    # WHALE COPY TRADING - Follow legendary traders (TIGHTER STOPS)
+    "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48},
+    "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 20, "stop_loss": 8, "max_hold_hours": 24},
+    "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 72},
+    "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 48},
+    "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 24},
+    "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 48},
 
     # CONGRESS COPY TRADING - Follow US Congress members (famous for beating the market)
     "congress_pelosi": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi"], "take_profit": 50, "stop_loss": 20},
@@ -264,56 +418,56 @@ STRATEGIES = {
     "legend_ptj": {"auto": True, "use_whale": True, "whale_ids": ["legend_ptj"], "take_profit": 40, "stop_loss": 20},
     "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20},
 
-    # ============ NEW STRATEGIES ============
+    # ============ NEW STRATEGIES (ALL WITH TP/SL) ============
 
     # EMA Crossover - Classic trend following
-    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21},
-    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26},
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 15, "stop_loss": 7},
+    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 20, "stop_loss": 10},
 
     # VWAP Strategy - Intraday mean reversion
-    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5},
-    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True},
+    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5, "take_profit": 8, "stop_loss": 4},
+    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 12, "stop_loss": 6},
 
     # Supertrend - Dynamic support/resistance
-    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0},
-    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0},
+    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 15, "stop_loss": 8},
+    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 10, "stop_loss": 5},
 
     # Stochastic RSI - Precise entries
-    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75},
+    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5},
 
     # Breakout - Trade consolidation breaks
-    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5},
-    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0},
+    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 20, "stop_loss": 8},
+    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 12, "stop_loss": 6},
 
     # Mean Reversion - Buy deviations from mean
-    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20},
-    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14},
+    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20, "take_profit": 10, "stop_loss": 5},
+    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 8, "stop_loss": 4},
 
     # Grid Trading - Range trading
-    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10},
+    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 8, "stop_loss": 4},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 3},
 
     # DCA Accumulator - Regular buys on dips
-    "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0},
-    "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0},
+    "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10},
+    "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0, "take_profit": 12, "stop_loss": 8},
 
     # Ichimoku Cloud - Japanese trend system
-    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52},
-    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44},
-    # Ichimoku Variants - all performing well
-    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40},
-    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60},
-    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120},
-    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True},
-    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True},
-    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True},
-    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50},
-    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True},
+    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 20, "stop_loss": 10},
+    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 15, "stop_loss": 8},
+    # Ichimoku Variants
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 8, "stop_loss": 4},
+    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 25, "stop_loss": 12},
+    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 35, "stop_loss": 15},
+    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 25, "stop_loss": 10},
+    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 18, "stop_loss": 9},
+    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 20, "stop_loss": 10},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 12, "stop_loss": 6},
+    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 30, "stop_loss": 12},
 
-    # Martingale - Double down on losses (HIGH RISK!)
-    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4},
-    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3},
+    # Martingale - Double down on losses (HIGH RISK!) - DISABLED BY DEFAULT
+    "martingale": {"auto": False, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50},
+    "martingale_safe": {"auto": False, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35},
 
     # ============ FUNDING RATE STRATEGIES ============
     # Funding Rate Arbitrage - Trade against crowded positions
@@ -1558,28 +1712,54 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     asset = symbol.split('/')[0]
     current_price = analysis.get('price', 0)
 
-    # ============ CHECK TP/SL FIRST ============
+    # ============ CHECK EXITS FIRST (TP/SL/TRAILING/PARTIAL) ============
     # This ensures positions are closed when hitting targets regardless of signals
     if symbol in portfolio['positions']:
         pos = portfolio['positions'][symbol]
         entry_price = pos.get('entry_price', 0)
+        highest_price = pos.get('highest_price', entry_price)
 
         if entry_price > 0 and current_price > 0:
             pnl_pct = ((current_price / entry_price) - 1) * 100
+
+            # Update highest price for trailing stop
+            if current_price > highest_price:
+                pos['highest_price'] = current_price
+                highest_price = current_price
 
             # Get TP/SL from strategy or config
             take_profit = strategy.get('take_profit', config.get('take_profit', 50))
             stop_loss = strategy.get('stop_loss', config.get('stop_loss', 25))
 
-            # Check take profit
+            # 1. Check trailing stop loss (if in profit)
+            if config.get('use_trailing_stop', True) and pnl_pct > 5:
+                trail_pct = config.get('trailing_stop_pct', 5)
+                _, trail_triggered, trail_reason = get_trailing_stop(
+                    entry_price, current_price, highest_price, stop_loss, trail_pct
+                )
+                if trail_triggered:
+                    return ('SELL', trail_reason)
+
+            # 2. Check partial profit (sell 50% at first target)
+            if config.get('use_partial_tp', False):
+                partial_taken = pos.get('partial_profit_taken', False)
+                first_target = config.get('partial_tp_pct', take_profit / 2)
+                should_partial, pct_sell, partial_reason = should_take_partial_profit(
+                    entry_price, current_price, partial_taken, first_target
+                )
+                if should_partial:
+                    pos['partial_profit_taken'] = True
+                    return ('PARTIAL_SELL', partial_reason)
+
+            # 3. Check take profit (full)
             if pnl_pct >= take_profit:
                 return ('SELL', f"TP HIT: +{pnl_pct:.1f}% (target: {take_profit}%)")
 
-            # Check stop loss
+            # 4. Check stop loss
             if pnl_pct <= -stop_loss:
                 return ('SELL', f"SL HIT: {pnl_pct:.1f}% (limit: -{stop_loss}%)")
 
-            # Check max hold time if configured
+            # 5. Check max hold time if configured
             max_hold_hours = strategy.get('max_hold_hours', config.get('max_hold_hours', 0))
             if max_hold_hours > 0:
                 try:
@@ -1598,6 +1778,23 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     has_position = portfolio['balance'].get(asset, 0) > 0
     has_cash = portfolio['balance']['USDT'] > 100
     rsi = analysis.get('rsi', 50)
+
+    # ============ SMART ENTRY FILTERS ============
+    # Only apply to new buys (not sells)
+    if has_cash and symbol not in portfolio['positions']:
+        # 1. Check if token is safe for this strategy
+        if not is_safe_for_strategy(symbol, strategy):
+            return (None, f"Token {asset} too risky for {strategy_id}")
+
+        # 2. Don't chase pumps (unless degen strategy)
+        skip_pump, pump_reason = should_skip_pump_chase(analysis, strategy)
+        if skip_pump:
+            return (None, pump_reason)
+
+        # 3. Check trend alignment (EMA stack)
+        trend_ok, trend_reason = check_trend_alignment(analysis, strategy)
+        if not trend_ok:
+            return (None, trend_reason)
 
     # ============ STRATEGY SIGNALS ============
 
