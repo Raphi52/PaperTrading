@@ -41,7 +41,7 @@ st.set_page_config(
     page_title="Trading Bot",
     page_icon="🚀",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Appliquer le theme
@@ -1110,141 +1110,90 @@ def main():
     # Auto-refresh every 30 seconds
     st_autorefresh(interval=30000, limit=None, key="auto_refresh")
 
-    # Initialize session state for navigation
-    if 'page' not in st.session_state:
-        st.session_state.page = "📈 Portfolios"
+    # Hide sidebar completely with CSS
+    st.markdown("""
+    <style>
+        [data-testid="stSidebar"] { display: none; }
+        [data-testid="stSidebarNav"] { display: none; }
+        .css-1d391kg { display: none; }
+        section[data-testid="stSidebar"] { display: none; }
+    </style>
+    """, unsafe_allow_html=True)
 
-    # Sidebar Navigation
-    with st.sidebar:
-        st.markdown("## 🚀 Trading Bot")
-        st.divider()
+    # Initialize session state
+    if 'show_settings' not in st.session_state:
+        st.session_state.show_settings = False
 
-        # Navigation buttons - vertical stack
-        nav_items = [
-            ("📊", "Dashboard", "📊 Dashboard"),
-            ("📈", "Portfolios", "📈 Portfolios"),
-            ("⚙️", "Settings", "⚙️ Settings"),
-            ("🐛", "Debug", "🐛 Debug")
-        ]
+    # Top bar with total value and settings icon
+    pf_data = load_portfolios()
+    portfolios = pf_data.get('portfolios', {})
 
-        for icon, label, page_id in nav_items:
-            is_active = st.session_state.page == page_id
-            if is_active:
-                # Active button style
-                st.markdown(f"""
-                <div style="background: linear-gradient(90deg, #00ff88 0%, #00cc6a 100%);
-                            padding: 0.7rem 1rem; border-radius: 10px; margin-bottom: 0.5rem;
-                            display: flex; align-items: center; cursor: pointer;">
-                    <span style="font-size: 1.2rem; margin-right: 0.8rem;">{icon}</span>
-                    <span style="color: #000; font-weight: bold;">{label}</span>
-                </div>
-                """, unsafe_allow_html=True)
-            else:
-                if st.button(f"{icon}  {label}", key=f"nav_{page_id}", use_container_width=True):
-                    st.session_state.page = page_id
-                    st.rerun()
+    # Cache for portfolio values
+    cache_key = 'portfolio_values_cache'
+    cache_time_key = 'portfolio_values_time'
+    cache_ttl = 5
 
-        st.divider()
+    current_time = time.time()
+    if (cache_key not in st.session_state or
+        cache_time_key not in st.session_state or
+        current_time - st.session_state[cache_time_key] > cache_ttl):
+        all_values = calculate_all_portfolio_values(portfolios)
+        st.session_state[cache_key] = all_values
+        st.session_state[cache_time_key] = current_time
+    else:
+        all_values = st.session_state[cache_key]
 
-        # Calculate REAL total PnL from all portfolios - BATCH mode (1 API call)
-        # Use session cache to avoid recalculating on every rerun
-        cache_key = 'portfolio_values_cache'
-        cache_time_key = 'portfolio_values_time'
-        cache_ttl = 5  # seconds
+    total_value = sum(v['total_value'] for v in all_values.values())
+    total_initial = sum(p.get('initial_capital', 1000) for p in portfolios.values())
+    total_positions = sum(len(p.get('positions', {})) for p in portfolios.values())
+    total_pnl = total_value - total_initial
+    pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
+    pnl_color = COLORS.BUY if total_pnl >= 0 else COLORS.SELL
 
-        current_time = time.time()
-        pf_data = load_portfolios()
-        portfolios = pf_data.get('portfolios', {})
+    # Header with stats and settings icon
+    col_title, col_stats, col_settings = st.columns([2, 4, 1])
 
-        # Check if cache is valid
-        if (cache_key not in st.session_state or
-            cache_time_key not in st.session_state or
-            current_time - st.session_state[cache_time_key] > cache_ttl):
-            # Recalculate and cache
-            all_values = calculate_all_portfolio_values(portfolios)
-            st.session_state[cache_key] = all_values
-            st.session_state[cache_time_key] = current_time
-        else:
-            all_values = st.session_state[cache_key]
+    with col_title:
+        st.markdown(f"## 🚀 Trading Bot")
 
-        total_value = sum(v['total_value'] for v in all_values.values())
-        total_initial = sum(p.get('initial_capital', 1000) for p in portfolios.values())
-        total_positions = sum(len(p.get('positions', {})) for p in portfolios.values())
-        total_pnl = total_value - total_initial
-        pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
-        pnl_color = COLORS.BUY if total_pnl >= 0 else COLORS.SELL
-
+    with col_stats:
         st.markdown(f"""
-        <div style="background: {COLORS.BG_CARD}; padding: 1rem; border-radius: 10px;">
-            <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Total Portfolio Value</div>
-            <div style="color: white; font-size: 1.3rem; font-weight: bold;">${total_value:,.0f}</div>
-            <div style="color: {pnl_color}; font-size: 1rem; margin-top: 0.3rem;">
-                {pnl_pct:+.2f}% (${total_pnl:+,.0f})
+        <div style="display: flex; gap: 2rem; align-items: center; padding-top: 0.5rem;">
+            <div>
+                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Total Value</span>
+                <span style="color: white; font-size: 1.1rem; font-weight: bold; margin-left: 0.5rem;">${total_value:,.0f}</span>
             </div>
-            <div style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.75rem; margin-top: 0.3rem;">
-                {total_positions} positions ouvertes
+            <div>
+                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">PnL</span>
+                <span style="color: {pnl_color}; font-size: 1.1rem; font-weight: bold; margin-left: 0.5rem;">{pnl_pct:+.2f}% (${total_pnl:+,.0f})</span>
+            </div>
+            <div>
+                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Positions</span>
+                <span style="color: white; font-size: 1.1rem; margin-left: 0.5rem;">{total_positions}</span>
+            </div>
+            <div>
+                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Portfolios</span>
+                <span style="color: white; font-size: 1.1rem; margin-left: 0.5rem;">{len(portfolios)}</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-        st.divider()
+    with col_settings:
+        if st.button("⚙️", key="settings_btn", help="Settings"):
+            st.session_state.show_settings = not st.session_state.show_settings
+            st.rerun()
 
-        # Portfolios count
-        total_count = len(pf_data.get('portfolios', {}))
-        st.markdown(f"### 🤖 {total_count} Portfolios")
+    st.divider()
 
-        # Take Profit ALL button
-        if st.button("💰 Take Profit ALL", use_container_width=True, type="primary"):
-            pf_data = load_portfolios()
-            symbols_to_price = set()
-            # Collect all symbols
-            for pid, p in pf_data.get('portfolios', {}).items():
-                for symbol in p.get('positions', {}).keys():
-                    symbols_to_price.add(symbol)
+    # Settings panel (expandable)
+    if st.session_state.show_settings:
+        with st.container():
+            st.markdown("### ⚙️ Settings")
+            render_settings()
+            st.divider()
 
-            # Get current prices
-            if symbols_to_price:
-                current_prices = get_current_prices(list(symbols_to_price))
-
-                # Sell all positions in all portfolios
-                for pid, p in pf_data.get('portfolios', {}).items():
-                    for symbol, pos in list(p.get('positions', {}).items()):
-                        asset = symbol.split('/')[0]
-                        qty = pos.get('quantity', 0)
-                        entry = pos.get('entry_price', 0)
-                        current = current_prices.get(symbol, entry)
-                        value = qty * current
-                        pnl = value - (qty * entry)
-
-                        pf_data['portfolios'][pid]['balance']['USDT'] += value
-                        pf_data['portfolios'][pid]['balance'][asset] = 0
-                        del pf_data['portfolios'][pid]['positions'][symbol]
-
-                        pf_data['portfolios'][pid]['trades'].append({
-                            'timestamp': datetime.now().isoformat(),
-                            'action': 'SELL',
-                            'symbol': symbol,
-                            'price': current,
-                            'quantity': qty,
-                            'amount_usdt': value,
-                            'pnl': pnl,
-                            'reason': 'TAKE PROFIT ALL (manual)'
-                        })
-
-                save_portfolios(pf_data)
-                st.toast("All positions sold!")
-                st.rerun()
-
-    # Main content based on page
-    page = st.session_state.page
-    if page == "📊 Dashboard":
-        render_dashboard()
-    elif page == "📈 Portfolios":
-        render_portfolios()
-    elif page == "⚙️ Settings":
-        render_settings()
-    elif page == "🐛 Debug":
-        render_debug()
+    # Main content - Portfolios only
+    render_portfolios()
 
 
 def render_dashboard():
