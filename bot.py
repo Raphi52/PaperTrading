@@ -141,6 +141,44 @@ def debug_log_trade(portfolio_name: str, action: str, symbol: str, price: float,
 RISKY_TOKEN_PATTERNS = ['PEPE', 'SHIB', 'DOGE', 'FLOKI', 'BONK', 'WIF', 'MEME', 'BOME', 'COQ', 'SLERF']
 SAFE_MAJOR_TOKENS = ['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'ADA', 'AVAX', 'DOT', 'LINK', 'MATIC', 'UNI', 'AAVE', 'LTC']
 
+# SCAM TOKEN PATTERNS - Avoid these for snipers (based on common rug patterns)
+SCAM_TOKEN_PATTERNS = [
+    # Celebrity/influencer tokens (almost always rugs)
+    'TRUMP', 'ELON', 'MUSK', 'JAKE', 'PAUL', 'LOGAN', 'TATE', 'KARDASHIAN', 'KANYE', 'YE',
+    # Obvious scam keywords
+    'SCAM', 'RUG', 'HONEYPOT', 'SAFE', 'MOON', '100X', '1000X', 'RICH', 'LAMBO',
+    # Copycat/fake tokens
+    'FAKE', 'REAL', 'TRUE', 'OFFICIAL', 'V2', 'V3', 'NEW', 'ORIGINAL',
+    # Drug/explicit (often rugs)
+    'WEED', 'DRUG', 'SEX', 'PORN', 'XXX', 'NSFW',
+    # Misc red flags
+    'FREE', 'AIRDROP', 'GIVEAWAY', 'WIN', 'LUCKY', 'CASINO', 'BET',
+    # Animal memes (oversaturated, many rugs)
+    'INU', 'CAT', 'DOG', 'FROG', 'PIG', 'COW', 'HAMSTER',
+]
+
+
+def is_scam_token(symbol: str) -> tuple:
+    """
+    Check if token name matches common scam patterns.
+    Returns (is_scam, reason)
+    """
+    asset = symbol.split('/')[0].upper()
+
+    for pattern in SCAM_TOKEN_PATTERNS:
+        if pattern in asset:
+            return (True, f"Token name contains '{pattern}' - likely scam")
+
+    # Check for very short names (often rugs)
+    if len(asset) <= 2:
+        return (True, f"Token name too short ({asset}) - suspicious")
+
+    # Check for names starting with $ (memecoin convention, higher risk)
+    if asset.startswith('$'):
+        return (True, f"Token starts with $ - high rug risk")
+
+    return (False, None)
+
 
 def is_safe_for_strategy(symbol: str, strategy: dict) -> bool:
     """Check if token is safe for the given strategy"""
@@ -677,15 +715,16 @@ STRATEGIES = {
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8},
 
-    # SNIPER STRATEGIES - New token hunting (MUCH MORE CONSERVATIVE)
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 50000, "take_profit": 50, "stop_loss": 20, "max_hold_hours": 24},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 20000, "take_profit": 40, "stop_loss": 15, "max_hold_hours": 12},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 75, "min_liquidity": 10000, "take_profit": 30, "stop_loss": 15, "max_hold_hours": 6},
+    # SNIPER STRATEGIES - TIGHT EXITS + HIGH LIQUIDITY (anti-rug)
+    # Key changes: Lower TP (take profit fast), tight SL, high min_liquidity, short hold times
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 100000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 4, "allocation_percent": 2},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 50, "min_liquidity": 50000, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 3, "allocation_percent": 3},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 30000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 3},
 
-    # ULTRA DEGEN - Still risky but with better limits
-    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 5000, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 2},
-    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 85, "min_liquidity": 5000, "take_profit": 30, "stop_loss": 15, "max_hold_hours": 4, "allocation_percent": 3},
-    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 80, "min_liquidity": 8000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1},
+    # ULTRA DEGEN - Quick flips only, very tight stops
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 70, "min_liquidity": 20000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 2},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 70, "min_liquidity": 25000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 2},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 65, "min_liquidity": 30000, "take_profit": 12, "stop_loss": 6, "max_hold_hours": 0.5, "allocation_percent": 2},
 
     # WHALE COPY TRADING - Follow legendary traders (TIGHTER STOPS)
     "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48},
@@ -3661,17 +3700,54 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
                 log(f"💀 RUG DETECTED: {symbol} | {rug_reason} | Lost ${entry_cost:.2f} | {portfolio['name']}")
                 results.append({'portfolio': portfolio['name'], 'action': 'RUGGED', 'symbol': symbol, 'loss': entry_cost})
 
-            # Check for massive loss (>90% down = effective rug)
+            # Check TP/SL and time exits for sniper positions
             elif current_price > 0 and entry_price > 0:
                 pnl_pct = ((current_price / entry_price) - 1) * 100
 
-                if pnl_pct <= -90:  # Down 90%+
-                    # Treat as rug - sell at current price
+                # Get strategy TP/SL/Time limits
+                take_profit = strategy.get('take_profit', 20)
+                stop_loss = strategy.get('stop_loss', 10)
+                max_hold_hours = strategy.get('max_hold_hours', 2)
+
+                # Check hold time
+                entry_time_str = pos.get('entry_time', '')
+                hours_held = 0
+                if entry_time_str:
+                    try:
+                        entry_time = datetime.fromisoformat(entry_time_str)
+                        hours_held = (datetime.now() - entry_time).total_seconds() / 3600
+                    except:
+                        pass
+
+                should_sell = False
+                sell_reason = ""
+
+                # 1. TAKE PROFIT - Sell if up TP%
+                if pnl_pct >= take_profit:
+                    should_sell = True
+                    sell_reason = f"TP HIT: +{pnl_pct:.1f}% >= {take_profit}%"
+
+                # 2. STOP LOSS - Sell if down SL%
+                elif pnl_pct <= -stop_loss:
+                    should_sell = True
+                    sell_reason = f"SL HIT: {pnl_pct:.1f}% <= -{stop_loss}%"
+
+                # 3. TIME EXIT - Sell if held too long
+                elif max_hold_hours > 0 and hours_held >= max_hold_hours:
+                    should_sell = True
+                    sell_reason = f"TIME EXIT: Held {hours_held:.1f}h >= {max_hold_hours}h"
+
+                # 4. EMERGENCY EXIT - Down 90%+ (effective rug)
+                elif pnl_pct <= -90:
+                    should_sell = True
+                    sell_reason = f"DUMPED {pnl_pct:.0f}% - Emergency exit"
+
+                if should_sell:
                     chain = pos.get('chain', 'ethereum')
                     fees = calculate_dex_fees(chain, current_price * qty)
 
                     net_value = (current_price * qty) - fees['total']
-                    net_value = max(0, net_value)  # Can't be negative
+                    net_value = max(0, net_value)
 
                     asset = symbol.replace('/USDT', '')
                     portfolio['balance']['USDT'] += net_value
@@ -3681,20 +3757,23 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
                     entry_cost = entry_price * qty + pos.get('fees_paid', 0)
                     real_pnl = net_value - entry_cost
 
+                    action = 'TP_SOLD' if pnl_pct > 0 else ('SL_SOLD' if pnl_pct > -90 else 'DUMP_SOLD')
+
                     trade = {
                         'timestamp': datetime.now().isoformat(),
-                        'action': 'DUMP_SOLD',
+                        'action': action,
                         'symbol': symbol,
                         'price': current_price,
                         'quantity': qty,
                         'amount_usdt': net_value,
                         'pnl': real_pnl,
-                        'reason': f"DUMPED {pnl_pct:.0f}% - Emergency exit"
+                        'reason': sell_reason
                     }
                     portfolio['trades'].append(trade)
 
-                    log(f"📉 DUMP EXIT: {symbol} | {pnl_pct:.0f}% | Got ${net_value:.2f} back | {portfolio['name']}")
-                    results.append({'portfolio': portfolio['name'], 'action': 'DUMP_SOLD', 'symbol': symbol})
+                    emoji = "💰" if pnl_pct > 0 else "📉"
+                    log(f"{emoji} SNIPER {action}: {symbol} | {pnl_pct:+.1f}% | ${real_pnl:+.2f} | {portfolio['name']}")
+                    results.append({'portfolio': portfolio['name'], 'action': action, 'symbol': symbol, 'pnl': real_pnl})
 
     return results
 
