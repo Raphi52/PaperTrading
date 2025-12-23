@@ -498,48 +498,14 @@ def get_top_cryptos(limit: int = 50) -> List[Dict]:
 
 
 def load_portfolios() -> Dict:
-    """Charge les portfolios - JAMAIS de perte de donnees"""
-    import glob
-
+    """Charge les portfolios depuis le fichier JSON"""
     try:
         if os.path.exists("data/portfolios.json"):
             with open("data/portfolios.json", 'r', encoding='utf-8') as f:
                 data = json.load(f)
-                count = len(data.get('portfolios', {}))
-
-                # Creer backup MASTER si beaucoup de portfolios
-                if count >= 50:
-                    backup_file = f"data/portfolios_MASTER_{count}.json"
-                    if not os.path.exists(backup_file):
-                        with open(backup_file, 'w', encoding='utf-8') as bf:
-                            json.dump(data, bf, indent=2, default=str)
-                        print(f"[OK] MASTER backup: {backup_file}")
-
                 return data
     except Exception as e:
         print(f"[ERROR] Erreur load: {e}")
-
-    # Si erreur ou fichier vide -> chercher le meilleur backup
-    backups = glob.glob("data/portfolios_MASTER_*.json") + glob.glob("data/portfolios_backup_*.json")
-    if backups:
-        # Trouver celui avec le plus de portfolios
-        best_backup = None
-        best_count = 0
-        for b in backups:
-            try:
-                with open(b, 'r', encoding='utf-8') as f:
-                    d = json.load(f)
-                    c = len(d.get('portfolios', {}))
-                    if c > best_count:
-                        best_count = c
-                        best_backup = b
-            except:
-                pass
-
-        if best_backup:
-            print(f"[RESTORE] Restauration: {best_backup} ({best_count} portfolios)")
-            with open(best_backup, 'r', encoding='utf-8') as f:
-                return json.load(f)
 
     return {"portfolios": {}, "counter": 0}
 
