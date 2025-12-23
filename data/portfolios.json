@@ -5,7 +5,7 @@
       "name": "RSI Strategy",
       "strategy_id": "rsi_strategy",
       "strategy_name": "rsi_strategy",
-      "icon": "\ud83d\udcca",
+      "icon": "📊",
       "color": "#00d4ff",
       "config": {
         "cryptos": [
@@ -36,8 +36,8 @@
           "entry_price": 181.42471484869404,
           "quantity": 10.224282295535065,
           "entry_time": "2025-12-20T10:04:52.275650",
-          "current_price": 150.37,
-          "pnl_percent": -17.117135818343865
+          "current_price": 150.79,
+          "pnl_percent": -16.885634834395645
         }
       },
       "trades": [
@@ -1360,7 +1360,7 @@
       "name": "Sniper Safe",
       "strategy_id": "sniper_safe",
       "strategy_name": "sniper_safe",
-      "icon": "\ud83c\udfaf",
+      "icon": "🎯",
       "color": "#00d4ff",
       "config": {
         "cryptos": [
@@ -1375,19 +1375,14 @@
           "ADA/USDT",
           "AVAX/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 10,
         "rsi_oversold": 25,
         "rsi_overbought": 75,
-        "max_positions": 3,
-        "auto_trade": true,
-        "max_risk": 20,
-        "min_liquidity": 300000,
-        "take_profit": 15,
-        "stop_loss": 8,
-        "max_hold_hours": 2
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 3412.1443343430324,
+        "USDT": 3468.525771667661,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -1409,7 +1404,7 @@
         "SCP": 3015743.3795712483,
         "Memeverse": 9964518.75,
         "esdeekid": 4259448.327632543,
-        "\u9759\u4e0b\u5fc3\u6765": 1004515.3524007682,
+        "静下心来": 1004515.3524007682,
         "2026": 413271.1976602283,
         "SuperCycle": 401812.49262235226,
         "FF": 7432356.223184211,
@@ -1742,7 +1737,7 @@
         {
           "timestamp": "2025-12-20T00:53:24.328061",
           "action": "SNIPE_BUY",
-          "symbol": "\u9759\u4e0b\u5fc3\u6765/USDT",
+          "symbol": "静下心来/USDT",
           "price": 0.0001562,
           "quantity": 1004515.3524007682,
           "amount_usdt": 156.905298045,
@@ -3321,7 +3316,7 @@
       "name": "Sniper Degen",
       "strategy_id": "sniper_degen",
       "strategy_name": "sniper_degen",
-      "icon": "\ud83d\udca5",
+      "icon": "💥",
       "color": "#f7931a",
       "config": {
         "cryptos": [
@@ -3346,19 +3341,14 @@
           "SUI/USDT",
           "PEPE/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 5,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 5,
-        "auto_trade": true,
-        "max_risk": 30,
-        "min_liquidity": 200000,
-        "take_profit": 18,
-        "stop_loss": 10,
-        "max_hold_hours": 2
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 3624.8699735389064,
+        "USDT": 3672.6170828487084,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -3388,7 +3378,7 @@
         "FUN": 221408.24606431046,
         "Memeverse": 6438891.197079608,
         "esdeekid": 2905288.1169720544,
-        "\u9759\u4e0b\u5fc3\u6765": 723225.1632284437,
+        "静下心来": 723225.1632284437,
         "2026": 314074.8667587614,
         "SuperCycle": 322331.37171323213,
         "FF": 6293420.547709588,
@@ -3846,7 +3836,7 @@
         {
           "timestamp": "2025-12-20T00:53:24.356985",
           "action": "SNIPE_BUY",
-          "symbol": "\u9759\u4e0b\u5fc3\u6765/USDT",
+          "symbol": "静下心来/USDT",
           "price": 0.0001562,
           "quantity": 723225.1632284437,
           "amount_usdt": 112.96777049628291,
@@ -5577,7 +5567,7 @@
       "name": "Sniper YOLO",
       "strategy_id": "sniper_yolo",
       "strategy_name": "sniper_yolo",
-      "icon": "\ud83c\udfb2",
+      "icon": "🎲",
       "color": "#ff6b6b",
       "config": {
         "cryptos": [
@@ -5602,19 +5592,14 @@
           "SUI/USDT",
           "PEPE/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 5,
         "rsi_oversold": 25,
         "rsi_overbought": 75,
-        "max_positions": 5,
-        "auto_trade": true,
-        "max_risk": 40,
-        "min_liquidity": 150000,
-        "take_profit": 20,
-        "stop_loss": 10,
-        "max_hold_hours": 1.5
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 3169.1506270405116,
+        "USDT": 3216.9050843311556,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -5646,7 +5631,7 @@
         "FUN": 199820.94207304018,
         "Memeverse": 5811099.305364347,
         "esdeekid": 2622022.5255672797,
-        "\u9759\u4e0b\u5fc3\u6765": 652710.7098136705,
+        "静下心来": 652710.7098136705,
         "2026": 283452.5672497821,
         "SuperCycle": 290904.062971192,
         "FF": 5679812.044307903,
@@ -6132,7 +6117,7 @@
         {
           "timestamp": "2025-12-20T00:53:24.390647",
           "action": "SNIPE_BUY",
-          "symbol": "\u9759\u4e0b\u5fc3\u6765/USDT",
+          "symbol": "静下心来/USDT",
           "price": 0.0001562,
           "quantity": 652710.7098136705,
           "amount_usdt": 101.95341287289533,
@@ -7863,7 +7848,7 @@
       "name": "EMA Crossover",
       "strategy_id": "ema_crossover",
       "strategy_name": "ema_crossover",
-      "icon": "\ud83d\udcc8",
+      "icon": "📈",
       "color": "#feca57",
       "config": {
         "cryptos": [
@@ -7894,8 +7879,8 @@
           "entry_price": 126.37050965727283,
           "quantity": 7.715407674181894,
           "entry_time": "2025-12-21T10:17:12.800309",
-          "current_price": 123.1,
-          "pnl_percent": -2.58803233930347
+          "current_price": 122.96,
+          "pnl_percent": -2.6988176802660857
         }
       },
       "trades": [
@@ -9215,7 +9200,7 @@
       "name": "Ichimoku Cloud",
       "strategy_id": "ichimoku",
       "strategy_name": "ichimoku",
-      "icon": "\u2601\ufe0f",
+      "icon": "☁️",
       "color": "#ff0000",
       "config": {
         "cryptos": [
@@ -9256,8 +9241,8 @@
           "entry_price": 5.7460551061748255,
           "quantity": 1673.9274855172976,
           "entry_time": "2025-12-20T07:36:43.752032",
-          "current_price": 5.737,
-          "pnl_percent": -0.1575882237031534
+          "current_price": 5.734,
+          "pnl_percent": -0.20979795619904262
         }
       },
       "trades": [
@@ -10862,7 +10847,7 @@
       "name": "Martingale",
       "strategy_id": "martingale",
       "strategy_name": "martingale",
-      "icon": "\ud83c\udfb0",
+      "icon": "🎰",
       "color": "#4CAF50",
       "config": {
         "cryptos": [
@@ -10913,50 +10898,50 @@
           "entry_price": 4.099700541899298e-06,
           "quantity": 897506210.6342719,
           "entry_time": "2025-12-20T09:10:04.080336",
-          "current_price": 3.93e-06,
-          "pnl_percent": -4.139339938733189
+          "current_price": 3.94e-06,
+          "pnl_percent": -3.895419684124346
         },
         "SOL/USDT": {
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.099882",
-          "current_price": 123.1,
-          "pnl_percent": -2.461613565678289
+          "current_price": 122.96,
+          "pnl_percent": -2.5725426810382035
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.824906",
-          "current_price": 4.557,
-          "pnl_percent": -3.8254862872037387
+          "current_price": 4.559,
+          "pnl_percent": -3.78327671348736
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.638486",
-          "current_price": 0.12995,
-          "pnl_percent": -1.3512487664161577
+          "current_price": 0.12994,
+          "pnl_percent": -1.3588400516207466
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.803302",
-          "current_price": 0.2656,
-          "pnl_percent": -3.7103687603954327
+          "current_price": 0.2659,
+          "pnl_percent": -3.601607881736235
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.746390",
-          "current_price": 0.3617,
-          "pnl_percent": -2.419931069067205
+          "current_price": 0.3612,
+          "pnl_percent": -2.554821957829889
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.447355",
-          "current_price": 1.95,
-          "pnl_percent": -0.5153672997968539
+          "current_price": 1.942,
+          "pnl_percent": -0.9235093826694851
         }
       },
       "trades": [
@@ -12734,7 +12719,7 @@
       "name": "Martingale Safe",
       "strategy_id": "martingale_safe",
       "strategy_name": "martingale_safe",
-      "icon": "\ud83c\udfb0",
+      "icon": "🎰",
       "color": "#8BC34A",
       "config": {
         "cryptos": [
@@ -12785,50 +12770,50 @@
           "entry_price": 4.099700541899298e-06,
           "quantity": 897506210.6342719,
           "entry_time": "2025-12-20T09:10:04.081864",
-          "current_price": 3.93e-06,
-          "pnl_percent": -4.139339938733189
+          "current_price": 3.94e-06,
+          "pnl_percent": -3.895419684124346
         },
         "SOL/USDT": {
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.101853",
-          "current_price": 123.1,
-          "pnl_percent": -2.461613565678289
+          "current_price": 122.96,
+          "pnl_percent": -2.5725426810382035
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.831204",
-          "current_price": 4.557,
-          "pnl_percent": -3.8254862872037387
+          "current_price": 4.559,
+          "pnl_percent": -3.78327671348736
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.644471",
-          "current_price": 0.12995,
-          "pnl_percent": -1.3512487664161577
+          "current_price": 0.12994,
+          "pnl_percent": -1.3588400516207466
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.805296",
-          "current_price": 0.2656,
-          "pnl_percent": -3.7103687603954327
+          "current_price": 0.2659,
+          "pnl_percent": -3.601607881736235
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.749397",
-          "current_price": 0.3617,
-          "pnl_percent": -2.419931069067205
+          "current_price": 0.3612,
+          "pnl_percent": -2.554821957829889
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.449708",
-          "current_price": 1.95,
-          "pnl_percent": -0.5153672997968539
+          "current_price": 1.942,
+          "pnl_percent": -0.9235093826694851
         }
       },
       "trades": [
@@ -14606,7 +14591,7 @@
       "name": "OI Breakout",
       "strategy_id": "oi_breakout",
       "strategy_name": "oi_breakout",
-      "icon": "\ud83d\udcca",
+      "icon": "📊",
       "color": "#673AB7",
       "config": {
         "cryptos": [
@@ -14662,22 +14647,22 @@
           "entry_price": 88193.83131149496,
           "quantity": 0.016420416823365702,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 87693.55,
-          "pnl_percent": -0.5672520447920992
+          "current_price": 87609.27,
+          "pnl_percent": -0.6628142839495421
         },
         "ETH/USDT": {
           "entry_price": 2980.8538803801716,
           "quantity": 0.4626153083308901,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 2941.53,
-          "pnl_percent": -1.3192152973011906
+          "current_price": 2941.6,
+          "pnl_percent": -1.3168669768933938
         },
         "BNB/USDT": {
           "entry_price": 855.2792242059618,
           "quantity": 1.633074102610075,
           "entry_time": "2025-12-20T00:52:46.012134",
-          "current_price": 847.8,
-          "pnl_percent": -0.8744774799020139
+          "current_price": 847.82,
+          "pnl_percent": -0.8721390622912439
         },
         "LINK/USDT": {
           "entry_price": 12.58262062626024,
@@ -14690,50 +14675,50 @@
           "entry_price": 5.638067196602078,
           "quantity": 212.99479091386965,
           "entry_time": "2025-12-20T00:52:46.014081",
-          "current_price": 5.737,
-          "pnl_percent": 1.7547290578151742
+          "current_price": 5.734,
+          "pnl_percent": 1.7015193337131196
         },
         "DOGE/USDT": {
           "entry_price": 0.13171641070688733,
           "quantity": 7010.98114936948,
           "entry_time": "2025-12-20T01:00:24.307268",
-          "current_price": 0.12995,
-          "pnl_percent": -1.3410710916031299
+          "current_price": 0.12994,
+          "pnl_percent": -1.3486631600070242
         },
         "LTC/USDT": {
           "entry_price": 77.52650497438727,
           "quantity": 10.158084378552656,
           "entry_time": "2025-12-20T01:00:24.322857",
-          "current_price": 76.49,
-          "pnl_percent": -1.3369685306073076
+          "current_price": 76.42,
+          "pnl_percent": -1.4272602315205885
         },
         "XRP/USDT": {
           "entry_price": 1.930680638400949,
           "quantity": 248.93049891644003,
           "entry_time": "2025-12-20T01:15:27.439507",
-          "current_price": 1.877,
-          "pnl_percent": -2.7803996856470725
+          "current_price": 1.8805,
+          "pnl_percent": -2.599116467160001
         },
         "ATOM/USDT": {
           "entry_price": 1.9700595272873933,
           "quantity": 219.32333988693313,
           "entry_time": "2025-12-21T10:06:02.753700",
-          "current_price": 1.95,
-          "pnl_percent": -1.0182193486820035
+          "current_price": 1.942,
+          "pnl_percent": -1.4242984487899735
         },
         "APT/USDT": {
           "entry_price": 1.628741099193759,
           "quantity": 100.1825958147565,
           "entry_time": "2025-12-21T10:38:26.760364",
-          "current_price": 1.58,
-          "pnl_percent": -2.9925627355929185
+          "current_price": 1.577,
+          "pnl_percent": -3.1767540721709175
         },
         "AVAX/USDT": {
           "entry_price": 12.226187224936787,
           "quantity": 3.9951810820303226,
           "entry_time": "2025-12-21T11:10:29.455695",
-          "current_price": 12.05,
-          "pnl_percent": -1.4410643456974959
+          "current_price": 12.04,
+          "pnl_percent": -1.5228559935434038
         }
       },
       "trades": [
@@ -16323,7 +16308,7 @@
         }
       ],
       "created_at": "2025-12-19T16:45:00",
-      "active": false,
+      "active": true,
       "decision_logs": [
         {
           "timestamp": "2025-12-21 10:38:26",
@@ -17635,7 +17620,7 @@
       "name": "Grid Tight",
       "strategy_id": "grid_tight",
       "strategy_name": "Grid Tight",
-      "icon": "\ud83d\udcd0",
+      "icon": "📐",
       "color": "#009688",
       "config": {
         "cryptos": [
@@ -20968,7 +20953,7 @@
       "name": "Scalp Memecoins",
       "strategy_id": "degen_scalp",
       "strategy_name": "Scalp Memecoins",
-      "icon": "\ud83d\udc15",
+      "icon": "🐕",
       "color": "#FFEB3B",
       "config": {
         "cryptos": [
@@ -22868,7 +22853,7 @@
       "name": "Aggressive DeFi",
       "strategy_id": "aggressive",
       "strategy_name": "Aggressive DeFi",
-      "icon": "\ud83d\udd25",
+      "icon": "🔥",
       "color": "#FF5722",
       "config": {
         "cryptos": [
@@ -22908,8 +22893,8 @@
           "entry_price": 181.70318335289187,
           "quantity": 1.2381611715270846,
           "entry_time": "2025-12-20T02:53:27.774776",
-          "current_price": 150.37,
-          "pnl_percent": -17.24415762823408
+          "current_price": 150.79,
+          "pnl_percent": -17.01301143021493
         }
       },
       "trades": [
@@ -24895,7 +24880,7 @@
       "name": "BB+RSI Combo",
       "strategy_id": "bb_rsi_combo",
       "strategy_name": "bb_rsi_combo",
-      "icon": "\ud83d\udd17",
+      "icon": "🔗",
       "color": "#00BCD4",
       "config": {
         "cryptos": [
@@ -24926,8 +24911,8 @@
           "entry_price": 0.349512105649303,
           "quantity": 2789.6029471960705,
           "entry_time": "2025-12-20T10:27:29.847511",
-          "current_price": 0.32,
-          "pnl_percent": -8.44380070741102
+          "current_price": 0.321,
+          "pnl_percent": -8.157687584621687
         }
       },
       "trades": [
@@ -26250,7 +26235,7 @@
       "name": "Low Risk DCA",
       "strategy_id": "low_risk_dca",
       "strategy_name": "low_risk_dca",
-      "icon": "\ud83d\udee1\ufe0f",
+      "icon": "🛡️",
       "color": "#3F51B5",
       "config": {
         "cryptos": [
@@ -26291,22 +26276,22 @@
           "entry_price": 0.16692326560043108,
           "quantity": 19124.00509258707,
           "entry_time": "2025-12-20T10:16:14.116281",
-          "current_price": 0.1564,
-          "pnl_percent": -6.304253372097879
+          "current_price": 0.1567,
+          "pnl_percent": -6.124530072939494
         },
         "CRV/USDT": {
           "entry_price": 0.3511701784459664,
           "quantity": 2215.0404441775845,
           "entry_time": "2025-12-20T10:27:29.850503",
-          "current_price": 0.3673,
-          "pnl_percent": 4.593163811748746
+          "current_price": 0.3678,
+          "pnl_percent": 4.735544922301083
         },
         "1INCH/USDT": {
           "entry_price": 0.1555201910647085,
           "quantity": 4751.5588528120115,
           "entry_time": "2025-12-20T10:27:29.851472",
-          "current_price": 0.1506,
-          "pnl_percent": -3.1636992155322785
+          "current_price": 0.1509,
+          "pnl_percent": -2.970798217953663
         }
       },
       "trades": [
@@ -27789,7 +27774,7 @@
       "name": "Grid DeFi",
       "strategy_id": "grid_trading",
       "strategy_name": "Grid DeFi",
-      "icon": "\ud83d\udcd0",
+      "icon": "📐",
       "color": "#009688",
       "config": {
         "cryptos": [
@@ -27828,8 +27813,8 @@
           "entry_price": 180.7073600299254,
           "quantity": 4.6581016555562975,
           "entry_time": "2025-12-20T01:07:46.149172",
-          "current_price": 150.37,
-          "pnl_percent": -16.78811534012864
+          "current_price": 150.79,
+          "pnl_percent": -16.55569536568464
         }
       },
       "trades": [
@@ -29808,7 +29793,7 @@
       "name": "Sniper Quickflip",
       "strategy_id": "sniper_quickflip",
       "strategy_name": "Momentum Memes",
-      "icon": "\ud83d\udc15",
+      "icon": "🐕",
       "color": "#FFEB3B",
       "config": {
         "cryptos": [
@@ -29821,19 +29806,14 @@
           "MEME/USDT",
           "TURBO/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 10,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 3,
-        "auto_trade": true,
-        "max_risk": 35,
-        "min_liquidity": 100000,
-        "take_profit": 10,
-        "stop_loss": 5,
-        "max_hold_hours": 0.5
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 1095.6404141853484,
+        "USDT": 1079.1006013118274,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -29856,7 +29836,7 @@
         "Fair": 0,
         "NEWYEAR": 0,
         "PURK": 0,
-        "\u738b\u4f69\u5947": 0,
+        "王佩奇": 0,
         "SCP": 489887.9768512255,
         "FUN": 0,
         "esdeekid": 0,
@@ -29884,11 +29864,11 @@
         "Rhodri": 2777622.491045506,
         "RKT": 12931279.63461852,
         "RYX402": 0,
-        "WHAT\u2019STHEDIFFERENCEIFIPOSTONBASE": 0,
+        "WHAT’STHEDIFFERENCEIFIPOSTONBASE": 0,
         "YETI": 57467.699946665656,
         "NEW": 0,
         "FIREBALL": 39792.07562148385,
-        "\u25ef": 374075.47918180627,
+        "◯": 374075.47918180627,
         "POS": 69328.36084153608,
         "NotifAi": 21536.382515505185,
         "Chungus": 52045.863778824656,
@@ -30238,7 +30218,7 @@
         {
           "timestamp": "2025-12-19T23:54:39.717594",
           "action": "SNIPE_BUY",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.438e-05,
           "quantity": 1673557.33871178,
           "amount_usdt": 141.2147682405,
@@ -30448,7 +30428,7 @@
         {
           "timestamp": "2025-12-21T10:07:50.511877",
           "action": "DUMP_SOLD",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.394e-06,
           "quantity": 1673557.33871178,
           "amount_usdt": 13.995696780243241,
@@ -31096,7 +31076,7 @@
         {
           "timestamp": "2025-12-22T02:07:18.653823",
           "action": "SNIPE_BUY",
-          "symbol": "WHAT\u2019STHEDIFFERENCEIFIPOSTONBASE/USDT",
+          "symbol": "WHAT’STHEDIFFERENCEIFIPOSTONBASE/USDT",
           "price": 1.332424567838981e-06,
           "quantity": 31162701.29167457,
           "amount_usdt": 41.521948801254744,
@@ -31191,7 +31171,7 @@
         {
           "timestamp": "2025-12-22T02:07:18.656813",
           "action": "SNIPE_BUY",
-          "symbol": "\u25ef/USDT",
+          "symbol": "◯/USDT",
           "price": 6.704497125378041e-05,
           "quantity": 374075.47918180627,
           "amount_usdt": 25.079879748488334,
@@ -31605,7 +31585,7 @@
         {
           "timestamp": "2025-12-23T13:22:48.966537",
           "action": "RUGGED",
-          "symbol": "WHAT\u2019STHEDIFFERENCEIFIPOSTONBASE/USDT",
+          "symbol": "WHAT’STHEDIFFERENCEIFIPOSTONBASE/USDT",
           "price": 0,
           "quantity": 31162701.29167457,
           "amount_usdt": 0,
@@ -32903,7 +32883,7 @@
       "name": "Breakout Memes",
       "strategy_id": "breakout_tight",
       "strategy_name": "Breakout Memes",
-      "icon": "\ud83d\udca5",
+      "icon": "💥",
       "color": "#FF1744",
       "config": {
         "cryptos": [
@@ -32937,43 +32917,43 @@
           "entry_price": 0.0009718906334596644,
           "quantity": 1954952.4757086304,
           "entry_time": "2025-12-19T17:15:47.583265",
-          "current_price": 0.000933,
-          "pnl_percent": -4.001544219149878
+          "current_price": 0.000937,
+          "pnl_percent": -3.5899752768954296
         },
         "TURBO/USDT": {
           "entry_price": 0.001822829281900943,
           "quantity": 907751.811572456,
           "entry_time": "2025-12-19T17:37:53.797125",
-          "current_price": 0.001653,
-          "pnl_percent": -9.31679579581013
+          "current_price": 0.001658,
+          "pnl_percent": -9.042496932518562
         },
         "DOGE/USDT": {
           "entry_price": 0.13181932016609052,
           "quantity": 14135.992338999667,
           "entry_time": "2025-12-20T03:39:48.919182",
-          "current_price": 0.12995,
-          "pnl_percent": -1.4180927073020766
+          "current_price": 0.12994,
+          "pnl_percent": -1.4256788486866734
         },
         "FLOKI/USDT": {
           "entry_price": 4.163646262922721e-05,
           "quantity": 36388817.05833138,
           "entry_time": "2025-12-20T08:15:22.919879",
-          "current_price": 3.979e-05,
-          "pnl_percent": -4.434725028564424
+          "current_price": 3.987e-05,
+          "pnl_percent": -4.2425857473954
         },
         "PEPE/USDT": {
           "entry_price": 4.15e-06,
           "quantity": 103727038.55421688,
           "entry_time": "2025-12-20T08:30:17.372830",
-          "current_price": 3.93e-06,
-          "pnl_percent": -5.301204819277117
+          "current_price": 3.94e-06,
+          "pnl_percent": -5.060240963855412
         },
         "WIF/USDT": {
           "entry_price": 0.354,
           "quantity": 984.9673449152542,
           "entry_time": "2025-12-20T08:30:17.373829",
-          "current_price": 0.32,
-          "pnl_percent": -9.604519774011289
+          "current_price": 0.321,
+          "pnl_percent": -9.322033898305083
         }
       },
       "trades": [
@@ -34394,7 +34374,7 @@
       "name": "Stoch Memes",
       "strategy_id": "stoch_rsi_aggressive",
       "strategy_name": "Stoch Memes",
-      "icon": "\ud83c\udfb2",
+      "icon": "🎲",
       "color": "#E91E63",
       "config": {
         "cryptos": [
@@ -34430,36 +34410,36 @@
           "entry_price": 0.000966447074648476,
           "quantity": 4736569.458319412,
           "entry_time": "2025-12-20T09:25:48.197571",
-          "current_price": 0.000933,
-          "pnl_percent": -3.460828381175618
+          "current_price": 0.000937,
+          "pnl_percent": -3.046941257407887
         },
         "TURBO/USDT": {
           "entry_price": 0.0018058251086152772,
           "quantity": 2144043.5828594444,
           "entry_time": "2025-12-20T09:33:20.286414",
-          "current_price": 0.001653,
-          "pnl_percent": -8.462896428130017
+          "current_price": 0.001658,
+          "pnl_percent": -8.186014687138277
         },
         "BONK/USDT": {
           "entry_price": 8.249351086866758e-06,
           "quantity": 81288498.73191254,
           "entry_time": "2025-12-20T10:27:29.854464",
-          "current_price": 7.96e-06,
-          "pnl_percent": -3.507561792677416
+          "current_price": 7.95e-06,
+          "pnl_percent": -3.628783448716766
         },
         "WIF/USDT": {
           "entry_price": 0.34866253127850505,
           "quantity": 900.8228294168734,
           "entry_time": "2025-12-21T10:17:12.829441",
-          "current_price": 0.32,
-          "pnl_percent": -8.220708767702355
+          "current_price": 0.321,
+          "pnl_percent": -7.933898482601432
         },
         "FLOKI/USDT": {
           "entry_price": 4.11437433807016e-05,
           "quantity": 6358272.051516972,
           "entry_time": "2025-12-21T10:27:45.170520",
-          "current_price": 3.979e-05,
-          "pnl_percent": -3.2902776205253503
+          "current_price": 3.987e-05,
+          "pnl_percent": -3.0958373644218495
         },
         "SHIB/USDT": {
           "entry_price": 7.403824022658835e-06,
@@ -34472,8 +34452,8 @@
           "entry_price": 0.13199,
           "quantity": 152.1217440971029,
           "entry_time": "2025-12-21T10:59:43.529878",
-          "current_price": 0.12995,
-          "pnl_percent": -1.5455716342147041
+          "current_price": 0.12994,
+          "pnl_percent": -1.5531479657549752
         }
       },
       "trades": [
@@ -38270,7 +38250,7 @@
       "name": "Supertrend Memes",
       "strategy_id": "supertrend_fast",
       "strategy_name": "Supertrend Memes",
-      "icon": "\u26a1",
+      "icon": "⚡",
       "color": "#FF5722",
       "config": {
         "cryptos": [
@@ -38306,8 +38286,8 @@
           "entry_price": 0.1296,
           "quantity": 7716.04938271605,
           "entry_time": "2025-12-19T17:00:59.985208",
-          "current_price": 0.12995,
-          "pnl_percent": 0.2700617283950768
+          "current_price": 0.12994,
+          "pnl_percent": 0.2623456790123546
         },
         "SHIB/USDT": {
           "entry_price": 7.5e-06,
@@ -38320,43 +38300,43 @@
           "entry_price": 4e-06,
           "quantity": 202500000.0,
           "entry_time": "2025-12-19T17:00:59.986208",
-          "current_price": 3.93e-06,
-          "pnl_percent": -1.750000000000007
+          "current_price": 3.94e-06,
+          "pnl_percent": -1.4999999999999902
         },
         "FLOKI/USDT": {
           "entry_price": 4.112e-05,
           "quantity": 17728599.221789885,
           "entry_time": "2025-12-19T17:00:59.986208",
-          "current_price": 3.979e-05,
-          "pnl_percent": -3.2344357976653804
+          "current_price": 3.987e-05,
+          "pnl_percent": -3.0398832684824795
         },
         "BONK/USDT": {
           "entry_price": 8.11e-06,
           "quantity": 80900123.30456227,
           "entry_time": "2025-12-19T17:00:59.987209",
-          "current_price": 7.96e-06,
-          "pnl_percent": -1.8495684340320673
+          "current_price": 7.95e-06,
+          "pnl_percent": -1.9728729963008673
         },
         "WIF/USDT": {
           "entry_price": 0.352,
           "quantity": 1677.5284090909092,
           "entry_time": "2025-12-19T17:00:59.987209",
-          "current_price": 0.32,
-          "pnl_percent": -9.090909090909083
+          "current_price": 0.321,
+          "pnl_percent": -8.806818181818176
         },
         "MEME/USDT": {
           "entry_price": 0.000951,
           "quantity": 558823.3438485805,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.000933,
-          "pnl_percent": -1.8927444794952675
+          "current_price": 0.000937,
+          "pnl_percent": -1.4721345951629883
         },
         "TURBO/USDT": {
           "entry_price": 0.001782,
           "quantity": 268404.54545454547,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.001653,
-          "pnl_percent": -7.239057239057233
+          "current_price": 0.001658,
+          "pnl_percent": -6.958473625140293
         }
       },
       "trades": [
@@ -39723,7 +39703,7 @@
       "name": "VWAP Memes",
       "strategy_id": "vwap_bounce",
       "strategy_name": "VWAP Memes",
-      "icon": "\ud83d\udcb9",
+      "icon": "💹",
       "color": "#4CAF50",
       "config": {
         "cryptos": [
@@ -39755,15 +39735,15 @@
           "entry_price": 0.3513243735076654,
           "quantity": 7162.3303090825375,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.32,
-          "pnl_percent": -8.916083218172144
+          "current_price": 0.321,
+          "pnl_percent": -8.631445978228935
         },
         "TURBO/USDT": {
           "entry_price": 0.0017876824934277182,
           "quantity": 3893623.398835134,
           "entry_time": "2025-12-19T17:00:59.989798",
-          "current_price": 0.001653,
-          "pnl_percent": -7.533915777710442
+          "current_price": 0.001658,
+          "pnl_percent": -7.254224052900127
         }
       },
       "trades": [
@@ -41830,7 +41810,7 @@
       "name": "EMA Slow L2",
       "strategy_id": "ema_crossover_slow",
       "strategy_name": "EMA Slow L2",
-      "icon": "\ud83d\udc22",
+      "icon": "🐢",
       "color": "#8BC34A",
       "config": {
         "cryptos": [
@@ -41859,8 +41839,8 @@
           "entry_price": 0.06086722449025244,
           "quantity": 127172.6229493833,
           "entry_time": "2025-12-19T21:09:46.049794",
-          "current_price": 0.0548,
-          "pnl_percent": -9.967966407313467
+          "current_price": 0.0555,
+          "pnl_percent": -8.817922182589367
         }
       },
       "trades": [
@@ -43443,7 +43423,7 @@
       "name": "GCR Layer2",
       "strategy_id": "whale_gcr",
       "strategy_name": "Ichimoku L2",
-      "icon": "\u2601\ufe0f",
+      "icon": "☁️",
       "color": "#607D8B",
       "config": {
         "cryptos": [
@@ -44831,7 +44811,7 @@
       "name": "DCA L2",
       "strategy_id": "dca_accumulator",
       "strategy_name": "DCA L2",
-      "icon": "\ud83d\udcb0",
+      "icon": "💰",
       "color": "#FFC107",
       "config": {
         "cryptos": [
@@ -44864,36 +44844,36 @@
           "entry_price": 0.18966032670187435,
           "quantity": 6756.029666110312,
           "entry_time": "2025-12-19T17:00:59.990803",
-          "current_price": 0.1835,
-          "pnl_percent": -3.248083987305228
+          "current_price": 0.1837,
+          "pnl_percent": -3.1426323077273555
         },
         "OP/USDT": {
           "entry_price": 0.27600506071681535,
           "quantity": 8353.47750304613,
           "entry_time": "2025-12-19T17:00:59.990803",
-          "current_price": 0.2656,
-          "pnl_percent": -3.7698804108128536
+          "current_price": 0.2659,
+          "pnl_percent": -3.6611867516383123
         },
         "IMX/USDT": {
           "entry_price": 0.22695506708946325,
           "quantity": 9608.468452462452,
           "entry_time": "2025-12-19T17:00:59.991803",
-          "current_price": 0.223,
-          "pnl_percent": -1.742665250960973
+          "current_price": 0.224,
+          "pnl_percent": -1.302049400068428
         },
         "SKL/USDT": {
           "entry_price": 0.010316694152989468,
           "quantity": 200806.19250911134,
           "entry_time": "2025-12-19T17:00:59.991803",
-          "current_price": 0.00999,
-          "pnl_percent": -3.1666554047722895
+          "current_price": 0.01,
+          "pnl_percent": -3.06972512990219
         },
         "CELR/USDT": {
           "entry_price": 0.003573244284153462,
           "quantity": 550780.4986251986,
           "entry_time": "2025-12-19T17:00:59.992804",
-          "current_price": 0.003574,
-          "pnl_percent": 0.021149291412547733
+          "current_price": 0.003568,
+          "pnl_percent": -0.1467653408617875
         }
       },
       "trades": [
@@ -46908,7 +46888,7 @@
       "name": "Confluence L2",
       "strategy_id": "confluence_normal",
       "strategy_name": "Confluence L2",
-      "icon": "\ud83c\udfaf",
+      "icon": "🎯",
       "color": "#7C4DFF",
       "config": {
         "cryptos": [
@@ -46937,8 +46917,8 @@
           "entry_price": 0.22650256580353806,
           "quantity": 21513.52611521661,
           "entry_time": "2025-12-19T17:31:30.585423",
-          "current_price": 0.223,
-          "pnl_percent": -1.5463691508802113
+          "current_price": 0.224,
+          "pnl_percent": -1.104873048417787
         }
       },
       "trades": [
@@ -48440,7 +48420,7 @@
       "name": "VWAP Trend L2",
       "strategy_id": "vwap_trend",
       "strategy_name": "VWAP Trend L2",
-      "icon": "\ud83d\udcca",
+      "icon": "📊",
       "color": "#00BCD4",
       "config": {
         "cryptos": [
@@ -48482,22 +48462,22 @@
           "entry_price": 0.19064425199181423,
           "quantity": 5335.317325333263,
           "entry_time": "2025-12-19T20:15:19.710489",
-          "current_price": 0.1835,
-          "pnl_percent": -3.747425855840114
+          "current_price": 0.1837,
+          "pnl_percent": -3.642518418080809
         },
         "SKL/USDT": {
           "entry_price": 0.010549136929565833,
           "quantity": 144135.8942968714,
           "entry_time": "2025-12-19T20:22:18.601458",
-          "current_price": 0.00999,
-          "pnl_percent": -5.300309715373508
+          "current_price": 0.01,
+          "pnl_percent": -5.205515230604119
         },
         "CELR/USDT": {
           "entry_price": 0.0036339547830988223,
           "quantity": 346237.69641867763,
           "entry_time": "2025-12-19T20:43:05.483179",
-          "current_price": 0.003574,
-          "pnl_percent": -1.649849452658747
+          "current_price": 0.003568,
+          "pnl_percent": -1.814958826828883
         },
         "METIS/USDT": {
           "entry_price": 5.471567402550044,
@@ -51614,7 +51594,7 @@
       "name": "Hsaka Gaming",
       "strategy_id": "whale_hsaka",
       "strategy_name": "Hybrid Gaming",
-      "icon": "\ud83c\udfae",
+      "icon": "🎮",
       "color": "#9C27B0",
       "config": {
         "cryptos": [
@@ -51669,8 +51649,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.981,
-          "current_price": 3.766,
-          "pnl_percent": -4.050955414012735
+          "current_price": 3.779,
+          "pnl_percent": -3.7197452229299377
         },
         "GIGGLE/USDT": {
           "entry_price": 72.36,
@@ -51679,8 +51659,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.05199999999999,
-          "current_price": 70.45,
-          "pnl_percent": -2.639579878385845
+          "current_price": 69.73,
+          "pnl_percent": -3.634604754007731
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -51689,8 +51669,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01745,
-          "pnl_percent": 10.583016476552597
+          "current_price": 0.01737,
+          "pnl_percent": 10.076045627376429
         },
         "ALPINE/USDT": {
           "entry_price": 0.62,
@@ -51699,8 +51679,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.621,
-          "pnl_percent": 0.1612903225806539
+          "current_price": 0.615,
+          "pnl_percent": -0.8064516129032251
         },
         "BANK/USDT": {
           "entry_price": 0.0471,
@@ -51709,8 +51689,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.6,
-          "current_price": 0.0475,
-          "pnl_percent": 0.849256900212314
+          "current_price": 0.0482,
+          "pnl_percent": 2.3354564755838636
         },
         "YGG/USDT": {
           "entry_price": 0.0721,
@@ -51719,8 +51699,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.543,
-          "current_price": 0.0672,
-          "pnl_percent": -6.796116504854366
+          "current_price": 0.0673,
+          "pnl_percent": -6.657420249653256
         },
         "POLYX/USDT": {
           "entry_price": 0.0555,
@@ -51729,8 +51709,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.054,
-          "pnl_percent": -2.7027027027027084
+          "current_price": 0.0539,
+          "pnl_percent": -2.8828828828828756
         },
         "AVNT/USDT": {
           "entry_price": 0.2896,
@@ -51739,8 +51719,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.986,
-          "current_price": 0.2827,
-          "pnl_percent": -2.382596685082883
+          "current_price": 0.2865,
+          "pnl_percent": -1.070441988950288
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -51749,8 +51729,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.873,
-          "current_price": 0.00921,
-          "pnl_percent": 3.950338600451464
+          "current_price": 0.00923,
+          "pnl_percent": 4.176072234762995
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -51759,8 +51739,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.765,
-          "pnl_percent": 7.594936708860756
+          "current_price": 0.757,
+          "pnl_percent": 6.469760900140642
         },
         "ACE/USDT": {
           "entry_price": 0.276,
@@ -51769,8 +51749,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.992000000000004,
-          "current_price": 0.259,
-          "pnl_percent": -6.159420289855078
+          "current_price": 0.263,
+          "pnl_percent": -4.710144927536231
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -51779,8 +51759,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.116,
-          "pnl_percent": -7.9365079365079305
+          "current_price": 0.117,
+          "pnl_percent": -7.14285714285714
         },
         "ACT/USDT": {
           "entry_price": 0.0365,
@@ -51789,8 +51769,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.606,
-          "current_price": 0.0359,
-          "pnl_percent": -1.6438356164383494
+          "current_price": 0.0356,
+          "pnl_percent": -2.465753424657524
         },
         "DOLO/USDT": {
           "entry_price": 0.03485,
@@ -51799,8 +51779,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.333,
-          "current_price": 0.03529,
-          "pnl_percent": 1.2625538020086147
+          "current_price": 0.03508,
+          "pnl_percent": 0.6599713055954082
         }
       },
       "trades": [
@@ -53457,7 +53437,7 @@
       "name": "Copy GCR (Contrarian)",
       "strategy_id": "whale_gcr",
       "strategy_name": "Grid Gaming",
-      "icon": "\ud83d\udcd0",
+      "icon": "📐",
       "color": "#009688",
       "config": {
         "cryptos": [
@@ -54849,7 +54829,7 @@
       "name": "Mean Rev Gaming",
       "strategy_id": "mean_reversion_tight",
       "strategy_name": "Mean Rev Gaming",
-      "icon": "\ud83c\udfa2",
+      "icon": "🎢",
       "color": "#3F51B5",
       "config": {
         "cryptos": [
@@ -54885,29 +54865,29 @@
           "entry_price": 0.22881746703765105,
           "quantity": 8913.48120053665,
           "entry_time": "2025-12-20T10:27:29.859536",
-          "current_price": 0.223,
-          "pnl_percent": -2.5424051375823487
+          "current_price": 0.224,
+          "pnl_percent": -2.1053755642082783
         },
         "MAGIC/USDT": {
           "entry_price": 0.09469008758120667,
           "quantity": 12153.998167775551,
           "entry_time": "2025-12-20T10:27:29.860507",
-          "current_price": 0.0906,
-          "pnl_percent": -4.319446402136862
+          "current_price": 0.0907,
+          "pnl_percent": -4.213838727084029
         },
         "AXS/USDT": {
           "entry_price": 0.8636837891057556,
           "quantity": 1660.3369089531782,
           "entry_time": "2025-12-20T10:38:47.680374",
-          "current_price": 0.823,
-          "pnl_percent": -4.710495857271912
+          "current_price": 0.824,
+          "pnl_percent": -4.594712741667129
         },
         "SAND/USDT": {
           "entry_price": 0.11931246011617413,
           "quantity": 11417.967308313862,
           "entry_time": "2025-12-20T10:38:47.681371",
-          "current_price": 0.112,
-          "pnl_percent": -6.128831899915577
+          "current_price": 0.1121,
+          "pnl_percent": -6.045018356969067
         },
         "MANA/USDT": {
           "entry_price": 0.12897494751868496,
@@ -54920,8 +54900,8 @@
           "entry_price": 0.02765950426388496,
           "quantity": 30359.001161401073,
           "entry_time": "2025-12-21T10:38:26.784943",
-          "current_price": 0.0265,
-          "pnl_percent": -4.1920645172188635
+          "current_price": 0.02651,
+          "pnl_percent": -4.155910579300837
         },
         "ILV/USDT": {
           "entry_price": 5.7729929785528284,
@@ -54934,8 +54914,8 @@
           "entry_price": 0.00619,
           "quantity": 16675.440158479778,
           "entry_time": "2025-12-21T11:10:29.481762",
-          "current_price": 0.00601,
-          "pnl_percent": -2.9079159935379684
+          "current_price": 0.00602,
+          "pnl_percent": -2.746365105008075
         }
       },
       "trades": [
@@ -55730,7 +55710,7 @@
           "timestamp": "2025-12-20 09:57:07",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.1σ (threshold=±1.5)",
           "price": 0.00636,
           "rsi": 63.2,
           "signal": "HOLD",
@@ -55743,7 +55723,7 @@
           "timestamp": "2025-12-20 09:57:07",
           "symbol": "IMX",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.2σ (threshold=±1.5)",
           "price": 0.234,
           "rsi": 58.3,
           "signal": "HOLD",
@@ -55755,7 +55735,7 @@
           "timestamp": "2025-12-20 09:57:07",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.7\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.7σ (threshold=±1.5)",
           "price": 0.0951,
           "rsi": 52.4,
           "signal": "HOLD",
@@ -55768,7 +55748,7 @@
           "timestamp": "2025-12-20 09:57:07",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.7\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.7σ (threshold=±1.5)",
           "price": 5.8,
           "rsi": 71.4,
           "signal": "SELL",
@@ -55781,7 +55761,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.88,
           "rsi": 76.5,
           "signal": "SELL",
@@ -55794,7 +55774,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.1213,
           "rsi": 78.8,
           "signal": "SELL",
@@ -55807,7 +55787,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.1σ (threshold=±1.5)",
           "price": 0.1304,
           "rsi": 71.4,
           "signal": "SELL",
@@ -55820,7 +55800,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.1σ (threshold=±1.5)",
           "price": 0.02791,
           "rsi": 62.7,
           "signal": "HOLD",
@@ -55833,7 +55813,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.5\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.5σ (threshold=±1.5)",
           "price": 0.00635,
           "rsi": 60.0,
           "signal": "HOLD",
@@ -55846,7 +55826,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "IMX",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.234,
           "rsi": 63.6,
           "signal": "HOLD",
@@ -55859,7 +55839,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.2σ (threshold=±1.5)",
           "price": 0.095,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -55872,7 +55852,7 @@
           "timestamp": "2025-12-20 10:04:52",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.6\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.6σ (threshold=±1.5)",
           "price": 5.8,
           "rsi": 76.9,
           "signal": "SELL",
@@ -55885,7 +55865,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.88,
           "rsi": 76.5,
           "signal": "SELL",
@@ -55898,7 +55878,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.1213,
           "rsi": 78.8,
           "signal": "SELL",
@@ -55911,7 +55891,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.1σ (threshold=±1.5)",
           "price": 0.1305,
           "rsi": 71.1,
           "signal": "SELL",
@@ -55924,7 +55904,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.1σ (threshold=±1.5)",
           "price": 0.02793,
           "rsi": 60.3,
           "signal": "HOLD",
@@ -55937,7 +55917,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.2σ (threshold=±1.5)",
           "price": 0.00636,
           "rsi": 61.9,
           "signal": "HOLD",
@@ -55950,7 +55930,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "IMX",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.234,
           "rsi": 63.6,
           "signal": "HOLD",
@@ -55963,7 +55943,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.2σ (threshold=±1.5)",
           "price": 0.095,
           "rsi": 52.2,
           "signal": "HOLD",
@@ -55976,7 +55956,7 @@
           "timestamp": "2025-12-20 10:16:14",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.5\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.5σ (threshold=±1.5)",
           "price": 5.8,
           "rsi": 76.9,
           "signal": "SELL",
@@ -55989,7 +55969,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.0\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.0σ (threshold=±1.5)",
           "price": 0.876,
           "rsi": 63.2,
           "signal": "HOLD",
@@ -56002,7 +55982,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.2σ (threshold=±1.5)",
           "price": 0.1211,
           "rsi": 70.6,
           "signal": "SELL",
@@ -56015,7 +55995,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.1302,
           "rsi": 65.9,
           "signal": "SELL",
@@ -56028,7 +56008,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.3σ (threshold=±1.5)",
           "price": 0.02788,
           "rsi": 56.4,
           "signal": "HOLD",
@@ -56041,7 +56021,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.1σ (threshold=±1.5)",
           "price": 0.00634,
           "rsi": 56.5,
           "signal": "HOLD",
@@ -56054,7 +56034,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.232,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56066,7 +56046,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "MAGIC",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 0.0949,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56079,7 +56059,7 @@
           "timestamp": "2025-12-20 10:27:29",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.6\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.6σ (threshold=±1.5)",
           "price": 5.77,
           "rsi": 62.5,
           "signal": "HOLD",
@@ -56092,7 +56072,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -2.1\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.1σ below mean (threshold=-1.5)",
           "price": 0.872,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56104,7 +56084,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.1205,
           "rsi": 56.8,
           "signal": "HOLD",
@@ -56116,7 +56096,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.5\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.5σ (threshold=±1.5)",
           "price": 0.1297,
           "rsi": 57.8,
           "signal": "HOLD",
@@ -56128,7 +56108,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.2σ (threshold=±1.5)",
           "price": 0.02781,
           "rsi": 55.7,
           "signal": "HOLD",
@@ -56141,7 +56121,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "GALA",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.00632,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56153,7 +56133,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.232,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56165,7 +56145,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "MAGIC",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.0947,
           "rsi": 38.1,
           "signal": "HOLD",
@@ -56177,7 +56157,7 @@
           "timestamp": "2025-12-20 10:38:47",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.4σ (threshold=±1.5)",
           "price": 5.75,
           "rsi": 55.6,
           "signal": "HOLD",
@@ -56190,7 +56170,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=1.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=1.3σ (threshold=±1.5)",
           "price": 0.868,
           "rsi": 61.9,
           "signal": "HOLD",
@@ -56203,7 +56183,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=1.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=1.3σ (threshold=±1.5)",
           "price": 0.1209,
           "rsi": 69.0,
           "signal": "SELL",
@@ -56216,7 +56196,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.13,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56229,7 +56209,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=1.2\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=1.2σ (threshold=±1.5)",
           "price": 0.02792,
           "rsi": 57.9,
           "signal": "HOLD",
@@ -56242,7 +56222,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "GALA",
           "action": "SELL",
-          "reason": "MEAN REV: 1.8\u03c3 above mean (threshold=1.5)",
+          "reason": "MEAN REV: 1.8σ above mean (threshold=1.5)",
           "price": 0.00627,
           "rsi": 66.7,
           "signal": "SELL",
@@ -56255,7 +56235,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "IMX",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.228,
           "rsi": 66.7,
           "signal": "SELL",
@@ -56268,7 +56248,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.0\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.0σ (threshold=±1.5)",
           "price": 0.095,
           "rsi": 52.4,
           "signal": "HOLD",
@@ -56281,7 +56261,7 @@
           "timestamp": "2025-12-21 10:06:02",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.6\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.6σ (threshold=±1.5)",
           "price": 5.81,
           "rsi": 40.0,
           "signal": "HOLD",
@@ -56294,7 +56274,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.5\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.5σ (threshold=±1.5)",
           "price": 0.866,
           "rsi": 57.9,
           "signal": "HOLD",
@@ -56307,7 +56287,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=1.1\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=1.1σ (threshold=±1.5)",
           "price": 0.1208,
           "rsi": 67.9,
           "signal": "SELL",
@@ -56320,7 +56300,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "MANA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.8\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.8σ (threshold=±1.5)",
           "price": 0.1297,
           "rsi": 46.2,
           "signal": "HOLD",
@@ -56333,7 +56313,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.3σ (threshold=±1.5)",
           "price": 0.02783,
           "rsi": 51.3,
           "signal": "HOLD",
@@ -56346,7 +56326,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.7\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.7σ (threshold=±1.5)",
           "price": 0.00624,
           "rsi": 58.8,
           "signal": "HOLD",
@@ -56359,7 +56339,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "IMX",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.228,
           "rsi": 66.7,
           "signal": "SELL",
@@ -56372,7 +56352,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.9\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.9σ (threshold=±1.5)",
           "price": 0.0948,
           "rsi": 43.5,
           "signal": "HOLD",
@@ -56384,7 +56364,7 @@
           "timestamp": "2025-12-21 10:17:12",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.9\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.9σ (threshold=±1.5)",
           "price": 5.8,
           "rsi": 27.8,
           "signal": "BUY",
@@ -56396,7 +56376,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "AXS",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.4σ (threshold=±1.5)",
           "price": 0.866,
           "rsi": 57.9,
           "signal": "HOLD",
@@ -56409,7 +56389,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "SAND",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.3σ (threshold=±1.5)",
           "price": 0.1198,
           "rsi": 48.6,
           "signal": "HOLD",
@@ -56421,7 +56401,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.1294,
           "rsi": 41.4,
           "signal": "HOLD",
@@ -56434,7 +56414,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "ENJ",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.9\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.9σ (threshold=±1.5)",
           "price": 0.02779,
           "rsi": 48.7,
           "signal": "HOLD",
@@ -56446,7 +56426,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=0.6\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=0.6σ (threshold=±1.5)",
           "price": 0.00624,
           "rsi": 56.2,
           "signal": "HOLD",
@@ -56459,7 +56439,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.227,
           "rsi": 40.0,
           "signal": "HOLD",
@@ -56471,7 +56451,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.4σ (threshold=±1.5)",
           "price": 0.0947,
           "rsi": 40.9,
           "signal": "HOLD",
@@ -56483,7 +56463,7 @@
           "timestamp": "2025-12-21 10:27:45",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.9\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.9σ (threshold=±1.5)",
           "price": 5.8,
           "rsi": 27.8,
           "signal": "BUY",
@@ -56495,7 +56475,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.861,
           "rsi": 47.8,
           "signal": "HOLD",
@@ -56507,7 +56487,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -2.2\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.2σ below mean (threshold=-1.5)",
           "price": 0.119,
           "rsi": 40.9,
           "signal": "HOLD",
@@ -56520,7 +56500,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -2.4\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.4σ below mean (threshold=-1.5)",
           "price": 0.129,
           "rsi": 38.7,
           "signal": "HOLD",
@@ -56532,7 +56512,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "ENJ",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.02771,
           "rsi": 43.5,
           "signal": "HOLD",
@@ -56544,7 +56524,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.00622,
           "rsi": 52.9,
           "signal": "HOLD",
@@ -56557,7 +56537,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.227,
           "rsi": 40.0,
           "signal": "HOLD",
@@ -56569,7 +56549,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.7\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.7σ (threshold=±1.5)",
           "price": 0.0948,
           "rsi": 45.5,
           "signal": "HOLD",
@@ -56582,7 +56562,7 @@
           "timestamp": "2025-12-21 10:38:26",
           "symbol": "ILV",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 5.78,
           "rsi": 29.4,
           "signal": "BUY",
@@ -56595,7 +56575,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 0.861,
           "rsi": 45.5,
           "signal": "HOLD",
@@ -56608,7 +56588,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.1188,
           "rsi": 37.8,
           "signal": "HOLD",
@@ -56620,7 +56600,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -2.2\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.2σ below mean (threshold=-1.5)",
           "price": 0.1288,
           "rsi": 30.0,
           "signal": "BUY",
@@ -56632,7 +56612,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "ENJ",
           "action": "BUY",
-          "reason": "MEAN REV: -1.9\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.9σ below mean (threshold=-1.5)",
           "price": 0.02766,
           "rsi": 40.4,
           "signal": "HOLD",
@@ -56645,7 +56625,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-0.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-0.4σ (threshold=±1.5)",
           "price": 0.00622,
           "rsi": 50.0,
           "signal": "HOLD",
@@ -56658,7 +56638,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -2.3\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.3σ below mean (threshold=-1.5)",
           "price": 0.226,
           "rsi": 33.3,
           "signal": "BUY",
@@ -56671,7 +56651,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "MAGIC",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.0\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.0σ (threshold=±1.5)",
           "price": 0.0947,
           "rsi": 42.9,
           "signal": "HOLD",
@@ -56684,7 +56664,7 @@
           "timestamp": "2025-12-21 10:48:56",
           "symbol": "ILV",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 5.77,
           "rsi": 27.8,
           "signal": "BUY",
@@ -56696,7 +56676,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -2.1\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.1σ below mean (threshold=-1.5)",
           "price": 0.859,
           "rsi": 41.7,
           "signal": "HOLD",
@@ -56709,7 +56689,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -2.1\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.1σ below mean (threshold=-1.5)",
           "price": 0.1186,
           "rsi": 36.2,
           "signal": "HOLD",
@@ -56721,7 +56701,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -2.3\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.3σ below mean (threshold=-1.5)",
           "price": 0.1287,
           "rsi": 29.0,
           "signal": "BUY",
@@ -56733,7 +56713,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "ENJ",
           "action": "BUY",
-          "reason": "MEAN REV: -2.1\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.1σ below mean (threshold=-1.5)",
           "price": 0.02763,
           "rsi": 39.1,
           "signal": "HOLD",
@@ -56746,7 +56726,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.3\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.3σ (threshold=±1.5)",
           "price": 0.0062,
           "rsi": 44.4,
           "signal": "HOLD",
@@ -56759,7 +56739,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -2.3\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.3σ below mean (threshold=-1.5)",
           "price": 0.226,
           "rsi": 33.3,
           "signal": "BUY",
@@ -56772,7 +56752,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "MAGIC",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.0945,
           "rsi": 39.1,
           "signal": "HOLD",
@@ -56784,7 +56764,7 @@
           "timestamp": "2025-12-21 10:59:43",
           "symbol": "ILV",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 5.77,
           "rsi": 27.8,
           "signal": "BUY",
@@ -56796,7 +56776,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.858,
           "rsi": 41.7,
           "signal": "HOLD",
@@ -56808,7 +56788,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.1186,
           "rsi": 34.8,
           "signal": "BUY",
@@ -56820,7 +56800,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.1286,
           "rsi": 28.1,
           "signal": "BUY",
@@ -56832,7 +56812,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "ENJ",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.02763,
           "rsi": 36.4,
           "signal": "HOLD",
@@ -56844,7 +56824,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "GALA",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 0.00619,
           "rsi": 47.1,
           "signal": "HOLD",
@@ -56857,7 +56837,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -2.3\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.3σ below mean (threshold=-1.5)",
           "price": 0.225,
           "rsi": 28.6,
           "signal": "BUY",
@@ -56869,7 +56849,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "MAGIC",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.0943,
           "rsi": 39.1,
           "signal": "HOLD",
@@ -56881,7 +56861,7 @@
           "timestamp": "2025-12-21 11:10:29",
           "symbol": "ILV",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.4σ (threshold=±1.5)",
           "price": 5.77,
           "rsi": 31.6,
           "signal": "BUY",
@@ -56894,7 +56874,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "AXS",
           "action": "BUY",
-          "reason": "MEAN REV: -1.8\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.8σ below mean (threshold=-1.5)",
           "price": 0.857,
           "rsi": 31.8,
           "signal": "BUY",
@@ -56906,7 +56886,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "SAND",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 0.1184,
           "rsi": 31.9,
           "signal": "BUY",
@@ -56918,7 +56898,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "MANA",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.1285,
           "rsi": 27.3,
           "signal": "BUY",
@@ -56930,7 +56910,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "ENJ",
           "action": "BUY",
-          "reason": "MEAN REV: -1.7\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.7σ below mean (threshold=-1.5)",
           "price": 0.02757,
           "rsi": 34.4,
           "signal": "BUY",
@@ -56942,7 +56922,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "GALA",
           "action": "HOLD",
-          "reason": "MEAN REV: Deviation=-1.4\u03c3 (threshold=\u00b11.5)",
+          "reason": "MEAN REV: Deviation=-1.4σ (threshold=±1.5)",
           "price": 0.00619,
           "rsi": 43.8,
           "signal": "HOLD",
@@ -56954,7 +56934,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "IMX",
           "action": "BUY",
-          "reason": "MEAN REV: -2.1\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.1σ below mean (threshold=-1.5)",
           "price": 0.225,
           "rsi": 16.7,
           "signal": "BUY",
@@ -56966,7 +56946,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "MAGIC",
           "action": "BUY",
-          "reason": "MEAN REV: -2.0\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -2.0σ below mean (threshold=-1.5)",
           "price": 0.0941,
           "rsi": 30.4,
           "signal": "BUY",
@@ -56978,7 +56958,7 @@
           "timestamp": "2025-12-21 11:21:07",
           "symbol": "ILV",
           "action": "BUY",
-          "reason": "MEAN REV: -1.6\u03c3 below mean (threshold=-1.5)",
+          "reason": "MEAN REV: -1.6σ below mean (threshold=-1.5)",
           "price": 5.76,
           "rsi": 30.0,
           "signal": "BUY",
@@ -56994,7 +56974,7 @@
       "name": "Copy Hsaka (Momentum)",
       "strategy_id": "whale_hsaka",
       "strategy_name": "RSI Gaming",
-      "icon": "\ud83d\udcc8",
+      "icon": "📈",
       "color": "#2196F3",
       "config": {
         "cryptos": [
@@ -57049,8 +57029,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.766,
-          "pnl_percent": -4.050955414012735
+          "current_price": 3.779,
+          "pnl_percent": -3.7197452229299377
         },
         "GIGGLE/USDT": {
           "entry_price": 72.39,
@@ -57059,8 +57039,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.19200000000001,
-          "current_price": 70.45,
-          "pnl_percent": -2.6799281668738795
+          "current_price": 69.73,
+          "pnl_percent": -3.6745406824146953
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -57069,8 +57049,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01745,
-          "pnl_percent": 10.583016476552597
+          "current_price": 0.01737,
+          "pnl_percent": 10.076045627376429
         },
         "ALPINE/USDT": {
           "entry_price": 0.619,
@@ -57079,8 +57059,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.621,
-          "pnl_percent": 0.3231017770597644
+          "current_price": 0.615,
+          "pnl_percent": -0.646203554119551
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -57089,8 +57069,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.333,
-          "current_price": 0.0475,
-          "pnl_percent": 0.42283298097252064
+          "current_price": 0.0482,
+          "pnl_percent": 1.9027484143763207
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -57099,8 +57079,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.0672,
-          "pnl_percent": -6.4066852367688165
+          "current_price": 0.0673,
+          "pnl_percent": -6.267409470752094
         },
         "POLYX/USDT": {
           "entry_price": 0.0555,
@@ -57109,8 +57089,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.054,
-          "pnl_percent": -2.7027027027027084
+          "current_price": 0.0539,
+          "pnl_percent": -2.8828828828828756
         },
         "AVNT/USDT": {
           "entry_price": 0.2906,
@@ -57119,8 +57099,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.426,
-          "current_price": 0.2827,
-          "pnl_percent": -2.7185134205092942
+          "current_price": 0.2865,
+          "pnl_percent": -1.410874053682054
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -57129,8 +57109,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 71.01,
-          "current_price": 0.00921,
-          "pnl_percent": 3.950338600451464
+          "current_price": 0.00923,
+          "pnl_percent": 4.176072234762995
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -57139,8 +57119,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.765,
-          "pnl_percent": 7.594936708860756
+          "current_price": 0.757,
+          "pnl_percent": 6.469760900140642
         },
         "ACE/USDT": {
           "entry_price": 0.275,
@@ -57149,8 +57129,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.259,
-          "pnl_percent": -5.818181818181822
+          "current_price": 0.263,
+          "pnl_percent": -4.3636363636363695
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -57159,8 +57139,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.116,
-          "pnl_percent": -7.9365079365079305
+          "current_price": 0.117,
+          "pnl_percent": -7.14285714285714
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -57169,8 +57149,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0359,
-          "pnl_percent": -1.912568306010931
+          "current_price": 0.0356,
+          "pnl_percent": -2.732240437158473
         },
         "DOLO/USDT": {
           "entry_price": 0.03488,
@@ -57179,8 +57159,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.333,
-          "current_price": 0.03529,
-          "pnl_percent": 1.1754587155963225
+          "current_price": 0.03508,
+          "pnl_percent": 0.5733944954128489
         }
       },
       "trades": [
@@ -58847,7 +58827,7 @@
       "name": "Breakout AI",
       "strategy_id": "breakout",
       "strategy_name": "Breakout AI",
-      "icon": "\ud83d\udca5",
+      "icon": "💥",
       "color": "#E91E63",
       "config": {
         "cryptos": [
@@ -58875,8 +58855,8 @@
           "entry_price": 0.2129,
           "quantity": 2348.5204321277592,
           "entry_time": "2025-12-19T17:44:05.362417",
-          "current_price": 0.2052,
-          "pnl_percent": -3.6167214654767577
+          "current_price": 0.2049,
+          "pnl_percent": -3.7576326914044222
         }
       },
       "trades": [
@@ -60180,7 +60160,7 @@
       "name": "Supertrend AI",
       "strategy_id": "supertrend",
       "strategy_name": "Supertrend AI",
-      "icon": "\ud83d\ude80",
+      "icon": "🚀",
       "color": "#9C27B0",
       "config": {
         "cryptos": [
@@ -60235,15 +60215,15 @@
           "entry_price": 228.3,
           "quantity": 1.8777376259307927,
           "entry_time": "2025-12-19T17:00:59.997866",
-          "current_price": 217.0,
-          "pnl_percent": -4.949627682873414
+          "current_price": 216.9,
+          "pnl_percent": -4.993429697766095
         },
         "WLD/USDT": {
           "entry_price": 0.5119,
           "quantity": 795.5716448525102,
           "entry_time": "2025-12-19T19:55:31.164846",
-          "current_price": 0.4911,
-          "pnl_percent": -4.063293612033602
+          "current_price": 0.4914,
+          "pnl_percent": -4.004688415706193
         },
         "ARKM/USDT": {
           "entry_price": 0.188,
@@ -60256,8 +60236,8 @@
           "entry_price": 0.2133,
           "quantity": 1723.140859411627,
           "entry_time": "2025-12-19T21:12:35.562036",
-          "current_price": 0.2052,
-          "pnl_percent": -3.797468354430378
+          "current_price": 0.2049,
+          "pnl_percent": -3.9381153305203864
         }
       },
       "trades": [
@@ -61615,7 +61595,7 @@
       "name": "Copy Degen King",
       "strategy_id": "whale_degen",
       "strategy_name": "EMA AI",
-      "icon": "\ud83d\udcca",
+      "icon": "📊",
       "color": "#3F51B5",
       "config": {
         "cryptos": [
@@ -61685,8 +61665,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.044,
-          "current_price": 3.766,
-          "pnl_percent": -4.075394803871624
+          "current_price": 3.779,
+          "pnl_percent": -3.7442689760570635
         },
         "GIGGLE/USDT": {
           "entry_price": 72.35,
@@ -61695,8 +61675,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 62.9,
-          "current_price": 70.45,
-          "pnl_percent": -2.626123013130599
+          "current_price": 69.73,
+          "pnl_percent": -3.6212854181064125
         },
         "ALPINE/USDT": {
           "entry_price": 0.631,
@@ -61705,8 +61685,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.19,
-          "current_price": 0.621,
-          "pnl_percent": -1.5847860538827252
+          "current_price": 0.615,
+          "pnl_percent": -2.535657686212367
         },
         "BANK/USDT": {
           "entry_price": 0.045,
@@ -61715,8 +61695,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.0,
-          "current_price": 0.0475,
-          "pnl_percent": 5.555555555555558
+          "current_price": 0.0482,
+          "pnl_percent": 7.1111111111111125
         },
         "POLYX/USDT": {
           "entry_price": 0.0588,
@@ -61725,8 +61705,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.041,
-          "current_price": 0.054,
-          "pnl_percent": -8.163265306122447
+          "current_price": 0.0539,
+          "pnl_percent": -8.333333333333325
         },
         "EPIC/USDT": {
           "entry_price": 0.725,
@@ -61735,8 +61715,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 61.441,
-          "current_price": 0.765,
-          "pnl_percent": 5.517241379310356
+          "current_price": 0.757,
+          "pnl_percent": 4.413793103448271
         },
         "ANIME/USDT": {
           "entry_price": 0.01,
@@ -61745,8 +61725,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 70,
-          "current_price": 0.00921,
-          "pnl_percent": -7.9000000000000075
+          "current_price": 0.00923,
+          "pnl_percent": -7.699999999999996
         },
         "PORTAL/USDT": {
           "entry_price": 0.0256,
@@ -61755,8 +61735,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 63.077,
-          "current_price": 0.0233,
-          "pnl_percent": -8.984375
+          "current_price": 0.0232,
+          "pnl_percent": -9.37500000000001
         },
         "LUMIA/USDT": {
           "entry_price": 0.124,
@@ -61765,8 +61745,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.49,
-          "current_price": 0.116,
-          "pnl_percent": -6.451612903225801
+          "current_price": 0.117,
+          "pnl_percent": -5.645161290322576
         },
         "CVC/USDT": {
           "entry_price": 0.05015,
@@ -61775,8 +61755,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 61.14,
-          "current_price": 0.05361,
-          "pnl_percent": 6.899302093718829
+          "current_price": 0.05133,
+          "pnl_percent": 2.35294117647058
         }
       },
       "trades": [
@@ -63338,7 +63318,7 @@
       "name": "Smart Money",
       "strategy_id": "whale_smart_money",
       "strategy_name": "Sniper New 2",
-      "icon": "\ud83c\udfaf",
+      "icon": "🎯",
       "color": "#FF1744",
       "config": {
         "cryptos": [
@@ -63426,8 +63406,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.076,
-          "current_price": 3.766,
-          "pnl_percent": -4.099821746880572
+          "current_price": 3.779,
+          "pnl_percent": -3.7687802393684744
         },
         "GIGGLE/USDT": {
           "entry_price": 72.41,
@@ -63436,8 +63416,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.019,
-          "current_price": 70.45,
-          "pnl_percent": -2.7068084518712787
+          "current_price": 69.73,
+          "pnl_percent": -3.7011462505178727
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -63446,8 +63426,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01745,
-          "pnl_percent": 10.583016476552597
+          "current_price": 0.01737,
+          "pnl_percent": 10.076045627376429
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -63456,8 +63436,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.621,
-          "pnl_percent": 0.0
+          "current_price": 0.615,
+          "pnl_percent": -0.9661835748792313
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -63466,8 +63446,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.0475,
-          "pnl_percent": 0.42283298097252064
+          "current_price": 0.0482,
+          "pnl_percent": 1.9027484143763207
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -63476,8 +63456,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.0672,
-          "pnl_percent": -6.4066852367688165
+          "current_price": 0.0673,
+          "pnl_percent": -6.267409470752094
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -63486,8 +63466,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.054,
-          "pnl_percent": -2.527075812274371
+          "current_price": 0.0539,
+          "pnl_percent": -2.707581227436817
         },
         "AVNT/USDT": {
           "entry_price": 0.2913,
@@ -63496,8 +63476,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2827,
-          "pnl_percent": -2.9522828698935744
+          "current_price": 0.2865,
+          "pnl_percent": -1.6477857878475888
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -63506,8 +63486,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.765,
-          "pnl_percent": 7.594936708860756
+          "current_price": 0.757,
+          "pnl_percent": 6.469760900140642
         },
         "ORCA/USDT": {
           "entry_price": 1.21,
@@ -63516,8 +63496,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.475,
-          "current_price": 1.107,
-          "pnl_percent": -8.512396694214875
+          "current_price": 1.104,
+          "pnl_percent": -8.760330578512388
         },
         "ANIME/USDT": {
           "entry_price": 0.00948,
@@ -63526,8 +63506,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 84.844,
-          "current_price": 0.00921,
-          "pnl_percent": -2.8481012658228
+          "current_price": 0.00923,
+          "pnl_percent": -2.6371308016877704
         },
         "ACE/USDT": {
           "entry_price": 0.273,
@@ -63536,8 +63516,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.259,
-          "pnl_percent": -5.128205128205132
+          "current_price": 0.263,
+          "pnl_percent": -3.663003663003661
         },
         "LUMIA/USDT": {
           "entry_price": 0.127,
@@ -63546,8 +63526,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.116,
-          "pnl_percent": -8.661417322834641
+          "current_price": 0.117,
+          "pnl_percent": -7.874015748031493
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -63556,8 +63536,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.03,
-          "current_price": 0.0359,
-          "pnl_percent": -1.1019283746556363
+          "current_price": 0.0356,
+          "pnl_percent": -1.9283746556473802
         },
         "DOLO/USDT": {
           "entry_price": 0.03488,
@@ -63566,8 +63546,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.394,
-          "current_price": 0.03529,
-          "pnl_percent": 1.1754587155963225
+          "current_price": 0.03508,
+          "pnl_percent": 0.5733944954128489
         }
       },
       "trades": [
@@ -65247,7 +65227,7 @@
       "name": "Full Degen New",
       "strategy_id": "degen_full",
       "strategy_name": "Full Degen New",
-      "icon": "\ud83d\udc80",
+      "icon": "💀",
       "color": "#F44336",
       "config": {
         "cryptos": [
@@ -67162,7 +67142,7 @@
       "name": "Stoch New Coins",
       "strategy_id": "stoch_rsi",
       "strategy_name": "Stoch New Coins",
-      "icon": "\ud83c\udfaf",
+      "icon": "🎯",
       "color": "#673AB7",
       "config": {
         "cryptos": [
@@ -67198,22 +67178,22 @@
           "entry_price": 0.47592593070663947,
           "quantity": 10318.876459177762,
           "entry_time": "2025-12-19T21:34:08.489011",
-          "current_price": 0.4417,
-          "pnl_percent": -7.191440620985268
+          "current_price": 0.442,
+          "pnl_percent": -7.128405602163202
         },
         "JUP/USDT": {
           "entry_price": 0.1935284472276345,
           "quantity": 5449.5579275935115,
           "entry_time": "2025-12-19T22:10:05.109541",
-          "current_price": 0.1876,
-          "pnl_percent": -3.063346661724242
+          "current_price": 0.1867,
+          "pnl_percent": -3.5283945721957033
         },
         "JTO/USDT": {
           "entry_price": 0.35771540215202985,
           "quantity": 4557.533743271782,
           "entry_time": "2025-12-21T10:06:02.782421",
-          "current_price": 0.349,
-          "pnl_percent": -2.4364067355215013
+          "current_price": 0.35,
+          "pnl_percent": -2.1568548923568076
         },
         "PYTH/USDT": {
           "entry_price": 0.059883008736272114,
@@ -69874,7 +69854,7 @@
       "name": "VWAP New",
       "strategy_id": "vwap_bounce",
       "strategy_name": "VWAP New",
-      "icon": "\ud83d\udcb9",
+      "icon": "💹",
       "color": "#00BCD4",
       "config": {
         "cryptos": [
@@ -69904,15 +69884,15 @@
           "entry_price": 0.11227472291562268,
           "quantity": 60036.76883085365,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.1096,
-          "pnl_percent": -2.3823019520010758
+          "current_price": 0.1093,
+          "pnl_percent": -2.649503680234655
         },
         "TIA/USDT": {
           "entry_price": 0.4791192935672133,
           "quantity": 6400.830143938563,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.4417,
-          "pnl_percent": -7.810016016807286
+          "current_price": 0.442,
+          "pnl_percent": -7.747401130696896
         }
       },
       "trades": [
@@ -71909,7 +71889,7 @@
       "name": "Ichimoku New",
       "strategy_id": "ichimoku_fast",
       "strategy_name": "Ichimoku New",
-      "icon": "\u26c5",
+      "icon": "⛅",
       "color": "#607D8B",
       "config": {
         "cryptos": [
@@ -71945,43 +71925,43 @@
           "entry_price": 0.34994273830299844,
           "quantity": 10954.862663895685,
           "entry_time": "2025-12-20T05:41:35.751451",
-          "current_price": 0.349,
-          "pnl_percent": -0.2693978756553528
+          "current_price": 0.35,
+          "pnl_percent": 0.01636316195021692
         },
         "APT/USDT": {
           "entry_price": 1.650718708082878,
           "quantity": 720.9615325881708,
           "entry_time": "2025-12-20T06:57:28.059609",
-          "current_price": 1.58,
-          "pnl_percent": -4.284116229894175
+          "current_price": 1.577,
+          "pnl_percent": -4.465855249710837
         },
         "INJ/USDT": {
           "entry_price": 4.842109214555972,
           "quantity": 50.14668981239177,
           "entry_time": "2025-12-20T07:52:32.329976",
-          "current_price": 4.557,
-          "pnl_percent": -5.88812027822293
+          "current_price": 4.559,
+          "pnl_percent": -5.846815964103225
         },
         "SEI/USDT": {
           "entry_price": 0.11265083216007796,
           "quantity": 1854.097687531246,
           "entry_time": "2025-12-20T08:00:33.399189",
-          "current_price": 0.1096,
-          "pnl_percent": -2.7082198165590876
+          "current_price": 0.1093,
+          "pnl_percent": -2.9745294338495376
         },
         "JUP/USDT": {
           "entry_price": 0.19576908118413233,
           "quantity": 177.91650604628614,
           "entry_time": "2025-12-20T10:38:47.691344",
-          "current_price": 0.1876,
-          "pnl_percent": -4.172814795227464
+          "current_price": 0.1867,
+          "pnl_percent": -4.632540097382554
         },
         "SUI/USDT": {
           "entry_price": 1.4700141603888792,
           "quantity": 21.38385673341405,
           "entry_time": "2025-12-21T10:06:02.783418",
-          "current_price": 1.4256,
-          "pnl_percent": -3.0213423506838755
+          "current_price": 1.4275,
+          "pnl_percent": -2.8920918950625985
         }
       },
       "trades": [
@@ -75442,7 +75422,7 @@
       "name": "Sniper All-In",
       "strategy_id": "sniper_all_in",
       "strategy_name": "Conservative Alts",
-      "icon": "\ud83d\udee1\ufe0f",
+      "icon": "🛡️",
       "color": "#4CAF50",
       "config": {
         "cryptos": [
@@ -75457,19 +75437,14 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 3,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 3,
-        "auto_trade": true,
-        "max_risk": 35,
-        "min_liquidity": 150000,
-        "take_profit": 12,
-        "stop_loss": 8,
-        "max_hold_hours": 1
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 4283.953915539384,
+        "USDT": 4351.492653872473,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -75493,7 +75468,7 @@
         "Fair": 0,
         "NEWYEAR": 13444702.955962906,
         "PURK": 1212455.2067767212,
-        "\u738b\u4f69\u5947": 0,
+        "王佩奇": 0,
         "SCP": 1845217.4086305997,
         "FUN": 235409.86653723998,
         "esdeekid": 2737502.8047748217,
@@ -75881,7 +75856,7 @@
         {
           "timestamp": "2025-12-19T23:54:39.737319",
           "action": "SNIPE_BUY",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.438e-05,
           "quantity": 1764540.4634107,
           "amount_usdt": 148.89192430259487,
@@ -76491,7 +76466,7 @@
         {
           "timestamp": "2025-12-21T10:08:05.966135",
           "action": "DUMP_SOLD",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.394e-06,
           "quantity": 1764540.4634107,
           "amount_usdt": 14.757117991919806,
@@ -78002,7 +77977,7 @@
       "name": "HODL Altcoins",
       "strategy_id": "hodl",
       "strategy_name": "HODL Altcoins",
-      "icon": "\ud83d\udc8e",
+      "icon": "💎",
       "color": "#2196F3",
       "config": {
         "cryptos": [
@@ -78033,8 +78008,8 @@
           "entry_price": 0.3711,
           "quantity": 1347.3457289140395,
           "entry_time": "2025-12-19T17:01:00.001375",
-          "current_price": 0.3617,
-          "pnl_percent": -2.5330099703583797
+          "current_price": 0.3612,
+          "pnl_percent": -2.6677445432497837
         }
       },
       "trades": [
@@ -79354,7 +79329,7 @@
       "name": "DCA Aggro Alts",
       "strategy_id": "dca_aggressive",
       "strategy_name": "DCA Aggro Alts",
-      "icon": "\ud83d\udcb8",
+      "icon": "💸",
       "color": "#FF5722",
       "config": {
         "cryptos": [
@@ -79390,15 +79365,15 @@
           "entry_price": 0.37318381007147766,
           "quantity": 7043.377038487055,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 0.3617,
-          "pnl_percent": -3.0772530215815386
+          "current_price": 0.3612,
+          "pnl_percent": -3.211235254064837
         },
         "DOT/USDT": {
           "entry_price": 1.8423790884093338,
           "quantity": 1322.2074143154207,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 1.749,
-          "pnl_percent": -5.068397106588685
+          "current_price": 1.75,
+          "pnl_percent": -5.014119460566158
         },
         "LINK/USDT": {
           "entry_price": 12.503540763237527,
@@ -79411,22 +79386,22 @@
           "entry_price": 1.93998955374928,
           "quantity": 1163.9777015534748,
           "entry_time": "2025-12-19T17:01:00.003881",
-          "current_price": 1.95,
-          "pnl_percent": 0.5160051625728412
+          "current_price": 1.942,
+          "pnl_percent": 0.10363180805972316
         },
         "VET/USDT": {
           "entry_price": 0.01050687415349023,
           "quantity": 28697.034061805,
           "entry_time": "2025-12-19T17:06:54.491278",
-          "current_price": 0.01042,
-          "pnl_percent": -0.8268315792225533
+          "current_price": 0.01041,
+          "pnl_percent": -0.9220073646551641
         },
         "NEAR/USDT": {
           "entry_price": 1.513,
           "quantity": 21.801288227981512,
           "entry_time": "2025-12-19T19:55:31.173168",
-          "current_price": 1.484,
-          "pnl_percent": -1.9167217448777252
+          "current_price": 1.483,
+          "pnl_percent": -1.9828155981493567
         }
       },
       "trades": [
@@ -81430,7 +81405,7 @@
       "name": "Sniper Spray",
       "strategy_id": "sniper_spray",
       "strategy_name": "Confluence Alts",
-      "icon": "\ud83c\udfaf",
+      "icon": "🎯",
       "color": "#9C27B0",
       "config": {
         "cryptos": [
@@ -81445,19 +81420,14 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 5,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 5,
-        "auto_trade": true,
-        "max_risk": 40,
-        "min_liquidity": 100000,
-        "take_profit": 15,
-        "stop_loss": 8,
-        "max_hold_hours": 1
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 3223.919808791801,
+        "USDT": 3280.019745227472,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -81481,7 +81451,7 @@
         "Fair": 0,
         "NEWYEAR": 14467358.805782286,
         "PURK": 1277778.6136402423,
-        "\u738b\u4f69\u5947": 0,
+        "王佩奇": 0,
         "SCP": 1865267.8186966437,
         "FUN": 233061.31164664254,
         "esdeekid": 2654311.99099257,
@@ -81855,7 +81825,7 @@
         {
           "timestamp": "2025-12-19T23:54:39.769905",
           "action": "SNIPE_BUY",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.438e-05,
           "quantity": 1821266.1040828624,
           "amount_usdt": 153.67843386251192,
@@ -82255,7 +82225,7 @@
         {
           "timestamp": "2025-12-21T10:08:35.724429",
           "action": "DUMP_SOLD",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.394e-06,
           "quantity": 1821266.1040828624,
           "amount_usdt": 15.231844554638531,
@@ -83706,7 +83676,7 @@
       "name": "Sniper Quickflip",
       "strategy_id": "sniper_quickflip",
       "strategy_name": "Martingale Alts",
-      "icon": "\ud83c\udfb0",
+      "icon": "🎰",
       "color": "#795548",
       "config": {
         "cryptos": [
@@ -83721,19 +83691,14 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 1,
+        "allocation_percent": 5,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 3,
-        "auto_trade": true,
-        "max_risk": 35,
-        "min_liquidity": 100000,
-        "take_profit": 10,
-        "stop_loss": 5,
-        "max_hold_hours": 0.5
+        "max_positions": 20,
+        "auto_trade": true
       },
       "balance": {
-        "USDT": 3187.2721628315417,
+        "USDT": 3245.9106410138857,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -83756,7 +83721,7 @@
         "Fair": 0,
         "NEWYEAR": 15228798.742928721,
         "PURK": 1345030.1196213076,
-        "\u738b\u4f69\u5947": 0,
+        "王佩奇": 0,
         "SCP": 1963439.8091543622,
         "FUN": 245327.69647015005,
         "esdeekid": 0,
@@ -84116,7 +84081,7 @@
         {
           "timestamp": "2025-12-19T23:54:39.795922",
           "action": "SNIPE_BUY",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.438e-05,
           "quantity": 1917122.2148240656,
           "amount_usdt": 161.76677248685465,
@@ -84521,7 +84486,7 @@
         {
           "timestamp": "2025-12-21T10:08:55.633427",
           "action": "DUMP_SOLD",
-          "symbol": "\u738b\u4f69\u5947/USDT",
+          "symbol": "王佩奇/USDT",
           "price": 8.394e-06,
           "quantity": 1917122.2148240656,
           "amount_usdt": 16.034046899619504,
@@ -85982,7 +85947,7 @@
       "name": "GCR Layer2",
       "strategy_id": "whale_gcr",
       "strategy_name": "Martingale DeFi",
-      "icon": "\ud83c\udfb0",
+      "icon": "🎰",
       "color": "#F44336",
       "config": {
         "cryptos": [
@@ -87370,7 +87335,7 @@
       "name": "Full Degen DeFi",
       "strategy_id": "degen_full",
       "strategy_name": "Full Degen DeFi",
-      "icon": "\ud83d\udc80",
+      "icon": "💀",
       "color": "#FF1744",
       "config": {
         "cryptos": [
@@ -89215,7 +89180,7 @@
       "name": "Hsaka Gaming",
       "strategy_id": "whale_hsaka",
       "strategy_name": "YOLO New+Meme",
-      "icon": "\ud83d\ude80",
+      "icon": "🚀",
       "color": "#E91E63",
       "config": {
         "cryptos": [
@@ -89237,7 +89202,7 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 2948.287866925011,
+        "USDT": 2792.4264026783812,
         "SOPH": 0,
         "SSV": 127.35608762098828,
         "ANIME": 56818.181818181816,
@@ -89258,7 +89223,7 @@
         "EPIC": 704.2253521126761,
         "ORCA": 0,
         "ACE": 1718.8520183377666,
-        "LUMIA": 2966.711515115264,
+        "LUMIA": 4310.3448275862065,
         "DOLO": 14318.4421534937
       },
       "initial_capital": 10000,
@@ -89270,8 +89235,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.044,
-          "current_price": 3.766,
-          "pnl_percent": -4.075394803871624
+          "current_price": 3.779,
+          "pnl_percent": -3.7442689760570635
         },
         "GIGGLE/USDT": {
           "entry_price": 72.37,
@@ -89280,8 +89245,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.179,
-          "current_price": 70.45,
-          "pnl_percent": -2.6530330247340084
+          "current_price": 69.73,
+          "pnl_percent": -3.647920409009253
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -89290,8 +89255,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01745,
-          "pnl_percent": 10.583016476552597
+          "current_price": 0.01737,
+          "pnl_percent": 10.076045627376429
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -89300,8 +89265,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.621,
-          "pnl_percent": 0.0
+          "current_price": 0.615,
+          "pnl_percent": -0.9661835748792313
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -89310,8 +89275,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 76.133,
-          "current_price": 0.0475,
-          "pnl_percent": 0.42283298097252064
+          "current_price": 0.0482,
+          "pnl_percent": 1.9027484143763207
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -89320,8 +89285,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.0672,
-          "pnl_percent": -6.4066852367688165
+          "current_price": 0.0673,
+          "pnl_percent": -6.267409470752094
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -89330,8 +89295,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.054,
-          "pnl_percent": -2.527075812274371
+          "current_price": 0.0539,
+          "pnl_percent": -2.707581227436817
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -89340,8 +89305,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.707,
-          "current_price": 0.2827,
-          "pnl_percent": -3.01886792452829
+          "current_price": 0.2865,
+          "pnl_percent": -1.715265866209259
         },
         "ANIME/USDT": {
           "entry_price": 0.0088,
@@ -89350,8 +89315,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 69.755,
-          "current_price": 0.00921,
-          "pnl_percent": 4.6590909090908905
+          "current_price": 0.00923,
+          "pnl_percent": 4.886363636363633
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -89360,8 +89325,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.765,
-          "pnl_percent": 7.7464788732394485
+          "current_price": 0.757,
+          "pnl_percent": 6.619718309859168
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -89370,18 +89335,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.259,
-          "pnl_percent": -5.474452554744536
-        },
-        "LUMIA/USDT": {
-          "entry_price": 0.127,
-          "quantity": 2966.711515115264,
-          "entry_time": "2025-12-23T08:00:29.584484",
-          "is_whale_trade": true,
-          "whale": "Hsaka (simulated)",
-          "confidence": 79.592,
-          "current_price": 0.116,
-          "pnl_percent": -8.661417322834641
+          "current_price": 0.263,
+          "pnl_percent": -4.014598540145986
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -89390,8 +89345,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0359,
-          "pnl_percent": -1.912568306010931
+          "current_price": 0.0356,
+          "pnl_percent": -2.732240437158473
         },
         "DOLO/USDT": {
           "entry_price": 0.03492,
@@ -89400,8 +89355,18 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.45,
-          "current_price": 0.03529,
-          "pnl_percent": 1.05956471935853
+          "current_price": 0.03508,
+          "pnl_percent": 0.45819014891179677
+        },
+        "LUMIA/USDT": {
+          "entry_price": 0.116,
+          "quantity": 4310.3448275862065,
+          "entry_time": "2025-12-23T14:28:26.697904",
+          "is_whale_trade": true,
+          "whale": "Hsaka (simulated)",
+          "confidence": 67.172,
+          "current_price": 0.117,
+          "pnl_percent": 0.8620689655172376
         }
       },
       "trades": [
@@ -89758,6 +89723,26 @@
           "pnl": 0,
           "whale": "Hsaka (simulated)",
           "reason": "MOMENTUM: DOLO/USDT +13.4% with $5M volume"
+        },
+        {
+          "timestamp": "2025-12-23T14:28:26.696906",
+          "action": "SELL",
+          "symbol": "LUMIA/USDT",
+          "price": 0.116,
+          "quantity": 2966.711515115264,
+          "amount_usdt": 344.1385357533706,
+          "pnl": -32.63382666626789
+        },
+        {
+          "timestamp": "2025-12-23T14:28:26.697904",
+          "action": "WHALE_BUY",
+          "symbol": "LUMIA/USDT",
+          "price": 0.116,
+          "quantity": 4310.3448275862065,
+          "amount_usdt": 500,
+          "pnl": 0,
+          "whale": "Hsaka (simulated)",
+          "reason": "MOMENTUM: LUMIA/USDT +17.2% with $10M volume"
         }
       ],
       "created_at": "2025-12-19T17:30:00",
@@ -91058,7 +91043,7 @@
       "name": "Breakout Mixed",
       "strategy_id": "breakout_tight",
       "strategy_name": "Breakout Mixed",
-      "icon": "\ud83d\udca5",
+      "icon": "💥",
       "color": "#9C27B0",
       "config": {
         "cryptos": [
@@ -91105,29 +91090,29 @@
           "entry_price": 0.237,
           "quantity": 2488.274064207929,
           "entry_time": "2025-12-20T07:44:11.876959",
-          "current_price": 0.223,
-          "pnl_percent": -5.907172995780585
+          "current_price": 0.224,
+          "pnl_percent": -5.4852320675105375
         },
         "ARB/USDT": {
           "entry_price": 0.1938,
           "quantity": 3829.1440047184974,
           "entry_time": "2025-12-20T08:30:17.387792",
-          "current_price": 0.1835,
-          "pnl_percent": -5.314757481940147
+          "current_price": 0.1837,
+          "pnl_percent": -5.2115583075335365
         },
         "OP/USDT": {
           "entry_price": 0.2841,
           "quantity": 2350.8598989897932,
           "entry_time": "2025-12-20T08:30:17.387792",
-          "current_price": 0.2656,
-          "pnl_percent": -6.511791622668084
+          "current_price": 0.2659,
+          "pnl_percent": -6.40619500175994
         },
         "XRP/USDT": {
           "entry_price": 1.9456280653042148,
           "quantity": 503.270823050564,
           "entry_time": "2025-12-20T08:46:19.759189",
-          "current_price": 1.877,
-          "pnl_percent": -3.5272962252158035
+          "current_price": 1.8805,
+          "pnl_percent": -3.3474057280331926
         }
       },
       "trades": [
@@ -92578,7 +92563,7 @@
       "name": "Fear Index Majors",
       "strategy_id": "dca_fear",
       "strategy_name": "Fear Index Majors",
-      "icon": "\ud83d\ude31",
+      "icon": "😱",
       "color": "#3F51B5",
       "config": {
         "cryptos": [
@@ -92608,36 +92593,36 @@
           "entry_price": 88091.99567737561,
           "quantity": 0.02467583925408906,
           "entry_time": "2025-12-19T17:01:00.667452",
-          "current_price": 87693.55,
-          "pnl_percent": -0.4523063353393253
+          "current_price": 87609.27,
+          "pnl_percent": -0.5479790458414846
         },
         "ETH/USDT": {
           "entry_price": 2971.3230225638504,
           "quantity": 0.6949957015712219,
           "entry_time": "2025-12-19T17:01:01.322643",
-          "current_price": 2941.53,
-          "pnl_percent": -1.002685414463722
+          "current_price": 2941.6,
+          "pnl_percent": -1.0003295615501062
         },
         "BNB/USDT": {
           "entry_price": 847.7544766682959,
           "quantity": 2.3027569727529666,
           "entry_time": "2025-12-19T17:01:01.946243",
-          "current_price": 847.8,
-          "pnl_percent": 0.005369872168992096
+          "current_price": 847.82,
+          "pnl_percent": 0.007729045791848854
         },
         "SOL/USDT": {
           "entry_price": 125.41507624266626,
           "quantity": 14.78740803159528,
           "entry_time": "2025-12-19T17:01:02.565164",
-          "current_price": 123.1,
-          "pnl_percent": -1.845931376054677
+          "current_price": 122.96,
+          "pnl_percent": -1.957560698616434
         },
         "XRP/USDT": {
           "entry_price": 1.881092662988853,
           "quantity": 936.602297745861,
           "entry_time": "2025-12-19T17:01:03.181062",
-          "current_price": 1.877,
-          "pnl_percent": -0.21756838827653446
+          "current_price": 1.8805,
+          "pnl_percent": -0.031506315478957436
         }
       },
       "trades": [
@@ -94671,7 +94656,7 @@
       "name": "Copy GCR (Contrarian)",
       "strategy_id": "whale_gcr",
       "strategy_name": "God Mode Alts",
-      "icon": "\u26a1",
+      "icon": "⚡",
       "color": "#607D8B",
       "config": {
         "cryptos": [
@@ -96063,7 +96048,7 @@
       "name": "Copy Hsaka (Momentum)",
       "strategy_id": "whale_hsaka",
       "strategy_name": "Ichimoku Majors",
-      "icon": "\u2601\ufe0f",
+      "icon": "☁️",
       "color": "#00BCD4",
       "config": {
         "cryptos": [
@@ -96118,8 +96103,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.766,
-          "pnl_percent": -4.050955414012735
+          "current_price": 3.779,
+          "pnl_percent": -3.7197452229299377
         },
         "GIGGLE/USDT": {
           "entry_price": 72.34,
@@ -96128,8 +96113,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.3,
-          "current_price": 70.45,
-          "pnl_percent": -2.612662427426049
+          "current_price": 69.73,
+          "pnl_percent": -3.607962399778819
         },
         "TST/USDT": {
           "entry_price": 0.01576,
@@ -96138,8 +96123,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.953,
-          "current_price": 0.01745,
-          "pnl_percent": 10.723350253807107
+          "current_price": 0.01737,
+          "pnl_percent": 10.215736040609148
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -96148,8 +96133,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.621,
-          "pnl_percent": 0.0
+          "current_price": 0.615,
+          "pnl_percent": -0.9661835748792313
         },
         "BANK/USDT": {
           "entry_price": 0.0472,
@@ -96158,8 +96143,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.0475,
-          "pnl_percent": 0.6355932203389925
+          "current_price": 0.0482,
+          "pnl_percent": 2.1186440677966045
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -96168,8 +96153,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.0672,
-          "pnl_percent": -6.4066852367688165
+          "current_price": 0.0673,
+          "pnl_percent": -6.267409470752094
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -96178,8 +96163,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.054,
-          "pnl_percent": -2.527075812274371
+          "current_price": 0.0539,
+          "pnl_percent": -2.707581227436817
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -96188,8 +96173,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2827,
-          "pnl_percent": -3.01886792452829
+          "current_price": 0.2865,
+          "pnl_percent": -1.715265866209259
         },
         "ANIME/USDT": {
           "entry_price": 0.00881,
@@ -96198,8 +96183,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.027,
-          "current_price": 0.00921,
-          "pnl_percent": 4.540295119182747
+          "current_price": 0.00923,
+          "pnl_percent": 4.76730987514189
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -96208,8 +96193,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.343,
-          "current_price": 0.765,
-          "pnl_percent": 7.7464788732394485
+          "current_price": 0.757,
+          "pnl_percent": 6.619718309859168
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -96218,8 +96203,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.259,
-          "pnl_percent": -5.474452554744536
+          "current_price": 0.263,
+          "pnl_percent": -4.014598540145986
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -96228,8 +96213,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.0,
-          "current_price": 0.0359,
-          "pnl_percent": -1.1019283746556363
+          "current_price": 0.0356,
+          "pnl_percent": -1.9283746556473802
         },
         "DOLO/USDT": {
           "entry_price": 0.0349,
@@ -96238,8 +96223,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.483000000000004,
-          "current_price": 0.03529,
-          "pnl_percent": 1.1174785100286577
+          "current_price": 0.03508,
+          "pnl_percent": 0.515759312320907
         },
         "LUMIA/USDT": {
           "entry_price": 0.117,
@@ -96248,8 +96233,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.0,
-          "current_price": 0.116,
-          "pnl_percent": -0.8547008547008517
+          "current_price": 0.117,
+          "pnl_percent": 0.0
         }
       },
       "trades": [
@@ -97967,22 +97952,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 87693.55,
-          "pnl_percent": -1.2871117315485736
+          "current_price": 87609.27,
+          "pnl_percent": -1.3819821322024972
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 2941.53,
-          "pnl_percent": -2.021101707115336
+          "current_price": 2941.6,
+          "pnl_percent": -2.0187700895964
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 123.1,
-          "pnl_percent": -2.536927035374714
+          "current_price": 122.96,
+          "pnl_percent": -2.64777049772279
         }
       },
       "trades": [
@@ -98447,15 +98432,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 87693.55,
-          "pnl_percent": -1.1934367206100749
+          "current_price": 87609.27,
+          "pnl_percent": -1.2883971498912183
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.929665",
-          "current_price": 2941.53,
-          "pnl_percent": -1.7849796880590407
+          "current_price": 2941.6,
+          "pnl_percent": -1.7826424515114625
         }
       },
       "trades": [
@@ -98904,15 +98889,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.317795",
-          "current_price": 87693.55,
-          "pnl_percent": -1.1934367206100749
+          "current_price": 87609.27,
+          "pnl_percent": -1.2883971498912183
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.930851",
-          "current_price": 2941.53,
-          "pnl_percent": -1.7849796880590407
+          "current_price": 2941.6,
+          "pnl_percent": -1.7826424515114625
         }
       },
       "trades": [
@@ -99361,15 +99346,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87693.55,
-          "pnl_percent": -1.1934367206100749
+          "current_price": 87609.27,
+          "pnl_percent": -1.2883971498912183
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.932325",
-          "current_price": 2941.53,
-          "pnl_percent": -1.7849796880590407
+          "current_price": 2941.6,
+          "pnl_percent": -1.7826424515114625
         }
       },
       "trades": [
@@ -99818,15 +99803,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87693.55,
-          "pnl_percent": -1.1934367206100749
+          "current_price": 87609.27,
+          "pnl_percent": -1.2883971498912183
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.933357",
-          "current_price": 2941.53,
-          "pnl_percent": -1.7849796880590407
+          "current_price": 2941.6,
+          "pnl_percent": -1.7826424515114625
         }
       },
       "trades": [
@@ -100276,22 +100261,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 87693.55,
-          "pnl_percent": -1.2871117315485736
+          "current_price": 87609.27,
+          "pnl_percent": -1.3819821322024972
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 2941.53,
-          "pnl_percent": -2.021101707115336
+          "current_price": 2941.6,
+          "pnl_percent": -2.0187700895964
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.320787",
-          "current_price": 123.1,
-          "pnl_percent": -2.536927035374714
+          "current_price": 122.96,
+          "pnl_percent": -2.64777049772279
         }
       },
       "trades": [
@@ -102889,7 +102874,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_173": {
@@ -102925,7 +102910,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_174": {
@@ -102961,7 +102946,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_175": {
@@ -102997,7 +102982,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_176": {
@@ -103033,7 +103018,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_177": {
@@ -103069,7 +103054,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_178": {
@@ -103105,7 +103090,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_179": {
@@ -103141,7 +103126,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_180": {
@@ -103177,7 +103162,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_181": {
@@ -103213,7 +103198,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_182": {
@@ -103249,7 +103234,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_183": {
@@ -103285,7 +103270,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_184": {
@@ -103321,7 +103306,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_185": {
@@ -103357,7 +103342,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_186": {
@@ -103393,7 +103378,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_187": {
@@ -103429,7 +103414,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_188": {
@@ -103465,7 +103450,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_189": {
@@ -103501,7 +103486,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_190": {
@@ -103537,7 +103522,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_191": {
@@ -103573,7 +103558,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_192": {
@@ -103609,7 +103594,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "portfolio_193": {
@@ -103645,7 +103630,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": false,
+      "active": true,
       "decision_logs": []
     },
     "118": {
@@ -103673,7 +103658,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_pelosi",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "118"
     },
@@ -103702,7 +103687,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_tuberville",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "119"
     },
@@ -103731,7 +103716,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_crenshaw",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "120"
     },
@@ -103760,7 +103745,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_all",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "121"
     },
@@ -103789,7 +103774,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_buffett",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "122"
     },
@@ -103818,7 +103803,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_soros",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "123"
     },
@@ -103847,7 +103832,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_dalio",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "124"
     },
@@ -103876,7 +103861,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_simons",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "125"
     },
@@ -103905,7 +103890,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_burry",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "126"
     },
@@ -103934,7 +103919,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_cathie",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "127"
     },
@@ -103953,8 +103938,8 @@
           "is_whale_trade": true,
           "whale": "Paul Tudor Jones",
           "confidence": 70,
-          "current_price": 0.1087,
-          "pnl_percent": -9.11371237458194
+          "current_price": 0.1088,
+          "pnl_percent": -9.030100334448166
         }
       },
       "trades": [
@@ -103987,7 +103972,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_ptj",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "128"
     },
@@ -104016,7 +104001,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_ackman",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "129"
     },
@@ -104045,7 +104030,7 @@
         "max_positions": 20
       },
       "strategy_id": "whale_cobie",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "130"
     },
@@ -104074,7 +104059,7 @@
         "max_positions": 20
       },
       "strategy_id": "whale_ansem",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "131"
     },
@@ -104779,7 +104764,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_contrarian",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "156"
     },
@@ -104808,7 +104793,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_extreme",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "157"
     },
@@ -104837,7 +104822,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_oi_combo",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "158"
     },
@@ -104866,7 +104851,7 @@
         "max_positions": 20
       },
       "strategy_id": "social_sentiment",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "159"
     },
@@ -104895,7 +104880,7 @@
         "max_positions": 20
       },
       "strategy_id": "fear_greed_extreme",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "160"
     },
@@ -105156,7 +105141,7 @@
         "max_positions": 20
       },
       "strategy_id": "orderflow_delta",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "169"
     },
@@ -105185,7 +105170,7 @@
         "max_positions": 20
       },
       "strategy_id": "orderflow_imbalance",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "170"
     },
@@ -105591,7 +105576,7 @@
         "max_positions": 20
       },
       "strategy_id": "oi_divergence",
-      "active": false,
+      "active": true,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "184"
     },

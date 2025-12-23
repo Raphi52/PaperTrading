@@ -1473,13 +1473,13 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['momentum_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100
     indicators['momentum_4h'] = (closes.iloc[-1] - closes.iloc[-5]) / closes.iloc[-5] * 100 if len(closes) > 5 else 0
 
-    # Scalping signals (quick reversals) - ASSOUPLI pour plus de trades
-    indicators['scalp_buy'] = indicators['rsi'] < 40 and indicators['momentum_1h'] > 0.1
-    indicators['scalp_sell'] = indicators['rsi'] > 60 and indicators['momentum_1h'] < -0.1
+    # Scalping signals (quick reversals) - ULTRA RELAXED pour generer des trades
+    indicators['scalp_buy'] = indicators['rsi'] < 50 and indicators['momentum_1h'] > 0
+    indicators['scalp_sell'] = indicators['rsi'] > 55 and indicators['momentum_1h'] < 0
 
-    # Momentum signals (riding the wave) - ASSOUPLI pour plus de trades
-    indicators['momentum_buy'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] > 0.3 and indicators['rsi'] < 70
-    indicators['momentum_sell'] = indicators['volume_ratio'] > 1.3 and indicators['momentum_1h'] < -0.3 and indicators['rsi'] > 30
+    # Momentum signals (riding the wave) - ULTRA RELAXED pour generer des trades
+    indicators['momentum_buy'] = indicators['volume_ratio'] > 1.1 and indicators['momentum_1h'] > 0.15 and indicators['rsi'] < 75
+    indicators['momentum_sell'] = indicators['volume_ratio'] > 1.1 and indicators['momentum_1h'] < -0.15 and indicators['rsi'] > 25
 
     # ============ ADDITIONAL INDICATORS FOR MISSING STRATEGIES ============
 
@@ -2106,9 +2106,9 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                     pass
 
     # Check max positions
-    if len(portfolio['positions']) >= config.get('max_positions', 3):
+    if len(portfolio['positions']) >= config.get('max_positions', 10):
         if symbol not in portfolio['positions']:
-            return (None, f"Max positions ({config.get('max_positions', 3)}) reached")
+            return (None, f"Max positions ({config.get('max_positions', 10)}) reached")
 
     has_position = portfolio['balance'].get(asset, 0) > 0
     has_cash = portfolio['balance']['USDT'] > 100
