@@ -398,18 +398,32 @@ class WhaleTracker:
         signals = []
         fg = market.get('fear_greed', 50)
 
+        # Dead/illiquid tokens to avoid
+        DEAD_TOKENS = {'BETA', 'VIB', 'WTC', 'CREAM', 'PNT', 'DREP', 'HARD', 'IRIS',
+                       'CTXC', 'KEY', 'MBL', 'OAX', 'VITE', 'WING', 'PERL', 'TORN',
+                       'AKRO', 'SUN', 'BTG', 'REP', 'TRIBE', 'FIS', 'LINA', 'BOND'}
+
         # Extreme fear = buy signal
         if fg < 25:
-            for loser in market.get('top_losers', [])[:3]:
+            for loser in market.get('top_losers', [])[:10]:  # Check more but filter
                 symbol = loser['symbol'].replace('USDT', '/USDT')
+                base_token = symbol.split('/')[0]
                 change = float(loser['priceChangePercent'])
+                volume = float(loser.get('quoteVolume', 0))
+
+                # Skip dead tokens and low volume
+                if base_token in DEAD_TOKENS:
+                    continue
+                if volume < 5_000_000:  # Need at least $5M volume
+                    continue
+
                 if change < -10:  # Only big drops
                     signals.append({
                         'action': 'BUY',
                         'symbol': symbol,
                         'whale': whale['name'],
                         'confidence': min(90, 100 - fg),
-                        'reason': f"CONTRARIAN: Fear={fg}, {symbol} down {change:.1f}%"
+                        'reason': f"CONTRARIAN: Fear={fg}, {symbol} down {change:.1f}%, Vol ${volume/1e6:.0f}M"
                     })
 
         # Extreme greed = sell signal
@@ -520,12 +534,25 @@ class WhaleTracker:
         return signals
 
     def _degen_signals(self, whale: Dict, market: Dict) -> List[Dict]:
-        """Full degen: chase pumps aggressively"""
+        """Full degen: chase pumps aggressively but with volume filter"""
         signals = []
 
-        for gainer in market.get('top_gainers', [])[:12]:
+        # Dead tokens to avoid
+        DEAD_TOKENS = {'BETA', 'VIB', 'WTC', 'CREAM', 'PNT', 'DREP', 'HARD', 'IRIS',
+                       'CTXC', 'KEY', 'MBL', 'OAX', 'VITE', 'WING', 'PERL', 'TORN'}
+
+        for gainer in market.get('top_gainers', [])[:15]:
             symbol = gainer['symbol'].replace('USDT', '/USDT')
+            base_token = symbol.split('/')[0]
             change = float(gainer['priceChangePercent'])
+            volume = float(gainer.get('quoteVolume', 0))
+
+            # Skip dead tokens
+            if base_token in DEAD_TOKENS:
+                continue
+            # Require minimum volume for degen plays
+            if volume < 3_000_000:  # $3M minimum
+                continue
 
             if change > 7:  # Lower threshold
                 signals.append({
@@ -533,7 +560,7 @@ class WhaleTracker:
                     'symbol': symbol,
                     'whale': whale['name'],
                     'confidence': min(70, 40 + change),
-                    'reason': f"DEGEN: Chasing {symbol} +{change:.1f}%"
+                    'reason': f"DEGEN: Chasing {symbol} +{change:.1f}%, Vol ${volume/1e6:.0f}M"
                 })
 
         return signals
