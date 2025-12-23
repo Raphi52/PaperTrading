@@ -5033,7 +5033,7 @@ def render_settings():
     # Load current settings
     settings = load_settings()
 
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["🔑 API Keys", "💰 Real Trading", "🔐 DEX Wallets", "🔔 Notifications", "🎨 Preferences"])
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["🔑 API Keys", "💰 Real Trading", "🔐 DEX Wallets", "🔔 Notifications", "🎨 Preferences", "⚠️ Danger Zone"])
 
     with tab1:
         st.subheader("Exchange API")
@@ -5194,6 +5194,82 @@ def render_settings():
         st.selectbox("Theme", ["Dark (Default)", "Degen Rainbow"])
         st.checkbox("Sound Alerts", value=False)
         refresh_rate = st.slider("Refresh Rate (seconds)", 5, 60, settings.get("refresh_rate", 10))
+
+    with tab6:
+        st.subheader("⚠️ Danger Zone")
+        st.warning("These actions are irreversible! Use with caution.")
+
+        st.divider()
+
+        # Reset All Portfolios
+        st.markdown("### 🔄 Reset All Portfolios")
+        st.caption("Reset ALL portfolios to $10,000 USDT with no open positions. Trade history will be cleared.")
+
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            reset_confirm = st.text_input(
+                "Type RESET to confirm",
+                placeholder="Type RESET here...",
+                key="reset_confirm_input"
+            )
+        with col2:
+            st.write("")  # Spacing
+            st.write("")  # Spacing
+            reset_btn = st.button("🔄 RESET ALL", type="primary", disabled=(reset_confirm != "RESET"))
+
+        if reset_btn and reset_confirm == "RESET":
+            try:
+                portfolios_data = load_portfolios()
+                reset_count = 0
+
+                for pid, portfolio in portfolios_data.get('portfolios', {}).items():
+                    # Reset balance to 10000 USDT
+                    portfolio['balance'] = {'USDT': 10000.0}
+                    portfolio['initial_balance'] = 10000.0
+
+                    # Clear all positions
+                    portfolio['positions'] = {}
+
+                    # Clear trade history
+                    portfolio['trades'] = []
+
+                    reset_count += 1
+
+                save_portfolios(portfolios_data)
+                st.success(f"✅ {reset_count} portfolios reset to $10,000 USDT with no positions!")
+                st.balloons()
+                time.sleep(1)
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error resetting portfolios: {e}")
+
+        st.divider()
+
+        # Delete All Portfolios
+        st.markdown("### 🗑️ Delete All Portfolios")
+        st.caption("Permanently delete ALL portfolios. This cannot be undone.")
+
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            delete_confirm = st.text_input(
+                "Type DELETE ALL to confirm",
+                placeholder="Type DELETE ALL here...",
+                key="delete_confirm_input"
+            )
+        with col2:
+            st.write("")
+            st.write("")
+            delete_btn = st.button("🗑️ DELETE ALL", type="primary", disabled=(delete_confirm != "DELETE ALL"))
+
+        if delete_btn and delete_confirm == "DELETE ALL":
+            try:
+                portfolios_data = {'portfolios': {}, 'counter': 0}
+                save_portfolios(portfolios_data)
+                st.success("✅ All portfolios deleted!")
+                time.sleep(1)
+                st.rerun()
+            except Exception as e:
+                st.error(f"Error deleting portfolios: {e}")
 
     if st.button("💾 Save Settings", type="primary"):
         # Build wallet config
