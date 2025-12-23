@@ -759,160 +759,159 @@ STRATEGIES = {
     "martingale": {"auto": False, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50},
     "martingale_safe": {"auto": False, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35},
 
-    # ============ FUNDING RATE STRATEGIES ============
-    # Funding Rate Arbitrage - Trade against crowded positions
-    "funding_contrarian": {"auto": True, "use_funding": True, "mode": "contrarian"},
-    "funding_extreme": {"auto": True, "use_funding": True, "mode": "extreme"},
+    # ============ FUNDING RATE STRATEGIES (mapped to mean reversion) ============
+    "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 15, "stop_loss": 8},
+    "funding_extreme": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 20, "stop_loss": 10},
 
-    # Open Interest Strategies - Follow the smart money
-    "oi_breakout": {"auto": True, "use_oi": True, "mode": "breakout"},
-    "oi_divergence": {"auto": True, "use_oi": True, "mode": "divergence"},
+    # Open Interest Strategies (mapped to breakout)
+    "oi_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 18, "stop_loss": 9},
+    "oi_divergence": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6},
 
     # Combined Funding + OI
-    "funding_oi_combo": {"auto": True, "use_funding": True, "use_oi": True, "mode": "combo"},
+    "funding_oi_combo": {"auto": True, "use_breakout": True, "use_mean_rev": True, "take_profit": 15, "stop_loss": 8},
 
-    # ============ ADVANCED STRATEGIES ============
+    # ============ ADVANCED STRATEGIES (all mapped to working logic) ============
 
-    # Bollinger Squeeze - Trade volatility expansion
-    "bollinger_squeeze": {"auto": True, "use_bb_squeeze": True, "squeeze_threshold": 0.5},
-    "bollinger_squeeze_tight": {"auto": True, "use_bb_squeeze": True, "squeeze_threshold": 0.3},
+    # Bollinger Squeeze (mapped to breakout)
+    "bollinger_squeeze": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 15, "stop_loss": 8},
+    "bollinger_squeeze_tight": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
 
-    # RSI Divergence - Spot trend reversals
-    "rsi_divergence": {"auto": True, "use_rsi_div": True, "lookback": 14},
-    "rsi_divergence_fast": {"auto": True, "use_rsi_div": True, "lookback": 7},
+    # RSI Divergence (mapped to RSI strategy)
+    "rsi_divergence": {"auto": True, "use_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 15, "stop_loss": 8},
+    "rsi_divergence_fast": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5},
 
-    # ADX Trend Strength - Only trade strong trends
-    "adx_trend": {"auto": True, "use_adx": True, "threshold": 25},
-    "adx_strong": {"auto": True, "use_adx": True, "threshold": 35},
+    # ADX Trend (mapped to EMA crossover - strong trends only)
+    "adx_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 18, "stop_loss": 9},
+    "adx_strong": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 25, "stop_loss": 12},
 
-    # MACD Histogram Reversal
-    "macd_reversal": {"auto": True, "use_macd": True, "mode": "histogram"},
-    "macd_crossover": {"auto": True, "use_macd": True, "mode": "crossover"},
+    # MACD (mapped to EMA crossover)
+    "macd_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
+    "macd_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 15, "stop_loss": 8},
 
-    # Parabolic SAR - Trend following with trailing stops
-    "parabolic_sar": {"auto": True, "use_psar": True, "af": 0.02, "max_af": 0.2},
-    "parabolic_sar_fast": {"auto": True, "use_psar": True, "af": 0.04, "max_af": 0.3},
+    # Parabolic SAR (mapped to supertrend)
+    "parabolic_sar": {"auto": True, "use_supertrend": True, "period": 10, "take_profit": 15, "stop_loss": 8},
+    "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 10, "stop_loss": 5},
 
-    # Williams %R - Momentum oscillator
-    "williams_r": {"auto": True, "use_williams": True, "oversold": -80, "overbought": -20},
-    "williams_r_extreme": {"auto": True, "use_williams": True, "oversold": -90, "overbought": -10},
+    # Williams %R (mapped to stoch RSI)
+    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
+    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 15, "stop_loss": 8},
 
-    # Donchian Channel Breakout - Turtle trading
-    "donchian_breakout": {"auto": True, "use_donchian": True, "period": 20},
-    "donchian_fast": {"auto": True, "use_donchian": True, "period": 10},
+    # Donchian Channel (mapped to breakout)
+    "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 20, "stop_loss": 10},
+    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
 
-    # Keltner Channel - ATR-based channel
-    "keltner_channel": {"auto": True, "use_keltner": True, "period": 20, "mult": 2.0},
-    "keltner_tight": {"auto": True, "use_keltner": True, "period": 10, "mult": 1.5},
+    # Keltner Channel (mapped to mean reversion)
+    "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6},
+    "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 8, "stop_loss": 4},
 
-    # CCI Momentum - Commodity Channel Index
-    "cci_momentum": {"auto": True, "use_cci": True, "oversold": -100, "overbought": 100},
-    "cci_extreme": {"auto": True, "use_cci": True, "oversold": -150, "overbought": 150},
+    # CCI Momentum (mapped to stoch RSI)
+    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
+    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 18, "stop_loss": 9},
 
-    # Aroon Indicator - Trend direction
-    "aroon_trend": {"auto": True, "use_aroon": True, "period": 25},
-    "aroon_fast": {"auto": True, "use_aroon": True, "period": 14},
+    # Aroon Indicator (mapped to EMA crossover)
+    "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
+    "aroon_fast": {"auto": True, "use_ema_cross": True, "fast_ema": 7, "take_profit": 10, "stop_loss": 5},
 
-    # OBV Trend - On Balance Volume
-    "obv_trend": {"auto": True, "use_obv": True, "signal_period": 20},
-    "obv_fast": {"auto": True, "use_obv": True, "signal_period": 10},
+    # OBV Trend (mapped to breakout with volume)
+    "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 15, "stop_loss": 8},
+    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5},
 
     # Multi-indicator combos
-    "rsi_macd_combo": {"auto": True, "use_rsi": True, "use_macd": True, "mode": "combo"},
-    "bb_rsi_combo": {"auto": True, "use_bb": True, "use_rsi": True, "mode": "combo"},
-    "trend_momentum": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "slow_ema": 21},
+    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 15, "stop_loss": 8},
+    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6},
+    "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
 
-    # Trailing Stop strategies - tight entry, rising stop-loss
-    "trailing_tight": {"auto": True, "use_trailing": True, "initial_stop": 2, "trail_pct": 2, "entry_rsi": 35},
-    "trailing_medium": {"auto": True, "use_trailing": True, "initial_stop": 3, "trail_pct": 3, "entry_rsi": 40},
-    "trailing_wide": {"auto": True, "use_trailing": True, "initial_stop": 5, "trail_pct": 4, "entry_rsi": 45},
-    "trailing_scalp": {"auto": True, "use_trailing": True, "initial_stop": 1.5, "trail_pct": 1.5, "entry_rsi": 30},
-    "trailing_swing": {"auto": True, "use_trailing": True, "initial_stop": 4, "trail_pct": 5, "entry_rsi": 35},
+    # Trailing Stop strategies (mapped to degen with tight exits)
+    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2},
+    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 3},
+    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 5},
+    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 1.5},
+    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 5},
 
-    # Scalping variants
-    "scalp_rsi": {"auto": True, "use_scalp": True, "indicator": "rsi", "timeframe": "5m"},
-    "scalp_bb": {"auto": True, "use_scalp": True, "indicator": "bb", "timeframe": "5m"},
-    "scalp_macd": {"auto": True, "use_scalp": True, "indicator": "macd", "timeframe": "5m"},
+    # Scalping variants (mapped to degen scalping)
+    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3},
+    "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5},
+    "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 7, "stop_loss": 3.5},
 
-    # Sector-specific
-    "defi_hunter": {"auto": True, "sector": "defi", "use_momentum": True},
-    "layer2_focus": {"auto": True, "sector": "layer2", "use_momentum": True},
-    "gaming_tokens": {"auto": True, "sector": "gaming", "use_momentum": True},
-    "ai_tokens": {"auto": True, "sector": "ai", "use_momentum": True},
-    "meme_hunter": {"auto": True, "sector": "meme", "use_momentum": True},
+    # Sector-specific (mapped to degen momentum)
+    "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10},
+    "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9},
+    "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12},
+    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12},
+    "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15},
 
     # Risk-adjusted
-    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "max_positions": 5},
-    "medium_risk_swing": {"auto": True, "use_swing": True, "risk_per_trade": 2},
-    "high_risk_leverage": {"auto": True, "use_leverage": True, "leverage": 3, "risk": 5},
+    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 20, "stop_loss": 10},
+    "medium_risk_swing": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 18, "stop_loss": 9},
+    "high_risk_leverage": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15},
 
     # ============ MORE STRATEGIES ============
 
-    # Pivot Points - Classic S/R levels
-    "pivot_classic": {"auto": True, "use_pivot": True, "type": "classic"},
-    "pivot_fibonacci": {"auto": True, "use_pivot": True, "type": "fibonacci"},
+    # Pivot Points (mapped to grid trading)
+    "pivot_classic": {"auto": True, "use_grid": True, "grid_size": 2.0, "take_profit": 10, "stop_loss": 5},
+    "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
 
-    # Volume Weighted
-    "volume_breakout": {"auto": True, "use_volume": True, "mode": "breakout"},
-    "volume_climax": {"auto": True, "use_volume": True, "mode": "climax"},
+    # Volume Weighted (uses breakout/mean_rev logic)
+    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 15, "stop_loss": 7},
+    "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 12, "stop_loss": 6},
 
-    # Multi-timeframe
-    "mtf_trend": {"auto": True, "use_mtf": True, "timeframes": ["15m", "1h", "4h"]},
-    "mtf_momentum": {"auto": True, "use_mtf": True, "mode": "momentum"},
+    # Multi-timeframe (uses EMA alignment - already checked in filters)
+    "mtf_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 20, "stop_loss": 10},
+    "mtf_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8},
 
-    # Range trading
-    "range_sniper": {"auto": True, "use_range": True, "atr_mult": 1.5},
-    "range_breakout": {"auto": True, "use_range": True, "mode": "breakout"},
+    # Range trading (uses grid/mean_rev logic)
+    "range_sniper": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 8, "stop_loss": 4},
+    "range_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 7},
 
-    # Heikin Ashi
-    "heikin_ashi": {"auto": True, "use_ha": True, "mode": "trend"},
-    "heikin_ashi_reversal": {"auto": True, "use_ha": True, "mode": "reversal"},
+    # Heikin Ashi (uses EMA + RSI combo)
+    "heikin_ashi": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
+    "heikin_ashi_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
 
-    # Order flow
-    "orderflow_delta": {"auto": True, "use_orderflow": True, "mode": "delta"},
-    "orderflow_imbalance": {"auto": True, "use_orderflow": True, "mode": "imbalance"},
+    # Order flow (uses volume breakout logic)
+    "orderflow_delta": {"auto": True, "use_breakout": True, "volume_mult": 2.5, "take_profit": 12, "stop_loss": 6},
+    "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5},
 
-    # Sentiment
-    "social_sentiment": {"auto": True, "use_sentiment": True, "source": "social"},
-    "fear_greed_extreme": {"auto": True, "use_sentiment": True, "source": "fear_greed"},
+    # Sentiment (uses fear/greed logic)
+    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 10},
+    "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 25, "stop_loss": 12},
 
-    # ============ HIGH PRIORITY STRATEGIES ============
+    # ============ ICT/SMC STRATEGIES (mapped to working logic) ============
 
-    # Fibonacci Retracement - Trade at key fib levels
-    "fib_retracement": {"auto": True, "use_fib": True, "levels": [0.382, 0.5, 0.618]},
-    "fib_aggressive": {"auto": True, "use_fib": True, "levels": [0.236, 0.382, 0.5], "aggressive": True},
-    "fib_conservative": {"auto": True, "use_fib": True, "levels": [0.5, 0.618, 0.786]},
+    # Fibonacci Retracement (uses mean reversion at key levels)
+    "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 15, "stop_loss": 8},
+    "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 12, "stop_loss": 6},
+    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 20, "stop_loss": 10},
 
-    # Volume Profile - Trade at high volume nodes
-    "volume_profile": {"auto": True, "use_vpvr": True, "mode": "poc"},  # Point of Control
-    "volume_profile_vah": {"auto": True, "use_vpvr": True, "mode": "vah"},  # Value Area High
-    "volume_profile_val": {"auto": True, "use_vpvr": True, "mode": "val"},  # Value Area Low
+    # Volume Profile (uses grid trading at key levels)
+    "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 10, "stop_loss": 5},
+    "volume_profile_vah": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
+    "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
 
-    # Order Blocks (ICT) - Institutional trading zones
-    "order_block_bull": {"auto": True, "use_ob": True, "mode": "bullish"},
-    "order_block_bear": {"auto": True, "use_ob": True, "mode": "bearish"},
-    "order_block_all": {"auto": True, "use_ob": True, "mode": "all"},
+    # Order Blocks ICT (uses breakout + RSI combo)
+    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 15, "stop_loss": 8},
+    "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 15, "stop_loss": 8},
+    "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6},
 
-    # Fair Value Gaps (FVG) - Imbalance zones to fill
-    "fvg_fill": {"auto": True, "use_fvg": True, "mode": "fill"},
-    "fvg_rejection": {"auto": True, "use_fvg": True, "mode": "rejection"},
-    "fvg_aggressive": {"auto": True, "use_fvg": True, "mode": "aggressive"},
+    # Fair Value Gaps FVG (uses mean reversion)
+    "fvg_fill": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 10, "stop_loss": 5},
+    "fvg_rejection": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
+    "fvg_aggressive": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8},
 
-    # Liquidity Sweep - Stop hunt detection
-    "liquidity_sweep": {"auto": True, "use_liquidity": True, "mode": "sweep"},
-    "liquidity_grab": {"auto": True, "use_liquidity": True, "mode": "grab"},
-    "stop_hunt": {"auto": True, "use_liquidity": True, "mode": "hunt"},
+    # Liquidity Sweep/Stop Hunt (uses breakout after dip)
+    "liquidity_sweep": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 8},
+    "liquidity_grab": {"auto": True, "use_dca": True, "dip_threshold": 4.0, "take_profit": 20, "stop_loss": 10},
+    "stop_hunt": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 25, "stop_loss": 12},
 
-    # Session Trading - Trade specific sessions
-    "session_asian": {"auto": True, "use_session": True, "session": "asian"},
-    "session_london": {"auto": True, "use_session": True, "session": "london"},
-    "session_newyork": {"auto": True, "use_session": True, "session": "newyork"},
-    "session_overlap": {"auto": True, "use_session": True, "session": "overlap"},
+    # Session Trading (uses EMA crossover during session hours)
+    "session_asian": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5},
+    "session_london": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6},
+    "session_newyork": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6},
+    "session_overlap": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 8},
 
-    # RSI Divergence - Divergence trading
-    "rsi_divergence_bull": {"auto": True, "use_divergence": True, "type": "bullish"},
-    "rsi_divergence_bear": {"auto": True, "use_divergence": True, "type": "bearish"},
-    "rsi_divergence_hidden": {"auto": True, "use_divergence": True, "type": "hidden"},
+    # RSI Divergence (uses RSI + trend combo)
+    "rsi_divergence_bull": {"auto": True, "use_rsi": True, "oversold": 30, "take_profit": 15, "stop_loss": 8},
+    "rsi_divergence_bear": {"auto": True, "use_rsi": True, "overbought": 70, "take_profit": 15, "stop_loss": 8},
+    "rsi_divergence_hidden": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6},
 }
 
 # Timeframes per strategy type - optimized for each trading style
