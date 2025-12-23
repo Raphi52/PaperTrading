@@ -12,7 +12,13 @@
           "ETH/USDT",
           "LINK/USDT",
           "AAVE/USDT",
-          "UNI/USDT"
+          "UNI/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -30,8 +36,8 @@
           "entry_price": 181.42471484869404,
           "quantity": 10.224282295535065,
           "entry_time": "2025-12-20T10:04:52.275650",
-          "current_price": 149.73,
-          "pnl_percent": -17.469899222455464
+          "current_price": 149.72,
+          "pnl_percent": -17.475411150644703
         }
       },
       "trades": [
@@ -1360,7 +1366,14 @@
         "cryptos": [
           "PEPE/USDT",
           "TURBO/USDT",
-          "FLOKI/USDT"
+          "FLOKI/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 10,
         "rsi_oversold": 25,
@@ -1415,9 +1428,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 44880.57,
-          "current_price": 8.521e-05,
-          "current_liquidity": 31989.71,
-          "pnl_percent": -57.58586361373818
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -58.208063713290194
         },
         "$WEED/USDT": {
           "entry_price": 2.646e-05,
@@ -1443,9 +1456,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 13505.37,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 41.68674698795183
+          "current_price": 3.813e-05,
+          "current_liquidity": 16298.93,
+          "pnl_percent": 53.13253012048194
         },
         "NEWYEAR/USDT": {
           "entry_price": 1.367e-05,
@@ -1471,9 +1484,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": 13.96438612933457
+          "current_price": 0.0001235,
+          "current_liquidity": 34658.32,
+          "pnl_percent": 15.745079662605432
         },
         "NONPC/USDT": {
           "entry_price": 1.335e-06,
@@ -1499,9 +1512,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 25357.82,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -7.187894073139978
+          "current_price": 5.899e-05,
+          "current_liquidity": 23405.0,
+          "pnl_percent": -17.346223903600954
         },
         "Memeverse/USDT": {
           "entry_price": 1.944e-05,
@@ -1541,9 +1554,9 @@
           "dex": "pancakeswap",
           "risk_score": 40,
           "liquidity_at_entry": 49244.86,
-          "current_price": 2.956e-05,
-          "current_liquidity": 21700.06,
-          "pnl_percent": -81.07554417413571
+          "current_price": 2.99e-05,
+          "current_liquidity": 21848.33,
+          "pnl_percent": -80.85787451984635
         },
         "2026/USDT": {
           "entry_price": 0.0003417,
@@ -1555,9 +1568,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002346,
-          "current_liquidity": 56260.73,
-          "pnl_percent": -31.343283582089555
+          "current_price": 0.0002371,
+          "current_liquidity": 56462.43,
+          "pnl_percent": -30.61164764413229
         },
         "SuperCycle/USDT": {
           "entry_price": 0.0003163,
@@ -1569,9 +1582,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001664,
-          "current_liquidity": 52918.64,
-          "pnl_percent": -47.391716724628516
+          "current_price": 0.0001644,
+          "current_liquidity": 52686.84,
+          "pnl_percent": -48.024027821688264
         },
         "FF/USDT": {
           "entry_price": 1.539e-05,
@@ -1597,9 +1610,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 171060.61,
-          "current_price": 3.255e-09,
-          "current_liquidity": 101647.24,
-          "pnl_percent": -63.64347146207976
+          "current_price": 3.306e-09,
+          "current_liquidity": 101302.72,
+          "pnl_percent": -63.073830001116946
         },
         "bubba/USDT": {
           "entry_price": 1.419e-05,
@@ -1626,7 +1639,7 @@
           "risk_score": 45,
           "liquidity_at_entry": 73890.47,
           "current_price": 0.02828,
-          "current_liquidity": 167347.61,
+          "current_liquidity": 167530.1,
           "pnl_percent": -6.108897742363883
         },
         "NotifAi/USDT": {
@@ -1639,9 +1652,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 96360.76,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 0.10065425264218497
+          "current_price": 0.000606,
+          "current_liquidity": 96833.49,
+          "pnl_percent": 1.6607951685958744
         },
         "cBNB/USDT": {
           "entry_price": 0.0002268,
@@ -1653,9 +1666,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001194,
-          "current_liquidity": 58671.9,
-          "pnl_percent": -47.35449735449736
+          "current_price": 0.0001184,
+          "current_liquidity": 58545.11,
+          "pnl_percent": -47.79541446208113
         },
         "SPSC/USDT": {
           "entry_price": 0.004344,
@@ -1668,7 +1681,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 304667.84,
           "current_price": 0.003331,
-          "current_liquidity": 271476.8,
+          "current_liquidity": 274621.99,
           "pnl_percent": -23.319521178637192
         },
         "FAIREMAIL/USDT": {
@@ -1681,8 +1694,8 @@
           "dex": "uniswap",
           "risk_score": 50,
           "liquidity_at_entry": 13856.21,
-          "current_price": 3.073e-05,
-          "current_liquidity": 17412.52,
+          "current_price": 2.963e-05,
+          "current_liquidity": 17045.84,
           "pnl_percent": 67.29014598540147
         }
       },
@@ -3703,9 +3716,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 44880.57,
-          "current_price": 8.521e-05,
-          "current_liquidity": 31989.71,
-          "pnl_percent": -57.58586361373818
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -58.208063713290194
         },
         "$WEED/USDT": {
           "entry_price": 2.646e-05,
@@ -3731,9 +3744,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 13505.37,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 41.68674698795183
+          "current_price": 3.813e-05,
+          "current_liquidity": 16298.93,
+          "pnl_percent": 53.13253012048194
         },
         "NEWYEAR/USDT": {
           "entry_price": 1.367e-05,
@@ -3759,9 +3772,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": 13.96438612933457
+          "current_price": 0.0001235,
+          "current_liquidity": 34658.32,
+          "pnl_percent": 15.745079662605432
         },
         "NONPC/USDT": {
           "entry_price": 1.335e-06,
@@ -3787,9 +3800,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 25357.82,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -7.187894073139978
+          "current_price": 5.899e-05,
+          "current_liquidity": 23405.0,
+          "pnl_percent": -17.346223903600954
         },
         "FUN/USDT": {
           "entry_price": 0.0005951,
@@ -3843,9 +3856,9 @@
           "dex": "pancakeswap",
           "risk_score": 40,
           "liquidity_at_entry": 49244.86,
-          "current_price": 2.956e-05,
-          "current_liquidity": 21700.06,
-          "pnl_percent": -81.07554417413571
+          "current_price": 2.99e-05,
+          "current_liquidity": 21848.33,
+          "pnl_percent": -80.85787451984635
         },
         "2026/USDT": {
           "entry_price": 0.0003417,
@@ -3857,9 +3870,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002346,
-          "current_liquidity": 56260.73,
-          "pnl_percent": -31.343283582089555
+          "current_price": 0.0002371,
+          "current_liquidity": 56442.43,
+          "pnl_percent": -30.61164764413229
         },
         "SuperCycle/USDT": {
           "entry_price": 0.0003163,
@@ -3871,9 +3884,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001664,
-          "current_liquidity": 52918.64,
-          "pnl_percent": -47.391716724628516
+          "current_price": 0.0001644,
+          "current_liquidity": 52686.84,
+          "pnl_percent": -48.024027821688264
         },
         "FF/USDT": {
           "entry_price": 1.539e-05,
@@ -3899,9 +3912,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 171060.61,
-          "current_price": 3.255e-09,
-          "current_liquidity": 102145.15,
-          "pnl_percent": -63.64347146207976
+          "current_price": 3.306e-09,
+          "current_liquidity": 101302.72,
+          "pnl_percent": -63.073830001116946
         },
         "bubba/USDT": {
           "entry_price": 1.419e-05,
@@ -3928,7 +3941,7 @@
           "risk_score": 45,
           "liquidity_at_entry": 73890.47,
           "current_price": 0.02828,
-          "current_liquidity": 167347.61,
+          "current_liquidity": 167530.1,
           "pnl_percent": -6.108897742363883
         },
         "NotifAi/USDT": {
@@ -3941,9 +3954,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 96360.76,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 0.10065425264218497
+          "current_price": 0.000606,
+          "current_liquidity": 96833.49,
+          "pnl_percent": 1.6607951685958744
         },
         "cBNB/USDT": {
           "entry_price": 0.0002268,
@@ -3955,9 +3968,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001194,
-          "current_liquidity": 58787.58,
-          "pnl_percent": -47.35449735449736
+          "current_price": 0.0001184,
+          "current_liquidity": 58545.11,
+          "pnl_percent": -47.79541446208113
         },
         "SPSC/USDT": {
           "entry_price": 0.004344,
@@ -3970,7 +3983,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 304667.84,
           "current_price": 0.003331,
-          "current_liquidity": 271476.8,
+          "current_liquidity": 274621.99,
           "pnl_percent": -23.319521178637192
         },
         "fairystar/USDT": {
@@ -3997,8 +4010,8 @@
           "dex": "uniswap",
           "risk_score": 50,
           "liquidity_at_entry": 13856.21,
-          "current_price": 3.073e-05,
-          "current_liquidity": 17412.52,
+          "current_price": 2.963e-05,
+          "current_liquidity": 17045.84,
           "pnl_percent": 67.29014598540147
         },
         "tSAT/USDT": {
@@ -4011,9 +4024,9 @@
           "dex": "raydium",
           "risk_score": 45,
           "liquidity_at_entry": 180264.66,
-          "current_price": 0.0008776,
-          "current_liquidity": 179615.75,
-          "pnl_percent": -0.204685012508532
+          "current_price": 0.0008708,
+          "current_liquidity": 179226.27,
+          "pnl_percent": -0.9779395042074146
         },
         "Pixie/USDT": {
           "entry_price": 9.131e-05,
@@ -6319,9 +6332,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 44880.57,
-          "current_price": 8.521e-05,
-          "current_liquidity": 31989.71,
-          "pnl_percent": -57.58586361373818
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -58.208063713290194
         },
         "$WEED/USDT": {
           "entry_price": 2.646e-05,
@@ -6347,9 +6360,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 13505.37,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 41.68674698795183
+          "current_price": 3.813e-05,
+          "current_liquidity": 16298.93,
+          "pnl_percent": 53.13253012048194
         },
         "NEWYEAR/USDT": {
           "entry_price": 1.367e-05,
@@ -6389,9 +6402,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": 13.96438612933457
+          "current_price": 0.0001235,
+          "current_liquidity": 34658.32,
+          "pnl_percent": 15.745079662605432
         },
         "NONPC/USDT": {
           "entry_price": 1.335e-06,
@@ -6417,9 +6430,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 25357.82,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -7.187894073139978
+          "current_price": 5.899e-05,
+          "current_liquidity": 23405.0,
+          "pnl_percent": -17.346223903600954
         },
         "FUN/USDT": {
           "entry_price": 0.0005951,
@@ -6473,9 +6486,9 @@
           "dex": "pancakeswap",
           "risk_score": 40,
           "liquidity_at_entry": 49244.86,
-          "current_price": 2.956e-05,
-          "current_liquidity": 21700.06,
-          "pnl_percent": -81.07554417413571
+          "current_price": 2.99e-05,
+          "current_liquidity": 21848.33,
+          "pnl_percent": -80.85787451984635
         },
         "2026/USDT": {
           "entry_price": 0.0003417,
@@ -6487,9 +6500,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002346,
-          "current_liquidity": 56260.73,
-          "pnl_percent": -31.343283582089555
+          "current_price": 0.0002371,
+          "current_liquidity": 56442.43,
+          "pnl_percent": -30.61164764413229
         },
         "SuperCycle/USDT": {
           "entry_price": 0.0003163,
@@ -6501,9 +6514,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001664,
-          "current_liquidity": 52918.64,
-          "pnl_percent": -47.391716724628516
+          "current_price": 0.0001644,
+          "current_liquidity": 52686.84,
+          "pnl_percent": -48.024027821688264
         },
         "FF/USDT": {
           "entry_price": 1.539e-05,
@@ -6529,9 +6542,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 171060.61,
-          "current_price": 3.255e-09,
-          "current_liquidity": 102145.15,
-          "pnl_percent": -63.64347146207976
+          "current_price": 3.306e-09,
+          "current_liquidity": 101302.72,
+          "pnl_percent": -63.073830001116946
         },
         "bubba/USDT": {
           "entry_price": 1.419e-05,
@@ -6558,7 +6571,7 @@
           "risk_score": 45,
           "liquidity_at_entry": 73890.47,
           "current_price": 0.02828,
-          "current_liquidity": 167347.61,
+          "current_liquidity": 167530.1,
           "pnl_percent": -6.108897742363883
         },
         "NotifAi/USDT": {
@@ -6571,9 +6584,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 96360.76,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 0.10065425264218497
+          "current_price": 0.000606,
+          "current_liquidity": 96833.49,
+          "pnl_percent": 1.6607951685958744
         },
         "cBNB/USDT": {
           "entry_price": 0.0002268,
@@ -6585,9 +6598,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001194,
-          "current_liquidity": 58787.58,
-          "pnl_percent": -47.35449735449736
+          "current_price": 0.0001184,
+          "current_liquidity": 58545.11,
+          "pnl_percent": -47.79541446208113
         },
         "SPSC/USDT": {
           "entry_price": 0.004344,
@@ -6600,7 +6613,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 304667.84,
           "current_price": 0.003331,
-          "current_liquidity": 274249.9,
+          "current_liquidity": 274621.99,
           "pnl_percent": -23.319521178637192
         },
         "fairystar/USDT": {
@@ -6627,9 +6640,9 @@
           "dex": "raydium",
           "risk_score": 45,
           "liquidity_at_entry": 180264.66,
-          "current_price": 0.0008776,
-          "current_liquidity": 179615.75,
-          "pnl_percent": -0.204685012508532
+          "current_price": 0.0008708,
+          "current_liquidity": 179226.27,
+          "pnl_percent": -0.9779395042074146
         }
       },
       "trades": [
@@ -8839,7 +8852,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "LINK/USDT"
+          "LINK/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 25,
@@ -8857,8 +8876,8 @@
           "entry_price": 126.37050965727283,
           "quantity": 7.715407674181894,
           "entry_time": "2025-12-21T10:17:12.800309",
-          "current_price": 123.35,
-          "pnl_percent": -2.390201373298806
+          "current_price": 123.23,
+          "pnl_percent": -2.4851602369810433
         }
       },
       "trades": [
@@ -10219,8 +10238,8 @@
           "entry_price": 5.7460551061748255,
           "quantity": 1673.9274855172976,
           "entry_time": "2025-12-20T07:36:43.752032",
-          "current_price": 5.76,
-          "pnl_percent": 0.2426863920986122
+          "current_price": 5.75,
+          "pnl_percent": 0.06865395044568512
         }
       },
       "trades": [
@@ -11883,43 +11902,43 @@
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.099882",
-          "current_price": 123.35,
-          "pnl_percent": -2.26352585967845
+          "current_price": 123.23,
+          "pnl_percent": -2.3586079585583564
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.824906",
-          "current_price": 4.563,
-          "pnl_percent": -3.698857566054581
+          "current_price": 4.561,
+          "pnl_percent": -3.7410671397709705
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.638486",
-          "current_price": 0.12971,
-          "pnl_percent": -1.533439611326215
+          "current_price": 0.12949,
+          "pnl_percent": -1.7004478858270833
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.803302",
-          "current_price": 0.266,
-          "pnl_percent": -3.5653542555165063
+          "current_price": 0.2655,
+          "pnl_percent": -3.7466223866151616
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.746390",
-          "current_price": 0.3622,
-          "pnl_percent": -2.2850401803045095
+          "current_price": 0.3614,
+          "pnl_percent": -2.50086560232482
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.447355",
-          "current_price": 1.954,
-          "pnl_percent": -0.3112962583605383
+          "current_price": 1.956,
+          "pnl_percent": -0.2092607376423805
         }
       },
       "trades": [
@@ -13755,43 +13774,43 @@
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.101853",
-          "current_price": 123.35,
-          "pnl_percent": -2.26352585967845
+          "current_price": 123.23,
+          "pnl_percent": -2.3586079585583564
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.831204",
-          "current_price": 4.563,
-          "pnl_percent": -3.698857566054581
+          "current_price": 4.561,
+          "pnl_percent": -3.7410671397709705
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.644471",
-          "current_price": 0.12971,
-          "pnl_percent": -1.533439611326215
+          "current_price": 0.12949,
+          "pnl_percent": -1.7004478858270833
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.805296",
-          "current_price": 0.266,
-          "pnl_percent": -3.5653542555165063
+          "current_price": 0.2655,
+          "pnl_percent": -3.7466223866151616
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.749397",
-          "current_price": 0.3622,
-          "pnl_percent": -2.2850401803045095
+          "current_price": 0.3614,
+          "pnl_percent": -2.50086560232482
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.449708",
-          "current_price": 1.954,
-          "pnl_percent": -0.3112962583605383
+          "current_price": 1.956,
+          "pnl_percent": -0.2092607376423805
         }
       },
       "trades": [
@@ -15625,15 +15644,15 @@
           "entry_price": 88193.83131149496,
           "quantity": 0.016420416823365702,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 87512.46,
-          "pnl_percent": -0.7725838659717432
+          "current_price": 87554.92,
+          "pnl_percent": -0.7244399092249054
         },
         "ETH/USDT": {
           "entry_price": 2980.8538803801716,
           "quantity": 0.4626153083308901,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 2939.1,
-          "pnl_percent": -1.4007355628866458
+          "current_price": 2939.22,
+          "pnl_percent": -1.396709870758972
         },
         "BNB/USDT": {
           "entry_price": 855.2792242059618,
@@ -15646,50 +15665,50 @@
           "entry_price": 12.58262062626024,
           "quantity": 100.46262509035199,
           "entry_time": "2025-12-20T00:52:46.014081",
-          "current_price": 12.23,
-          "pnl_percent": -2.802441850025361
+          "current_price": 12.2,
+          "pnl_percent": -3.040865950147953
         },
         "UNI/USDT": {
           "entry_price": 5.638067196602078,
           "quantity": 212.99479091386965,
           "entry_time": "2025-12-20T00:52:46.014081",
-          "current_price": 5.76,
-          "pnl_percent": 2.162670275930867
+          "current_price": 5.75,
+          "pnl_percent": 1.9853045289240479
         },
         "DOGE/USDT": {
           "entry_price": 0.13171641070688733,
           "quantity": 7010.98114936948,
           "entry_time": "2025-12-20T01:00:24.307268",
-          "current_price": 0.12971,
-          "pnl_percent": -1.5232807332962284
+          "current_price": 0.12949,
+          "pnl_percent": -1.6903062381815381
         },
         "LTC/USDT": {
           "entry_price": 77.52650497438727,
           "quantity": 10.158084378552656,
           "entry_time": "2025-12-20T01:00:24.322857",
-          "current_price": 76.45,
-          "pnl_percent": -1.3885637882720347
+          "current_price": 76.42,
+          "pnl_percent": -1.4272602315205885
         },
         "XRP/USDT": {
           "entry_price": 1.930680638400949,
           "quantity": 248.93049891644003,
           "entry_time": "2025-12-20T01:15:27.439507",
-          "current_price": 1.8855,
-          "pnl_percent": -2.340140440749905
+          "current_price": 1.8776,
+          "pnl_percent": -2.7493225624778628
         },
         "ATOM/USDT": {
           "entry_price": 1.9700595272873933,
           "quantity": 219.32333988693313,
           "entry_time": "2025-12-21T10:06:02.753700",
-          "current_price": 1.954,
-          "pnl_percent": -0.8151797986280074
+          "current_price": 1.956,
+          "pnl_percent": -0.7136600236010149
         },
         "APT/USDT": {
           "entry_price": 1.628741099193759,
           "quantity": 100.1825958147565,
           "entry_time": "2025-12-21T10:38:26.760364",
-          "current_price": 1.586,
-          "pnl_percent": -2.6241800624369427
+          "current_price": 1.58,
+          "pnl_percent": -2.9925627355929185
         },
         "AVAX/USDT": {
           "entry_price": 12.226187224936787,
@@ -23871,8 +23890,8 @@
           "entry_price": 181.70318335289187,
           "quantity": 1.2381611715270846,
           "entry_time": "2025-12-20T02:53:27.774776",
-          "current_price": 149.73,
-          "pnl_percent": -17.596380406168056
+          "current_price": 149.72,
+          "pnl_percent": -17.601883887073267
         }
       },
       "trades": [
@@ -25864,7 +25883,14 @@
         "cryptos": [
           "BONK/USDT",
           "WIF/USDT",
-          "JUP/USDT"
+          "JUP/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -27240,29 +27266,29 @@
           "entry_price": 0.4227208258347322,
           "quantity": 3119.779922619898,
           "entry_time": "2025-12-20T10:16:14.115285",
-          "current_price": 0.416,
-          "pnl_percent": -1.5898970251727818
+          "current_price": 0.417,
+          "pnl_percent": -1.3533342776371415
         },
         "DYDX/USDT": {
           "entry_price": 0.16692326560043108,
           "quantity": 19124.00509258707,
           "entry_time": "2025-12-20T10:16:14.116281",
-          "current_price": 0.1568,
-          "pnl_percent": -6.06462230655338
+          "current_price": 0.1564,
+          "pnl_percent": -6.304253372097879
         },
         "CRV/USDT": {
           "entry_price": 0.3511701784459664,
           "quantity": 2215.0404441775845,
           "entry_time": "2025-12-20T10:27:29.850503",
-          "current_price": 0.3675,
-          "pnl_percent": 4.650116255969672
+          "current_price": 0.368,
+          "pnl_percent": 4.7924973665220305
         },
         "1INCH/USDT": {
           "entry_price": 0.1555201910647085,
           "quantity": 4751.5588528120115,
           "entry_time": "2025-12-20T10:27:29.851472",
-          "current_price": 0.151,
-          "pnl_percent": -2.9064978854274615
+          "current_price": 0.1508,
+          "pnl_percent": -3.0350985504798755
         }
       },
       "trades": [
@@ -28784,8 +28810,8 @@
           "entry_price": 180.7073600299254,
           "quantity": 4.6581016555562975,
           "entry_time": "2025-12-20T01:07:46.149172",
-          "current_price": 149.73,
-          "pnl_percent": -17.14227911071
+          "current_price": 149.72,
+          "pnl_percent": -17.147812919625327
         }
       },
       "trades": [
@@ -30871,9 +30897,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 7.489e-06,
-          "pnl_percent": -85.79024087303266,
-          "current_liquidity": 8271.29
+          "current_price": 7.915e-06,
+          "pnl_percent": -84.98194104821118,
+          "current_liquidity": 8377.3
         },
         "Husbant/USDT": {
           "entry_price": 0.0002620559928316093,
@@ -30891,9 +30917,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.000196,
-          "pnl_percent": -25.20682397599481,
-          "current_liquidity": 49209.02
+          "current_price": 0.0002154,
+          "pnl_percent": -17.803825940965712,
+          "current_liquidity": 51420.78
         },
         "SNIBBU/USDT": {
           "entry_price": 4.7663952902142095e-05,
@@ -30911,9 +30937,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 7.898e-06,
+          "current_price": 7.817e-06,
           "pnl_percent": -80.70869191466753,
-          "current_liquidity": 8373.63
+          "current_liquidity": 8295.97
         },
         "BLZD/USDT": {
           "entry_price": 1.0275417708617658e-05,
@@ -30951,8 +30977,8 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 7.072e-06,
-          "current_liquidity": 7870.94,
+          "current_price": 5.329e-06,
+          "current_liquidity": 6817.17,
           "pnl_percent": -16.76081830880062
         },
         "Ballseye/USDT": {
@@ -30971,9 +30997,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 1.06e-05,
-          "pnl_percent": -68.45769880533028,
-          "current_liquidity": 9701.74
+          "current_price": 1.065e-05,
+          "pnl_percent": -68.30891436573279,
+          "current_liquidity": 9672.7
         },
         "fluffy/USDT": {
           "entry_price": 4.452636171217711e-06,
@@ -31031,9 +31057,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 3.094e-05,
-          "pnl_percent": -59.843497501258916,
-          "current_liquidity": 17432.59
+          "current_price": 3.057e-05,
+          "pnl_percent": -60.32371424090126,
+          "current_liquidity": 16975.43
         },
         "PEPE/USDT": {
           "entry_price": 3.7496673297556002e-06,
@@ -31051,9 +31077,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 2.677e-06,
+          "current_price": 4.234e-06,
           "pnl_percent": -26.366801180200717,
-          "current_liquidity": 4856.97
+          "current_liquidity": 6091.26
         },
         "GLITCH/USDT": {
           "entry_price": 7.503403200198071e-05,
@@ -31071,9 +31097,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 3.178e-05,
-          "pnl_percent": -57.6458852708847,
-          "current_liquidity": 18578.35
+          "current_price": 3.051e-05,
+          "pnl_percent": -59.338450585736055,
+          "current_liquidity": 17934.52
         },
         "OLAF/USDT": {
           "entry_price": 4.364009568804843e-05,
@@ -31091,9 +31117,9 @@
           "was_frontrun": true,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 5.024e-06,
+          "current_price": 4.63e-06,
           "pnl_percent": -85.37125114107307,
-          "current_liquidity": 6963.89
+          "current_liquidity": 6656.4
         },
         "Rhodri/USDT": {
           "entry_price": 2.0529010447173186e-05,
@@ -31151,9 +31177,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0001797,
-          "pnl_percent": -72.31181233522594,
-          "current_liquidity": 46553.57
+          "current_price": 0.0001701,
+          "pnl_percent": -73.79098095838583,
+          "current_liquidity": 46083.19
         },
         "ARCR/USDT": {
           "entry_price": 3.9115146847038965e-05,
@@ -31171,9 +31197,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 3.528e-05,
-          "pnl_percent": -9.80476147011905,
-          "current_liquidity": 15101.51
+          "current_price": 3.813e-05,
+          "pnl_percent": -2.5185814868378453,
+          "current_liquidity": 16298.93
         },
         "FIREBALL/USDT": {
           "entry_price": 0.0007005929578526342,
@@ -31191,9 +31217,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0002821,
-          "pnl_percent": -59.734108537908234,
-          "current_liquidity": 57876.3
+          "current_price": 0.000307,
+          "pnl_percent": -56.17997632448717,
+          "current_liquidity": 58807.44
         },
         "◯/USDT": {
           "entry_price": 6.704497125378041e-05,
@@ -31211,9 +31237,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 5.859e-05,
-          "pnl_percent": -12.610895486518181,
-          "current_liquidity": 35688.86
+          "current_price": 5.706e-05,
+          "pnl_percent": -14.892945834796512,
+          "current_liquidity": 35209.87
         },
         "SCP/USDT": {
           "entry_price": 4.6056177893434894e-05,
@@ -31231,9 +31257,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 6.624e-05,
-          "pnl_percent": 43.82435327843872,
-          "current_liquidity": 24840.24
+          "current_price": 5.899e-05,
+          "pnl_percent": 28.082708331749707,
+          "current_liquidity": 23405.0
         },
         "SuperCycle/USDT": {
           "entry_price": 0.0002084248084736412,
@@ -31251,9 +31277,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0001664,
-          "pnl_percent": -20.163054859640628,
-          "current_liquidity": 52969.68
+          "current_price": 0.0001644,
+          "pnl_percent": -21.122633527193024,
+          "current_liquidity": 52827.13
         },
         "POS/USDT": {
           "entry_price": 0.00023599155569841413,
@@ -31271,9 +31297,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0001886,
-          "pnl_percent": -20.08188621756376,
-          "current_liquidity": 51906.54
+          "current_price": 0.0001852,
+          "pnl_percent": -21.522615734320294,
+          "current_liquidity": 51351.58
         },
         "NotifAi/USDT": {
           "entry_price": 0.0006833974402710712,
@@ -31291,9 +31317,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0005967,
-          "pnl_percent": -12.686240123563008,
-          "current_liquidity": 96473.32
+          "current_price": 0.000606,
+          "pnl_percent": -11.325392181798533,
+          "current_liquidity": 96833.49
         },
         "Chungus/USDT": {
           "entry_price": 0.0002532708938951911,
@@ -31311,9 +31337,9 @@
           "was_frontrun": true,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.000293,
-          "pnl_percent": 15.686408135492137,
-          "current_liquidity": 68564.93
+          "current_price": 0.0002909,
+          "pnl_percent": 14.8572564048282,
+          "current_liquidity": 67125.36
         },
         "cBNB/USDT": {
           "entry_price": 0.00020382752809731006,
@@ -31331,9 +31357,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0001194,
-          "pnl_percent": -41.42106264321824,
-          "current_liquidity": 59150.97
+          "current_price": 0.0001184,
+          "pnl_percent": -41.91167350885293,
+          "current_liquidity": 58614.07
         },
         "SPSC/USDT": {
           "entry_price": 0.0042157880787777515,
@@ -31353,7 +31379,7 @@
           "had_approval": true,
           "current_price": 0.003331,
           "pnl_percent": -20.987489462095322,
-          "current_liquidity": 274249.9
+          "current_liquidity": 274267.24
         },
         "tSAT/USDT": {
           "entry_price": 0.0009010209103820574,
@@ -31371,9 +31397,9 @@
           "was_frontrun": false,
           "size_reduced": false,
           "had_approval": true,
-          "current_price": 0.0008776,
-          "pnl_percent": -2.599374788330533,
-          "current_liquidity": 179615.75
+          "current_price": 0.0008708,
+          "pnl_percent": -3.354074254419115,
+          "current_liquidity": 179226.27
         },
         "LAUNCH/USDT": {
           "entry_price": 4.1046870652233814e-05,
@@ -34449,29 +34475,29 @@
           "entry_price": 0.0009718906334596644,
           "quantity": 1954952.4757086304,
           "entry_time": "2025-12-19T17:15:47.583265",
-          "current_price": 0.000936,
-          "pnl_percent": -3.6928675124590526
+          "current_price": 0.000934,
+          "pnl_percent": -3.8986519835862654
         },
         "TURBO/USDT": {
           "entry_price": 0.001822829281900943,
           "quantity": 907751.811572456,
           "entry_time": "2025-12-19T17:37:53.797125",
-          "current_price": 0.001677,
-          "pnl_percent": -8.00016125201063
+          "current_price": 0.001676,
+          "pnl_percent": -8.055021024668951
         },
         "DOGE/USDT": {
           "entry_price": 0.13181932016609052,
           "quantity": 14135.992338999667,
           "entry_time": "2025-12-20T03:39:48.919182",
-          "current_price": 0.12971,
-          "pnl_percent": -1.6001601005321664
+          "current_price": 0.12949,
+          "pnl_percent": -1.7670552109930626
         },
         "FLOKI/USDT": {
           "entry_price": 4.163646262922721e-05,
           "quantity": 36388817.05833138,
           "entry_time": "2025-12-20T08:15:22.919879",
-          "current_price": 3.991e-05,
-          "pnl_percent": -4.146516106810905
+          "current_price": 3.982e-05,
+          "pnl_percent": -4.362672798126033
         },
         "PEPE/USDT": {
           "entry_price": 4.15e-06,
@@ -35942,22 +35968,22 @@
           "entry_price": 0.000966447074648476,
           "quantity": 4736569.458319412,
           "entry_time": "2025-12-20T09:25:48.197571",
-          "current_price": 0.000936,
-          "pnl_percent": -3.1504130383498197
+          "current_price": 0.000934,
+          "pnl_percent": -3.357356600233685
         },
         "TURBO/USDT": {
           "entry_price": 0.0018058251086152772,
           "quantity": 2144043.5828594444,
           "entry_time": "2025-12-20T09:33:20.286414",
-          "current_price": 0.001677,
-          "pnl_percent": -7.133864071369644
+          "current_price": 0.001676,
+          "pnl_percent": -7.189240419568
         },
         "BONK/USDT": {
           "entry_price": 8.249351086866758e-06,
           "quantity": 81288498.73191254,
           "entry_time": "2025-12-20T10:27:29.854464",
-          "current_price": 7.97e-06,
-          "pnl_percent": -3.3863401366380663
+          "current_price": 7.96e-06,
+          "pnl_percent": -3.507561792677416
         },
         "WIF/USDT": {
           "entry_price": 0.34866253127850505,
@@ -35970,22 +35996,22 @@
           "entry_price": 4.11437433807016e-05,
           "quantity": 6358272.051516972,
           "entry_time": "2025-12-21T10:27:45.170520",
-          "current_price": 3.991e-05,
-          "pnl_percent": -2.9986172363700936
+          "current_price": 3.982e-05,
+          "pnl_percent": -3.2173625244865334
         },
         "SHIB/USDT": {
           "entry_price": 7.403824022658835e-06,
           "quantity": 16185560.861508356,
           "entry_time": "2025-12-21T10:38:26.775323",
-          "current_price": 7.11e-06,
-          "pnl_percent": -3.9685441166566027
+          "current_price": 7.12e-06,
+          "pnl_percent": -3.8334787778614654
         },
         "DOGE/USDT": {
           "entry_price": 0.13199,
           "quantity": 152.1217440971029,
           "entry_time": "2025-12-21T10:59:43.529878",
-          "current_price": 0.12971,
-          "pnl_percent": -1.7274035911811536
+          "current_price": 0.12949,
+          "pnl_percent": -1.89408288506705
         }
       },
       "trades": [
@@ -39818,15 +39844,15 @@
           "entry_price": 0.1296,
           "quantity": 7716.04938271605,
           "entry_time": "2025-12-19T17:00:59.985208",
-          "current_price": 0.12971,
-          "pnl_percent": 0.08487654320987748
+          "current_price": 0.12949,
+          "pnl_percent": -0.08487654320987748
         },
         "SHIB/USDT": {
           "entry_price": 7.5e-06,
           "quantity": 120000000.0,
           "entry_time": "2025-12-19T17:00:59.985208",
-          "current_price": 7.11e-06,
-          "pnl_percent": -5.200000000000005
+          "current_price": 7.12e-06,
+          "pnl_percent": -5.066666666666675
         },
         "PEPE/USDT": {
           "entry_price": 4e-06,
@@ -39839,15 +39865,15 @@
           "entry_price": 4.112e-05,
           "quantity": 17728599.221789885,
           "entry_time": "2025-12-19T17:00:59.986208",
-          "current_price": 3.991e-05,
-          "pnl_percent": -2.94260700389104
+          "current_price": 3.982e-05,
+          "pnl_percent": -3.1614785992217898
         },
         "BONK/USDT": {
           "entry_price": 8.11e-06,
           "quantity": 80900123.30456227,
           "entry_time": "2025-12-19T17:00:59.987209",
-          "current_price": 7.97e-06,
-          "pnl_percent": -1.7262638717632561
+          "current_price": 7.96e-06,
+          "pnl_percent": -1.8495684340320673
         },
         "WIF/USDT": {
           "entry_price": 0.352,
@@ -39860,15 +39886,15 @@
           "entry_price": 0.000951,
           "quantity": 558823.3438485805,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.000936,
-          "pnl_percent": -1.577287066246058
+          "current_price": 0.000934,
+          "pnl_percent": -1.7875920084121977
         },
         "TURBO/USDT": {
           "entry_price": 0.001782,
           "quantity": 268404.54545454547,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.001677,
-          "pnl_percent": -5.892255892255882
+          "current_price": 0.001676,
+          "pnl_percent": -5.948372615039277
         }
       },
       "trades": [
@@ -41274,8 +41300,8 @@
           "entry_price": 0.0017876824934277182,
           "quantity": 3893623.398835134,
           "entry_time": "2025-12-19T17:00:59.989798",
-          "current_price": 0.001677,
-          "pnl_percent": -6.191395498620933
+          "current_price": 0.001676,
+          "pnl_percent": -6.247333843583003
         }
       },
       "trades": [
@@ -43371,8 +43397,8 @@
           "entry_price": 0.06086722449025244,
           "quantity": 127172.6229493833,
           "entry_time": "2025-12-19T21:09:46.049794",
-          "current_price": 0.0553,
-          "pnl_percent": -9.14650624679625
+          "current_price": 0.0552,
+          "pnl_percent": -9.310798278899702
         }
       },
       "trades": [
@@ -44961,7 +44987,14 @@
         "cryptos": [
           "ARB/USDT",
           "OP/USDT",
-          "MATIC/USDT"
+          "MATIC/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -46376,8 +46409,8 @@
           "entry_price": 0.27600506071681535,
           "quantity": 8353.47750304613,
           "entry_time": "2025-12-19T17:00:59.990803",
-          "current_price": 0.266,
-          "pnl_percent": -3.6249555319134763
+          "current_price": 0.2655,
+          "pnl_percent": -3.8061116305377007
         },
         "IMX/USDT": {
           "entry_price": 0.22695506708946325,
@@ -46390,15 +46423,15 @@
           "entry_price": 0.010316694152989468,
           "quantity": 200806.19250911134,
           "entry_time": "2025-12-19T17:00:59.991803",
-          "current_price": 0.00999,
-          "pnl_percent": -3.1666554047722895
+          "current_price": 0.00998,
+          "pnl_percent": -3.2635856796424
         },
         "CELR/USDT": {
           "entry_price": 0.003573244284153462,
           "quantity": 550780.4986251986,
           "entry_time": "2025-12-19T17:00:59.992804",
-          "current_price": 0.003567,
-          "pnl_percent": -0.17475111290751189
+          "current_price": 0.003523,
+          "pnl_percent": -1.4061250829193073
         }
       },
       "trades": [
@@ -49994,15 +50027,15 @@
           "entry_price": 0.010549136929565833,
           "quantity": 144135.8942968714,
           "entry_time": "2025-12-19T20:22:18.601458",
-          "current_price": 0.00999,
-          "pnl_percent": -5.300309715373508
+          "current_price": 0.00998,
+          "pnl_percent": -5.395104200142919
         },
         "CELR/USDT": {
           "entry_price": 0.0036339547830988223,
           "quantity": 346237.69641867763,
           "entry_time": "2025-12-19T20:43:05.483179",
-          "current_price": 0.003567,
-          "pnl_percent": -1.842477055857239
+          "current_price": 0.003523,
+          "pnl_percent": -3.053279133104858
         },
         "METIS/USDT": {
           "entry_price": 5.471567402550044,
@@ -53125,7 +53158,14 @@
         "cryptos": [
           "AXS/USDT",
           "SAND/USDT",
-          "GALA/USDT"
+          "GALA/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 10,
         "rsi_oversold": 30,
@@ -53166,8 +53206,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.981,
-          "current_price": 3.775,
-          "pnl_percent": -3.821656050955413
+          "current_price": 3.777,
+          "pnl_percent": -3.77070063694267
         },
         "GIGGLE/USDT": {
           "entry_price": 72.36,
@@ -53176,8 +53216,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.05199999999999,
-          "current_price": 70.34,
-          "pnl_percent": -2.7915975677169635
+          "current_price": 70.25,
+          "pnl_percent": -2.915975677169702
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -53186,8 +53226,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01744,
-          "pnl_percent": 10.519645120405595
+          "current_price": 0.01747,
+          "pnl_percent": 10.709759188846647
         },
         "ALPINE/USDT": {
           "entry_price": 0.62,
@@ -53196,8 +53236,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.627,
-          "pnl_percent": 1.1290322580645107
+          "current_price": 0.622,
+          "pnl_percent": 0.3225806451612856
         },
         "BANK/USDT": {
           "entry_price": 0.0471,
@@ -53206,8 +53246,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.6,
-          "current_price": 0.048,
-          "pnl_percent": 1.9108280254777066
+          "current_price": 0.0476,
+          "pnl_percent": 1.0615711252653925
         },
         "YGG/USDT": {
           "entry_price": 0.0721,
@@ -53226,8 +53266,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0557,
-          "pnl_percent": 0.3603603603603567
+          "current_price": 0.0555,
+          "pnl_percent": 0.0
         },
         "AVNT/USDT": {
           "entry_price": 0.2896,
@@ -53236,8 +53276,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.986,
-          "current_price": 0.2852,
-          "pnl_percent": -1.5193370165745956
+          "current_price": 0.2825,
+          "pnl_percent": -2.4516574585635498
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -53246,8 +53286,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.873,
-          "current_price": 0.00983,
-          "pnl_percent": 10.948081264108357
+          "current_price": 0.00972,
+          "pnl_percent": 9.706546275395024
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -53256,8 +53296,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.75,
-          "pnl_percent": 5.485232067510548
+          "current_price": 0.759,
+          "pnl_percent": 6.7510548523206815
         },
         "ACE/USDT": {
           "entry_price": 0.276,
@@ -53266,8 +53306,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.992000000000004,
-          "current_price": 0.261,
-          "pnl_percent": -5.434782608695654
+          "current_price": 0.262,
+          "pnl_percent": -5.072463768115942
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -53276,8 +53316,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.126,
-          "pnl_percent": 0.0
+          "current_price": 0.124,
+          "pnl_percent": -1.5873015873015928
         },
         "ACT/USDT": {
           "entry_price": 0.0365,
@@ -53286,8 +53326,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.606,
-          "current_price": 0.0358,
-          "pnl_percent": -1.9178082191780854
+          "current_price": 0.0353,
+          "pnl_percent": -3.28767123287671
         }
       },
       "trades": [
@@ -54939,7 +54979,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -56361,8 +56408,8 @@
           "entry_price": 0.09469008758120667,
           "quantity": 12153.998167775551,
           "entry_time": "2025-12-20T10:27:29.860507",
-          "current_price": 0.0908,
-          "pnl_percent": -4.108231052031197
+          "current_price": 0.0905,
+          "pnl_percent": -4.425054077189694
         },
         "AXS/USDT": {
           "entry_price": 0.8636837891057556,
@@ -56375,15 +56422,15 @@
           "entry_price": 0.11931246011617413,
           "quantity": 11417.967308313862,
           "entry_time": "2025-12-20T10:38:47.681371",
-          "current_price": 0.1121,
-          "pnl_percent": -6.045018356969067
+          "current_price": 0.1118,
+          "pnl_percent": -6.296458985808595
         },
         "MANA/USDT": {
           "entry_price": 0.12897494751868496,
           "quantity": 9738.526916327302,
           "entry_time": "2025-12-21T10:27:45.179273",
-          "current_price": 0.1175,
-          "pnl_percent": -8.897036005401404
+          "current_price": 0.1176,
+          "pnl_percent": -8.819501567959199
         },
         "ENJ/USDT": {
           "entry_price": 0.02765950426388496,
@@ -56396,15 +56443,15 @@
           "entry_price": 5.7729929785528284,
           "quantity": 112.47855164889505,
           "entry_time": "2025-12-21T10:38:26.787143",
-          "current_price": 5.52,
-          "pnl_percent": -4.382353823964791
+          "current_price": 5.5,
+          "pnl_percent": -4.728794570979411
         },
         "GALA/USDT": {
           "entry_price": 0.00619,
           "quantity": 16675.440158479778,
           "entry_time": "2025-12-21T11:10:29.481762",
-          "current_price": 0.00602,
-          "pnl_percent": -2.746365105008075
+          "current_price": 0.00601,
+          "pnl_percent": -2.9079159935379684
         }
       },
       "trades": [
@@ -58470,7 +58517,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -58511,8 +58564,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.775,
-          "pnl_percent": -3.821656050955413
+          "current_price": 3.777,
+          "pnl_percent": -3.77070063694267
         },
         "GIGGLE/USDT": {
           "entry_price": 72.39,
@@ -58521,8 +58574,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.19200000000001,
-          "current_price": 70.34,
-          "pnl_percent": -2.831882856748169
+          "current_price": 70.25,
+          "pnl_percent": -2.9562094211907697
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -58531,8 +58584,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01744,
-          "pnl_percent": 10.519645120405595
+          "current_price": 0.01747,
+          "pnl_percent": 10.709759188846647
         },
         "ALPINE/USDT": {
           "entry_price": 0.619,
@@ -58541,8 +58594,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.627,
-          "pnl_percent": 1.292407108239102
+          "current_price": 0.622,
+          "pnl_percent": 0.4846526655896577
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -58551,8 +58604,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.333,
-          "current_price": 0.048,
-          "pnl_percent": 1.4799154334038
+          "current_price": 0.0476,
+          "pnl_percent": 0.634249471458781
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -58571,8 +58624,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.0557,
-          "pnl_percent": 0.3603603603603567
+          "current_price": 0.0555,
+          "pnl_percent": 0.0
         },
         "AVNT/USDT": {
           "entry_price": 0.2906,
@@ -58581,8 +58634,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.426,
-          "current_price": 0.2852,
-          "pnl_percent": -1.8582243633861073
+          "current_price": 0.2825,
+          "pnl_percent": -2.7873365450791665
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -58591,8 +58644,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 71.01,
-          "current_price": 0.00983,
-          "pnl_percent": 10.948081264108357
+          "current_price": 0.00972,
+          "pnl_percent": 9.706546275395024
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -58601,8 +58654,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.75,
-          "pnl_percent": 5.485232067510548
+          "current_price": 0.759,
+          "pnl_percent": 6.7510548523206815
         },
         "ACE/USDT": {
           "entry_price": 0.275,
@@ -58611,8 +58664,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.261,
-          "pnl_percent": -5.09090909090909
+          "current_price": 0.262,
+          "pnl_percent": -4.7272727272727355
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -58621,8 +58674,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.126,
-          "pnl_percent": 0.0
+          "current_price": 0.124,
+          "pnl_percent": -1.5873015873015928
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -58631,8 +58684,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0358,
-          "pnl_percent": -2.1857923497267784
+          "current_price": 0.0353,
+          "pnl_percent": -3.551912568306015
         }
       },
       "trades": [
@@ -60316,8 +60369,8 @@
           "entry_price": 0.2129,
           "quantity": 2348.5204321277592,
           "entry_time": "2025-12-19T17:44:05.362417",
-          "current_price": 0.205,
-          "pnl_percent": -3.7106622827618674
+          "current_price": 0.2053,
+          "pnl_percent": -3.5697510568341917
         }
       },
       "trades": [
@@ -61676,15 +61729,15 @@
           "entry_price": 228.3,
           "quantity": 1.8777376259307927,
           "entry_time": "2025-12-19T17:00:59.997866",
-          "current_price": 218.7,
-          "pnl_percent": -4.204993429697779
+          "current_price": 217.8,
+          "pnl_percent": -4.599211563731931
         },
         "WLD/USDT": {
           "entry_price": 0.5119,
           "quantity": 795.5716448525102,
           "entry_time": "2025-12-19T19:55:31.164846",
-          "current_price": 0.4922,
-          "pnl_percent": -3.848407892166439
+          "current_price": 0.4915,
+          "pnl_percent": -3.985153350263726
         },
         "ARKM/USDT": {
           "entry_price": 0.188,
@@ -61697,8 +61750,8 @@
           "entry_price": 0.2133,
           "quantity": 1723.140859411627,
           "entry_time": "2025-12-19T21:12:35.562036",
-          "current_price": 0.205,
-          "pnl_percent": -3.8912330051570576
+          "current_price": 0.2053,
+          "pnl_percent": -3.7505860290670268
         }
       },
       "trades": [
@@ -63062,7 +63115,14 @@
         "cryptos": [
           "PEPE/USDT",
           "TURBO/USDT",
-          "FLOKI/USDT"
+          "FLOKI/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -63071,7 +63131,7 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 5937.075922608613,
+        "USDT": 5640.222126478182,
         "CREAM": 238.09523809523807,
         "SOPH": 0,
         "PNT": 12892.857142857141,
@@ -63087,7 +63147,8 @@
         "POLYX": 4594.89870461426,
         "EPIC": 354.02902295138284,
         "PORTAL": 10128.150334453887,
-        "LUMIA": 1986.4243236606333
+        "LUMIA": 1986.4243236606333,
+        "CVC": 5919.317968702506
       },
       "initial_capital": 10000,
       "positions": {
@@ -63118,8 +63179,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.044,
-          "current_price": 3.775,
-          "pnl_percent": -3.8461538461538547
+          "current_price": 3.777,
+          "pnl_percent": -3.795211411105448
         },
         "CHZ/USDT": {
           "entry_price": 0.03868,
@@ -63128,8 +63189,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 63.489999999999995,
-          "current_price": 0.03508,
-          "pnl_percent": -9.307135470527406
+          "current_price": 0.03491,
+          "pnl_percent": -9.746639089968978
         },
         "GIGGLE/USDT": {
           "entry_price": 72.35,
@@ -63138,8 +63199,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 62.9,
-          "current_price": 70.34,
-          "pnl_percent": -2.778161713890792
+          "current_price": 70.25,
+          "pnl_percent": -2.9025570145127744
         },
         "ALPINE/USDT": {
           "entry_price": 0.631,
@@ -63148,8 +63209,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.19,
-          "current_price": 0.627,
-          "pnl_percent": -0.6339144215530945
+          "current_price": 0.622,
+          "pnl_percent": -1.4263074484944571
         },
         "BANK/USDT": {
           "entry_price": 0.045,
@@ -63158,8 +63219,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.0,
-          "current_price": 0.048,
-          "pnl_percent": 6.666666666666665
+          "current_price": 0.0476,
+          "pnl_percent": 5.777777777777793
         },
         "POLYX/USDT": {
           "entry_price": 0.0588,
@@ -63168,8 +63229,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.041,
-          "current_price": 0.0557,
-          "pnl_percent": -5.272108843537415
+          "current_price": 0.0555,
+          "pnl_percent": -5.612244897959185
         },
         "EPIC/USDT": {
           "entry_price": 0.725,
@@ -63178,8 +63239,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 61.441,
-          "current_price": 0.75,
-          "pnl_percent": 3.4482758620689724
+          "current_price": 0.759,
+          "pnl_percent": 4.689655172413798
         },
         "ANIME/USDT": {
           "entry_price": 0.01,
@@ -63188,8 +63249,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 70,
-          "current_price": 0.00983,
-          "pnl_percent": -1.7000000000000015
+          "current_price": 0.00972,
+          "pnl_percent": -2.8000000000000025
         },
         "PORTAL/USDT": {
           "entry_price": 0.0256,
@@ -63198,8 +63259,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 63.077,
-          "current_price": 0.0235,
-          "pnl_percent": -8.203125
+          "current_price": 0.0233,
+          "pnl_percent": -8.984375
         },
         "LUMIA/USDT": {
           "entry_price": 0.124,
@@ -63208,8 +63269,18 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.49,
-          "current_price": 0.126,
-          "pnl_percent": 1.6129032258064502
+          "current_price": 0.124,
+          "pnl_percent": 0.0
+        },
+        "CVC/USDT": {
+          "entry_price": 0.05015,
+          "quantity": 5919.317968702506,
+          "entry_time": "2025-12-23T13:50:55.875868",
+          "is_whale_trade": true,
+          "whale": "CryptoCobain (simulated)",
+          "confidence": 61.14,
+          "current_price": 0.05127,
+          "pnl_percent": 2.233300099700908
         }
       },
       "trades": [
@@ -63444,6 +63515,17 @@
           "quantity": 304174.4255427652,
           "amount_usdt": 267.3693200520906,
           "pnl": -47.75538481021414
+        },
+        {
+          "timestamp": "2025-12-23T13:50:55.875868",
+          "action": "WHALE_BUY",
+          "symbol": "CVC/USDT",
+          "price": 0.05015,
+          "quantity": 5919.317968702506,
+          "amount_usdt": 296.8537961304307,
+          "pnl": 0,
+          "whale": "CryptoCobain (simulated)",
+          "reason": "DEGEN: Chasing CVC/USDT +21.1%"
         }
       ],
       "created_at": "2025-12-19T17:30:00",
@@ -64758,7 +64840,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "LINK/USDT"
+          "LINK/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "rsi_oversold": 30,
@@ -64832,8 +64920,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.076,
-          "current_price": 3.775,
-          "pnl_percent": -3.8706391647568172
+          "current_price": 3.777,
+          "pnl_percent": -3.819709702062646
         },
         "CHZ/USDT": {
           "entry_price": 0.03863,
@@ -64842,8 +64930,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.586,
-          "current_price": 0.03508,
-          "pnl_percent": -9.189748899818785
+          "current_price": 0.03491,
+          "pnl_percent": -9.629821382345327
         },
         "GIGGLE/USDT": {
           "entry_price": 72.41,
@@ -64852,8 +64940,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.019,
-          "current_price": 70.34,
-          "pnl_percent": -2.8587211711089577
+          "current_price": 70.25,
+          "pnl_percent": -2.983013395939782
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -64862,8 +64950,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01744,
-          "pnl_percent": 10.519645120405595
+          "current_price": 0.01747,
+          "pnl_percent": 10.709759188846647
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -64872,8 +64960,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.627,
-          "pnl_percent": 0.9661835748792313
+          "current_price": 0.622,
+          "pnl_percent": 0.16103059581320522
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -64882,8 +64970,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.048,
-          "pnl_percent": 1.4799154334038
+          "current_price": 0.0476,
+          "pnl_percent": 0.634249471458781
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -64902,8 +64990,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.0557,
-          "pnl_percent": 0.5415162454873723
+          "current_price": 0.0555,
+          "pnl_percent": 0.18050541516245744
         },
         "AVNT/USDT": {
           "entry_price": 0.2913,
@@ -64912,8 +65000,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2852,
-          "pnl_percent": -2.094061105389633
+          "current_price": 0.2825,
+          "pnl_percent": -3.0209406110539017
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -64922,8 +65010,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.75,
-          "pnl_percent": 5.485232067510548
+          "current_price": 0.759,
+          "pnl_percent": 6.7510548523206815
         },
         "ORCA/USDT": {
           "entry_price": 1.21,
@@ -64932,8 +65020,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.475,
-          "current_price": 1.115,
-          "pnl_percent": -7.851239669421483
+          "current_price": 1.112,
+          "pnl_percent": -8.099173553718996
         },
         "ANIME/USDT": {
           "entry_price": 0.00948,
@@ -64942,8 +65030,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 84.844,
-          "current_price": 0.00983,
-          "pnl_percent": 3.691983122362874
+          "current_price": 0.00972,
+          "pnl_percent": 2.5316455696202445
         },
         "ACE/USDT": {
           "entry_price": 0.273,
@@ -64952,8 +65040,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.261,
-          "pnl_percent": -4.395604395604402
+          "current_price": 0.262,
+          "pnl_percent": -4.029304029304037
         },
         "LUMIA/USDT": {
           "entry_price": 0.127,
@@ -64962,8 +65050,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.126,
-          "pnl_percent": -0.7874015748031482
+          "current_price": 0.124,
+          "pnl_percent": -2.3622047244094557
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -64972,8 +65060,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.03,
-          "current_price": 0.0358,
-          "pnl_percent": -1.377410468319562
+          "current_price": 0.0353,
+          "pnl_percent": -2.754820936639124
         }
       },
       "trades": [
@@ -68584,29 +68672,29 @@
           "entry_price": 0.47592593070663947,
           "quantity": 10318.876459177762,
           "entry_time": "2025-12-19T21:34:08.489011",
-          "current_price": 0.4427,
-          "pnl_percent": -6.9813238915784055
+          "current_price": 0.4418,
+          "pnl_percent": -7.170428948044572
         },
         "JUP/USDT": {
           "entry_price": 0.1935284472276345,
           "quantity": 5449.5579275935115,
           "entry_time": "2025-12-19T22:10:05.109541",
-          "current_price": 0.1883,
-          "pnl_percent": -2.701642731357534
+          "current_price": 0.188,
+          "pnl_percent": -2.8566587015146916
         },
         "JTO/USDT": {
           "entry_price": 0.35771540215202985,
           "quantity": 4557.533743271782,
           "entry_time": "2025-12-21T10:06:02.782421",
-          "current_price": 0.353,
-          "pnl_percent": -1.3181993628627153
+          "current_price": 0.352,
+          "pnl_percent": -1.597751206027409
         },
         "PYTH/USDT": {
           "entry_price": 0.059883008736272114,
           "quantity": 10184.17571357032,
           "entry_time": "2025-12-21T10:38:26.789128",
-          "current_price": 0.0575,
-          "pnl_percent": -3.979440556781322
+          "current_price": 0.0574,
+          "pnl_percent": -4.1464328340738765
         }
       },
       "trades": [
@@ -71290,15 +71378,15 @@
           "entry_price": 0.11227472291562268,
           "quantity": 60036.76883085365,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.1098,
-          "pnl_percent": -2.2041674665120303
+          "current_price": 0.1097,
+          "pnl_percent": -2.293234709256553
         },
         "TIA/USDT": {
           "entry_price": 0.4791192935672133,
           "quantity": 6400.830143938563,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.4427,
-          "pnl_percent": -7.60129972977267
+          "current_price": 0.4418,
+          "pnl_percent": -7.78914438810382
         }
       },
       "trades": [
@@ -73331,43 +73419,43 @@
           "entry_price": 0.34994273830299844,
           "quantity": 10954.862663895685,
           "entry_time": "2025-12-20T05:41:35.751451",
-          "current_price": 0.353,
-          "pnl_percent": 0.8736462747669371
+          "current_price": 0.352,
+          "pnl_percent": 0.5878852371613563
         },
         "APT/USDT": {
           "entry_price": 1.650718708082878,
           "quantity": 720.9615325881708,
           "entry_time": "2025-12-20T06:57:28.059609",
-          "current_price": 1.586,
-          "pnl_percent": -3.920638190260861
+          "current_price": 1.58,
+          "pnl_percent": -4.284116229894175
         },
         "INJ/USDT": {
           "entry_price": 4.842109214555972,
           "quantity": 50.14668981239177,
           "entry_time": "2025-12-20T07:52:32.329976",
-          "current_price": 4.563,
-          "pnl_percent": -5.764207335863791
+          "current_price": 4.561,
+          "pnl_percent": -5.805511649983508
         },
         "SEI/USDT": {
           "entry_price": 0.11265083216007796,
           "quantity": 1854.097687531246,
           "entry_time": "2025-12-20T08:00:33.399189",
-          "current_price": 0.1098,
-          "pnl_percent": -2.53068007169881
+          "current_price": 0.1097,
+          "pnl_percent": -2.6194499441289376
         },
         "JUP/USDT": {
           "entry_price": 0.19576908118413233,
           "quantity": 177.91650604628614,
           "entry_time": "2025-12-20T10:38:47.691344",
-          "current_price": 0.1883,
-          "pnl_percent": -3.8152506713290624
+          "current_price": 0.188,
+          "pnl_percent": -3.9684924387140885
         },
         "SUI/USDT": {
           "entry_price": 1.4700141603888792,
           "quantity": 21.38385673341405,
           "entry_time": "2025-12-21T10:06:02.783418",
-          "current_price": 1.4299,
-          "pnl_percent": -2.728828161646235
+          "current_price": 1.4263,
+          "pnl_percent": -2.9737237617707746
         }
       },
       "trades": [
@@ -76937,9 +77025,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 52089.83,
-          "current_price": 8.521e-05,
-          "current_liquidity": 32105.58,
-          "pnl_percent": -69.20491507047343
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -69.6566678713408
         },
         "ARCR/USDT": {
           "entry_price": 2.995e-05,
@@ -76951,9 +77039,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 14826.88,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 17.796327212020046
+          "current_price": 3.813e-05,
+          "current_liquidity": 16298.93,
+          "pnl_percent": 27.31218697829718
         },
         "PDF/USDT": {
           "entry_price": 1.768e-05,
@@ -76993,9 +77081,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": -3.9494470774091517
+          "current_price": 0.0001235,
+          "current_liquidity": 34787.45,
+          "pnl_percent": -2.4486571879936747
         },
         "SCP/USDT": {
           "entry_price": 7.827e-05,
@@ -77007,9 +77095,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 26576.46,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -15.369873514756605
+          "current_price": 5.899e-05,
+          "current_liquidity": 23405.0,
+          "pnl_percent": -24.63268174268557
         },
         "FUN/USDT": {
           "entry_price": 0.0005951,
@@ -77049,9 +77137,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002346,
-          "current_liquidity": 56232.54,
-          "pnl_percent": -46.959077549174765
+          "current_price": 0.0002371,
+          "current_liquidity": 56442.43,
+          "pnl_percent": -46.3938503278318
         },
         "SuperCycle/USDT": {
           "entry_price": 0.0003253,
@@ -77063,9 +77151,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 72232.07,
-          "current_price": 0.0001664,
-          "current_liquidity": 52969.68,
-          "pnl_percent": -48.847217952659086
+          "current_price": 0.0001644,
+          "current_liquidity": 52827.13,
+          "pnl_percent": -49.462035044574236
         },
         "FF/USDT": {
           "entry_price": 1.539e-05,
@@ -77091,9 +77179,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 174905.83,
-          "current_price": 3.255e-09,
-          "current_liquidity": 102045.63,
-          "pnl_percent": -65.16481164383562
+          "current_price": 3.306e-09,
+          "current_liquidity": 101817.28,
+          "pnl_percent": -64.61900684931507
         },
         "bubba/USDT": {
           "entry_price": 1.11e-05,
@@ -77133,9 +77221,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 95406.51,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 2.2797394583476294
+          "current_price": 0.000606,
+          "current_liquidity": 96833.49,
+          "pnl_percent": 3.8738429893726556
         },
         "cBNB/USDT": {
           "entry_price": 0.0002277,
@@ -77147,9 +77235,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001194,
-          "current_liquidity": 59150.97,
-          "pnl_percent": -47.56258234519104
+          "current_price": 0.0001184,
+          "current_liquidity": 58614.07,
+          "pnl_percent": -48.00175669740887
         },
         "SPSC/USDT": {
           "entry_price": 0.004583,
@@ -77162,7 +77250,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 312760.52,
           "current_price": 0.003331,
-          "current_liquidity": 274249.9,
+          "current_liquidity": 274267.24,
           "pnl_percent": -27.318350425485495
         },
         "fairystar/USDT": {
@@ -77189,9 +77277,9 @@
           "dex": "raydium",
           "risk_score": 45,
           "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008776,
-          "current_liquidity": 179615.75,
-          "pnl_percent": -0.19333560786989334
+          "current_price": 0.0008708,
+          "current_liquidity": 179226.27,
+          "pnl_percent": -0.9666780393494778
         },
         "FAIR3/USDT": {
           "entry_price": 0.008325,
@@ -77203,9 +77291,9 @@
           "dex": "pancakeswap",
           "risk_score": 95,
           "liquidity_at_entry": 366.45,
-          "current_price": 0.008438,
-          "current_liquidity": 538897.46,
-          "pnl_percent": 1.357357357357336
+          "current_price": 0.008431,
+          "current_liquidity": 537910.23,
+          "pnl_percent": 1.2732732732732455
         },
         "Pixie/USDT": {
           "entry_price": 9.131e-05,
@@ -77260,7 +77348,7 @@
           "risk_score": 45,
           "liquidity_at_entry": 538073.51,
           "current_price": 0.4599,
-          "current_liquidity": 497167.19,
+          "current_liquidity": 499116.57,
           "pnl_percent": -7.240822912464717
         },
         "SHIB/USDT": {
@@ -77274,7 +77362,7 @@
           "risk_score": 30,
           "liquidity_at_entry": 332824.01,
           "current_price": 4.343e-09,
-          "current_liquidity": 345912.78,
+          "current_liquidity": 342876.91,
           "pnl_percent": 10.144559979710888
         },
         "XAVA/USDT": {
@@ -77288,7 +77376,7 @@
           "risk_score": 30,
           "liquidity_at_entry": 78197.44,
           "current_price": 0.1445,
-          "current_liquidity": 350254.55,
+          "current_liquidity": 349674.39,
           "pnl_percent": -0.5505849965588561
         },
         "SPLAT/USDT": {
@@ -79849,8 +79937,8 @@
           "entry_price": 0.3711,
           "quantity": 1347.3457289140395,
           "entry_time": "2025-12-19T17:01:00.001375",
-          "current_price": 0.3622,
-          "pnl_percent": -2.3982753974669757
+          "current_price": 0.3614,
+          "pnl_percent": -2.6138507140932354
         }
       },
       "trades": [
@@ -81206,43 +81294,43 @@
           "entry_price": 0.37318381007147766,
           "quantity": 7043.377038487055,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 0.3622,
-          "pnl_percent": -2.94327078909824
+          "current_price": 0.3614,
+          "pnl_percent": -3.157642361071522
         },
         "DOT/USDT": {
           "entry_price": 1.8423790884093338,
           "quantity": 1322.2074143154207,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 1.749,
-          "pnl_percent": -5.068397106588685
+          "current_price": 1.746,
+          "pnl_percent": -5.231230044656298
         },
         "LINK/USDT": {
           "entry_price": 12.503540763237527,
           "quantity": 171.97410051483172,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 12.23,
-          "pnl_percent": -2.187706413864643
+          "current_price": 12.2,
+          "pnl_percent": -2.4276384504618775
         },
         "ATOM/USDT": {
           "entry_price": 1.93998955374928,
           "quantity": 1163.9777015534748,
           "entry_time": "2025-12-19T17:01:00.003881",
-          "current_price": 1.954,
-          "pnl_percent": 0.7221918398294003
+          "current_price": 1.956,
+          "pnl_percent": 0.8252851784576798
         },
         "VET/USDT": {
           "entry_price": 0.01050687415349023,
           "quantity": 28697.034061805,
           "entry_time": "2025-12-19T17:06:54.491278",
-          "current_price": 0.01041,
-          "pnl_percent": -0.9220073646551641
+          "current_price": 0.0104,
+          "pnl_percent": -1.017183150087786
         },
         "NEAR/USDT": {
           "entry_price": 1.513,
           "quantity": 21.801288227981512,
           "entry_time": "2025-12-19T19:55:31.173168",
-          "current_price": 1.486,
-          "pnl_percent": -1.7845340383344288
+          "current_price": 1.479,
+          "pnl_percent": -2.2471910112359383
         }
       },
       "trades": [
@@ -83341,9 +83429,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 52089.83,
-          "current_price": 8.521e-05,
-          "current_liquidity": 32105.58,
-          "pnl_percent": -69.20491507047343
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -69.6566678713408
         },
         "ARCR/USDT": {
           "entry_price": 2.995e-05,
@@ -83355,9 +83443,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 14826.88,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 17.796327212020046
+          "current_price": 3.813e-05,
+          "current_liquidity": 16358.21,
+          "pnl_percent": 27.31218697829718
         },
         "NEWYEAR/USDT": {
           "entry_price": 1.177e-05,
@@ -83383,9 +83471,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": -3.9494470774091517
+          "current_price": 0.0001235,
+          "current_liquidity": 34787.45,
+          "pnl_percent": -2.4486571879936747
         },
         "SCP/USDT": {
           "entry_price": 7.827e-05,
@@ -83397,9 +83485,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 26576.46,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -15.369873514756605
+          "current_price": 5.899e-05,
+          "current_liquidity": 23405.0,
+          "pnl_percent": -24.63268174268557
         },
         "FUN/USDT": {
           "entry_price": 0.0005951,
@@ -83439,9 +83527,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002346,
-          "current_liquidity": 56232.54,
-          "pnl_percent": -46.959077549174765
+          "current_price": 0.0002371,
+          "current_liquidity": 56442.43,
+          "pnl_percent": -46.3938503278318
         },
         "WoW/USDT": {
           "entry_price": 2.691e-05,
@@ -83467,9 +83555,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 72232.07,
-          "current_price": 0.0001664,
-          "current_liquidity": 52766.44,
-          "pnl_percent": -48.847217952659086
+          "current_price": 0.0001644,
+          "current_liquidity": 52611.77,
+          "pnl_percent": -49.462035044574236
         },
         "FF/USDT": {
           "entry_price": 1.539e-05,
@@ -83495,9 +83583,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 174905.83,
-          "current_price": 3.255e-09,
-          "current_liquidity": 102085.1,
-          "pnl_percent": -65.16481164383562
+          "current_price": 3.306e-09,
+          "current_liquidity": 101817.28,
+          "pnl_percent": -64.61900684931507
         },
         "bubba/USDT": {
           "entry_price": 1.11e-05,
@@ -83537,9 +83625,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 95406.51,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 2.2797394583476294
+          "current_price": 0.000606,
+          "current_liquidity": 97152.49,
+          "pnl_percent": 3.8738429893726556
         },
         "cBNB/USDT": {
           "entry_price": 0.0002277,
@@ -83551,9 +83639,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001194,
-          "current_liquidity": 59019.9,
-          "pnl_percent": -47.56258234519104
+          "current_price": 0.0001184,
+          "current_liquidity": 58383.67,
+          "pnl_percent": -48.00175669740887
         },
         "SPSC/USDT": {
           "entry_price": 0.004583,
@@ -83566,7 +83654,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 312760.52,
           "current_price": 0.003331,
-          "current_liquidity": 274249.9,
+          "current_liquidity": 274555.29,
           "pnl_percent": -27.318350425485495
         },
         "fairystar/USDT": {
@@ -83593,8 +83681,8 @@
           "dex": "uniswap",
           "risk_score": 50,
           "liquidity_at_entry": 14170.3,
-          "current_price": 3.073e-05,
-          "current_liquidity": 17415.18,
+          "current_price": 2.963e-05,
+          "current_liquidity": 17045.84,
           "pnl_percent": 65.25461919783686
         },
         "tSAT/USDT": {
@@ -83607,9 +83695,9 @@
           "dex": "raydium",
           "risk_score": 45,
           "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008776,
-          "current_liquidity": 179615.75,
-          "pnl_percent": -0.19333560786989334
+          "current_price": 0.0008708,
+          "current_liquidity": 179226.27,
+          "pnl_percent": -0.9666780393494778
         },
         "FAIR3/USDT": {
           "entry_price": 0.008325,
@@ -83621,9 +83709,9 @@
           "dex": "pancakeswap",
           "risk_score": 95,
           "liquidity_at_entry": 366.45,
-          "current_price": 0.008438,
-          "current_liquidity": 538897.46,
-          "pnl_percent": 1.357357357357336
+          "current_price": 0.008431,
+          "current_liquidity": 537910.23,
+          "pnl_percent": 1.2732732732732455
         },
         "Pixie/USDT": {
           "entry_price": 9.131e-05,
@@ -85935,9 +86023,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 52089.83,
-          "current_price": 8.521e-05,
-          "current_liquidity": 32105.58,
-          "pnl_percent": -69.20491507047343
+          "current_price": 8.396e-05,
+          "current_liquidity": 31479.47,
+          "pnl_percent": -69.6566678713408
         },
         "ARCR/USDT": {
           "entry_price": 2.995e-05,
@@ -85949,9 +86037,9 @@
           "dex": "meteora",
           "risk_score": 40,
           "liquidity_at_entry": 14826.88,
-          "current_price": 3.528e-05,
-          "current_liquidity": 15101.51,
-          "pnl_percent": 17.796327212020046
+          "current_price": 3.813e-05,
+          "current_liquidity": 16358.21,
+          "pnl_percent": 27.31218697829718
         },
         "PDF/USDT": {
           "entry_price": 1.768e-05,
@@ -85991,9 +86079,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001216,
-          "current_liquidity": 35005.48,
-          "pnl_percent": -3.9494470774091517
+          "current_price": 0.0001235,
+          "current_liquidity": 34787.45,
+          "pnl_percent": -2.4486571879936747
         },
         "SCP/USDT": {
           "entry_price": 7.827e-05,
@@ -86005,9 +86093,9 @@
           "dex": "pumpswap",
           "risk_score": 40,
           "liquidity_at_entry": 26576.46,
-          "current_price": 6.624e-05,
-          "current_liquidity": 24840.24,
-          "pnl_percent": -15.369873514756605
+          "current_price": 5.899e-05,
+          "current_liquidity": 23355.14,
+          "pnl_percent": -24.63268174268557
         },
         "FUN/USDT": {
           "entry_price": 0.0005951,
@@ -86033,9 +86121,9 @@
           "dex": "pumpswap",
           "risk_score": 20,
           "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002346,
-          "current_liquidity": 56232.54,
-          "pnl_percent": -46.959077549174765
+          "current_price": 0.0002371,
+          "current_liquidity": 56095.28,
+          "pnl_percent": -46.3938503278318
         },
         "WoW/USDT": {
           "entry_price": 2.691e-05,
@@ -86075,9 +86163,9 @@
           "dex": "meteora",
           "risk_score": 20,
           "liquidity_at_entry": 174905.83,
-          "current_price": 3.255e-09,
-          "current_liquidity": 102085.1,
-          "pnl_percent": -65.16481164383562
+          "current_price": 3.306e-09,
+          "current_liquidity": 101817.28,
+          "pnl_percent": -64.61900684931507
         },
         "bubba/USDT": {
           "entry_price": 1.11e-05,
@@ -86117,9 +86205,9 @@
           "dex": "pancakeswap",
           "risk_score": 30,
           "liquidity_at_entry": 95406.51,
-          "current_price": 0.0005967,
-          "current_liquidity": 96473.32,
-          "pnl_percent": 2.2797394583476294
+          "current_price": 0.000606,
+          "current_liquidity": 97152.49,
+          "pnl_percent": 3.8738429893726556
         },
         "cBNB/USDT": {
           "entry_price": 0.0002277,
@@ -86131,9 +86219,9 @@
           "dex": "pancakeswap",
           "risk_score": 20,
           "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001194,
-          "current_liquidity": 59019.9,
-          "pnl_percent": -47.56258234519104
+          "current_price": 0.0001184,
+          "current_liquidity": 58383.67,
+          "pnl_percent": -48.00175669740887
         },
         "SPSC/USDT": {
           "entry_price": 0.004583,
@@ -86146,7 +86234,7 @@
           "risk_score": 20,
           "liquidity_at_entry": 312760.52,
           "current_price": 0.003331,
-          "current_liquidity": 273359.38,
+          "current_liquidity": 274555.29,
           "pnl_percent": -27.318350425485495
         },
         "20267/USDT": {
@@ -86187,9 +86275,9 @@
           "dex": "raydium",
           "risk_score": 45,
           "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008776,
-          "current_liquidity": 179615.75,
-          "pnl_percent": -0.19333560786989334
+          "current_price": 0.0008708,
+          "current_liquidity": 179226.27,
+          "pnl_percent": -0.9666780393494778
         },
         "FAIR3/USDT": {
           "entry_price": 0.008325,
@@ -86201,9 +86289,9 @@
           "dex": "pancakeswap",
           "risk_score": 95,
           "liquidity_at_entry": 366.45,
-          "current_price": 0.008438,
-          "current_liquidity": 538977.53,
-          "pnl_percent": 1.357357357357336
+          "current_price": 0.008431,
+          "current_liquidity": 537910.23,
+          "pnl_percent": 1.2732732732732455
         },
         "Pixie/USDT": {
           "entry_price": 9.131e-05,
@@ -88440,7 +88528,14 @@
         "cryptos": [
           "ARB/USDT",
           "OP/USDT",
-          "MATIC/USDT"
+          "MATIC/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -89854,8 +89949,8 @@
           "entry_price": 0.299,
           "quantity": 5028.609177962461,
           "entry_time": "2025-12-21T11:10:29.488716",
-          "current_price": 0.2878,
-          "pnl_percent": -3.7458193979933108
+          "current_price": 0.2876,
+          "pnl_percent": -3.8127090301003252
         }
       },
       "trades": [
@@ -91666,7 +91761,14 @@
         "cryptos": [
           "AXS/USDT",
           "SAND/USDT",
-          "GALA/USDT"
+          "GALA/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 20,
         "rsi_oversold": 30,
@@ -91707,8 +91809,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.044,
-          "current_price": 3.775,
-          "pnl_percent": -3.8461538461538547
+          "current_price": 3.777,
+          "pnl_percent": -3.795211411105448
         },
         "GIGGLE/USDT": {
           "entry_price": 72.37,
@@ -91717,8 +91819,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.179,
-          "current_price": 70.34,
-          "pnl_percent": -2.80502970844273
+          "current_price": 70.25,
+          "pnl_percent": -2.9293906314771356
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -91727,8 +91829,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.098,
-          "current_price": 0.01744,
-          "pnl_percent": 10.519645120405595
+          "current_price": 0.01747,
+          "pnl_percent": 10.709759188846647
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -91737,8 +91839,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.627,
-          "pnl_percent": 0.9661835748792313
+          "current_price": 0.622,
+          "pnl_percent": 0.16103059581320522
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -91747,8 +91849,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 76.133,
-          "current_price": 0.048,
-          "pnl_percent": 1.4799154334038
+          "current_price": 0.0476,
+          "pnl_percent": 0.634249471458781
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -91767,8 +91869,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0557,
-          "pnl_percent": 0.5415162454873723
+          "current_price": 0.0555,
+          "pnl_percent": 0.18050541516245744
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -91777,8 +91879,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.707,
-          "current_price": 0.2852,
-          "pnl_percent": -2.161234991423666
+          "current_price": 0.2825,
+          "pnl_percent": -3.0874785591766707
         },
         "ANIME/USDT": {
           "entry_price": 0.0088,
@@ -91787,8 +91889,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 69.755,
-          "current_price": 0.00983,
-          "pnl_percent": 11.704545454545446
+          "current_price": 0.00972,
+          "pnl_percent": 10.45454545454545
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -91797,8 +91899,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.75,
-          "pnl_percent": 5.633802816901423
+          "current_price": 0.759,
+          "pnl_percent": 6.901408450704238
         },
         "ORCA/USDT": {
           "entry_price": 1.209,
@@ -91807,8 +91909,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.38,
-          "current_price": 1.115,
-          "pnl_percent": -7.7750206782464915
+          "current_price": 1.112,
+          "pnl_percent": -8.02315963606286
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -91817,8 +91919,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.261,
-          "pnl_percent": -4.744525547445255
+          "current_price": 0.262,
+          "pnl_percent": -4.379562043795627
         },
         "LUMIA/USDT": {
           "entry_price": 0.127,
@@ -91827,8 +91929,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.126,
-          "pnl_percent": -0.7874015748031482
+          "current_price": 0.124,
+          "pnl_percent": -2.3622047244094557
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -91837,8 +91939,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0358,
-          "pnl_percent": -2.1857923497267784
+          "current_price": 0.0353,
+          "pnl_percent": -3.551912568306015
         }
       },
       "trades": [
@@ -93536,15 +93638,15 @@
           "entry_price": 0.2841,
           "quantity": 2350.8598989897932,
           "entry_time": "2025-12-20T08:30:17.387792",
-          "current_price": 0.266,
-          "pnl_percent": -6.370996128123895
+          "current_price": 0.2655,
+          "pnl_percent": -6.546990496304117
         },
         "XRP/USDT": {
           "entry_price": 1.9456280653042148,
           "quantity": 503.270823050564,
           "entry_time": "2025-12-20T08:46:19.759189",
-          "current_price": 1.8855,
-          "pnl_percent": -3.0904193034866245
+          "current_price": 1.8776,
+          "pnl_percent": -3.4964578542702185
         }
       },
       "trades": [
@@ -95025,15 +95127,15 @@
           "entry_price": 88091.99567737561,
           "quantity": 0.02467583925408906,
           "entry_time": "2025-12-19T17:01:00.667452",
-          "current_price": 87512.46,
-          "pnl_percent": -0.6578755231043565
+          "current_price": 87554.92,
+          "pnl_percent": -0.6096759112400818
         },
         "ETH/USDT": {
           "entry_price": 2971.3230225638504,
           "quantity": 0.6949957015712219,
           "entry_time": "2025-12-19T17:01:01.322643",
-          "current_price": 2939.1,
-          "pnl_percent": -1.0844671656078053
+          "current_price": 2939.22,
+          "pnl_percent": -1.0804285606130448
         },
         "BNB/USDT": {
           "entry_price": 847.7544766682959,
@@ -95046,15 +95148,15 @@
           "entry_price": 125.41507624266626,
           "quantity": 14.78740803159528,
           "entry_time": "2025-12-19T17:01:02.565164",
-          "current_price": 123.35,
-          "pnl_percent": -1.6465933000515354
+          "current_price": 123.23,
+          "pnl_percent": -1.7422755765330367
         },
         "XRP/USDT": {
           "entry_price": 1.881092662988853,
           "quantity": 936.602297745861,
           "entry_time": "2025-12-19T17:01:03.181062",
-          "current_price": 1.8855,
-          "pnl_percent": 0.23429664566041453
+          "current_price": 1.8776,
+          "pnl_percent": -0.18567203293980983
         }
       },
       "trades": [
@@ -97094,7 +97196,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -98480,7 +98589,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "rsi_oversold": 30,
@@ -98521,8 +98636,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.775,
-          "pnl_percent": -3.821656050955413
+          "current_price": 3.777,
+          "pnl_percent": -3.77070063694267
         },
         "GIGGLE/USDT": {
           "entry_price": 72.34,
@@ -98531,8 +98646,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.3,
-          "current_price": 70.34,
-          "pnl_percent": -2.764722145424381
+          "current_price": 70.25,
+          "pnl_percent": -2.8891346419684827
         },
         "TST/USDT": {
           "entry_price": 0.01576,
@@ -98541,8 +98656,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.953,
-          "current_price": 0.01744,
-          "pnl_percent": 10.659898477157359
+          "current_price": 0.01747,
+          "pnl_percent": 10.850253807106602
         },
         "ALPINE/USDT": {
           "entry_price": 0.621,
@@ -98551,8 +98666,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.627,
-          "pnl_percent": 0.9661835748792313
+          "current_price": 0.622,
+          "pnl_percent": 0.16103059581320522
         },
         "BANK/USDT": {
           "entry_price": 0.0472,
@@ -98561,8 +98676,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.048,
-          "pnl_percent": 1.6949152542372836
+          "current_price": 0.0476,
+          "pnl_percent": 0.847457627118664
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -98581,8 +98696,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0557,
-          "pnl_percent": 0.5415162454873723
+          "current_price": 0.0555,
+          "pnl_percent": 0.18050541516245744
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -98591,8 +98706,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2852,
-          "pnl_percent": -2.161234991423666
+          "current_price": 0.2825,
+          "pnl_percent": -3.0874785591766707
         },
         "ANIME/USDT": {
           "entry_price": 0.00881,
@@ -98601,8 +98716,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.027,
-          "current_price": 0.00983,
-          "pnl_percent": 11.577752553916
+          "current_price": 0.00972,
+          "pnl_percent": 10.329171396140735
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -98611,8 +98726,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.343,
-          "current_price": 0.75,
-          "pnl_percent": 5.633802816901423
+          "current_price": 0.759,
+          "pnl_percent": 6.901408450704238
         },
         "ORCA/USDT": {
           "entry_price": 1.208,
@@ -98621,8 +98736,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.191,
-          "current_price": 1.115,
-          "pnl_percent": -7.698675496688745
+          "current_price": 1.112,
+          "pnl_percent": -7.947019867549654
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -98631,8 +98746,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.261,
-          "pnl_percent": -4.744525547445255
+          "current_price": 0.262,
+          "pnl_percent": -4.379562043795627
         },
         "LUMIA/USDT": {
           "entry_price": 0.128,
@@ -98641,8 +98756,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.126,
-          "pnl_percent": -1.5625
+          "current_price": 0.124,
+          "pnl_percent": -3.125
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -98651,8 +98766,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.0,
-          "current_price": 0.0358,
-          "pnl_percent": -1.377410468319562
+          "current_price": 0.0353,
+          "pnl_percent": -2.754820936639124
         }
       },
       "trades": [
@@ -100305,7 +100420,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -100323,22 +100445,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 87512.46,
-          "pnl_percent": -1.490957019332373
+          "current_price": 87554.92,
+          "pnl_percent": -1.4431616086564736
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 2939.1,
-          "pnl_percent": -2.1020421438444292
+          "current_price": 2939.22,
+          "pnl_percent": -2.0980450852405297
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 123.35,
-          "pnl_percent": -2.3389922811817287
+          "current_price": 123.23,
+          "pnl_percent": -2.4340009631943493
         }
       },
       "trades": [
@@ -100779,7 +100901,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -100796,15 +100925,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 87512.46,
-          "pnl_percent": -1.3974754503030207
+          "current_price": 87554.92,
+          "pnl_percent": -1.3496346834867334
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.929665",
-          "current_price": 2939.1,
-          "pnl_percent": -1.8661151853540003
+          "current_price": 2939.22,
+          "pnl_percent": -1.8621084941295662
         }
       },
       "trades": [
@@ -101229,7 +101358,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -101246,15 +101382,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.317795",
-          "current_price": 87512.46,
-          "pnl_percent": -1.3974754503030207
+          "current_price": 87554.92,
+          "pnl_percent": -1.3496346834867334
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.930851",
-          "current_price": 2939.1,
-          "pnl_percent": -1.8661151853540003
+          "current_price": 2939.22,
+          "pnl_percent": -1.8621084941295662
         }
       },
       "trades": [
@@ -101679,7 +101815,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -101696,15 +101839,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87512.46,
-          "pnl_percent": -1.3974754503030207
+          "current_price": 87554.92,
+          "pnl_percent": -1.3496346834867334
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.932325",
-          "current_price": 2939.1,
-          "pnl_percent": -1.8661151853540003
+          "current_price": 2939.22,
+          "pnl_percent": -1.8621084941295662
         }
       },
       "trades": [
@@ -102129,7 +102272,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -102146,15 +102296,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87512.46,
-          "pnl_percent": -1.3974754503030207
+          "current_price": 87554.92,
+          "pnl_percent": -1.3496346834867334
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.933357",
-          "current_price": 2939.1,
-          "pnl_percent": -1.8661151853540003
+          "current_price": 2939.22,
+          "pnl_percent": -1.8621084941295662
         }
       },
       "trades": [
@@ -102579,7 +102729,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -102597,22 +102754,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 87512.46,
-          "pnl_percent": -1.490957019332373
+          "current_price": 87554.92,
+          "pnl_percent": -1.4431616086564736
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 2939.1,
-          "pnl_percent": -2.1020421438444292
+          "current_price": 2939.22,
+          "pnl_percent": -2.0980450852405297
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.320787",
-          "current_price": 123.35,
-          "pnl_percent": -2.3389922811817287
+          "current_price": 123.23,
+          "pnl_percent": -2.4340009631943493
         }
       },
       "trades": [
@@ -103051,7 +103208,16 @@
       "color": "#ff6b6b",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -103078,7 +103244,16 @@
       "color": "#4ecdc4",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -103105,7 +103280,16 @@
       "color": "#45b7d1",
       "config": {
         "cryptos": [
-          "SOL/USDT"
+          "SOL/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -103135,7 +103319,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -103194,7 +103384,16 @@
       "color": "#ee5a24",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.8,
@@ -103221,7 +103420,16 @@
       "color": "#6c5ce7",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -103251,7 +103459,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.2,
@@ -103313,7 +103527,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -103372,7 +103592,16 @@
       "color": "#0984e3",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.3,
@@ -103399,7 +103628,16 @@
       "color": "#00cec9",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.5,
@@ -103429,7 +103667,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.5,
@@ -103456,7 +103700,16 @@
       "color": "#f39c12",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -103547,7 +103800,16 @@
       "color": "#1abc9c",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -103577,7 +103839,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -103636,7 +103904,16 @@
       "color": "#e74c3c",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -103663,7 +103940,16 @@
       "color": "#3498db",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.2,
@@ -103722,7 +104008,16 @@
       "color": "#1abc9c",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.8,
@@ -103752,7 +104047,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -103811,7 +104112,16 @@
       "color": "#e74c3c",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.5,
@@ -103838,7 +104148,16 @@
       "color": "#3498db",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.8,
@@ -103961,7 +104280,16 @@
       "color": "#96ceb4",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.8,
@@ -103991,7 +104319,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.2,
@@ -104020,7 +104354,14 @@
         "cryptos": [
           "MATIC/USDT",
           "ARB/USDT",
-          "OP/USDT"
+          "OP/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -104081,7 +104422,13 @@
           "AXS/USDT",
           "SAND/USDT",
           "MANA/USDT",
-          "GALA/USDT"
+          "GALA/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 3,
@@ -104178,7 +104525,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 0.4,
@@ -104240,7 +104593,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 3,
@@ -104271,7 +104630,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -104299,7 +104664,16 @@
       "color": "#c0392b",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -104327,7 +104701,16 @@
       "color": "#e74c3c",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2.5,
@@ -104358,7 +104741,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -104389,7 +104778,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2.5,
@@ -104420,7 +104815,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 3,
@@ -104484,7 +104885,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1.5,
@@ -104515,7 +104922,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 2,
@@ -104546,7 +104959,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 1,
@@ -104641,7 +105060,14 @@
         "cryptos": [
           "MATIC/USDT",
           "ARB/USDT",
-          "OP/USDT"
+          "OP/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 4,
@@ -104672,7 +105098,13 @@
           "AXS/USDT",
           "SAND/USDT",
           "MANA/USDT",
-          "GALA/USDT"
+          "GALA/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 6,
@@ -104700,7 +105132,16 @@
       "color": "#c0392b",
       "config": {
         "cryptos": [
-          "BTC/USDT"
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 3,
@@ -104728,7 +105169,16 @@
       "color": "#e74c3c",
       "config": {
         "cryptos": [
-          "ETH/USDT"
+          "ETH/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 3.5,
@@ -104756,7 +105206,16 @@
       "color": "#922b21",
       "config": {
         "cryptos": [
-          "SOL/USDT"
+          "SOL/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 8,
         "take_profit": 4,
@@ -104886,7 +105345,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -104915,7 +105381,14 @@
         "cryptos": [
           "SOL/USDT",
           "AVAX/USDT",
-          "NEAR/USDT"
+          "NEAR/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -104943,7 +105416,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -104972,7 +105453,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105001,7 +105489,14 @@
         "cryptos": [
           "ETH/USDT",
           "BNB/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BTC/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105030,7 +105525,14 @@
         "cryptos": [
           "SOL/USDT",
           "LINK/USDT",
-          "DOT/USDT"
+          "DOT/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105059,7 +105561,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105087,7 +105596,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105117,7 +105634,13 @@
           "SOL/USDT",
           "AVAX/USDT",
           "NEAR/USDT",
-          "ATOM/USDT"
+          "ATOM/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105146,7 +105669,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105175,7 +105705,14 @@
         "cryptos": [
           "ETH/USDT",
           "BNB/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BTC/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105204,7 +105741,14 @@
         "cryptos": [
           "SOL/USDT",
           "DOGE/USDT",
-          "SHIB/USDT"
+          "SHIB/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105233,7 +105777,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105262,7 +105813,14 @@
         "cryptos": [
           "SOL/USDT",
           "AVAX/USDT",
-          "NEAR/USDT"
+          "NEAR/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105292,7 +105850,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "XRP/USDT",
-          "DOGE/USDT"
+          "DOGE/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105321,7 +105885,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105350,7 +105921,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "XRP/USDT"
+          "XRP/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105380,7 +105958,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105408,7 +105992,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105438,7 +106030,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "LINK/USDT"
+          "LINK/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105466,7 +106064,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105496,7 +106102,13 @@
           "SOL/USDT",
           "AVAX/USDT",
           "NEAR/USDT",
-          "ATOM/USDT"
+          "ATOM/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT"
         ],
         "allocation_percent": 5,
         "max_positions": 20,
@@ -105526,7 +106138,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105547,7 +106166,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105569,7 +106196,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "LINK/USDT"
+          "LINK/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105591,7 +106225,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105612,7 +106253,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105634,7 +106283,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105656,7 +106312,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "BNB/USDT"
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105679,7 +106342,13 @@
           "BTC/USDT",
           "ETH/USDT",
           "SOL/USDT",
-          "LINK/USDT"
+          "LINK/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105700,7 +106369,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105722,7 +106399,14 @@
         "cryptos": [
           "SOL/USDT",
           "LINK/USDT",
-          "AVAX/USDT"
+          "AVAX/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "DOT/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105747,8 +106431,8 @@
           "is_whale_trade": true,
           "whale": "Paul Tudor Jones",
           "confidence": 70,
-          "current_price": 0.109,
-          "pnl_percent": -8.862876254180597
+          "current_price": 0.1099,
+          "pnl_percent": -8.110367892976589
         }
       },
       "trades": [
@@ -105768,7 +106452,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105789,7 +106480,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105811,7 +106510,14 @@
         "cryptos": [
           "ETH/USDT",
           "UNI/USDT",
-          "AAVE/USDT"
+          "AAVE/USDT",
+          "BTC/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105833,7 +106539,14 @@
         "cryptos": [
           "SOL/USDT",
           "WIF/USDT",
-          "BONK/USDT"
+          "BONK/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105855,7 +106568,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105876,7 +106596,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105898,7 +106626,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105919,7 +106654,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105941,7 +106684,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105962,7 +106712,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -105984,7 +106742,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106005,7 +106770,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106027,7 +106800,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106048,7 +106828,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106069,7 +106857,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106091,7 +106887,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106112,7 +106915,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106134,7 +106945,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106155,7 +106973,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106274,7 +107100,13 @@
           "ARB/USDT",
           "OP/USDT",
           "MATIC/USDT",
-          "IMX/USDT"
+          "IMX/USDT",
+          "BTC/USDT",
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106296,7 +107128,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106317,7 +107156,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106339,7 +107186,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106360,7 +107214,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106382,7 +107244,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106403,7 +107272,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106425,7 +107302,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106447,7 +107331,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "DOGE/USDT"
+          "DOGE/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106468,7 +107359,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106490,7 +107389,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106511,7 +107417,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106533,7 +107447,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106554,7 +107475,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106576,7 +107505,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106597,7 +107533,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106619,7 +107563,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106640,7 +107591,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106662,7 +107621,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106683,7 +107649,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106705,7 +107679,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106726,7 +107707,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106748,7 +107737,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106769,7 +107765,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106790,7 +107794,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106811,7 +107823,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106832,7 +107852,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106853,7 +107881,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106874,7 +107910,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106895,7 +107939,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106916,7 +107968,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106938,7 +107998,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106959,7 +108026,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -106981,7 +108056,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -107002,7 +108084,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -107023,7 +108113,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -107045,7 +108143,14 @@
         "cryptos": [
           "BTC/USDT",
           "ETH/USDT",
-          "SOL/USDT"
+          "SOL/USDT",
+          "BNB/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20
@@ -107066,7 +108171,15 @@
       "config": {
         "cryptos": [
           "BTC/USDT",
-          "ETH/USDT"
+          "ETH/USDT",
+          "BNB/USDT",
+          "SOL/USDT",
+          "XRP/USDT",
+          "ADA/USDT",
+          "AVAX/USDT",
+          "DOT/USDT",
+          "LINK/USDT",
+          "MATIC/USDT"
         ],
         "allocation_percent": 10,
         "max_positions": 20

@@ -174,12 +174,12 @@ def should_skip_pump_chase(analysis: dict, strategy: dict) -> tuple:
     momentum_1h = analysis.get('momentum_1h', 0)
     change_24h = analysis.get('change_24h', 0)
 
-    # Don't buy if already up >5% in last hour
-    if momentum_1h > 5:
+    # Don't buy if already up >10% in last hour (was 5%)
+    if momentum_1h > 10:
         return (True, f"Already pumped +{momentum_1h:.1f}% in 1h - too late")
 
-    # Don't buy if up >15% in 24h (likely overextended)
-    if change_24h > 15:
+    # Don't buy if up >30% in 24h (was 15%)
+    if change_24h > 30:
         return (True, f"Already pumped +{change_24h:.1f}% in 24h - overextended")
 
     return (False, None)
@@ -202,13 +202,12 @@ def check_trend_alignment(analysis: dict, strategy: dict) -> tuple:
     if not all([ema_9, ema_21, price]):
         return (True, None)  # Can't check, allow trade
 
-    # Bullish alignment: Price > EMA9 > EMA21 (> EMA50 if available)
-    bullish = price > ema_9 > ema_21
-    if ema_50 > 0:
-        bullish = bullish and ema_21 > ema_50
+    # Bullish alignment: Price > EMA21 is enough (was Price > EMA9 > EMA21 > EMA50)
+    # Less strict - just need to be above the 21 EMA
+    bullish = price > ema_21 * 0.98  # Allow 2% tolerance
 
     if not bullish:
-        return (False, f"Trend not aligned: Price={price:.2f}, EMA9={ema_9:.2f}, EMA21={ema_21:.2f}")
+        return (False, f"Trend not aligned: Price={price:.2f} below EMA21={ema_21:.2f}")
 
     return (True, None)
 
@@ -295,24 +294,25 @@ def check_rsi_entry_quality(rsi: float, strategy: dict) -> tuple:
     """
     Check if RSI supports a good entry.
     Returns (is_good_entry, quality_score, reason)
+    RELAXED: Now allows entries up to RSI 75 (was 60)
     """
     # Degen strategies can ignore RSI
     if strategy.get('use_degen') or strategy.get('use_sniper'):
         return (True, 1.0, None)
 
-    # Optimal buy zones
+    # Optimal buy zones - RELAXED
     if rsi < 30:
         return (True, 1.3, f"RSI {rsi:.0f} - Oversold, excellent entry")
-    elif rsi < 40:
+    elif rsi < 45:  # Was 40
         return (True, 1.1, f"RSI {rsi:.0f} - Good entry zone")
-    elif rsi < 50:
+    elif rsi < 55:  # Was 50
         return (True, 1.0, f"RSI {rsi:.0f} - Neutral entry")
-    elif rsi < 60:
-        return (True, 0.8, f"RSI {rsi:.0f} - Slightly overbought")
-    elif rsi < 70:
-        return (False, 0.5, f"RSI {rsi:.0f} - Overbought, risky entry")
+    elif rsi < 65:  # Was 60
+        return (True, 0.9, f"RSI {rsi:.0f} - Slightly high but OK")
+    elif rsi < 75:  # Was 70 - now we allow these
+        return (True, 0.7, f"RSI {rsi:.0f} - High but acceptable")
     else:
-        return (False, 0.3, f"RSI {rsi:.0f} - Extremely overbought, skip")
+        return (False, 0.4, f"RSI {rsi:.0f} - Too overbought, skip")
 
 
 def check_volume_confirmation(analysis: dict, strategy: dict) -> tuple:
@@ -326,10 +326,11 @@ def check_volume_confirmation(analysis: dict, strategy: dict) -> tuple:
 
     volume_ratio = analysis.get('volume_ratio', 1.0)  # Current vs average
 
-    if volume_ratio < 0.5:
-        return (False, f"Low volume ({volume_ratio:.1f}x avg) - no conviction")
-    elif volume_ratio > 2.0:
-        return (True, f"High volume ({volume_ratio:.1f}x avg) - strong signal")
+    # RELAXED: Only reject very low volume (was 0.5)
+    if volume_ratio < 0.3:
+        return (False, f"Very low volume ({volume_ratio:.1f}x avg) - no conviction")
+    elif volume_ratio > 1.5:
+        return (True, f"Good volume ({volume_ratio:.1f}x avg) - confirmed")
 
     return (True, None)
 
@@ -376,17 +377,18 @@ def get_regime_multiplier(regime: str, strategy: dict) -> float:
         return 0.8  # Cautious in sideways
 
 
-def check_loss_cooldown(portfolio: dict, cooldown_hours: float = 2) -> tuple:
+def check_loss_cooldown(portfolio: dict, cooldown_hours: float = 1) -> tuple:
     """
     Check if portfolio should pause after consecutive losses.
     Returns (should_pause, reason)
+    RELAXED: Now requires 5 losses (was 3) and only 1h cooldown (was 2h)
     """
     trades = portfolio.get('trades', [])
-    if len(trades) < 2:
+    if len(trades) < 3:
         return (False, None)
 
-    # Check last 3 trades
-    recent_trades = trades[-3:]
+    # Check last 5 trades
+    recent_trades = trades[-5:]
     consecutive_losses = 0
 
     for trade in reversed(recent_trades):
@@ -395,8 +397,8 @@ def check_loss_cooldown(portfolio: dict, cooldown_hours: float = 2) -> tuple:
         else:
             break
 
-    # Pause after 3 consecutive losses
-    if consecutive_losses >= 3:
+    # Pause after 5 consecutive losses (was 3)
+    if consecutive_losses >= 5:
         last_trade_time = trades[-1].get('timestamp', '')
         if last_trade_time:
             try:
@@ -453,7 +455,7 @@ def calculate_win_streak_bonus(portfolio: dict) -> float:
     return bonus
 
 
-def check_correlation_limit(portfolio: dict, symbol: str, max_correlated: int = 2) -> tuple:
+def check_correlation_limit(portfolio: dict, symbol: str, max_correlated: int = 4) -> tuple:
     """
     Check if adding this position would over-expose to correlated assets.
     Returns (is_ok, reason)
@@ -499,24 +501,25 @@ def get_best_entry_score(analysis: dict, strategy: dict, portfolio: dict) -> dic
     """
     Calculate overall entry quality score combining all factors.
     Returns dict with score (0-100), factors, and recommendation
+    RELAXED: Higher base score, less penalties
     """
-    score = 50  # Base score
+    score = 60  # Base score (was 50)
     factors = []
 
-    # 1. RSI quality (0-20 points)
+    # 1. RSI quality - RELAXED penalties
     rsi = analysis.get('rsi', 50)
     if rsi < 30:
         score += 20
         factors.append(f"RSI oversold ({rsi:.0f}): +20")
-    elif rsi < 40:
+    elif rsi < 45:  # Was 40
         score += 10
         factors.append(f"RSI low ({rsi:.0f}): +10")
-    elif rsi > 70:
-        score -= 20
-        factors.append(f"RSI overbought ({rsi:.0f}): -20")
-    elif rsi > 60:
-        score -= 10
-        factors.append(f"RSI high ({rsi:.0f}): -10")
+    elif rsi > 75:  # Was 70
+        score -= 15  # Was -20
+        factors.append(f"RSI overbought ({rsi:.0f}): -15")
+    elif rsi > 65:  # Was 60
+        score -= 5  # Was -10
+        factors.append(f"RSI high ({rsi:.0f}): -5")
 
     # 2. Trend alignment (0-15 points)
     trend_ok, _ = check_trend_alignment(analysis, strategy)
@@ -560,14 +563,14 @@ def get_best_entry_score(analysis: dict, strategy: dict, portfolio: dict) -> dic
     # Clamp score
     score = max(0, min(100, score))
 
-    # Recommendation
-    if score >= 70:
+    # Recommendation - RELAXED thresholds
+    if score >= 65:  # Was 70
         recommendation = "STRONG_BUY"
-    elif score >= 55:
+    elif score >= 50:  # Was 55
         recommendation = "BUY"
-    elif score >= 45:
+    elif score >= 40:  # Was 45
         recommendation = "NEUTRAL"
-    elif score >= 30:
+    elif score >= 25:  # Was 30
         recommendation = "WEAK"
     else:
         recommendation = "SKIP"
@@ -722,9 +725,9 @@ STRATEGIES = {
     "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 15, "stop_loss": 8},
     "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 10, "stop_loss": 5},
 
-    # Stochastic RSI - Precise entries
-    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5},
+    # Stochastic RSI - RELAXED entries (was 20/80)
+    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5},
 
     # Breakout - Trade consolidation breaks
     "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 20, "stop_loss": 8},
@@ -2200,10 +2203,10 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             return ('SELL', f"SUPERTREND: Downtrend signal")
         return (None, f"SUPERTREND: {'Up' if supertrend_up else 'Down'} | RSI={rsi:.0f}")
 
-    # Stochastic RSI
+    # Stochastic RSI - RELAXED defaults (was 20/80)
     if strategy.get('use_stoch_rsi'):
-        oversold = strategy.get('oversold', 20)
-        overbought = strategy.get('overbought', 80)
+        oversold = strategy.get('oversold', 30)  # Was 20
+        overbought = strategy.get('overbought', 70)  # Was 80
         stoch = analysis.get('stoch_rsi', 50)
 
         if stoch < oversold and has_cash:
@@ -2725,10 +2728,10 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
     signal = analysis.get('signal', 'HOLD')
 
-    # RSI Strategy - Classic 30/70 levels
+    # RSI Strategy - RELAXED 40/65 levels (was 30/70)
     if strategy.get('use_rsi', False):
-        rsi_oversold = config.get('rsi_oversold', 30)  # Classic RSI oversold
-        rsi_overbought = config.get('rsi_overbought', 70)  # Classic RSI overbought
+        rsi_oversold = config.get('rsi_oversold', 40)  # Relaxed from 30
+        rsi_overbought = config.get('rsi_overbought', 65)  # Relaxed from 70
 
         if rsi < rsi_oversold and has_cash:
             return ('BUY', f"RSI={rsi:.0f} < {rsi_oversold} oversold")
