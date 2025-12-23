@@ -211,24 +211,24 @@ STRATEGIES = {
     "manual": {"auto": False},
 
     # Confluence strategies
-    "confluence_strict": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"]},
-    "confluence_normal": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"]},
+    "confluence_strict": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 30, "stop_loss": 15},
+    "confluence_normal": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"], "take_profit": 25, "stop_loss": 12},
 
     # Classic strategies
-    "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"]},
-    "aggressive": {"auto": True, "use_aggressive": True},  # Custom logic - vraiment agressif
-    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": []},
-    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": []},
+    "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 20, "stop_loss": 10},
+    "aggressive": {"auto": True, "use_aggressive": True, "take_profit": 50, "stop_loss": 25},
+    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": [], "take_profit": 100, "stop_loss": 30},
+    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": [], "take_profit": 200, "stop_loss": 50},
 
     # Indicator-based
-    "rsi_strategy": {"auto": True, "use_rsi": True},
-    "dca_fear": {"auto": True, "use_fear_greed": True},
+    "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 25, "stop_loss": 15},
+    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 30, "stop_loss": 20},
 
-    # DEGEN STRATEGIES
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping"},
-    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum"},
-    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid"},
-    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20},
+    # DEGEN STRATEGIES - Fast exits
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 2},
+    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "max_hold_hours": 6},
+    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4},
+    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8},
 
     # SNIPER STRATEGIES - New token hunting
     "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 10000, "take_profit": 100, "stop_loss": 50},
@@ -1556,6 +1556,39 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
     symbol = analysis['symbol']
     asset = symbol.split('/')[0]
+    current_price = analysis.get('price', 0)
+
+    # ============ CHECK TP/SL FIRST ============
+    # This ensures positions are closed when hitting targets regardless of signals
+    if symbol in portfolio['positions']:
+        pos = portfolio['positions'][symbol]
+        entry_price = pos.get('entry_price', 0)
+
+        if entry_price > 0 and current_price > 0:
+            pnl_pct = ((current_price / entry_price) - 1) * 100
+
+            # Get TP/SL from strategy or config
+            take_profit = strategy.get('take_profit', config.get('take_profit', 50))
+            stop_loss = strategy.get('stop_loss', config.get('stop_loss', 25))
+
+            # Check take profit
+            if pnl_pct >= take_profit:
+                return ('SELL', f"TP HIT: +{pnl_pct:.1f}% (target: {take_profit}%)")
+
+            # Check stop loss
+            if pnl_pct <= -stop_loss:
+                return ('SELL', f"SL HIT: {pnl_pct:.1f}% (limit: -{stop_loss}%)")
+
+            # Check max hold time if configured
+            max_hold_hours = strategy.get('max_hold_hours', config.get('max_hold_hours', 0))
+            if max_hold_hours > 0:
+                try:
+                    entry_time = datetime.fromisoformat(pos.get('entry_time', datetime.now().isoformat()))
+                    hold_hours = (datetime.now() - entry_time).total_seconds() / 3600
+                    if hold_hours >= max_hold_hours:
+                        return ('SELL', f"TIME EXIT: Held {hold_hours:.1f}h (max: {max_hold_hours}h)")
+                except:
+                    pass
 
     # Check max positions
     if len(portfolio['positions']) >= config.get('max_positions', 3):
@@ -1566,7 +1599,7 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     has_cash = portfolio['balance']['USDT'] > 100
     rsi = analysis.get('rsi', 50)
 
-    # ============ NEW STRATEGIES ============
+    # ============ STRATEGY SIGNALS ============
 
     # EMA Crossover
     if strategy.get('use_ema_cross'):
