@@ -801,268 +801,259 @@ def record_portfolio_values(portfolios: dict, prices: dict = None):
 # Strategies
 STRATEGIES = {
     # Manual
-    "manuel": {"auto": False},
-    "manual": {"auto": False},
+    "manuel": {"auto": False, "tooltip": "Trading manuel - aucune exécution automatique"},
+    "manual": {"auto": False, "tooltip": "Manual trading - no auto execution"},
 
     # Confluence strategies
-    "confluence_strict": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 30, "stop_loss": 15},
-    "confluence_normal": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"], "take_profit": 25, "stop_loss": 12},
+    "confluence_strict": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 30, "stop_loss": 15, "tooltip": "Attend signaux STRONG uniquement - très sélectif"},
+    "confluence_normal": {"auto": True, "buy_on": ["BUY", "STRONG_BUY"], "sell_on": ["SELL", "STRONG_SELL"], "take_profit": 25, "stop_loss": 12, "tooltip": "Confluence multi-indicateurs - signaux BUY/SELL"},
 
     # Classic strategies
-    "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 20, "stop_loss": 10},
-    "aggressive": {"auto": True, "use_aggressive": True, "take_profit": 50, "stop_loss": 25},
-    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": [], "take_profit": 100, "stop_loss": 30},
-    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": [], "take_profit": 200, "stop_loss": 50},
+    "conservative": {"auto": True, "buy_on": ["STRONG_BUY"], "sell_on": ["STRONG_SELL"], "take_profit": 20, "stop_loss": 10, "tooltip": "Approche prudente - signaux forts uniquement"},
+    "aggressive": {"auto": True, "use_aggressive": True, "take_profit": 50, "stop_loss": 25, "tooltip": "Trading agressif - RSI relaxé, gros gains visés"},
+    "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": [], "take_profit": 100, "stop_loss": 30, "tooltip": "Attend le signal parfait (tous indicateurs alignés)"},
+    "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": [], "take_profit": 200, "stop_loss": 50, "tooltip": "Buy & Hold long terme - TP élevé"},
 
     # Indicator-based
-    "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 25, "stop_loss": 15},
-    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 30, "stop_loss": 20},
+    "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 25, "stop_loss": 15, "tooltip": "RSI <30 buy, >70 sell - oscillateur classique"},
+    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 30, "stop_loss": 20, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
 
     # DEGEN STRATEGIES - Fast exits
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 2},
-    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "max_hold_hours": 6},
-    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4},
-    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8},
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 2, "tooltip": "Scalping rapide - petits gains fréquents"},
+    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
+    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
+    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
 
     # SNIPER STRATEGIES - ULTRA CONSERVATIVE (learned from losses)
-    # Key changes: HIGH liquidity ($200k+), LOW allocation (1%), TIGHT exits, MAX 5 positions
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 20, "min_liquidity": 300000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 3},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 200000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 5},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 150000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 1.5, "allocation_percent": 1, "max_positions": 5},
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 20, "min_liquidity": 300000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 3, "tooltip": "Snipe tokens DEX - liquidité $300k+, risque faible"},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 200000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe DEX modéré - liquidité $200k+"},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 150000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 1.5, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe agressif - liquidité $150k+, high risk"},
 
-    # QUICK FLIP ONLY - Very short holds, take small profits fast
-    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 150000, "take_profit": 12, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 3},
-    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 100000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 5},
-    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 100000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 0.5, "allocation_percent": 1, "max_positions": 3},
+    # QUICK FLIP ONLY - Very short holds
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 150000, "take_profit": 12, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 3, "tooltip": "Quick flip - sort en 1h max"},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 100000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 5, "tooltip": "Spray & pray - plusieurs petites positions"},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 100000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 0.5, "allocation_percent": 1, "max_positions": 3, "tooltip": "Ultra quick flip - 30min max hold"},
 
-    # WHALE COPY TRADING - Follow legendary traders (TIGHTER STOPS)
-    "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48},
-    "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 20, "stop_loss": 8, "max_hold_hours": 24},
-    "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 72},
-    "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 48},
-    "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 24},
-    "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 48},
+    # WHALE COPY TRADING
+    "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48, "tooltip": "Copie GCR - légendaire trader crypto"},
+    "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 20, "stop_loss": 8, "max_hold_hours": 24, "tooltip": "Copie Hsaka - analyste technique réputé"},
+    "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 72, "tooltip": "Copie Cobie - VC & early investor"},
+    "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 48, "tooltip": "Copie Ansem - spécialiste SOL memecoins"},
+    "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 24, "tooltip": "Copie whale degen anonyme"},
+    "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 48, "tooltip": "Agrège plusieurs top whales"},
 
-    # CONGRESS COPY TRADING - Follow US Congress members (famous for beating the market)
-    "congress_pelosi": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi"], "take_profit": 50, "stop_loss": 20},
-    "congress_tuberville": {"auto": True, "use_whale": True, "whale_ids": ["congress_tuberville"], "take_profit": 40, "stop_loss": 20},
-    "congress_crenshaw": {"auto": True, "use_whale": True, "whale_ids": ["congress_crenshaw"], "take_profit": 40, "stop_loss": 20},
-    "congress_all": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi", "congress_mccaul", "congress_tuberville"], "take_profit": 50, "stop_loss": 20},
+    # CONGRESS COPY TRADING
+    "congress_pelosi": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi"], "take_profit": 50, "stop_loss": 20, "tooltip": "Copie Nancy Pelosi - rendements légendaires"},
+    "congress_tuberville": {"auto": True, "use_whale": True, "whale_ids": ["congress_tuberville"], "take_profit": 40, "stop_loss": 20, "tooltip": "Copie Tommy Tuberville - sénateur trader"},
+    "congress_crenshaw": {"auto": True, "use_whale": True, "whale_ids": ["congress_crenshaw"], "take_profit": 40, "stop_loss": 20, "tooltip": "Copie Dan Crenshaw - représentant TX"},
+    "congress_all": {"auto": True, "use_whale": True, "whale_ids": ["congress_pelosi", "congress_mccaul", "congress_tuberville"], "take_profit": 50, "stop_loss": 20, "tooltip": "Agrège tous les trades du Congrès"},
 
-    # LEGENDARY INVESTORS - World's best traders/investors
-    "legend_buffett": {"auto": True, "use_whale": True, "whale_ids": ["legend_buffett"], "take_profit": 100, "stop_loss": 25},
-    "legend_dalio": {"auto": True, "use_whale": True, "whale_ids": ["legend_dalio"], "take_profit": 40, "stop_loss": 15},
-    "legend_simons": {"auto": True, "use_whale": True, "whale_ids": ["legend_simons"], "take_profit": 30, "stop_loss": 15},
-    "legend_soros": {"auto": True, "use_whale": True, "whale_ids": ["legend_soros"], "take_profit": 50, "stop_loss": 20},
-    "legend_burry": {"auto": True, "use_whale": True, "whale_ids": ["legend_burry"], "take_profit": 100, "stop_loss": 30},
-    "legend_cathie": {"auto": True, "use_whale": True, "whale_ids": ["legend_cathie"], "take_profit": 100, "stop_loss": 35},
-    "legend_ptj": {"auto": True, "use_whale": True, "whale_ids": ["legend_ptj"], "take_profit": 40, "stop_loss": 20},
-    "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20},
+    # LEGENDARY INVESTORS
+    "legend_buffett": {"auto": True, "use_whale": True, "whale_ids": ["legend_buffett"], "take_profit": 100, "stop_loss": 25, "tooltip": "Style Warren Buffett - value investing"},
+    "legend_dalio": {"auto": True, "use_whale": True, "whale_ids": ["legend_dalio"], "take_profit": 40, "stop_loss": 15, "tooltip": "Style Ray Dalio - All Weather"},
+    "legend_simons": {"auto": True, "use_whale": True, "whale_ids": ["legend_simons"], "take_profit": 30, "stop_loss": 15, "tooltip": "Style Jim Simons - quant trading"},
+    "legend_soros": {"auto": True, "use_whale": True, "whale_ids": ["legend_soros"], "take_profit": 50, "stop_loss": 20, "tooltip": "Style George Soros - macro trades"},
+    "legend_burry": {"auto": True, "use_whale": True, "whale_ids": ["legend_burry"], "take_profit": 100, "stop_loss": 30, "tooltip": "Style Michael Burry - contrarian bets"},
+    "legend_cathie": {"auto": True, "use_whale": True, "whale_ids": ["legend_cathie"], "take_profit": 100, "stop_loss": 35, "tooltip": "Style Cathie Wood - innovation disruptive"},
+    "legend_ptj": {"auto": True, "use_whale": True, "whale_ids": ["legend_ptj"], "take_profit": 40, "stop_loss": 20, "tooltip": "Style Paul Tudor Jones - macro + technique"},
+    "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20, "tooltip": "Style Bill Ackman - activist investing"},
 
-    # ============ NEW STRATEGIES (ALL WITH TP/SL) ============
+    # EMA Crossover
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 15, "stop_loss": 7, "tooltip": "EMA 9/21 crossover - trend following classique"},
+    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 20, "stop_loss": 10, "tooltip": "EMA 12/26 crossover - moins de faux signaux"},
 
-    # EMA Crossover - Classic trend following
-    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 15, "stop_loss": 7},
-    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 20, "stop_loss": 10},
+    # VWAP Strategy
+    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Achète sous VWAP, vend au-dessus"},
+    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 12, "stop_loss": 6, "tooltip": "Suit la tendance relative au VWAP"},
 
-    # VWAP Strategy - Intraday mean reversion
-    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5, "take_profit": 8, "stop_loss": 4},
-    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 12, "stop_loss": 6},
+    # Supertrend
+    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 15, "stop_loss": 8, "tooltip": "Supertrend ATR - support/résistance dynamique"},
+    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Supertrend rapide - signaux fréquents"},
 
-    # Supertrend - Dynamic support/resistance
-    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 15, "stop_loss": 8},
-    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 10, "stop_loss": 5},
+    # Stochastic RSI
+    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Stoch RSI - momentum oscillator"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI agressif - seuils relaxés"},
 
-    # Stochastic RSI - RELAXED entries (was 20/80)
-    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5},
+    # Breakout
+    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 20, "stop_loss": 8, "tooltip": "Breakout des ranges avec volume"},
+    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Breakout rapide - confirmation volume forte"},
 
-    # Breakout - Trade consolidation breaks
-    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 20, "stop_loss": 8},
-    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 12, "stop_loss": 6},
+    # Mean Reversion
+    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20, "take_profit": 10, "stop_loss": 5, "tooltip": "Retour à la moyenne - achète les excès"},
+    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 8, "stop_loss": 4, "tooltip": "Mean reversion serrée - trades fréquents"},
 
-    # Mean Reversion - Buy deviations from mean
-    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20, "take_profit": 10, "stop_loss": 5},
-    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 8, "stop_loss": 4},
+    # Grid Trading
+    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 8, "stop_loss": 4, "tooltip": "Grille de niveaux - range trading"},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 3, "tooltip": "Grille serrée - micro profits"},
 
-    # Grid Trading - Range trading
-    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 8, "stop_loss": 4},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 3},
+    # DCA Accumulator
+    "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10, "tooltip": "DCA sur dips de 3%+"},
+    "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0, "take_profit": 12, "stop_loss": 8, "tooltip": "DCA agressif - achète dès 2% dip"},
 
-    # DCA Accumulator - Regular buys on dips
-    "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10},
-    "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0, "take_profit": 12, "stop_loss": 8},
+    # Ichimoku Cloud
+    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 20, "stop_loss": 10, "tooltip": "Ichimoku classique - système complet"},
+    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 15, "stop_loss": 8, "tooltip": "Ichimoku rapide - périodes réduites"},
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 8, "stop_loss": 4, "tooltip": "Ichimoku scalping + filtre RSI"},
+    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 25, "stop_loss": 12, "tooltip": "Ichimoku swing - trades journaliers"},
+    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 35, "stop_loss": 15, "tooltip": "Ichimoku long terme - position trading"},
+    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 25, "stop_loss": 10, "tooltip": "Trade le breakout du nuage Kumo"},
+    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Tenkan/Kijun crossover"},
+    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Confirmation Chikou Span"},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 12, "stop_loss": 6, "tooltip": "Ichimoku + RSI momentum"},
+    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 30, "stop_loss": 12, "tooltip": "Ichimoku - tous signaux requis"},
 
-    # Ichimoku Cloud - Japanese trend system
-    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 20, "stop_loss": 10},
-    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 15, "stop_loss": 8},
-    # Ichimoku Variants
-    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 8, "stop_loss": 4},
-    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 25, "stop_loss": 12},
-    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 35, "stop_loss": 15},
-    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 25, "stop_loss": 10},
-    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 18, "stop_loss": 9},
-    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 20, "stop_loss": 10},
-    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 12, "stop_loss": 6},
-    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 30, "stop_loss": 12},
+    # Martingale
+    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50, "tooltip": "Martingale x2 - RISQUE TRÈS ÉLEVÉ"},
+    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35, "tooltip": "Martingale modérée x1.5 - risque élevé"},
 
-    # Martingale - Double down on losses (HIGH RISK!)
-    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50},
-    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35},
+    # Funding Rate Strategies
+    "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 15, "stop_loss": 8, "tooltip": "Contre le funding rate extrême"},
+    "funding_extreme": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 20, "stop_loss": 10, "tooltip": "Funding rate très extrême seulement"},
 
-    # ============ FUNDING RATE STRATEGIES (mapped to mean reversion) ============
-    "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 15, "stop_loss": 8},
-    "funding_extreme": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 20, "stop_loss": 10},
-
-    # Open Interest Strategies (mapped to breakout)
-    "oi_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 18, "stop_loss": 9},
-    "oi_divergence": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6},
+    # Open Interest Strategies
+    "oi_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout avec hausse Open Interest"},
+    "oi_divergence": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence prix/OI"},
 
     # Combined Funding + OI
-    "funding_oi_combo": {"auto": True, "use_breakout": True, "use_mean_rev": True, "take_profit": 15, "stop_loss": 8},
+    "funding_oi_combo": {"auto": True, "use_breakout": True, "use_mean_rev": True, "take_profit": 15, "stop_loss": 8, "tooltip": "Combo Funding + Open Interest"},
 
-    # ============ ADVANCED STRATEGIES (all mapped to working logic) ============
+    # Bollinger Squeeze
+    "bollinger_squeeze": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 15, "stop_loss": 8, "tooltip": "Squeeze Bollinger - bandes serrées avant explosion"},
+    "bollinger_squeeze_tight": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "Squeeze rapide - breakout imminent"},
 
-    # Bollinger Squeeze (mapped to breakout)
-    "bollinger_squeeze": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 15, "stop_loss": 8},
-    "bollinger_squeeze_tight": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
+    # RSI Divergence
+    "rsi_divergence": {"auto": True, "use_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI/prix - reversal signal"},
+    "rsi_divergence_fast": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5, "tooltip": "Divergence RSI rapide"},
 
-    # RSI Divergence (mapped to RSI strategy)
-    "rsi_divergence": {"auto": True, "use_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 15, "stop_loss": 8},
-    "rsi_divergence_fast": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5},
+    # ADX Trend
+    "adx_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 18, "stop_loss": 9, "tooltip": "ADX fort - suit les tendances établies"},
+    "adx_strong": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 25, "stop_loss": 12, "tooltip": "ADX très fort - tendances puissantes"},
 
-    # ADX Trend (mapped to EMA crossover - strong trends only)
-    "adx_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 18, "stop_loss": 9},
-    "adx_strong": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 25, "stop_loss": 12},
+    # MACD
+    "macd_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "Reversal MACD - changement de momentum"},
+    "macd_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 15, "stop_loss": 8, "tooltip": "MACD signal crossover"},
 
-    # MACD (mapped to EMA crossover)
-    "macd_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
-    "macd_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 15, "stop_loss": 8},
+    # Parabolic SAR
+    "parabolic_sar": {"auto": True, "use_supertrend": True, "period": 10, "take_profit": 15, "stop_loss": 8, "tooltip": "Parabolic SAR - stop & reverse"},
+    "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 10, "stop_loss": 5, "tooltip": "Parabolic SAR rapide"},
 
-    # Parabolic SAR (mapped to supertrend)
-    "parabolic_sar": {"auto": True, "use_supertrend": True, "period": 10, "take_profit": 15, "stop_loss": 8},
-    "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 10, "stop_loss": 5},
+    # Williams %R
+    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "Williams %R - momentum oscillator"},
+    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 15, "stop_loss": 8, "tooltip": "Williams %R extrême - niveaux stricts"},
 
-    # Williams %R (mapped to stoch RSI)
-    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
-    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 15, "stop_loss": 8},
+    # Donchian Channel
+    "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 20, "stop_loss": 10, "tooltip": "Donchian 20 - breakout channel"},
+    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "Donchian rapide - breakout court"},
 
-    # Donchian Channel (mapped to breakout)
-    "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 20, "stop_loss": 10},
-    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
+    # Keltner Channel
+    "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Keltner Channel - bandes ATR"},
+    "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Keltner serré - range trading"},
 
-    # Keltner Channel (mapped to mean reversion)
-    "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6},
-    "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 8, "stop_loss": 4},
+    # CCI Momentum
+    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "CCI momentum - trend strength"},
+    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 18, "stop_loss": 9, "tooltip": "CCI extrême - reversals"},
 
-    # CCI Momentum (mapped to stoch RSI)
-    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
-    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 18, "stop_loss": 9},
+    # Aroon Indicator
+    "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Aroon - identifie nouvelles tendances"},
+    "aroon_fast": {"auto": True, "use_ema_cross": True, "fast_ema": 7, "take_profit": 10, "stop_loss": 5, "tooltip": "Aroon rapide - tendances courtes"},
 
-    # Aroon Indicator (mapped to EMA crossover)
-    "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
-    "aroon_fast": {"auto": True, "use_ema_cross": True, "fast_ema": 7, "take_profit": 10, "stop_loss": 5},
-
-    # OBV Trend (mapped to breakout with volume)
-    "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 15, "stop_loss": 8},
-    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5},
+    # OBV Trend
+    "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 15, "stop_loss": 8, "tooltip": "OBV - On Balance Volume trend"},
+    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "OBV rapide - volume spikes"},
 
     # Multi-indicator combos
-    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 15, "stop_loss": 8},
-    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6},
-    "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
+    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 15, "stop_loss": 8, "tooltip": "Combo RSI + MACD confirmation"},
+    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Combo Bollinger + RSI"},
+    "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Trend + Momentum alignment"},
 
-    # Trailing Stop strategies (mapped to degen with tight exits)
-    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2},
-    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 3},
-    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 5},
-    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 1.5},
-    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 5},
+    # Trailing Stop strategies
+    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2, "tooltip": "Trailing 2% - lock profits vite"},
+    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 3, "tooltip": "Trailing 3% - balance risque/gain"},
+    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 5, "tooltip": "Trailing 5% - laisse courir"},
+    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 1.5, "tooltip": "Ultra tight trailing - micro gains"},
+    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 5, "tooltip": "Trailing swing - gros moves"},
 
-    # Scalping variants (mapped to degen scalping)
-    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3},
-    "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5},
-    "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 7, "stop_loss": 3.5},
+    # Scalping variants
+    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3, "tooltip": "Scalp RSI - quick reversals"},
+    "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "tooltip": "Scalp Bollinger touches"},
+    "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 7, "stop_loss": 3.5, "tooltip": "Scalp MACD crosses"},
 
-    # Sector-specific (mapped to degen momentum)
-    "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10},
-    "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9},
-    "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12},
-    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12},
-    "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15},
+    # Sector-specific
+    "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "tooltip": "Focus tokens DeFi (AAVE, UNI...)"},
+    "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9, "tooltip": "Focus Layer 2 (ARB, OP, MATIC)"},
+    "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12, "tooltip": "Focus Gaming/Metaverse tokens"},
+    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
+    "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15, "tooltip": "Chasse aux memecoins (DOGE, SHIB, PEPE)"},
 
     # Risk-adjusted
-    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 20, "stop_loss": 10},
-    "medium_risk_swing": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 18, "stop_loss": 9},
-    "high_risk_leverage": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15},
+    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 20, "stop_loss": 10, "tooltip": "DCA conservateur - dips de 5%+ seulement"},
+    "medium_risk_swing": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 18, "stop_loss": 9, "tooltip": "Swing trading risque modéré"},
+    "high_risk_leverage": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15, "tooltip": "Style leverage - gros gains/pertes"},
 
-    # ============ MORE STRATEGIES ============
+    # Pivot Points
+    "pivot_classic": {"auto": True, "use_grid": True, "grid_size": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Pivots classiques - S1/S2/R1/R2"},
+    "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Pivots Fibonacci - retracements"},
 
-    # Pivot Points (mapped to grid trading)
-    "pivot_classic": {"auto": True, "use_grid": True, "grid_size": 2.0, "take_profit": 10, "stop_loss": 5},
-    "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
+    # Volume Weighted
+    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 15, "stop_loss": 7, "tooltip": "Breakout avec volume 2x normal"},
+    "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Climax de volume - reversal probable"},
 
-    # Volume Weighted (uses breakout/mean_rev logic)
-    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 15, "stop_loss": 7},
-    "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 12, "stop_loss": 6},
+    # Multi-timeframe
+    "mtf_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 20, "stop_loss": 10, "tooltip": "Multi-timeframe trend alignment"},
+    "mtf_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8, "tooltip": "MTF momentum confirmation"},
 
-    # Multi-timeframe (uses EMA alignment - already checked in filters)
-    "mtf_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 20, "stop_loss": 10},
-    "mtf_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8},
+    # Range trading
+    "range_sniper": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Snipe les bords du range"},
+    "range_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 7, "tooltip": "Attend le breakout du range"},
 
-    # Range trading (uses grid/mean_rev logic)
-    "range_sniper": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 8, "stop_loss": 4},
-    "range_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 7},
+    # Heikin Ashi
+    "heikin_ashi": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Heikin Ashi - bougies lissées"},
+    "heikin_ashi_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "HA reversal patterns"},
 
-    # Heikin Ashi (uses EMA + RSI combo)
-    "heikin_ashi": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8},
-    "heikin_ashi_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6},
+    # Order flow
+    "orderflow_delta": {"auto": True, "use_breakout": True, "volume_mult": 2.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Delta volume - buy vs sell pressure"},
+    "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Order imbalance detection"},
 
-    # Order flow (uses volume breakout logic)
-    "orderflow_delta": {"auto": True, "use_breakout": True, "volume_mult": 2.5, "take_profit": 12, "stop_loss": 6},
-    "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5},
+    # Sentiment
+    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Sentiment social - Twitter/Reddit"},
+    "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Fear <20 ou Greed >80 seulement"},
 
-    # Sentiment (uses fear/greed logic)
-    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 10},
-    "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 25, "stop_loss": 12},
+    # ICT/SMC STRATEGIES
+    # Fibonacci Retracement
+    "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 15, "stop_loss": 8, "tooltip": "Fib retracement 38.2/50/61.8%"},
+    "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 12, "stop_loss": 6, "tooltip": "Fib agressif - 23.6% entries"},
+    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 20, "stop_loss": 10, "tooltip": "Fib conservateur - 61.8%+ seulement"},
 
-    # ============ ICT/SMC STRATEGIES (mapped to working logic) ============
+    # Volume Profile
+    "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Volume Profile - POC trading"},
+    "volume_profile_vah": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Trade au Value Area High"},
+    "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Trade au Value Area Low"},
 
-    # Fibonacci Retracement (uses mean reversion at key levels)
-    "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 15, "stop_loss": 8},
-    "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 12, "stop_loss": 6},
-    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 20, "stop_loss": 10},
+    # Order Blocks ICT
+    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 15, "stop_loss": 8, "tooltip": "Order block bullish - support institutionnel"},
+    "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 15, "stop_loss": 8, "tooltip": "Order block bearish - résistance instit."},
+    "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Order blocks bull & bear"},
 
-    # Volume Profile (uses grid trading at key levels)
-    "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 10, "stop_loss": 5},
-    "volume_profile_vah": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
-    "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6},
+    # Fair Value Gaps
+    "fvg_fill": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 10, "stop_loss": 5, "tooltip": "FVG fill - comble les gaps"},
+    "fvg_rejection": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "FVG rejection - rebond sur gap"},
+    "fvg_aggressive": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8, "tooltip": "FVG agressif - trade tous les gaps"},
 
-    # Order Blocks ICT (uses breakout + RSI combo)
-    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 15, "stop_loss": 8},
-    "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 15, "stop_loss": 8},
-    "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6},
+    # Liquidity Sweep/Stop Hunt
+    "liquidity_sweep": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 8, "tooltip": "Liquidity sweep - faux breakdowns"},
+    "liquidity_grab": {"auto": True, "use_dca": True, "dip_threshold": 4.0, "take_profit": 20, "stop_loss": 10, "tooltip": "Liquidity grab - stop hunt puis reversal"},
+    "stop_hunt": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 25, "stop_loss": 12, "tooltip": "Stop hunt recovery - après cascade de SL"},
 
-    # Fair Value Gaps FVG (uses mean reversion)
-    "fvg_fill": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 10, "stop_loss": 5},
-    "fvg_rejection": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6},
-    "fvg_aggressive": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8},
+    # Session Trading
+    "session_asian": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5, "tooltip": "Session Asie - range trading"},
+    "session_london": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Session Londres - breakout matinal"},
+    "session_newyork": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Session NY - volatilité US"},
+    "session_overlap": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 8, "tooltip": "Overlap London/NY - max volatilité"},
 
-    # Liquidity Sweep/Stop Hunt (uses breakout after dip)
-    "liquidity_sweep": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 8},
-    "liquidity_grab": {"auto": True, "use_dca": True, "dip_threshold": 4.0, "take_profit": 20, "stop_loss": 10},
-    "stop_hunt": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 25, "stop_loss": 12},
-
-    # Session Trading (uses EMA crossover during session hours)
-    "session_asian": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5},
-    "session_london": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6},
-    "session_newyork": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6},
-    "session_overlap": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 8},
-
-    # RSI Divergence (uses RSI + trend combo)
-    "rsi_divergence_bull": {"auto": True, "use_rsi": True, "oversold": 30, "take_profit": 15, "stop_loss": 8},
-    "rsi_divergence_bear": {"auto": True, "use_rsi": True, "overbought": 70, "take_profit": 15, "stop_loss": 8},
-    "rsi_divergence_hidden": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6},
+    # RSI Divergence variants
+    "rsi_divergence_bull": {"auto": True, "use_rsi": True, "oversold": 30, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI bullish - reversal haut"},
+    "rsi_divergence_bear": {"auto": True, "use_rsi": True, "overbought": 70, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI bearish - reversal bas"},
+    "rsi_divergence_hidden": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence cachée - continuation"},
 }
 
 # Timeframes per strategy type - optimized for each trading style
