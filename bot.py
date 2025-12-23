@@ -715,16 +715,16 @@ STRATEGIES = {
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8},
 
-    # SNIPER STRATEGIES - TIGHT EXITS + HIGH LIQUIDITY (anti-rug)
-    # Key changes: Lower TP (take profit fast), tight SL, high min_liquidity, short hold times
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 100000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 4, "allocation_percent": 2},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 50, "min_liquidity": 50000, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 3, "allocation_percent": 3},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 60, "min_liquidity": 30000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 3},
+    # SNIPER STRATEGIES - ULTRA CONSERVATIVE (learned from losses)
+    # Key changes: HIGH liquidity ($200k+), LOW allocation (1%), TIGHT exits, MAX 5 positions
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 20, "min_liquidity": 300000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 3},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 200000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 5},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 150000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 1.5, "allocation_percent": 1, "max_positions": 5},
 
-    # ULTRA DEGEN - Quick flips only, very tight stops
-    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 70, "min_liquidity": 20000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 2},
-    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 70, "min_liquidity": 25000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 2},
-    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 65, "min_liquidity": 30000, "take_profit": 12, "stop_loss": 6, "max_hold_hours": 0.5, "allocation_percent": 2},
+    # QUICK FLIP ONLY - Very short holds, take small profits fast
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 150000, "take_profit": 12, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 3},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 100000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 5},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 100000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 0.5, "allocation_percent": 1, "max_positions": 3},
 
     # WHALE COPY TRADING - Follow legendary traders (TIGHTER STOPS)
     "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48},

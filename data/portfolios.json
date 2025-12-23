@@ -36,8 +36,8 @@
           "entry_price": 181.42471484869404,
           "quantity": 10.224282295535065,
           "entry_time": "2025-12-20T10:04:52.275650",
-          "current_price": 150.47,
-          "pnl_percent": -17.06201653645143
+          "current_price": 150.37,
+          "pnl_percent": -17.117135818343865
         }
       },
       "trades": [
@@ -1375,14 +1375,19 @@
           "ADA/USDT",
           "AVAX/USDT"
         ],
-        "allocation_percent": 10,
+        "allocation_percent": 1,
         "rsi_oversold": 25,
         "rsi_overbought": 75,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 3,
+        "auto_trade": true,
+        "max_risk": 20,
+        "min_liquidity": 300000,
+        "take_profit": 15,
+        "stop_loss": 8,
+        "max_hold_hours": 2
       },
       "balance": {
-        "USDT": 867.0616644845279,
+        "USDT": 3412.1443343430324,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -1417,288 +1422,7 @@
         "FAIREMAIL": 2495871.1024523806
       },
       "initial_capital": 10000,
-      "positions": {
-        "REDACTED/USDT": {
-          "entry_price": 0.0002009,
-          "quantity": 2488800.3982080636,
-          "entry_time": "2025-12-20T00:53:24.319083",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 44880.57,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -63.44947735191637
-        },
-        "$WEED/USDT": {
-          "entry_price": 2.646e-05,
-          "quantity": 18896447.46787604,
-          "entry_time": "2025-12-20T00:53:24.320081",
-          "is_snipe": true,
-          "address": "9Hku2in6rKyqe7WNGLZn17zzsT1QaDWfbU5wdCtrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 15705.16,
-          "current_price": 4.021e-06,
-          "current_liquidity": 6103.21,
-          "pnl_percent": -80.07558578987151
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.49e-05,
-          "quantity": 14638554.216867471,
-          "entry_time": "2025-12-20T00:53:24.323079",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 13505.37,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 55.38152610441767
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.367e-05,
-          "quantity": 21598024.871982444,
-          "entry_time": "2025-12-20T00:53:24.324073",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 12194.41,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -63.62838332114118
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001067,
-          "quantity": 2490351.4526710403,
-          "entry_time": "2025-12-20T00:53:24.325069",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001369,
-          "current_liquidity": 36919.84,
-          "pnl_percent": 28.303655107778813
-        },
-        "NONPC/USDT": {
-          "entry_price": 1.335e-06,
-          "quantity": 179137415.7303371,
-          "entry_time": "2025-12-20T00:53:24.326066",
-          "is_snipe": true,
-          "address": "8rmZUcQsQKWBZ2WDPoTwkkiFsuhABXQX7o4xysf7Cgyp",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 65236.09,
-          "current_price": 1.385e-06,
-          "current_liquidity": 65901.67,
-          "pnl_percent": 3.7453183520599342
-        },
-        "SCP/USDT": {
-          "entry_price": 7.137e-05,
-          "quantity": 3015743.3795712483,
-          "entry_time": "2025-12-20T00:53:24.326066",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 25357.82,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -21.29746392041474
-        },
-        "Memeverse/USDT": {
-          "entry_price": 1.944e-05,
-          "quantity": 9964518.75,
-          "entry_time": "2025-12-20T00:53:24.326066",
-          "is_snipe": true,
-          "address": "8mBhF1ZYUr96wGFDrenvSqZLaotSDvonKEaVPdsMpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13635.02,
-          "current_price": 5.348e-06,
-          "current_liquidity": 7100.44,
-          "pnl_percent": -72.39711934156378
-        },
-        "esdeekid/USDT": {
-          "entry_price": 4.093e-05,
-          "quantity": 4259448.327632543,
-          "entry_time": "2025-12-20T00:53:24.327064",
-          "is_snipe": true,
-          "address": "2LuvXuCxAEtYmEWM8QTutRgZnQDCCJoXxbKiGopipump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 19154.53,
-          "current_price": 1.69e-05,
-          "current_liquidity": 12436.31,
-          "pnl_percent": -58.7099926704129
-        },
-        "\u9759\u4e0b\u5fc3\u6765/USDT": {
-          "entry_price": 0.0001562,
-          "quantity": 1004515.3524007682,
-          "entry_time": "2025-12-20T00:53:24.328061",
-          "is_snipe": true,
-          "address": "0x4f259DCd05Db760e807805AF00dEa700543a4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 49244.86,
-          "current_price": 2.99e-05,
-          "current_liquidity": 21813.92,
-          "pnl_percent": -80.85787451984635
-        },
-        "2026/USDT": {
-          "entry_price": 0.0003417,
-          "quantity": 413271.1976602283,
-          "entry_time": "2025-12-20T00:53:24.328061",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002228,
-          "current_liquidity": 54077.53,
-          "pnl_percent": -34.79660520924788
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0003163,
-          "quantity": 401812.49262235226,
-          "entry_time": "2025-12-20T00:53:24.329058",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001643,
-          "current_liquidity": 52575.1,
-          "pnl_percent": -48.055643376541255
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 7432356.223184211,
-          "entry_time": "2025-12-20T00:53:24.329058",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 50,
-          "liquidity_at_entry": 18935.46,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 8.953e-09,
-          "quantity": 11498443655.459007,
-          "entry_time": "2025-12-20T00:53:24.330055",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 171060.61,
-          "current_price": 3.518e-09,
-          "current_liquidity": 103650.91,
-          "pnl_percent": -60.705908633977444
-        },
-        "bubba/USDT": {
-          "entry_price": 1.419e-05,
-          "quantity": 6529317.085453986,
-          "entry_time": "2025-12-20T00:53:24.330055",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11782.81,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -47.24453840732911
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 2768.456457447969,
-          "entry_time": "2025-12-20T00:53:24.331053",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005961,
-          "quantity": 125897.19451182614,
-          "entry_time": "2025-12-20T00:53:24.331053",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 96360.76,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 1.7111222949169669
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002268,
-          "quantity": 297806.8160654745,
-          "entry_time": "2025-12-20T00:53:24.332049",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001196,
-          "current_liquidity": 58971.05,
-          "pnl_percent": -47.26631393298061
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004344,
-          "quantity": 13993.629672026851,
-          "entry_time": "2025-12-20T00:53:24.332049",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 304667.84,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -24.01012891344383
-        },
-        "FAIREMAIL/USDT": {
-          "entry_price": 2.192e-05,
-          "quantity": 2495871.1024523806,
-          "entry_time": "2025-12-20T00:53:24.333046",
-          "is_snipe": true,
-          "address": "0xADFcD9a75BF5Abe706426de8228016A2fAd6B474",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13856.21,
-          "current_price": 3.971e-05,
-          "current_liquidity": 20234.62,
-          "pnl_percent": 67.29014598540147
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-20T00:53:24.315818",
@@ -3622,14 +3346,19 @@
           "SUI/USDT",
           "PEPE/USDT"
         ],
-        "allocation_percent": 5,
+        "allocation_percent": 1,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 5,
+        "auto_trade": true,
+        "max_risk": 30,
+        "min_liquidity": 200000,
+        "take_profit": 18,
+        "stop_loss": 10,
+        "max_hold_hours": 2
       },
       "balance": {
-        "USDT": 1285.832151609112,
+        "USDT": 3624.8699735389064,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -3677,386 +3406,7 @@
         "APL": 110.76608965423827
       },
       "initial_capital": 10000,
-      "positions": {
-        "Jeflix/USDT": {
-          "entry_price": 1.076e-05,
-          "quantity": 39840845.72490706,
-          "entry_time": "2025-12-20T00:53:24.335043",
-          "is_snipe": true,
-          "address": "BnsS2CacnoNeVfb3JU5FY9Ap6yWqWED6BRScXXarpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 9772.37,
-          "current_price": 2.525e-06,
-          "current_liquidity": 4709.85,
-          "pnl_percent": -66.24535315985129
-        },
-        "asset/USDT": {
-          "entry_price": 5.447e-06,
-          "quantity": 67476766.16715623,
-          "entry_time": "2025-12-20T00:53:24.337037",
-          "is_snipe": true,
-          "address": "4afZwXC2vLcB3zpuyucn199h5CfFuGFQRmWHYq7Xpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 6961.97,
-          "current_price": 2.343e-06,
-          "current_liquidity": 4583.57,
-          "pnl_percent": -56.985496603635035
-        },
-        "REDACTED/USDT": {
-          "entry_price": 0.0002009,
-          "quantity": 1344848.401350515,
-          "entry_time": "2025-12-20T00:53:24.344018",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 44880.57,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -63.44947735191637
-        },
-        "$WEED/USDT": {
-          "entry_price": 2.646e-05,
-          "quantity": 9700341.709741214,
-          "entry_time": "2025-12-20T00:53:24.344018",
-          "is_snipe": true,
-          "address": "9Hku2in6rKyqe7WNGLZn17zzsT1QaDWfbU5wdCtrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 15705.16,
-          "current_price": 4.021e-06,
-          "current_liquidity": 6103.21,
-          "pnl_percent": -80.07558578987151
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.49e-05,
-          "quantity": 7976191.133699167,
-          "entry_time": "2025-12-20T00:53:24.347016",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 13505.37,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 55.38152610441767
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.367e-05,
-          "quantity": 11833706.838833552,
-          "entry_time": "2025-12-20T00:53:24.349006",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 12194.41,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -63.62838332114118
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001067,
-          "quantity": 1440285.228327197,
-          "entry_time": "2025-12-20T00:53:24.350015",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001369,
-          "current_liquidity": 36919.84,
-          "pnl_percent": 28.303655107778813
-        },
-        "NONPC/USDT": {
-          "entry_price": 1.335e-06,
-          "quantity": 109359185.14560772,
-          "entry_time": "2025-12-20T00:53:24.350999",
-          "is_snipe": true,
-          "address": "8rmZUcQsQKWBZ2WDPoTwkkiFsuhABXQX7o4xysf7Cgyp",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 65236.09,
-          "current_price": 1.385e-06,
-          "current_liquidity": 65901.67,
-          "pnl_percent": 3.7453183520599342
-        },
-        "SCP/USDT": {
-          "entry_price": 7.137e-05,
-          "quantity": 1943320.5346912844,
-          "entry_time": "2025-12-20T00:53:24.350999",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 25357.82,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -21.29746392041474
-        },
-        "FUN/USDT": {
-          "entry_price": 0.0005951,
-          "quantity": 221408.24606431046,
-          "entry_time": "2025-12-20T00:53:24.351995",
-          "is_snipe": true,
-          "address": "29Wv5PYkAR62bmNzQegSwdcXLddSeTrC8n6UFAiRVFUN",
-          "chain": "solana",
-          "dex": "orca",
-          "risk_score": 65,
-          "liquidity_at_entry": 23427.52,
-          "current_price": 0.0005899,
-          "current_liquidity": 23223.56,
-          "pnl_percent": -0.8738027222315647
-        },
-        "Memeverse/USDT": {
-          "entry_price": 1.944e-05,
-          "quantity": 6438891.197079608,
-          "entry_time": "2025-12-20T00:53:24.355987",
-          "is_snipe": true,
-          "address": "8mBhF1ZYUr96wGFDrenvSqZLaotSDvonKEaVPdsMpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13635.02,
-          "current_price": 5.348e-06,
-          "current_liquidity": 7100.44,
-          "pnl_percent": -72.39711934156378
-        },
-        "esdeekid/USDT": {
-          "entry_price": 4.093e-05,
-          "quantity": 2905288.1169720544,
-          "entry_time": "2025-12-20T00:53:24.356985",
-          "is_snipe": true,
-          "address": "2LuvXuCxAEtYmEWM8QTutRgZnQDCCJoXxbKiGopipump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 19154.53,
-          "current_price": 1.69e-05,
-          "current_liquidity": 12436.31,
-          "pnl_percent": -58.7099926704129
-        },
-        "\u9759\u4e0b\u5fc3\u6765/USDT": {
-          "entry_price": 0.0001562,
-          "quantity": 723225.1632284437,
-          "entry_time": "2025-12-20T00:53:24.356985",
-          "is_snipe": true,
-          "address": "0x4f259DCd05Db760e807805AF00dEa700543a4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 49244.86,
-          "current_price": 2.99e-05,
-          "current_liquidity": 21813.92,
-          "pnl_percent": -80.85787451984635
-        },
-        "2026/USDT": {
-          "entry_price": 0.0003417,
-          "quantity": 314074.8667587614,
-          "entry_time": "2025-12-20T00:53:24.357982",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002228,
-          "current_liquidity": 54077.53,
-          "pnl_percent": -34.79660520924788
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0003163,
-          "quantity": 322331.37171323213,
-          "entry_time": "2025-12-20T00:53:24.357982",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001643,
-          "current_liquidity": 52575.1,
-          "pnl_percent": -48.055643376541255
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 6293420.547709588,
-          "entry_time": "2025-12-20T00:53:24.358979",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 50,
-          "liquidity_at_entry": 18935.46,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 8.953e-09,
-          "quantity": 10277332192.314087,
-          "entry_time": "2025-12-20T00:53:24.359976",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 171060.61,
-          "current_price": 3.518e-09,
-          "current_liquidity": 103650.91,
-          "pnl_percent": -60.705908633977444
-        },
-        "bubba/USDT": {
-          "entry_price": 1.419e-05,
-          "quantity": 6160134.415919565,
-          "entry_time": "2025-12-20T00:53:24.359976",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11782.81,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -47.24453840732911
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 2757.0282866468683,
-          "entry_time": "2025-12-20T00:53:24.360971",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005961,
-          "quantity": 132342.90789148383,
-          "entry_time": "2025-12-20T00:53:24.360971",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 96360.76,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 1.7111222949169669
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002268,
-          "quantity": 330445.8863510045,
-          "entry_time": "2025-12-20T00:53:24.361968",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001196,
-          "current_liquidity": 58971.05,
-          "pnl_percent": -47.26631393298061
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004344,
-          "quantity": 16389.933396221786,
-          "entry_time": "2025-12-20T00:53:24.361968",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 304667.84,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -24.01012891344383
-        },
-        "fairystar/USDT": {
-          "entry_price": 3.586e-05,
-          "quantity": 1886167.7953019538,
-          "entry_time": "2025-12-20T00:53:24.362968",
-          "is_snipe": true,
-          "address": "0xab22f6cC1ec180330320D50c281a5Ad75b9735Fb",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 17227.61,
-          "current_price": 3.418e-05,
-          "current_liquidity": 16416.61,
-          "pnl_percent": -1.2548800892359102
-        },
-        "FAIREMAIL/USDT": {
-          "entry_price": 2.192e-05,
-          "quantity": 2931390.4325981596,
-          "entry_time": "2025-12-20T00:53:24.362968",
-          "is_snipe": true,
-          "address": "0xADFcD9a75BF5Abe706426de8228016A2fAd6B474",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13856.21,
-          "current_price": 3.971e-05,
-          "current_liquidity": 20234.62,
-          "pnl_percent": 67.29014598540147
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0008794,
-          "quantity": 69414.6854314579,
-          "entry_time": "2025-12-20T00:53:24.363965",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 180264.66,
-          "current_price": 0.0008669,
-          "current_liquidity": 179654.29,
-          "pnl_percent": -1.4214236979758987
-        },
-        "Pixie/USDT": {
-          "entry_price": 9.131e-05,
-          "quantity": 635101.419888324,
-          "entry_time": "2025-12-20T00:53:24.363965",
-          "is_snipe": true,
-          "address": "8jbjDAUAvXuh3tGjqCWUve71rWd5QEbgjYwsuq5npump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 30416.26,
-          "current_price": 8.393e-05,
-          "current_liquidity": 29007.09,
-          "pnl_percent": -8.082356806483403
-        },
-        "APL/USDT": {
-          "entry_price": 0.4725,
-          "quantity": 110.76608965423827,
-          "entry_time": "2025-12-20T00:53:24.364961",
-          "is_snipe": true,
-          "address": "0xfE82012eCcE57a188E5f9f3fC1Cb2D335C58F1f5",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 278313.39,
-          "current_price": 0.4383,
-          "current_liquidity": 274666.17,
-          "pnl_percent": -7.238095238095232
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-20T00:53:24.333046",
@@ -6252,14 +5602,19 @@
           "SUI/USDT",
           "PEPE/USDT"
         ],
-        "allocation_percent": 5,
+        "allocation_percent": 1,
         "rsi_oversold": 25,
         "rsi_overbought": 75,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 5,
+        "auto_trade": true,
+        "max_risk": 40,
+        "min_liquidity": 150000,
+        "take_profit": 20,
+        "stop_loss": 10,
+        "max_hold_hours": 1.5
       },
       "balance": {
-        "USDT": 1277.782576217162,
+        "USDT": 3169.1506270405116,
         "EPSTEIN": 0,
         "PUMPBLOX": 0,
         "Pepstein": 0,
@@ -6307,344 +5662,7 @@
         "PTxSOL": 0
       },
       "initial_capital": 10000,
-      "positions": {
-        "Jeflix/USDT": {
-          "entry_price": 1.076e-05,
-          "quantity": 39840845.72490706,
-          "entry_time": "2025-12-20T00:53:24.366956",
-          "is_snipe": true,
-          "address": "BnsS2CacnoNeVfb3JU5FY9Ap6yWqWED6BRScXXarpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 9772.37,
-          "current_price": 2.525e-06,
-          "current_liquidity": 4709.85,
-          "pnl_percent": -66.24535315985129
-        },
-        "REDACTED/USDT": {
-          "entry_price": 0.0002009,
-          "quantity": 1344848.401350515,
-          "entry_time": "2025-12-20T00:53:24.376934",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 44880.57,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -63.44947735191637
-        },
-        "$WEED/USDT": {
-          "entry_price": 2.646e-05,
-          "quantity": 9700341.709741214,
-          "entry_time": "2025-12-20T00:53:24.376934",
-          "is_snipe": true,
-          "address": "9Hku2in6rKyqe7WNGLZn17zzsT1QaDWfbU5wdCtrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 15705.16,
-          "current_price": 4.021e-06,
-          "current_liquidity": 6103.21,
-          "pnl_percent": -80.07558578987151
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.49e-05,
-          "quantity": 7976191.133699167,
-          "entry_time": "2025-12-20T00:53:24.379922",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 13505.37,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 55.38152610441767
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.367e-05,
-          "quantity": 11242021.496891875,
-          "entry_time": "2025-12-20T00:53:24.382668",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 12194.41,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -63.62838332114118
-        },
-        "TRIBOON /USDT": {
-          "entry_price": 5.117e-06,
-          "quantity": 28531270.699508753,
-          "entry_time": "2025-12-20T00:53:24.382668",
-          "is_snipe": true,
-          "address": "F6aAmWkJ2dKKMsCQWweM5Pvm6VzARag7y1bj6w595JVP",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 95,
-          "liquidity_at_entry": 3570.81,
-          "current_price": 1.923e-06,
-          "current_liquidity": 2191.93,
-          "pnl_percent": -50.5374242720344
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001067,
-          "quantity": 1299857.418565295,
-          "entry_time": "2025-12-20T00:53:24.383664",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 31985.88,
-          "current_price": 0.0001369,
-          "current_liquidity": 36919.84,
-          "pnl_percent": 28.303655107778813
-        },
-        "NONPC/USDT": {
-          "entry_price": 1.335e-06,
-          "quantity": 98696664.59391099,
-          "entry_time": "2025-12-20T00:53:24.387655",
-          "is_snipe": true,
-          "address": "8rmZUcQsQKWBZ2WDPoTwkkiFsuhABXQX7o4xysf7Cgyp",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 65236.09,
-          "current_price": 1.385e-06,
-          "current_liquidity": 65901.67,
-          "pnl_percent": 3.7453183520599342
-        },
-        "SCP/USDT": {
-          "entry_price": 7.137e-05,
-          "quantity": 1753846.7825588845,
-          "entry_time": "2025-12-20T00:53:24.387655",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 25357.82,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -21.29746392041474
-        },
-        "FUN/USDT": {
-          "entry_price": 0.0005951,
-          "quantity": 199820.94207304018,
-          "entry_time": "2025-12-20T00:53:24.388655",
-          "is_snipe": true,
-          "address": "29Wv5PYkAR62bmNzQegSwdcXLddSeTrC8n6UFAiRVFUN",
-          "chain": "solana",
-          "dex": "orca",
-          "risk_score": 65,
-          "liquidity_at_entry": 23427.52,
-          "current_price": 0.0005899,
-          "current_liquidity": 23223.56,
-          "pnl_percent": -0.8738027222315647
-        },
-        "Memeverse/USDT": {
-          "entry_price": 1.944e-05,
-          "quantity": 5811099.305364347,
-          "entry_time": "2025-12-20T00:53:24.389650",
-          "is_snipe": true,
-          "address": "8mBhF1ZYUr96wGFDrenvSqZLaotSDvonKEaVPdsMpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13635.02,
-          "current_price": 5.348e-06,
-          "current_liquidity": 7100.44,
-          "pnl_percent": -72.39711934156378
-        },
-        "esdeekid/USDT": {
-          "entry_price": 4.093e-05,
-          "quantity": 2622022.5255672797,
-          "entry_time": "2025-12-20T00:53:24.389650",
-          "is_snipe": true,
-          "address": "2LuvXuCxAEtYmEWM8QTutRgZnQDCCJoXxbKiGopipump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 19154.53,
-          "current_price": 1.69e-05,
-          "current_liquidity": 12436.31,
-          "pnl_percent": -58.7099926704129
-        },
-        "\u9759\u4e0b\u5fc3\u6765/USDT": {
-          "entry_price": 0.0001562,
-          "quantity": 652710.7098136705,
-          "entry_time": "2025-12-20T00:53:24.390647",
-          "is_snipe": true,
-          "address": "0x4f259DCd05Db760e807805AF00dEa700543a4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 49244.86,
-          "current_price": 2.99e-05,
-          "current_liquidity": 21813.92,
-          "pnl_percent": -80.85787451984635
-        },
-        "2026/USDT": {
-          "entry_price": 0.0003417,
-          "quantity": 283452.5672497821,
-          "entry_time": "2025-12-20T00:53:24.390647",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 63818.18,
-          "current_price": 0.0002228,
-          "current_liquidity": 54077.53,
-          "pnl_percent": -34.79660520924788
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0003163,
-          "quantity": 290904.062971192,
-          "entry_time": "2025-12-20T00:53:24.391643",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 71169.87,
-          "current_price": 0.0001643,
-          "current_liquidity": 52575.1,
-          "pnl_percent": -48.055643376541255
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 5679812.044307903,
-          "entry_time": "2025-12-20T00:53:24.391643",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 50,
-          "liquidity_at_entry": 18935.46,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 8.953e-09,
-          "quantity": 9275292303.563461,
-          "entry_time": "2025-12-20T00:53:24.392632",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 171060.61,
-          "current_price": 3.518e-09,
-          "current_liquidity": 103840.73,
-          "pnl_percent": -60.705908633977444
-        },
-        "bubba/USDT": {
-          "entry_price": 1.419e-05,
-          "quantity": 5559521.310367407,
-          "entry_time": "2025-12-20T00:53:24.393461",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11782.81,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -47.24453840732911
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 2488.2180286987987,
-          "entry_time": "2025-12-20T00:53:24.393461",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005961,
-          "quantity": 119439.47437206414,
-          "entry_time": "2025-12-20T00:53:24.394460",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 96360.76,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 1.7111222949169669
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002268,
-          "quantity": 298227.4124317816,
-          "entry_time": "2025-12-20T00:53:24.394460",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79342.95,
-          "current_price": 0.0001196,
-          "current_liquidity": 58971.05,
-          "pnl_percent": -47.26631393298061
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004344,
-          "quantity": 14791.91489009016,
-          "entry_time": "2025-12-20T00:53:24.395486",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 304667.84,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -24.01012891344383
-        },
-        "fairystar/USDT": {
-          "entry_price": 3.586e-05,
-          "quantity": 1702266.4352600132,
-          "entry_time": "2025-12-20T00:53:24.395486",
-          "is_snipe": true,
-          "address": "0xab22f6cC1ec180330320D50c281a5Ad75b9735Fb",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 17227.61,
-          "current_price": 3.418e-05,
-          "current_liquidity": 16416.61,
-          "pnl_percent": -1.2548800892359102
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0008794,
-          "quantity": 62646.75360189074,
-          "entry_time": "2025-12-20T00:53:24.396463",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 180264.66,
-          "current_price": 0.0008669,
-          "current_liquidity": 179327.54,
-          "pnl_percent": -1.4214236979758987
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-20T00:53:24.365958",
@@ -8876,8 +7894,8 @@
           "entry_price": 126.37050965727283,
           "quantity": 7.715407674181894,
           "entry_time": "2025-12-21T10:17:12.800309",
-          "current_price": 123.49,
-          "pnl_percent": -2.279416032336201
+          "current_price": 123.1,
+          "pnl_percent": -2.58803233930347
         }
       },
       "trades": [
@@ -10238,8 +9256,8 @@
           "entry_price": 5.7460551061748255,
           "quantity": 1673.9274855172976,
           "entry_time": "2025-12-20T07:36:43.752032",
-          "current_price": 5.752,
-          "pnl_percent": 0.10346043877627054
+          "current_price": 5.737,
+          "pnl_percent": -0.1575882237031534
         }
       },
       "trades": [
@@ -11895,50 +10913,50 @@
           "entry_price": 4.099700541899298e-06,
           "quantity": 897506210.6342719,
           "entry_time": "2025-12-20T09:10:04.080336",
-          "current_price": 3.94e-06,
-          "pnl_percent": -3.895419684124346
+          "current_price": 3.93e-06,
+          "pnl_percent": -4.139339938733189
         },
         "SOL/USDT": {
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.099882",
-          "current_price": 123.49,
-          "pnl_percent": -2.1525967443185356
+          "current_price": 123.1,
+          "pnl_percent": -2.461613565678289
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.824906",
-          "current_price": 4.562,
-          "pnl_percent": -3.7199623529127646
+          "current_price": 4.557,
+          "pnl_percent": -3.8254862872037387
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.638486",
-          "current_price": 0.13019,
-          "pnl_percent": -1.1690579215061225
+          "current_price": 0.12995,
+          "pnl_percent": -1.3512487664161577
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.803302",
-          "current_price": 0.2661,
-          "pnl_percent": -3.5291006292967775
+          "current_price": 0.2656,
+          "pnl_percent": -3.7103687603954327
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.746390",
-          "current_price": 0.3622,
-          "pnl_percent": -2.2850401803045095
+          "current_price": 0.3617,
+          "pnl_percent": -2.419931069067205
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.447355",
-          "current_price": 1.955,
-          "pnl_percent": -0.26027849800145386
+          "current_price": 1.95,
+          "pnl_percent": -0.5153672997968539
         }
       },
       "trades": [
@@ -13767,50 +12785,50 @@
           "entry_price": 4.099700541899298e-06,
           "quantity": 897506210.6342719,
           "entry_time": "2025-12-20T09:10:04.081864",
-          "current_price": 3.94e-06,
-          "pnl_percent": -3.895419684124346
+          "current_price": 3.93e-06,
+          "pnl_percent": -4.139339938733189
         },
         "SOL/USDT": {
           "entry_price": 126.20672178423867,
           "quantity": 5.605727546824053,
           "entry_time": "2025-12-20T10:16:14.101853",
-          "current_price": 123.49,
-          "pnl_percent": -2.1525967443185356
+          "current_price": 123.1,
+          "pnl_percent": -2.461613565678289
         },
         "INJ/USDT": {
           "entry_price": 4.73826154568191,
           "quantity": 322.75427917673267,
           "entry_time": "2025-12-20T10:27:29.831204",
-          "current_price": 4.562,
-          "pnl_percent": -3.7199623529127646
+          "current_price": 4.557,
+          "pnl_percent": -3.8254862872037387
         },
         "DOGE/USDT": {
           "entry_price": 0.13173,
           "quantity": 1292.65021744521,
           "entry_time": "2025-12-20T10:38:47.644471",
-          "current_price": 0.13019,
-          "pnl_percent": -1.1690579215061225
+          "current_price": 0.12995,
+          "pnl_percent": -1.3512487664161577
         },
         "OP/USDT": {
           "entry_price": 0.2758344762366864,
           "quantity": 4365.585883216029,
           "entry_time": "2025-12-21T10:17:12.805296",
-          "current_price": 0.2661,
-          "pnl_percent": -3.5291006292967775
+          "current_price": 0.2656,
+          "pnl_percent": -3.7103687603954327
         },
         "ADA/USDT": {
           "entry_price": 0.3706699574643787,
           "quantity": 2081.5949377288116,
           "entry_time": "2025-12-21T10:38:26.749397",
-          "current_price": 0.3622,
-          "pnl_percent": -2.2850401803045095
+          "current_price": 0.3617,
+          "pnl_percent": -2.419931069067205
         },
         "ATOM/USDT": {
           "entry_price": 1.9601017233247704,
           "quantity": 114.46846728476038,
           "entry_time": "2025-12-21T11:10:29.449708",
-          "current_price": 1.955,
-          "pnl_percent": -0.26027849800145386
+          "current_price": 1.95,
+          "pnl_percent": -0.5153672997968539
         }
       },
       "trades": [
@@ -15644,78 +14662,78 @@
           "entry_price": 88193.83131149496,
           "quantity": 0.016420416823365702,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 87734.73,
-          "pnl_percent": -0.5205594367177935
+          "current_price": 87693.55,
+          "pnl_percent": -0.5672520447920992
         },
         "ETH/USDT": {
           "entry_price": 2980.8538803801716,
           "quantity": 0.4626153083308901,
           "entry_time": "2025-12-20T00:52:46.011135",
-          "current_price": 2943.98,
-          "pnl_percent": -1.2370240830278045
+          "current_price": 2941.53,
+          "pnl_percent": -1.3192152973011906
         },
         "BNB/USDT": {
           "entry_price": 855.2792242059618,
           "quantity": 1.633074102610075,
           "entry_time": "2025-12-20T00:52:46.012134",
-          "current_price": 849.01,
-          "pnl_percent": -0.7330032144510557
+          "current_price": 847.8,
+          "pnl_percent": -0.8744774799020139
         },
         "LINK/USDT": {
           "entry_price": 12.58262062626024,
           "quantity": 100.46262509035199,
           "entry_time": "2025-12-20T00:52:46.014081",
-          "current_price": 12.23,
-          "pnl_percent": -2.802441850025361
+          "current_price": 12.21,
+          "pnl_percent": -2.9613912501070816
         },
         "UNI/USDT": {
           "entry_price": 5.638067196602078,
           "quantity": 212.99479091386965,
           "entry_time": "2025-12-20T00:52:46.014081",
-          "current_price": 5.752,
-          "pnl_percent": 2.020777678325403
+          "current_price": 5.737,
+          "pnl_percent": 1.7547290578151742
         },
         "DOGE/USDT": {
           "entry_price": 0.13171641070688733,
           "quantity": 7010.98114936948,
           "entry_time": "2025-12-20T01:00:24.307268",
-          "current_price": 0.13019,
-          "pnl_percent": -1.1588614499100647
+          "current_price": 0.12995,
+          "pnl_percent": -1.3410710916031299
         },
         "LTC/USDT": {
           "entry_price": 77.52650497438727,
           "quantity": 10.158084378552656,
           "entry_time": "2025-12-20T01:00:24.322857",
-          "current_price": 76.53,
-          "pnl_percent": -1.2853732729425693
+          "current_price": 76.49,
+          "pnl_percent": -1.3369685306073076
         },
         "XRP/USDT": {
           "entry_price": 1.930680638400949,
           "quantity": 248.93049891644003,
           "entry_time": "2025-12-20T01:15:27.439507",
-          "current_price": 1.8797,
-          "pnl_percent": -2.6405526313856287
+          "current_price": 1.877,
+          "pnl_percent": -2.7803996856470725
         },
         "ATOM/USDT": {
           "entry_price": 1.9700595272873933,
           "quantity": 219.32333988693313,
           "entry_time": "2025-12-21T10:06:02.753700",
-          "current_price": 1.955,
-          "pnl_percent": -0.7644199111145111
+          "current_price": 1.95,
+          "pnl_percent": -1.0182193486820035
         },
         "APT/USDT": {
           "entry_price": 1.628741099193759,
           "quantity": 100.1825958147565,
           "entry_time": "2025-12-21T10:38:26.760364",
-          "current_price": 1.584,
-          "pnl_percent": -2.746974286822268
+          "current_price": 1.58,
+          "pnl_percent": -2.9925627355929185
         },
         "AVAX/USDT": {
           "entry_price": 12.226187224936787,
           "quantity": 3.9951810820303226,
           "entry_time": "2025-12-21T11:10:29.455695",
-          "current_price": 12.08,
-          "pnl_percent": -1.1956894021598163
+          "current_price": 12.05,
+          "pnl_percent": -1.4410643456974959
         }
       },
       "trades": [
@@ -17305,7 +16323,7 @@
         }
       ],
       "created_at": "2025-12-19T16:45:00",
-      "active": true,
+      "active": false,
       "decision_logs": [
         {
           "timestamp": "2025-12-21 10:38:26",
@@ -23890,8 +22908,8 @@
           "entry_price": 181.70318335289187,
           "quantity": 1.2381611715270846,
           "entry_time": "2025-12-20T02:53:27.774776",
-          "current_price": 150.47,
-          "pnl_percent": -17.1891228191819
+          "current_price": 150.37,
+          "pnl_percent": -17.24415762823408
         }
       },
       "trades": [
@@ -25908,8 +24926,8 @@
           "entry_price": 0.349512105649303,
           "quantity": 2789.6029471960705,
           "entry_time": "2025-12-20T10:27:29.847511",
-          "current_price": 0.321,
-          "pnl_percent": -8.157687584621687
+          "current_price": 0.32,
+          "pnl_percent": -8.44380070741102
         }
       },
       "trades": [
@@ -27266,29 +26284,29 @@
           "entry_price": 0.4227208258347322,
           "quantity": 3119.779922619898,
           "entry_time": "2025-12-20T10:16:14.115285",
-          "current_price": 0.418,
-          "pnl_percent": -1.1167715301014902
+          "current_price": 0.416,
+          "pnl_percent": -1.5898970251727818
         },
         "DYDX/USDT": {
           "entry_price": 0.16692326560043108,
           "quantity": 19124.00509258707,
           "entry_time": "2025-12-20T10:16:14.116281",
-          "current_price": 0.1565,
-          "pnl_percent": -6.244345605711754
+          "current_price": 0.1564,
+          "pnl_percent": -6.304253372097879
         },
         "CRV/USDT": {
           "entry_price": 0.3511701784459664,
           "quantity": 2215.0404441775845,
           "entry_time": "2025-12-20T10:27:29.850503",
-          "current_price": 0.3686,
-          "pnl_percent": 4.96335469918483
+          "current_price": 0.3673,
+          "pnl_percent": 4.593163811748746
         },
         "1INCH/USDT": {
           "entry_price": 0.1555201910647085,
           "quantity": 4751.5588528120115,
           "entry_time": "2025-12-20T10:27:29.851472",
-          "current_price": 0.151,
-          "pnl_percent": -2.9064978854274615
+          "current_price": 0.1506,
+          "pnl_percent": -3.1636992155322785
         }
       },
       "trades": [
@@ -28810,8 +27828,8 @@
           "entry_price": 180.7073600299254,
           "quantity": 4.6581016555562975,
           "entry_time": "2025-12-20T01:07:46.149172",
-          "current_price": 150.47,
-          "pnl_percent": -16.732777250975317
+          "current_price": 150.37,
+          "pnl_percent": -16.78811534012864
         }
       },
       "trades": [
@@ -30803,14 +29821,19 @@
           "MEME/USDT",
           "TURBO/USDT"
         ],
-        "allocation_percent": 10,
+        "allocation_percent": 1,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 3,
+        "auto_trade": true,
+        "max_risk": 35,
+        "min_liquidity": 100000,
+        "take_profit": 10,
+        "stop_loss": 5,
+        "max_hold_hours": 0.5
       },
       "balance": {
-        "USDT": 88.71944765434661,
+        "USDT": 1095.6404141853484,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -30880,568 +29903,7 @@
         "SPLAT": 4761.061422344676
       },
       "initial_capital": 10000,
-      "positions": {
-        "Snowlana/USDT": {
-          "entry_price": 5.270321567793045e-05,
-          "quantity": 5289804.80155386,
-          "entry_time": "2025-12-22T02:07:18.636869",
-          "is_snipe": true,
-          "address": "8aF5sxTSG9EY9cWwXhbsei8vXYou5YBnMM1Wjj4Tpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 70,
-          "liquidity_at_entry": 21284.44,
-          "slippage_paid": 0.016549143960340164,
-          "fees_paid": 0.8563691700513355,
-          "original_price": 5.111e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 7.961e-06,
-          "pnl_percent": -84.8946598464699,
-          "current_liquidity": 8496.57
-        },
-        "Husbant/USDT": {
-          "entry_price": 0.0002620559928316093,
-          "quantity": 774136.9537948515,
-          "entry_time": "2025-12-22T02:07:18.640886",
-          "is_snipe": true,
-          "address": "Ez81MaRRsT8WSc4w1kmxZh9vSnyY5QySSoHy4yLrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 49372.31,
-          "slippage_paid": 0.012054463605352348,
-          "fees_paid": 0.6286016840430425,
-          "original_price": 0.00026,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0001874,
-          "pnl_percent": -28.488565372966455,
-          "current_liquidity": 49072.87
-        },
-        "SNIBBU/USDT": {
-          "entry_price": 4.7663952902142095e-05,
-          "quantity": 3829259.512303391,
-          "entry_time": "2025-12-22T02:07:18.640886",
-          "is_snipe": true,
-          "address": "8tP8GncNQzLdduNc7fMymgqpZskVpxvzHgUoVahGpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 20414.11,
-          "slippage_paid": 0.014470379679655601,
-          "fees_paid": 0.5675529351335253,
-          "original_price": 4.665e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 7.945e-06,
-          "pnl_percent": -83.33121884307053,
-          "current_liquidity": 8275.96
-        },
-        "BLZD/USDT": {
-          "entry_price": 1.0275417708617658e-05,
-          "quantity": 15980773.71675386,
-          "entry_time": "2025-12-22T02:07:18.641854",
-          "is_snipe": true,
-          "address": "5LrZxfdy8EiP8jVQ5yBv5PHtUagG8heesETytVVxpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 9400.4,
-          "slippage_paid": 0.04873415627242162,
-          "fees_paid": 0.5126273757396327,
-          "original_price": 9.92e-06,
-          "was_frontrun": true,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 2.261e-06,
-          "pnl_percent": -73.7236959453668,
-          "current_liquidity": 4457.37
-        },
-        "CORNBALL/USDT": {
-          "entry_price": 3.2364566124570975e-06,
-          "quantity": 45647746.18503378,
-          "entry_time": "2025-12-22T02:07:18.642881",
-          "is_snipe": true,
-          "address": "893j8Ni2rc1scDuujjuBUY6F4zYZqkjC8T6z8dn7pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 5321.27,
-          "slippage_paid": 0.02388173781675388,
-          "fees_paid": 0.46321084995294753,
-          "original_price": 3.164e-06,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 5.248e-06,
-          "current_liquidity": 6765.36,
-          "pnl_percent": -16.76081830880062
-        },
-        "Ballseye/USDT": {
-          "entry_price": 3.360566476928855e-05,
-          "quantity": 3955194.304692306,
-          "entry_time": "2025-12-22T02:07:18.642881",
-          "is_snipe": true,
-          "address": "A3twnShBn2jW4MSvCkVMXX6mYUXpPV1VrEse4u2Xpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 17051.89,
-          "slippage_paid": 0.013897425267840956,
-          "fees_paid": 0.4187508017026669,
-          "original_price": 3.281e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 1.063e-05,
-          "pnl_percent": -68.3684281415718,
-          "current_liquidity": 9631.3
-        },
-        "fluffy/USDT": {
-          "entry_price": 4.452636171217711e-06,
-          "quantity": 24149548.659065597,
-          "entry_time": "2025-12-22T02:07:18.648865",
-          "is_snipe": true,
-          "address": "B26rvkNHfvbQzb7UPTd8DRZENnuzMq8T46UDbhKMpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 6176.27,
-          "slippage_paid": 0.04870502373422289,
-          "fees_paid": 0.34258746163381293,
-          "original_price": 4.279e-06,
-          "was_frontrun": true,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 2.593e-06,
-          "pnl_percent": -41.11353591050461,
-          "current_liquidity": 4785.6
-        },
-        "$BSTY/USDT": {
-          "entry_price": 3.2702799203681e-05,
-          "quantity": 2958217.097608308,
-          "entry_time": "2025-12-22T02:07:18.649833",
-          "is_snipe": true,
-          "address": "FtaNn7UKQ9N2rhkgjJFCCeUKzfhkRCGbDUgT1L12pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 17257.21,
-          "slippage_paid": 0.012802943805631978,
-          "fees_paid": 0.31022593923194147,
-          "original_price": 3.191e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 8.063e-06,
-          "pnl_percent": -75.34461820903564,
-          "current_liquidity": 8611.88
-        },
-        "snowballv2/USDT": {
-          "entry_price": 7.704854276332948e-05,
-          "quantity": 1129635.3708208427,
-          "entry_time": "2025-12-22T02:07:18.650829",
-          "is_snipe": true,
-          "address": "7JLRrF9YVs1zQ6WsrtiV896hahdKx2vx8zogPkXr1EkJ",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 26579.07,
-          "slippage_paid": 0.011637317618254877,
-          "fees_paid": 0.28111027752697776,
-          "original_price": 7.742e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 3.247e-05,
-          "pnl_percent": -57.8577363886838,
-          "current_liquidity": 17519.57
-        },
-        "PEPE/USDT": {
-          "entry_price": 3.7496673297556002e-06,
-          "quantity": 20883178.517984547,
-          "entry_time": "2025-12-22T02:07:18.650829",
-          "is_snipe": true,
-          "address": "B6z7YyagHkuxFjvVxCnmFGUAnPnN7j7vPcjtqmFapump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 5698.38,
-          "slippage_paid": 0.01687080996970548,
-          "fees_paid": 0.2549149166910219,
-          "original_price": 3.645e-06,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 2.799e-06,
-          "pnl_percent": -25.353377943999213,
-          "current_liquidity": 4948.17
-        },
-        "GLITCH/USDT": {
-          "entry_price": 7.503403200198071e-05,
-          "quantity": 938893.7477567216,
-          "entry_time": "2025-12-22T02:07:18.651828",
-          "is_snipe": true,
-          "address": "4mKrVMh7CdEwsRxtEwbZ61RRJnaitfgka6fZhzM2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 26823.56,
-          "slippage_paid": 0.011313192274173106,
-          "fees_paid": 0.23134695054691237,
-          "original_price": 7.358e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 3.503e-05,
-          "pnl_percent": -53.314517339178444,
-          "current_liquidity": 18891.81
-        },
-        "OLAF/USDT": {
-          "entry_price": 4.364009568804843e-05,
-          "quantity": 1452355.9004563994,
-          "entry_time": "2025-12-22T02:07:18.651828",
-          "is_snipe": true,
-          "address": "AYk2MGiPEWXcsYcDamd4BxHzvxfe6gApET578shEpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 20283.34,
-          "slippage_paid": 0.04156238939122006,
-          "fees_paid": 0.21014285140705705,
-          "original_price": 4.248e-05,
-          "was_frontrun": true,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 4.974e-06,
-          "pnl_percent": -85.37125114107307,
-          "current_liquidity": 6901.48
-        },
-        "Rhodri/USDT": {
-          "entry_price": 2.0529010447173186e-05,
-          "quantity": 2777622.491045506,
-          "entry_time": "2025-12-22T02:07:18.652826",
-          "is_snipe": true,
-          "address": "SaMxmoWT1LwAGqoC71eLYrRsLLxiAGS4hwUm438pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 13527.02,
-          "slippage_paid": 0.012107701516556359,
-          "fees_paid": 0.19106552341092925,
-          "original_price": 2.063e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 2.766e-06,
-          "pnl_percent": -85.65444736082969,
-          "current_liquidity": 4929.38
-        },
-        "RKT/USDT": {
-          "entry_price": 3.967167358565211e-06,
-          "quantity": 12931279.63461852,
-          "entry_time": "2025-12-22T02:07:18.652826",
-          "is_snipe": true,
-          "address": "6iMEsd8GPdxZbvtTWQvJUCkffvFuvQD6zMMeza22pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 6878.43,
-          "slippage_paid": 0.013729088648931345,
-          "fees_paid": 0.17390165141281302,
-          "original_price": 3.958e-06,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 3.36e-06,
-          "pnl_percent": -14.725049531978518,
-          "current_liquidity": 6297.71
-        },
-        "YETI/USDT": {
-          "entry_price": 0.0006490132260574825,
-          "quantity": 57467.699946665656,
-          "entry_time": "2025-12-22T02:07:18.654819",
-          "is_snipe": true,
-          "address": "DR9fWuj3XRFyNzxk1rvkwMMYA2WHj448HgVJduQLpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 86878.79,
-          "slippage_paid": 0.010214651339737172,
-          "fees_paid": 0.13189189200946666,
-          "original_price": 0.000653,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0001434,
-          "pnl_percent": -77.90491869154926,
-          "current_liquidity": 43736.29
-        },
-        "ARCR/USDT": {
-          "entry_price": 3.9115146847038965e-05,
-          "quantity": 857835.9310487707,
-          "entry_time": "2025-12-22T02:07:18.654819",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 16750.75,
-          "slippage_paid": 0.011001578389434476,
-          "fees_paid": 0.12066313524091717,
-          "original_price": 3.829e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 3.869e-05,
-          "pnl_percent": -1.0869110339826071,
-          "current_liquidity": 16672.65
-        },
-        "FIREBALL/USDT": {
-          "entry_price": 0.0007005929578526342,
-          "quantity": 39792.07562148385,
-          "entry_time": "2025-12-22T02:07:18.655817",
-          "is_snipe": true,
-          "address": "5XFeFezwgZvSdG2N69FPBuz98uFpfBCkFcXQXSiGpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 83765.44,
-          "slippage_paid": 0.010166405429009573,
-          "fees_paid": 0.10363414387625319,
-          "original_price": 0.0006807,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0002963,
-          "pnl_percent": -57.707254022623935,
-          "current_liquidity": 59086.11
-        },
-        "\u25ef/USDT": {
-          "entry_price": 6.704497125378041e-05,
-          "quantity": 374075.47918180627,
-          "entry_time": "2025-12-22T02:07:18.656813",
-          "is_snipe": true,
-          "address": "CKafriN2DxGwTWSBZJLhAe4JgyugadBg27SyL1ameow",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 50,
-          "liquidity_at_entry": 35863.45,
-          "slippage_paid": 0.010349657935146903,
-          "fees_paid": 0.095239639245465,
-          "original_price": 6.513e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 5.716e-05,
-          "pnl_percent": -14.743792217261975,
-          "current_liquidity": 35078.49
-        },
-        "SCP/USDT": {
-          "entry_price": 4.6056177893434894e-05,
-          "quantity": 489887.9768512255,
-          "entry_time": "2025-12-22T02:07:18.656813",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 20736.08,
-          "slippage_paid": 0.010544036476752476,
-          "fees_paid": 0.08768710342914486,
-          "original_price": 4.646e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 5.617e-05,
-          "pnl_percent": 21.95975126283065,
-          "current_liquidity": 22520.05
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0002084248084736412,
-          "quantity": 87568.92719022545,
-          "entry_time": "2025-12-22T02:07:18.657841",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 58363.11,
-          "slippage_paid": 0.010156361928604087,
-          "fees_paid": 0.6547546106335949,
-          "original_price": 0.0002056,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0001643,
-          "pnl_percent": -21.17061246057065,
-          "current_liquidity": 52734.11
-        },
-        "POS/USDT": {
-          "entry_price": 0.00023599155569841413,
-          "quantity": 69328.36084153608,
-          "entry_time": "2025-12-22T02:07:18.658809",
-          "is_snipe": true,
-          "address": "EMKP9FV5wakvyodPh8edQW4RTSbHPrhYRDEiCiz1pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 57887.94,
-          "slippage_paid": 0.010141315338989565,
-          "fees_paid": 0.06908272318704535,
-          "original_price": 0.0002321,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0001844,
-          "pnl_percent": -21.861610914733596,
-          "current_liquidity": 51214.62
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0006833974402710712,
-          "quantity": 21536.382515505185,
-          "entry_time": "2025-12-22T02:07:18.658809",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 103147.96,
-          "slippage_paid": 0.010071343673126424,
-          "fees_paid": 0.6441537260513847,
-          "original_price": 0.0006791,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0006063,
-          "pnl_percent": -11.281493861096447,
-          "current_liquidity": 97146.88
-        },
-        "Chungus/USDT": {
-          "entry_price": 0.0002532708938951911,
-          "quantity": 52045.863778824656,
-          "entry_time": "2025-12-22T02:07:18.659830",
-          "is_snipe": true,
-          "address": "3XzNoCvGon8xFphusCcuFEZyMPuvzfESrwEBEMHSpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 61529.88,
-          "slippage_paid": 0.04010711626971163,
-          "fees_paid": 0.05954510732843082,
-          "original_price": 0.0002424,
-          "was_frontrun": true,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0002842,
-          "pnl_percent": 12.211867549852794,
-          "current_liquidity": 66385.78
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.00020382752809731006,
-          "quantity": 58174.56453740355,
-          "entry_time": "2025-12-22T02:07:18.662805",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 76409.1,
-          "slippage_paid": 0.010077592706155396,
-          "fees_paid": 0.6355727330633891,
-          "original_price": 0.0002056,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0001196,
-          "pnl_percent": -41.32294047009131,
-          "current_liquidity": 58395.02
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.0042157880787777515,
-          "quantity": 2516.317814719469,
-          "entry_time": "2025-12-22T02:07:18.662805",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 297550.07,
-          "slippage_paid": 0.010017826012687059,
-          "fees_paid": 0.051824787937131266,
-          "original_price": 0.004111,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.003301,
-          "pnl_percent": -21.69910018444211,
-          "current_liquidity": 273744.14
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0009010209103820574,
-          "quantity": 8566.366011775166,
-          "entry_time": "2025-12-22T02:07:18.664792",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 181467.16,
-          "slippage_paid": 0.01002126686421553,
-          "fees_paid": 0.04315542470778672,
-          "original_price": 0.0008852,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.0008669,
-          "pnl_percent": -3.786916595264056,
-          "current_liquidity": 179327.54
-        },
-        "LAUNCH/USDT": {
-          "entry_price": 4.1046870652233814e-05,
-          "quantity": 136617.60085196665,
-          "entry_time": "2025-12-22T02:07:18.666797",
-          "is_snipe": true,
-          "address": "B5boCskXEFb1RJJ9EqJNV3gt5fjhk85DeD7BgbLcpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 38472.59,
-          "slippage_paid": 0.010072879483692015,
-          "fees_paid": 0.036823174972967554,
-          "original_price": 4.048e-05,
-          "was_frontrun": false,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 3.522e-05,
-          "current_liquidity": 35731.94,
-          "pnl_percent": -14.000752215494572
-        },
-        "SPLAT/USDT": {
-          "entry_price": 0.0010592743354924652,
-          "quantity": 4761.061422344676,
-          "entry_time": "2025-12-22T02:07:18.667784",
-          "is_snipe": true,
-          "address": "4Uf883orBx89VQZiV4EoRpNqUWYN5ZuEvC4PCpQ9moon",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 45,
-          "liquidity_at_entry": 309032.19,
-          "slippage_paid": 0.040008159781306916,
-          "fees_paid": 0.03512981052317891,
-          "original_price": 0.001035,
-          "was_frontrun": true,
-          "size_reduced": false,
-          "had_approval": true,
-          "current_price": 0.001031,
-          "pnl_percent": -2.6692174581309236,
-          "current_liquidity": 306699.76
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-19T23:54:39.705201",
@@ -34475,43 +32937,43 @@
           "entry_price": 0.0009718906334596644,
           "quantity": 1954952.4757086304,
           "entry_time": "2025-12-19T17:15:47.583265",
-          "current_price": 0.000936,
-          "pnl_percent": -3.6928675124590526
+          "current_price": 0.000933,
+          "pnl_percent": -4.001544219149878
         },
         "TURBO/USDT": {
           "entry_price": 0.001822829281900943,
           "quantity": 907751.811572456,
           "entry_time": "2025-12-19T17:37:53.797125",
-          "current_price": 0.001665,
-          "pnl_percent": -8.658478523910373
+          "current_price": 0.001653,
+          "pnl_percent": -9.31679579581013
         },
         "DOGE/USDT": {
           "entry_price": 0.13181932016609052,
           "quantity": 14135.992338999667,
           "entry_time": "2025-12-20T03:39:48.919182",
-          "current_price": 0.13019,
-          "pnl_percent": -1.23602531407202
+          "current_price": 0.12995,
+          "pnl_percent": -1.4180927073020766
         },
         "FLOKI/USDT": {
           "entry_price": 4.163646262922721e-05,
           "quantity": 36388817.05833138,
           "entry_time": "2025-12-20T08:15:22.919879",
-          "current_price": 3.988e-05,
-          "pnl_percent": -4.218568337249284
+          "current_price": 3.979e-05,
+          "pnl_percent": -4.434725028564424
         },
         "PEPE/USDT": {
           "entry_price": 4.15e-06,
           "quantity": 103727038.55421688,
           "entry_time": "2025-12-20T08:30:17.372830",
-          "current_price": 3.94e-06,
-          "pnl_percent": -5.060240963855412
+          "current_price": 3.93e-06,
+          "pnl_percent": -5.301204819277117
         },
         "WIF/USDT": {
           "entry_price": 0.354,
           "quantity": 984.9673449152542,
           "entry_time": "2025-12-20T08:30:17.373829",
-          "current_price": 0.321,
-          "pnl_percent": -9.322033898305083
+          "current_price": 0.32,
+          "pnl_percent": -9.604519774011289
         }
       },
       "trades": [
@@ -35968,36 +34430,36 @@
           "entry_price": 0.000966447074648476,
           "quantity": 4736569.458319412,
           "entry_time": "2025-12-20T09:25:48.197571",
-          "current_price": 0.000936,
-          "pnl_percent": -3.1504130383498197
+          "current_price": 0.000933,
+          "pnl_percent": -3.460828381175618
         },
         "TURBO/USDT": {
           "entry_price": 0.0018058251086152772,
           "quantity": 2144043.5828594444,
           "entry_time": "2025-12-20T09:33:20.286414",
-          "current_price": 0.001665,
-          "pnl_percent": -7.798380249749826
+          "current_price": 0.001653,
+          "pnl_percent": -8.462896428130017
         },
         "BONK/USDT": {
           "entry_price": 8.249351086866758e-06,
           "quantity": 81288498.73191254,
           "entry_time": "2025-12-20T10:27:29.854464",
-          "current_price": 7.97e-06,
-          "pnl_percent": -3.3863401366380663
+          "current_price": 7.96e-06,
+          "pnl_percent": -3.507561792677416
         },
         "WIF/USDT": {
           "entry_price": 0.34866253127850505,
           "quantity": 900.8228294168734,
           "entry_time": "2025-12-21T10:17:12.829441",
-          "current_price": 0.321,
-          "pnl_percent": -7.933898482601432
+          "current_price": 0.32,
+          "pnl_percent": -8.220708767702355
         },
         "FLOKI/USDT": {
           "entry_price": 4.11437433807016e-05,
           "quantity": 6358272.051516972,
           "entry_time": "2025-12-21T10:27:45.170520",
-          "current_price": 3.988e-05,
-          "pnl_percent": -3.0715323324089217
+          "current_price": 3.979e-05,
+          "pnl_percent": -3.2902776205253503
         },
         "SHIB/USDT": {
           "entry_price": 7.403824022658835e-06,
@@ -36010,8 +34472,8 @@
           "entry_price": 0.13199,
           "quantity": 152.1217440971029,
           "entry_time": "2025-12-21T10:59:43.529878",
-          "current_price": 0.13019,
-          "pnl_percent": -1.3637396772482768
+          "current_price": 0.12995,
+          "pnl_percent": -1.5455716342147041
         }
       },
       "trades": [
@@ -39844,8 +38306,8 @@
           "entry_price": 0.1296,
           "quantity": 7716.04938271605,
           "entry_time": "2025-12-19T17:00:59.985208",
-          "current_price": 0.13019,
-          "pnl_percent": 0.45524691358025393
+          "current_price": 0.12995,
+          "pnl_percent": 0.2700617283950768
         },
         "SHIB/USDT": {
           "entry_price": 7.5e-06,
@@ -39858,43 +38320,43 @@
           "entry_price": 4e-06,
           "quantity": 202500000.0,
           "entry_time": "2025-12-19T17:00:59.986208",
-          "current_price": 3.94e-06,
-          "pnl_percent": -1.4999999999999902
+          "current_price": 3.93e-06,
+          "pnl_percent": -1.750000000000007
         },
         "FLOKI/USDT": {
           "entry_price": 4.112e-05,
           "quantity": 17728599.221789885,
           "entry_time": "2025-12-19T17:00:59.986208",
-          "current_price": 3.988e-05,
-          "pnl_percent": -3.0155642023346307
+          "current_price": 3.979e-05,
+          "pnl_percent": -3.2344357976653804
         },
         "BONK/USDT": {
           "entry_price": 8.11e-06,
           "quantity": 80900123.30456227,
           "entry_time": "2025-12-19T17:00:59.987209",
-          "current_price": 7.97e-06,
-          "pnl_percent": -1.7262638717632561
+          "current_price": 7.96e-06,
+          "pnl_percent": -1.8495684340320673
         },
         "WIF/USDT": {
           "entry_price": 0.352,
           "quantity": 1677.5284090909092,
           "entry_time": "2025-12-19T17:00:59.987209",
-          "current_price": 0.321,
-          "pnl_percent": -8.806818181818176
+          "current_price": 0.32,
+          "pnl_percent": -9.090909090909083
         },
         "MEME/USDT": {
           "entry_price": 0.000951,
           "quantity": 558823.3438485805,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.000936,
-          "pnl_percent": -1.577287066246058
+          "current_price": 0.000933,
+          "pnl_percent": -1.8927444794952675
         },
         "TURBO/USDT": {
           "entry_price": 0.001782,
           "quantity": 268404.54545454547,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.001665,
-          "pnl_percent": -6.565656565656564
+          "current_price": 0.001653,
+          "pnl_percent": -7.239057239057233
         }
       },
       "trades": [
@@ -41293,15 +39755,15 @@
           "entry_price": 0.3513243735076654,
           "quantity": 7162.3303090825375,
           "entry_time": "2025-12-19T17:00:59.988208",
-          "current_price": 0.321,
-          "pnl_percent": -8.631445978228935
+          "current_price": 0.32,
+          "pnl_percent": -8.916083218172144
         },
         "TURBO/USDT": {
           "entry_price": 0.0017876824934277182,
           "quantity": 3893623.398835134,
           "entry_time": "2025-12-19T17:00:59.989798",
-          "current_price": 0.001665,
-          "pnl_percent": -6.862655638165682
+          "current_price": 0.001653,
+          "pnl_percent": -7.533915777710442
         }
       },
       "trades": [
@@ -43397,8 +41859,8 @@
           "entry_price": 0.06086722449025244,
           "quantity": 127172.6229493833,
           "entry_time": "2025-12-19T21:09:46.049794",
-          "current_price": 0.055,
-          "pnl_percent": -9.639382343106584
+          "current_price": 0.0548,
+          "pnl_percent": -9.967966407313467
         }
       },
       "trades": [
@@ -45003,13 +43465,44 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 10000.0,
+        "USDT": 8573.75,
         "BETA": 1388888.8888888888,
         "VIB": 213004.4843049327,
         "WTC": 43810.679611650485
       },
       "initial_capital": 10000,
-      "positions": {},
+      "positions": {
+        "BETA/USDT": {
+          "entry_price": 0.00036,
+          "quantity": 1388888.8888888888,
+          "entry_time": "2025-12-19T23:56:09.153802",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00036,
+          "pnl_percent": 0.0
+        },
+        "VIB/USDT": {
+          "entry_price": 0.00223,
+          "quantity": 213004.4843049327,
+          "entry_time": "2025-12-19T23:56:09.154771",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00223,
+          "pnl_percent": 0.0
+        },
+        "WTC/USDT": {
+          "entry_price": 0.0103,
+          "quantity": 43810.679611650485,
+          "entry_time": "2025-12-19T23:56:09.154771",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.0103,
+          "pnl_percent": 0.0
+        }
+      },
       "trades": [
         {
           "timestamp": "2025-12-19T23:56:09.153802",
@@ -46371,36 +44864,36 @@
           "entry_price": 0.18966032670187435,
           "quantity": 6756.029666110312,
           "entry_time": "2025-12-19T17:00:59.990803",
-          "current_price": 0.1839,
-          "pnl_percent": -3.037180628149483
+          "current_price": 0.1835,
+          "pnl_percent": -3.248083987305228
         },
         "OP/USDT": {
           "entry_price": 0.27600506071681535,
           "quantity": 8353.47750304613,
           "entry_time": "2025-12-19T17:00:59.990803",
-          "current_price": 0.2661,
-          "pnl_percent": -3.588724312188629
+          "current_price": 0.2656,
+          "pnl_percent": -3.7698804108128536
         },
         "IMX/USDT": {
           "entry_price": 0.22695506708946325,
           "quantity": 9608.468452462452,
           "entry_time": "2025-12-19T17:00:59.991803",
-          "current_price": 0.225,
-          "pnl_percent": -0.8614335491758718
+          "current_price": 0.223,
+          "pnl_percent": -1.742665250960973
         },
         "SKL/USDT": {
           "entry_price": 0.010316694152989468,
           "quantity": 200806.19250911134,
           "entry_time": "2025-12-19T17:00:59.991803",
-          "current_price": 0.01003,
-          "pnl_percent": -2.7789343052918913
+          "current_price": 0.00999,
+          "pnl_percent": -3.1666554047722895
         },
         "CELR/USDT": {
           "entry_price": 0.003573244284153462,
           "quantity": 550780.4986251986,
           "entry_time": "2025-12-19T17:00:59.992804",
-          "current_price": 0.003573,
-          "pnl_percent": -0.006836480633176656
+          "current_price": 0.003574,
+          "pnl_percent": 0.021149291412547733
         }
       },
       "trades": [
@@ -48444,8 +46937,8 @@
           "entry_price": 0.22650256580353806,
           "quantity": 21513.52611521661,
           "entry_time": "2025-12-19T17:31:30.585423",
-          "current_price": 0.225,
-          "pnl_percent": -0.6633769459553629
+          "current_price": 0.223,
+          "pnl_percent": -1.5463691508802113
         }
       },
       "trades": [
@@ -49989,29 +48482,29 @@
           "entry_price": 0.19064425199181423,
           "quantity": 5335.317325333263,
           "entry_time": "2025-12-19T20:15:19.710489",
-          "current_price": 0.1839,
-          "pnl_percent": -3.537610980321504
+          "current_price": 0.1835,
+          "pnl_percent": -3.747425855840114
         },
         "SKL/USDT": {
           "entry_price": 0.010549136929565833,
           "quantity": 144135.8942968714,
           "entry_time": "2025-12-19T20:22:18.601458",
-          "current_price": 0.01003,
-          "pnl_percent": -4.921131776295917
+          "current_price": 0.00999,
+          "pnl_percent": -5.300309715373508
         },
         "CELR/USDT": {
           "entry_price": 0.0036339547830988223,
           "quantity": 346237.69641867763,
           "entry_time": "2025-12-19T20:43:05.483179",
-          "current_price": 0.003573,
-          "pnl_percent": -1.6773676816871141
+          "current_price": 0.003574,
+          "pnl_percent": -1.649849452658747
         },
         "METIS/USDT": {
           "entry_price": 5.471567402550044,
           "quantity": 57.85351433934127,
           "entry_time": "2025-12-21T10:06:02.778059",
-          "current_price": 5.32,
-          "pnl_percent": -2.770091116476159
+          "current_price": 5.29,
+          "pnl_percent": -3.3183800763456617
         }
       },
       "trades": [
@@ -53176,8 +51669,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.981,
-          "current_price": 3.776,
-          "pnl_percent": -3.7961783439490415
+          "current_price": 3.766,
+          "pnl_percent": -4.050955414012735
         },
         "GIGGLE/USDT": {
           "entry_price": 72.36,
@@ -53186,8 +51679,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.05199999999999,
-          "current_price": 70.8,
-          "pnl_percent": -2.1558872305140975
+          "current_price": 70.45,
+          "pnl_percent": -2.639579878385845
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -53206,8 +51699,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.617,
-          "pnl_percent": -0.4838709677419395
+          "current_price": 0.621,
+          "pnl_percent": 0.1612903225806539
         },
         "BANK/USDT": {
           "entry_price": 0.0471,
@@ -53216,8 +51709,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.6,
-          "current_price": 0.0477,
-          "pnl_percent": 1.273885350318471
+          "current_price": 0.0475,
+          "pnl_percent": 0.849256900212314
         },
         "YGG/USDT": {
           "entry_price": 0.0721,
@@ -53226,8 +51719,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.543,
-          "current_price": 0.067,
-          "pnl_percent": -7.073509015256574
+          "current_price": 0.0672,
+          "pnl_percent": -6.796116504854366
         },
         "POLYX/USDT": {
           "entry_price": 0.0555,
@@ -53236,8 +51729,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0546,
-          "pnl_percent": -1.6216216216216162
+          "current_price": 0.054,
+          "pnl_percent": -2.7027027027027084
         },
         "AVNT/USDT": {
           "entry_price": 0.2896,
@@ -53246,8 +51739,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 65.986,
-          "current_price": 0.2843,
-          "pnl_percent": -1.8301104972375803
+          "current_price": 0.2827,
+          "pnl_percent": -2.382596685082883
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -53256,8 +51749,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.873,
-          "current_price": 0.00938,
-          "pnl_percent": 5.869074492099324
+          "current_price": 0.00921,
+          "pnl_percent": 3.950338600451464
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -53266,8 +51759,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.773,
-          "pnl_percent": 8.72011251758087
+          "current_price": 0.765,
+          "pnl_percent": 7.594936708860756
         },
         "ACE/USDT": {
           "entry_price": 0.276,
@@ -53276,8 +51769,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.992000000000004,
-          "current_price": 0.261,
-          "pnl_percent": -5.434782608695654
+          "current_price": 0.259,
+          "pnl_percent": -6.159420289855078
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -53286,8 +51779,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.119,
-          "pnl_percent": -5.555555555555558
+          "current_price": 0.116,
+          "pnl_percent": -7.9365079365079305
         },
         "ACT/USDT": {
           "entry_price": 0.0365,
@@ -53296,8 +51789,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.606,
-          "current_price": 0.0348,
-          "pnl_percent": -4.657534246575345
+          "current_price": 0.0359,
+          "pnl_percent": -1.6438356164383494
         },
         "DOLO/USDT": {
           "entry_price": 0.03485,
@@ -53306,8 +51799,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.333,
-          "current_price": 0.03533,
-          "pnl_percent": 1.3773314203730402
+          "current_price": 0.03529,
+          "pnl_percent": 1.2625538020086147
         }
       },
       "trades": [
@@ -54986,13 +53479,44 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 10000.0,
+        "USDT": 8573.75,
         "BETA": 1388888.8888888888,
         "VIB": 213004.4843049327,
         "WTC": 43810.679611650485
       },
       "initial_capital": 10000,
-      "positions": {},
+      "positions": {
+        "BETA/USDT": {
+          "entry_price": 0.00036,
+          "quantity": 1388888.8888888888,
+          "entry_time": "2025-12-19T23:56:18.876138",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00036,
+          "pnl_percent": 0.0
+        },
+        "VIB/USDT": {
+          "entry_price": 0.00223,
+          "quantity": 213004.4843049327,
+          "entry_time": "2025-12-19T23:56:18.877107",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00223,
+          "pnl_percent": 0.0
+        },
+        "WTC/USDT": {
+          "entry_price": 0.0103,
+          "quantity": 43810.679611650485,
+          "entry_time": "2025-12-19T23:56:18.878107",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.0103,
+          "pnl_percent": 0.0
+        }
+      },
       "trades": [
         {
           "timestamp": "2025-12-19T23:56:18.876138",
@@ -56361,57 +54885,57 @@
           "entry_price": 0.22881746703765105,
           "quantity": 8913.48120053665,
           "entry_time": "2025-12-20T10:27:29.859536",
-          "current_price": 0.225,
-          "pnl_percent": -1.668345990834208
+          "current_price": 0.223,
+          "pnl_percent": -2.5424051375823487
         },
         "MAGIC/USDT": {
           "entry_price": 0.09469008758120667,
           "quantity": 12153.998167775551,
           "entry_time": "2025-12-20T10:27:29.860507",
-          "current_price": 0.0909,
-          "pnl_percent": -4.0026233769783754
+          "current_price": 0.0906,
+          "pnl_percent": -4.319446402136862
         },
         "AXS/USDT": {
           "entry_price": 0.8636837891057556,
           "quantity": 1660.3369089531782,
           "entry_time": "2025-12-20T10:38:47.680374",
-          "current_price": 0.825,
-          "pnl_percent": -4.478929626062356
+          "current_price": 0.823,
+          "pnl_percent": -4.710495857271912
         },
         "SAND/USDT": {
           "entry_price": 0.11931246011617413,
           "quantity": 11417.967308313862,
           "entry_time": "2025-12-20T10:38:47.681371",
-          "current_price": 0.1121,
-          "pnl_percent": -6.045018356969067
+          "current_price": 0.112,
+          "pnl_percent": -6.128831899915577
         },
         "MANA/USDT": {
           "entry_price": 0.12897494751868496,
           "quantity": 9738.526916327302,
           "entry_time": "2025-12-21T10:27:45.179273",
-          "current_price": 0.1181,
-          "pnl_percent": -8.431829380748134
+          "current_price": 0.1179,
+          "pnl_percent": -8.586898255632548
         },
         "ENJ/USDT": {
           "entry_price": 0.02765950426388496,
           "quantity": 30359.001161401073,
           "entry_time": "2025-12-21T10:38:26.784943",
-          "current_price": 0.02657,
-          "pnl_percent": -3.9389869517926557
+          "current_price": 0.0265,
+          "pnl_percent": -4.1920645172188635
         },
         "ILV/USDT": {
           "entry_price": 5.7729929785528284,
           "quantity": 112.47855164889505,
           "entry_time": "2025-12-21T10:38:26.787143",
-          "current_price": 5.53,
-          "pnl_percent": -4.20913345045747
+          "current_price": 5.52,
+          "pnl_percent": -4.382353823964791
         },
         "GALA/USDT": {
           "entry_price": 0.00619,
           "quantity": 16675.440158479778,
           "entry_time": "2025-12-21T11:10:29.481762",
-          "current_price": 0.00602,
-          "pnl_percent": -2.746365105008075
+          "current_price": 0.00601,
+          "pnl_percent": -2.9079159935379684
         }
       },
       "trades": [
@@ -58525,8 +57049,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.776,
-          "pnl_percent": -3.7961783439490415
+          "current_price": 3.766,
+          "pnl_percent": -4.050955414012735
         },
         "GIGGLE/USDT": {
           "entry_price": 72.39,
@@ -58535,8 +57059,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.19200000000001,
-          "current_price": 70.8,
-          "pnl_percent": -2.1964359718193216
+          "current_price": 70.45,
+          "pnl_percent": -2.6799281668738795
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -58555,8 +57079,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.617,
-          "pnl_percent": -0.3231017770597755
+          "current_price": 0.621,
+          "pnl_percent": 0.3231017770597644
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -58565,8 +57089,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.333,
-          "current_price": 0.0477,
-          "pnl_percent": 0.8456659619450191
+          "current_price": 0.0475,
+          "pnl_percent": 0.42283298097252064
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -58575,8 +57099,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.067,
-          "pnl_percent": -6.685236768802227
+          "current_price": 0.0672,
+          "pnl_percent": -6.4066852367688165
         },
         "POLYX/USDT": {
           "entry_price": 0.0555,
@@ -58585,8 +57109,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.0546,
-          "pnl_percent": -1.6216216216216162
+          "current_price": 0.054,
+          "pnl_percent": -2.7027027027027084
         },
         "AVNT/USDT": {
           "entry_price": 0.2906,
@@ -58595,8 +57119,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.426,
-          "current_price": 0.2843,
-          "pnl_percent": -2.1679284239504604
+          "current_price": 0.2827,
+          "pnl_percent": -2.7185134205092942
         },
         "ANIME/USDT": {
           "entry_price": 0.00886,
@@ -58605,8 +57129,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 71.01,
-          "current_price": 0.00938,
-          "pnl_percent": 5.869074492099324
+          "current_price": 0.00921,
+          "pnl_percent": 3.950338600451464
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -58615,8 +57139,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.773,
-          "pnl_percent": 8.72011251758087
+          "current_price": 0.765,
+          "pnl_percent": 7.594936708860756
         },
         "ACE/USDT": {
           "entry_price": 0.275,
@@ -58625,8 +57149,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.261,
-          "pnl_percent": -5.09090909090909
+          "current_price": 0.259,
+          "pnl_percent": -5.818181818181822
         },
         "LUMIA/USDT": {
           "entry_price": 0.126,
@@ -58635,8 +57159,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.89699999999999,
-          "current_price": 0.119,
-          "pnl_percent": -5.555555555555558
+          "current_price": 0.116,
+          "pnl_percent": -7.9365079365079305
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -58645,8 +57169,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0348,
-          "pnl_percent": -4.918032786885251
+          "current_price": 0.0359,
+          "pnl_percent": -1.912568306010931
         },
         "DOLO/USDT": {
           "entry_price": 0.03488,
@@ -58655,8 +57179,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.333,
-          "current_price": 0.03533,
-          "pnl_percent": 1.2901376146788879
+          "current_price": 0.03529,
+          "pnl_percent": 1.1754587155963225
         }
       },
       "trades": [
@@ -60351,8 +58875,8 @@
           "entry_price": 0.2129,
           "quantity": 2348.5204321277592,
           "entry_time": "2025-12-19T17:44:05.362417",
-          "current_price": 0.2059,
-          "pnl_percent": -3.2879286049788625
+          "current_price": 0.2052,
+          "pnl_percent": -3.6167214654767577
         }
       },
       "trades": [
@@ -61711,29 +60235,29 @@
           "entry_price": 228.3,
           "quantity": 1.8777376259307927,
           "entry_time": "2025-12-19T17:00:59.997866",
-          "current_price": 217.8,
-          "pnl_percent": -4.599211563731931
+          "current_price": 217.0,
+          "pnl_percent": -4.949627682873414
         },
         "WLD/USDT": {
           "entry_price": 0.5119,
           "quantity": 795.5716448525102,
           "entry_time": "2025-12-19T19:55:31.164846",
-          "current_price": 0.4919,
-          "pnl_percent": -3.907013088493849
+          "current_price": 0.4911,
+          "pnl_percent": -4.063293612033602
         },
         "ARKM/USDT": {
           "entry_price": 0.188,
           "quantity": 2057.928025265958,
           "entry_time": "2025-12-19T19:55:31.165845",
-          "current_price": 0.188,
-          "pnl_percent": 0.0
+          "current_price": 0.187,
+          "pnl_percent": -0.5319148936170248
         },
         "FET/USDT": {
           "entry_price": 0.2133,
           "quantity": 1723.140859411627,
           "entry_time": "2025-12-19T21:12:35.562036",
-          "current_price": 0.2059,
-          "pnl_percent": -3.4692920768870095
+          "current_price": 0.2052,
+          "pnl_percent": -3.797468354430378
         }
       },
       "trades": [
@@ -63113,12 +61637,12 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 6591.472126478182,
+        "USDT": 6005.991866977148,
         "CREAM": 238.09523809523807,
         "SOPH": 0,
         "PNT": 12892.857142857141,
         "SSV": 109.19192562404483,
-        "CHZ": 10528.777792140641,
+        "CHZ": 0,
         "ANIME": 27292.699848633634,
         "GIGGLE": 5.080109817726331,
         "ASR": 0,
@@ -63134,6 +61658,26 @@
       },
       "initial_capital": 10000,
       "positions": {
+        "CREAM/USDT": {
+          "entry_price": 2.1,
+          "quantity": 238.09523809523807,
+          "entry_time": "2025-12-20T10:19:50.505973",
+          "is_whale_trade": true,
+          "whale": "CryptoCobain (simulated)",
+          "confidence": 70,
+          "current_price": 2.1,
+          "pnl_percent": 0.0
+        },
+        "PNT/USDT": {
+          "entry_price": 0.035,
+          "quantity": 12892.857142857141,
+          "entry_time": "2025-12-20T10:19:50.508965",
+          "is_whale_trade": true,
+          "whale": "CryptoCobain (simulated)",
+          "confidence": 70,
+          "current_price": 0.035,
+          "pnl_percent": 0.0
+        },
         "SSV/USDT": {
           "entry_price": 3.926,
           "quantity": 109.19192562404483,
@@ -63141,18 +61685,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.044,
-          "current_price": 3.776,
-          "pnl_percent": -3.820682628629657
-        },
-        "CHZ/USDT": {
-          "entry_price": 0.03868,
-          "quantity": 10528.777792140641,
-          "entry_time": "2025-12-20T10:19:50.511957",
-          "is_whale_trade": true,
-          "whale": "CryptoCobain (simulated)",
-          "confidence": 63.489999999999995,
-          "current_price": 0.03484,
-          "pnl_percent": -9.927611168562557
+          "current_price": 3.766,
+          "pnl_percent": -4.075394803871624
         },
         "GIGGLE/USDT": {
           "entry_price": 72.35,
@@ -63161,8 +61695,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 62.9,
-          "current_price": 70.8,
-          "pnl_percent": -2.142363510711809
+          "current_price": 70.45,
+          "pnl_percent": -2.626123013130599
         },
         "ALPINE/USDT": {
           "entry_price": 0.631,
@@ -63171,8 +61705,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.19,
-          "current_price": 0.617,
-          "pnl_percent": -2.2187004754358197
+          "current_price": 0.621,
+          "pnl_percent": -1.5847860538827252
         },
         "BANK/USDT": {
           "entry_price": 0.045,
@@ -63181,8 +61715,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.0,
-          "current_price": 0.0477,
-          "pnl_percent": 6.000000000000005
+          "current_price": 0.0475,
+          "pnl_percent": 5.555555555555558
         },
         "POLYX/USDT": {
           "entry_price": 0.0588,
@@ -63191,8 +61725,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 60.041,
-          "current_price": 0.0546,
-          "pnl_percent": -7.14285714285714
+          "current_price": 0.054,
+          "pnl_percent": -8.163265306122447
         },
         "EPIC/USDT": {
           "entry_price": 0.725,
@@ -63201,8 +61735,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 61.441,
-          "current_price": 0.773,
-          "pnl_percent": 6.620689655172418
+          "current_price": 0.765,
+          "pnl_percent": 5.517241379310356
         },
         "ANIME/USDT": {
           "entry_price": 0.01,
@@ -63211,8 +61745,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 70,
-          "current_price": 0.00938,
-          "pnl_percent": -6.2000000000000055
+          "current_price": 0.00921,
+          "pnl_percent": -7.9000000000000075
         },
         "PORTAL/USDT": {
           "entry_price": 0.0256,
@@ -63231,8 +61765,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 64.49,
-          "current_price": 0.119,
-          "pnl_percent": -4.032258064516137
+          "current_price": 0.116,
+          "pnl_percent": -6.451612903225801
         },
         "CVC/USDT": {
           "entry_price": 0.05015,
@@ -63241,8 +61775,8 @@
           "is_whale_trade": true,
           "whale": "CryptoCobain (simulated)",
           "confidence": 61.14,
-          "current_price": 0.05299,
-          "pnl_percent": 5.663010967098714
+          "current_price": 0.05361,
+          "pnl_percent": 6.899302093718829
         }
       },
       "trades": [
@@ -63488,6 +62022,15 @@
           "pnl": 0,
           "whale": "CryptoCobain (simulated)",
           "reason": "DEGEN: Chasing CVC/USDT +21.1%"
+        },
+        {
+          "timestamp": "2025-12-23T14:21:07.480577",
+          "action": "SELL",
+          "symbol": "CHZ/USDT",
+          "price": 0.03474,
+          "quantity": 10528.777792140641,
+          "amount_usdt": 365.76974049896586,
+          "pnl": -41.48338450103412
         }
       ],
       "created_at": "2025-12-19T17:30:00",
@@ -64817,13 +63360,13 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 4630.730786562932,
+        "USDT": 3580.5107503216686,
         "BETA": 1388888.8888888888,
         "VIB": 224215.24663677128,
         "WTC": 48543.68932038835,
         "SOPH": 0,
         "SSV": 127.32365673542144,
-        "CHZ": 12943.308309603935,
+        "CHZ": 0,
         "ANIME": 25165.115930124743,
         "GIGGLE": 6.905123601712471,
         "TST": 31685.678073510775,
@@ -64846,6 +63389,36 @@
       },
       "initial_capital": 10000,
       "positions": {
+        "BETA/USDT": {
+          "entry_price": 0.00036,
+          "quantity": 1388888.8888888888,
+          "entry_time": "2025-12-19T23:56:38.549082",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00036,
+          "pnl_percent": 0.0
+        },
+        "VIB/USDT": {
+          "entry_price": 0.00223,
+          "quantity": 224215.24663677128,
+          "entry_time": "2025-12-19T23:56:38.549082",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00223,
+          "pnl_percent": 0.0
+        },
+        "WTC/USDT": {
+          "entry_price": 0.0103,
+          "quantity": 48543.68932038835,
+          "entry_time": "2025-12-19T23:56:38.550053",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.0103,
+          "pnl_percent": 0.0
+        },
         "SSV/USDT": {
           "entry_price": 3.927,
           "quantity": 127.32365673542144,
@@ -64853,18 +63426,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.076,
-          "current_price": 3.776,
-          "pnl_percent": -3.845174433409737
-        },
-        "CHZ/USDT": {
-          "entry_price": 0.03863,
-          "quantity": 12943.308309603935,
-          "entry_time": "2025-12-20T10:19:57.873639",
-          "is_whale_trade": true,
-          "whale": "Hsaka (simulated)",
-          "confidence": 73.586,
-          "current_price": 0.03484,
-          "pnl_percent": -9.811027698679775
+          "current_price": 3.766,
+          "pnl_percent": -4.099821746880572
         },
         "GIGGLE/USDT": {
           "entry_price": 72.41,
@@ -64873,8 +63436,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.019,
-          "current_price": 70.8,
-          "pnl_percent": -2.22344979975142
+          "current_price": 70.45,
+          "pnl_percent": -2.7068084518712787
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -64893,8 +63456,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.64699999999999,
-          "current_price": 0.617,
-          "pnl_percent": -0.6441223832528209
+          "current_price": 0.621,
+          "pnl_percent": 0.0
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -64903,8 +63466,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.0477,
-          "pnl_percent": 0.8456659619450191
+          "current_price": 0.0475,
+          "pnl_percent": 0.42283298097252064
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -64913,8 +63476,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.067,
-          "pnl_percent": -6.685236768802227
+          "current_price": 0.0672,
+          "pnl_percent": -6.4066852367688165
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -64923,8 +63486,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.348,
-          "current_price": 0.0546,
-          "pnl_percent": -1.4440433212996262
+          "current_price": 0.054,
+          "pnl_percent": -2.527075812274371
         },
         "AVNT/USDT": {
           "entry_price": 0.2913,
@@ -64933,8 +63496,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2843,
-          "pnl_percent": -2.403020940611056
+          "current_price": 0.2827,
+          "pnl_percent": -2.9522828698935744
         },
         "EPIC/USDT": {
           "entry_price": 0.711,
@@ -64943,8 +63506,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.773,
-          "pnl_percent": 8.72011251758087
+          "current_price": 0.765,
+          "pnl_percent": 7.594936708860756
         },
         "ORCA/USDT": {
           "entry_price": 1.21,
@@ -64953,8 +63516,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 64.475,
-          "current_price": 1.109,
-          "pnl_percent": -8.347107438016533
+          "current_price": 1.107,
+          "pnl_percent": -8.512396694214875
         },
         "ANIME/USDT": {
           "entry_price": 0.00948,
@@ -64963,8 +63526,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 84.844,
-          "current_price": 0.00938,
-          "pnl_percent": -1.0548523206751148
+          "current_price": 0.00921,
+          "pnl_percent": -2.8481012658228
         },
         "ACE/USDT": {
           "entry_price": 0.273,
@@ -64973,8 +63536,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.169,
-          "current_price": 0.261,
-          "pnl_percent": -4.395604395604402
+          "current_price": 0.259,
+          "pnl_percent": -5.128205128205132
         },
         "LUMIA/USDT": {
           "entry_price": 0.127,
@@ -64983,8 +63546,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.119,
-          "pnl_percent": -6.299212598425208
+          "current_price": 0.116,
+          "pnl_percent": -8.661417322834641
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -64993,8 +63556,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.03,
-          "current_price": 0.0348,
-          "pnl_percent": -4.132231404958686
+          "current_price": 0.0359,
+          "pnl_percent": -1.1019283746556363
         },
         "DOLO/USDT": {
           "entry_price": 0.03488,
@@ -65003,8 +63566,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.394,
-          "current_price": 0.03533,
-          "pnl_percent": 1.2901376146788879
+          "current_price": 0.03529,
+          "pnl_percent": 1.1754587155963225
         }
       },
       "trades": [
@@ -65376,6 +63939,15 @@
           "pnl": 0,
           "whale": "Hsaka (simulated)",
           "reason": "MOMENTUM: DOLO/USDT +13.4% with $5M volume"
+        },
+        {
+          "timestamp": "2025-12-23T14:21:16.441680",
+          "action": "SELL",
+          "symbol": "CHZ/USDT",
+          "price": 0.03475,
+          "quantity": 12943.308309603935,
+          "amount_usdt": 449.7799637587368,
+          "pnl": -50.2200362412632
         }
       ],
       "created_at": "2025-12-19T17:30:00",
@@ -68626,29 +67198,29 @@
           "entry_price": 0.47592593070663947,
           "quantity": 10318.876459177762,
           "entry_time": "2025-12-19T21:34:08.489011",
-          "current_price": 0.4425,
-          "pnl_percent": -7.023347237459765
+          "current_price": 0.4417,
+          "pnl_percent": -7.191440620985268
         },
         "JUP/USDT": {
           "entry_price": 0.1935284472276345,
           "quantity": 5449.5579275935115,
           "entry_time": "2025-12-19T22:10:05.109541",
-          "current_price": 0.1884,
-          "pnl_percent": -2.649970741305141
+          "current_price": 0.1876,
+          "pnl_percent": -3.063346661724242
         },
         "JTO/USDT": {
           "entry_price": 0.35771540215202985,
           "quantity": 4557.533743271782,
           "entry_time": "2025-12-21T10:06:02.782421",
-          "current_price": 0.35,
-          "pnl_percent": -2.1568548923568076
+          "current_price": 0.349,
+          "pnl_percent": -2.4364067355215013
         },
         "PYTH/USDT": {
           "entry_price": 0.059883008736272114,
           "quantity": 10184.17571357032,
           "entry_time": "2025-12-21T10:38:26.789128",
-          "current_price": 0.0576,
-          "pnl_percent": -3.812448279488767
+          "current_price": 0.0574,
+          "pnl_percent": -4.1464328340738765
         }
       },
       "trades": [
@@ -71332,15 +69904,15 @@
           "entry_price": 0.11227472291562268,
           "quantity": 60036.76883085365,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.1098,
-          "pnl_percent": -2.2041674665120303
+          "current_price": 0.1096,
+          "pnl_percent": -2.3823019520010758
         },
         "TIA/USDT": {
           "entry_price": 0.4791192935672133,
           "quantity": 6400.830143938563,
           "entry_time": "2025-12-19T17:00:59.999371",
-          "current_price": 0.4425,
-          "pnl_percent": -7.643042987179582
+          "current_price": 0.4417,
+          "pnl_percent": -7.810016016807286
         }
       },
       "trades": [
@@ -73373,43 +71945,43 @@
           "entry_price": 0.34994273830299844,
           "quantity": 10954.862663895685,
           "entry_time": "2025-12-20T05:41:35.751451",
-          "current_price": 0.35,
-          "pnl_percent": 0.01636316195021692
+          "current_price": 0.349,
+          "pnl_percent": -0.2693978756553528
         },
         "APT/USDT": {
           "entry_price": 1.650718708082878,
           "quantity": 720.9615325881708,
           "entry_time": "2025-12-20T06:57:28.059609",
-          "current_price": 1.584,
-          "pnl_percent": -4.041797536805292
+          "current_price": 1.58,
+          "pnl_percent": -4.284116229894175
         },
         "INJ/USDT": {
           "entry_price": 4.842109214555972,
           "quantity": 50.14668981239177,
           "entry_time": "2025-12-20T07:52:32.329976",
-          "current_price": 4.562,
-          "pnl_percent": -5.784859492923644
+          "current_price": 4.557,
+          "pnl_percent": -5.88812027822293
         },
         "SEI/USDT": {
           "entry_price": 0.11265083216007796,
           "quantity": 1854.097687531246,
           "entry_time": "2025-12-20T08:00:33.399189",
-          "current_price": 0.1098,
-          "pnl_percent": -2.53068007169881
+          "current_price": 0.1096,
+          "pnl_percent": -2.7082198165590876
         },
         "JUP/USDT": {
           "entry_price": 0.19576908118413233,
           "quantity": 177.91650604628614,
           "entry_time": "2025-12-20T10:38:47.691344",
-          "current_price": 0.1884,
-          "pnl_percent": -3.764170082200702
+          "current_price": 0.1876,
+          "pnl_percent": -4.172814795227464
         },
         "SUI/USDT": {
           "entry_price": 1.4700141603888792,
           "quantity": 21.38385673341405,
           "entry_time": "2025-12-21T10:06:02.783418",
-          "current_price": 1.4301,
-          "pnl_percent": -2.7152228505282094
+          "current_price": 1.4256,
+          "pnl_percent": -3.0213423506838755
         }
       },
       "trades": [
@@ -76885,14 +75457,19 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 3,
+        "allocation_percent": 1,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 3,
+        "auto_trade": true,
+        "max_risk": 35,
+        "min_liquidity": 150000,
+        "take_profit": 12,
+        "stop_loss": 8,
+        "max_hold_hours": 1
       },
       "balance": {
-        "USDT": 1883.7570337965851,
+        "USDT": 4283.953915539384,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -76954,442 +75531,7 @@
         "PKIN": 96813.04183448976
       },
       "initial_capital": 10000,
-      "positions": {
-        "PEIQI/USDT": {
-          "entry_price": 0.0002113,
-          "quantity": 1256923.06199716,
-          "entry_time": "2025-12-19T23:54:39.725440",
-          "is_snipe": true,
-          "address": "0x6217d9bD44E5b70B1c58201c8494Ac50F6896d90",
-          "chain": "ethereum",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 9039.62,
-          "current_price": 3.151e-05,
-          "current_liquidity": 3685.35,
-          "pnl_percent": -82.43256034074776
-        },
-        "REDACTED/USDT": {
-          "entry_price": 0.0002767,
-          "quantity": 799520.1954046926,
-          "entry_time": "2025-12-19T23:54:39.728349",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 52089.83,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -73.46223346584748
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.995e-05,
-          "quantity": 6539261.543845817,
-          "entry_time": "2025-12-19T23:54:39.732334",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 14826.88,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 29.18196994991653
-        },
-        "PDF/USDT": {
-          "entry_price": 1.768e-05,
-          "quantity": 9806865.314644357,
-          "entry_time": "2025-12-19T23:54:39.734327",
-          "is_snipe": true,
-          "address": "8n9T7c8uzkY92W1qV3ZATid1CGkQ1Lgqt5Tp1sb4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 13230.02,
-          "current_price": 3.435e-06,
-          "current_liquidity": 5799.17,
-          "pnl_percent": -78.23529411764706
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.177e-05,
-          "quantity": 13444702.955962906,
-          "entry_time": "2025-12-19T23:54:39.736321",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11329.3,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -57.757009345794394
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001266,
-          "quantity": 1212455.2067767212,
-          "entry_time": "2025-12-19T23:54:39.736321",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001369,
-          "current_liquidity": 36838.98,
-          "pnl_percent": 8.135860979462883
-        },
-        "SCP/USDT": {
-          "entry_price": 7.827e-05,
-          "quantity": 1845217.4086305997,
-          "entry_time": "2025-12-19T23:54:39.737319",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 26576.46,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -28.235594736169666
-        },
-        "FUN/USDT": {
-          "entry_price": 0.0005951,
-          "quantity": 235409.86653723998,
-          "entry_time": "2025-12-19T23:54:39.738316",
-          "is_snipe": true,
-          "address": "29Wv5PYkAR62bmNzQegSwdcXLddSeTrC8n6UFAiRVFUN",
-          "chain": "solana",
-          "dex": "orca",
-          "risk_score": 65,
-          "liquidity_at_entry": 23427.52,
-          "current_price": 0.0005899,
-          "current_liquidity": 23223.56,
-          "pnl_percent": -0.8738027222315647
-        },
-        "esdeekid/USDT": {
-          "entry_price": 4.964e-05,
-          "quantity": 2737502.8047748217,
-          "entry_time": "2025-12-19T23:54:39.738316",
-          "is_snipe": true,
-          "address": "2LuvXuCxAEtYmEWM8QTutRgZnQDCCJoXxbKiGopipump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 21121.26,
-          "current_price": 1.69e-05,
-          "current_liquidity": 12436.31,
-          "pnl_percent": -65.95487510072522
-        },
-        "2026/USDT": {
-          "entry_price": 0.0004423,
-          "quantity": 298017.06997999427,
-          "entry_time": "2025-12-19T23:54:39.739314",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002228,
-          "current_liquidity": 54049.62,
-          "pnl_percent": -49.626950033913644
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0003253,
-          "quantity": 369818.9995786881,
-          "entry_time": "2025-12-19T23:54:39.740311",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 72232.07,
-          "current_price": 0.0001643,
-          "current_liquidity": 52734.11,
-          "pnl_percent": -49.49277589916999
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 7582394.8632916715,
-          "entry_time": "2025-12-19T23:54:39.741308",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 65,
-          "liquidity_at_entry": 18932.98,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 9.344e-09,
-          "quantity": 12113898248.895233,
-          "entry_time": "2025-12-19T23:54:39.741308",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 174905.83,
-          "current_price": 3.518e-09,
-          "current_liquidity": 103840.73,
-          "pnl_percent": -62.35017123287672
-        },
-        "bubba/USDT": {
-          "entry_price": 1.11e-05,
-          "quantity": 9891576.331580788,
-          "entry_time": "2025-12-19T23:54:39.742305",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 10434.99,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -32.55855855855856
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 3535.942973510304,
-          "entry_time": "2025-12-19T23:54:39.742305",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005834,
-          "quantity": 177078.3755421091,
-          "entry_time": "2025-12-19T23:54:39.743304",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 95406.51,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 3.9252656839218414
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002277,
-          "quantity": 440089.14608049387,
-          "entry_time": "2025-12-19T23:54:39.743304",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001196,
-          "current_liquidity": 58395.02,
-          "pnl_percent": -47.47474747474748
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004583,
-          "quantity": 21209.262405771897,
-          "entry_time": "2025-12-19T23:54:39.744300",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 312760.52,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -27.97294348679904
-        },
-        "fairystar/USDT": {
-          "entry_price": 3.425e-05,
-          "quantity": 2670289.2985097384,
-          "entry_time": "2025-12-19T23:54:39.746320",
-          "is_snipe": true,
-          "address": "0xab22f6cC1ec180330320D50c281a5Ad75b9735Fb",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 16456.32,
-          "current_price": 3.418e-05,
-          "current_liquidity": 16416.61,
-          "pnl_percent": 3.3868613138686277
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0008793,
-          "quantity": 97864.52363601455,
-          "entry_time": "2025-12-19T23:54:39.748317",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008669,
-          "current_liquidity": 179327.54,
-          "pnl_percent": -1.4102126691686534
-        },
-        "FAIR3/USDT": {
-          "entry_price": 0.008325,
-          "quantity": 9725.716053240669,
-          "entry_time": "2025-12-19T23:54:39.748317",
-          "is_snipe": true,
-          "address": "0x6952c5408b9822295ba4a7e694d0C5FfDB8fE320",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 95,
-          "liquidity_at_entry": 366.45,
-          "current_price": 0.008559,
-          "current_liquidity": 538373.38,
-          "pnl_percent": 2.8108108108108043
-        },
-        "Pixie/USDT": {
-          "entry_price": 9.131e-05,
-          "quantity": 860120.3434337062,
-          "entry_time": "2025-12-19T23:54:39.749288",
-          "is_snipe": true,
-          "address": "8jbjDAUAvXuh3tGjqCWUve71rWd5QEbgjYwsuq5npump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 30416.26,
-          "current_price": 8.393e-05,
-          "current_liquidity": 29007.09,
-          "pnl_percent": -8.082356806483403
-        },
-        "STRAYDOG/USDT": {
-          "entry_price": 0.001307,
-          "quantity": 58287.26924419569,
-          "entry_time": "2025-12-19T23:54:39.749288",
-          "is_snipe": true,
-          "address": "0xe15Ed6CaD89CB6D71b1f18EfF938C65fBC59B371",
-          "chain": "ethereum",
-          "dex": "uniswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 107628.08,
-          "current_price": 0.000502,
-          "current_liquidity": 66983.1,
-          "pnl_percent": -61.59143075745983
-        },
-        "APL/USDT": {
-          "entry_price": 0.4725,
-          "quantity": 147.15082003377884,
-          "entry_time": "2025-12-19T23:54:39.751282",
-          "is_snipe": true,
-          "address": "0xfE82012eCcE57a188E5f9f3fC1Cb2D335C58F1f5",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 278313.39,
-          "current_price": 0.4383,
-          "current_liquidity": 274666.17,
-          "pnl_percent": -7.238095238095232
-        },
-        "stAPL/USDT": {
-          "entry_price": 0.4958,
-          "quantity": 136.02843806369845,
-          "entry_time": "2025-12-19T23:54:39.751282",
-          "is_snipe": true,
-          "address": "0xb5461c1FD0312Cd4bF037058F8a391e6A42F9639",
-          "chain": "story",
-          "dex": "piperx",
-          "risk_score": 45,
-          "liquidity_at_entry": 538073.51,
-          "current_price": 0.4599,
-          "current_liquidity": 499116.57,
-          "pnl_percent": -7.240822912464717
-        },
-        "SHIB/USDT": {
-          "entry_price": 3.943e-09,
-          "quantity": 16591329597.824558,
-          "entry_time": "2025-12-19T23:54:39.752279",
-          "is_snipe": true,
-          "address": "0xFCa95aeb5bF44aE355806A5ad14659c940dC6BF7",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 332824.01,
-          "current_price": 4.343e-09,
-          "current_liquidity": 343588.11,
-          "pnl_percent": 10.144559979710888
-        },
-        "XAVA/USDT": {
-          "entry_price": 0.1453,
-          "quantity": 423.62913626505645,
-          "entry_time": "2025-12-19T23:54:39.753276",
-          "is_snipe": true,
-          "address": "0xd1c3f94DE7e5B45fa4eDBBA472491a9f4B166FC4",
-          "chain": "avalanche",
-          "dex": "traderjoe",
-          "risk_score": 30,
-          "liquidity_at_entry": 78197.44,
-          "current_price": 0.1454,
-          "current_liquidity": 349674.39,
-          "pnl_percent": 0.06882312456983897
-        },
-        "SPLAT/USDT": {
-          "entry_price": 0.001009,
-          "quantity": 59174.14677337297,
-          "entry_time": "2025-12-19T23:54:39.753276",
-          "is_snipe": true,
-          "address": "4Uf883orBx89VQZiV4EoRpNqUWYN5ZuEvC4PCpQ9moon",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 45,
-          "liquidity_at_entry": 304521.44,
-          "current_price": 0.001031,
-          "current_liquidity": 306699.76,
-          "pnl_percent": 2.1803766105054523
-        },
-        "gork/USDT": {
-          "entry_price": 0.001247,
-          "quantity": 46443.875438254465,
-          "entry_time": "2025-12-19T23:54:39.754274",
-          "is_snipe": true,
-          "address": "38PgzpJYu2HkiYvV8qePFakB8tuobPdGm2FFEn7Dpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 374282.45,
-          "current_price": 0.001158,
-          "current_liquidity": 357078.96,
-          "pnl_percent": -7.137129109863682
-        },
-        "LIQD/USDT": {
-          "entry_price": 0.001882,
-          "quantity": 29850.184533134016,
-          "entry_time": "2025-12-19T23:54:39.754274",
-          "is_snipe": true,
-          "address": "0x1Ecd15865D7F8019D546f76d095d9c93cc34eDFa",
-          "chain": "hyperevm",
-          "dex": "hyperswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 26690.65,
-          "current_price": 0.001833,
-          "current_liquidity": 25632.21,
-          "pnl_percent": -2.603613177470776
-        },
-        "PKIN/USDT": {
-          "entry_price": 0.0005296,
-          "quantity": 96813.04183448976,
-          "entry_time": "2025-12-19T23:54:39.756269",
-          "is_snipe": true,
-          "address": "2RBko3xoz56aH69isQMUpzZd9NYHahhwC23A5F3Spkin",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 351228.09,
-          "current_price": 0.0004026,
-          "current_liquidity": 299735.46,
-          "pnl_percent": -23.980362537764353
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-19T23:54:39.723561",
@@ -79891,8 +78033,8 @@
           "entry_price": 0.3711,
           "quantity": 1347.3457289140395,
           "entry_time": "2025-12-19T17:01:00.001375",
-          "current_price": 0.3622,
-          "pnl_percent": -2.3982753974669757
+          "current_price": 0.3617,
+          "pnl_percent": -2.5330099703583797
         }
       },
       "trades": [
@@ -81248,43 +79390,43 @@
           "entry_price": 0.37318381007147766,
           "quantity": 7043.377038487055,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 0.3622,
-          "pnl_percent": -2.94327078909824
+          "current_price": 0.3617,
+          "pnl_percent": -3.0772530215815386
         },
         "DOT/USDT": {
           "entry_price": 1.8423790884093338,
           "quantity": 1322.2074143154207,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 1.753,
-          "pnl_percent": -4.851286522498565
+          "current_price": 1.749,
+          "pnl_percent": -5.068397106588685
         },
         "LINK/USDT": {
           "entry_price": 12.503540763237527,
           "quantity": 171.97410051483172,
           "entry_time": "2025-12-19T17:01:00.002376",
-          "current_price": 12.23,
-          "pnl_percent": -2.187706413864643
+          "current_price": 12.21,
+          "pnl_percent": -2.347661104929455
         },
         "ATOM/USDT": {
           "entry_price": 1.93998955374928,
           "quantity": 1163.9777015534748,
           "entry_time": "2025-12-19T17:01:00.003881",
-          "current_price": 1.955,
-          "pnl_percent": 0.7737385091435511
+          "current_price": 1.95,
+          "pnl_percent": 0.5160051625728412
         },
         "VET/USDT": {
           "entry_price": 0.01050687415349023,
           "quantity": 28697.034061805,
           "entry_time": "2025-12-19T17:06:54.491278",
-          "current_price": 0.01044,
-          "pnl_percent": -0.636480008357343
+          "current_price": 0.01042,
+          "pnl_percent": -0.8268315792225533
         },
         "NEAR/USDT": {
           "entry_price": 1.513,
           "quantity": 21.801288227981512,
           "entry_time": "2025-12-19T19:55:31.173168",
-          "current_price": 1.488,
-          "pnl_percent": -1.6523463317911324
+          "current_price": 1.484,
+          "pnl_percent": -1.9167217448777252
         }
       },
       "trades": [
@@ -83303,14 +81445,19 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 5,
+        "allocation_percent": 1,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 5,
+        "auto_trade": true,
+        "max_risk": 40,
+        "min_liquidity": 100000,
+        "take_profit": 15,
+        "stop_loss": 8,
+        "max_hold_hours": 1
       },
       "balance": {
-        "USDT": 1311.14636440792,
+        "USDT": 3223.919808791801,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -83358,330 +81505,7 @@
         "Pixie": 573179.0314492123
       },
       "initial_capital": 10000,
-      "positions": {
-        "PEIQI/USDT": {
-          "entry_price": 0.0002113,
-          "quantity": 1927369.261713204,
-          "entry_time": "2025-12-19T23:54:39.758266",
-          "is_snipe": true,
-          "address": "0x6217d9bD44E5b70B1c58201c8494Ac50F6896d90",
-          "chain": "ethereum",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 9039.62,
-          "current_price": 3.151e-05,
-          "current_liquidity": 3685.35,
-          "pnl_percent": -82.43256034074776
-        },
-        "REDACTED/USDT": {
-          "entry_price": 0.0002767,
-          "quantity": 1081924.357134765,
-          "entry_time": "2025-12-19T23:54:39.764247",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 52089.83,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -73.46223346584748
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.995e-05,
-          "quantity": 8141485.46102721,
-          "entry_time": "2025-12-19T23:54:39.765914",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 14826.88,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 29.18196994991653
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.177e-05,
-          "quantity": 14467358.805782286,
-          "entry_time": "2025-12-19T23:54:39.768907",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11329.3,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -57.757009345794394
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001266,
-          "quantity": 1277778.6136402423,
-          "entry_time": "2025-12-19T23:54:39.769905",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001369,
-          "current_liquidity": 36838.98,
-          "pnl_percent": 8.135860979462883
-        },
-        "SCP/USDT": {
-          "entry_price": 7.827e-05,
-          "quantity": 1865267.8186966437,
-          "entry_time": "2025-12-19T23:54:39.770904",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 26576.46,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -28.235594736169666
-        },
-        "FUN/USDT": {
-          "entry_price": 0.0005951,
-          "quantity": 233061.31164664254,
-          "entry_time": "2025-12-19T23:54:39.770904",
-          "is_snipe": true,
-          "address": "29Wv5PYkAR62bmNzQegSwdcXLddSeTrC8n6UFAiRVFUN",
-          "chain": "solana",
-          "dex": "orca",
-          "risk_score": 65,
-          "liquidity_at_entry": 23427.52,
-          "current_price": 0.0005899,
-          "current_liquidity": 23223.56,
-          "pnl_percent": -0.8738027222315647
-        },
-        "esdeekid/USDT": {
-          "entry_price": 4.964e-05,
-          "quantity": 2654311.99099257,
-          "entry_time": "2025-12-19T23:54:39.771901",
-          "is_snipe": true,
-          "address": "2LuvXuCxAEtYmEWM8QTutRgZnQDCCJoXxbKiGopipump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 21121.26,
-          "current_price": 1.69e-05,
-          "current_liquidity": 12436.31,
-          "pnl_percent": -65.95487510072522
-        },
-        "2026/USDT": {
-          "entry_price": 0.0004423,
-          "quantity": 283002.58844953106,
-          "entry_time": "2025-12-19T23:54:39.771901",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002228,
-          "current_liquidity": 54049.62,
-          "pnl_percent": -49.626950033913644
-        },
-        "WoW/USDT": {
-          "entry_price": 2.691e-05,
-          "quantity": 4418931.3499690145,
-          "entry_time": "2025-12-19T23:54:39.772898",
-          "is_snipe": true,
-          "address": "6YdDyLQ5RnKpjcVFCKVe8GURVxFsAVhXwArW9wrRpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 15986.8,
-          "current_price": 4.685e-06,
-          "current_liquidity": 6626.66,
-          "pnl_percent": -67.88926049795614
-        },
-        "SuperCycle/USDT": {
-          "entry_price": 0.0003253,
-          "quantity": 329908.95164915087,
-          "entry_time": "2025-12-19T23:54:39.772898",
-          "is_snipe": true,
-          "address": "0x113f9616AD86A358bB7e58EB3E977D976aF44444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 72232.07,
-          "current_price": 0.0001643,
-          "current_liquidity": 52734.11,
-          "pnl_percent": -49.49277589916999
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 6624653.208115356,
-          "entry_time": "2025-12-19T23:54:39.773905",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 65,
-          "liquidity_at_entry": 18932.98,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 9.344e-09,
-          "quantity": 10365554605.013971,
-          "entry_time": "2025-12-19T23:54:39.773905",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 174905.83,
-          "current_price": 3.518e-09,
-          "current_liquidity": 103840.73,
-          "pnl_percent": -62.35017123287672
-        },
-        "bubba/USDT": {
-          "entry_price": 1.11e-05,
-          "quantity": 8289455.416016939,
-          "entry_time": "2025-12-19T23:54:39.774906",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 10434.99,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -32.55855855855856
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 2902.1350385756514,
-          "entry_time": "2025-12-19T23:54:39.776915",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005834,
-          "quantity": 142340.91874152157,
-          "entry_time": "2025-12-19T23:54:39.777893",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 95406.51,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 3.9252656839218414
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002277,
-          "quantity": 346462.9222402877,
-          "entry_time": "2025-12-19T23:54:39.777893",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001196,
-          "current_liquidity": 58463.03,
-          "pnl_percent": -47.47474747474748
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004583,
-          "quantity": 16352.853376479996,
-          "entry_time": "2025-12-19T23:54:39.778883",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 312760.52,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -27.97294348679904
-        },
-        "fairystar/USDT": {
-          "entry_price": 3.425e-05,
-          "quantity": 1974831.4493292866,
-          "entry_time": "2025-12-19T23:54:39.779963",
-          "is_snipe": true,
-          "address": "0xab22f6cC1ec180330320D50c281a5Ad75b9735Fb",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 16456.32,
-          "current_price": 3.418e-05,
-          "current_liquidity": 16416.61,
-          "pnl_percent": 3.3868613138686277
-        },
-        "FAIREMAIL/USDT": {
-          "entry_price": 2.219e-05,
-          "quantity": 2895722.320078939,
-          "entry_time": "2025-12-19T23:54:39.779963",
-          "is_snipe": true,
-          "address": "0xADFcD9a75BF5Abe706426de8228016A2fAd6B474",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 14170.3,
-          "current_price": 3.971e-05,
-          "current_liquidity": 20234.62,
-          "pnl_percent": 65.25461919783686
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0008793,
-          "quantity": 69422.57974345966,
-          "entry_time": "2025-12-19T23:54:39.780963",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008669,
-          "current_liquidity": 179327.54,
-          "pnl_percent": -1.4102126691686534
-        },
-        "FAIR3/USDT": {
-          "entry_price": 0.008325,
-          "quantity": 6617.604218318645,
-          "entry_time": "2025-12-19T23:54:39.781961",
-          "is_snipe": true,
-          "address": "0x6952c5408b9822295ba4a7e694d0C5FfDB8fE320",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 95,
-          "liquidity_at_entry": 366.45,
-          "current_price": 0.008559,
-          "current_liquidity": 538373.38,
-          "pnl_percent": 2.8108108108108043
-        },
-        "Pixie/USDT": {
-          "entry_price": 9.131e-05,
-          "quantity": 573179.0314492123,
-          "entry_time": "2025-12-19T23:54:39.781961",
-          "is_snipe": true,
-          "address": "8jbjDAUAvXuh3tGjqCWUve71rWd5QEbgjYwsuq5npump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 30416.26,
-          "current_price": 8.393e-05,
-          "current_liquidity": 29007.09,
-          "pnl_percent": -8.082356806483403
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-19T23:54:39.756269",
@@ -85897,14 +83721,19 @@
           "ALGO/USDT",
           "VET/USDT"
         ],
-        "allocation_percent": 5,
+        "allocation_percent": 1,
         "rsi_oversold": 30,
         "rsi_overbought": 70,
-        "max_positions": 20,
-        "auto_trade": true
+        "max_positions": 3,
+        "auto_trade": true,
+        "max_risk": 35,
+        "min_liquidity": 100000,
+        "take_profit": 10,
+        "stop_loss": 5,
+        "max_hold_hours": 0.5
       },
       "balance": {
-        "USDT": 1311.9485667529011,
+        "USDT": 3187.2721628315417,
         "Jeflix": 0,
         "COP": 0,
         "asset": 0,
@@ -85952,330 +83781,7 @@
         "STRAYDOG": 40043.594002775506
       },
       "initial_capital": 10000,
-      "positions": {
-        "PEIQI/USDT": {
-          "entry_price": 0.0002113,
-          "quantity": 1927369.261713204,
-          "entry_time": "2025-12-19T23:54:39.784953",
-          "is_snipe": true,
-          "address": "0x6217d9bD44E5b70B1c58201c8494Ac50F6896d90",
-          "chain": "ethereum",
-          "dex": "uniswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 9039.62,
-          "current_price": 3.151e-05,
-          "current_liquidity": 3685.35,
-          "pnl_percent": -82.43256034074776
-        },
-        "REDACTED/USDT": {
-          "entry_price": 0.0002767,
-          "quantity": 1081924.357134765,
-          "entry_time": "2025-12-19T23:54:39.787944",
-          "is_snipe": true,
-          "address": "GG7FmULeuzpaRaqBS1Paq6pUrdknic33HZWMLEumpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 52089.83,
-          "current_price": 7.343e-05,
-          "current_liquidity": 29436.42,
-          "pnl_percent": -73.46223346584748
-        },
-        "ARCR/USDT": {
-          "entry_price": 2.995e-05,
-          "quantity": 8141485.46102721,
-          "entry_time": "2025-12-19T23:54:39.789939",
-          "is_snipe": true,
-          "address": "8GZsZv7JhpQ2tJkPySGvEKPT3g4g63EuDLPaFatNBAGS",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 40,
-          "liquidity_at_entry": 14826.88,
-          "current_price": 3.869e-05,
-          "current_liquidity": 16672.65,
-          "pnl_percent": 29.18196994991653
-        },
-        "PDF/USDT": {
-          "entry_price": 1.768e-05,
-          "quantity": 11233436.607981293,
-          "entry_time": "2025-12-19T23:54:39.793929",
-          "is_snipe": true,
-          "address": "8n9T7c8uzkY92W1qV3ZATid1CGkQ1Lgqt5Tp1sb4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 13230.02,
-          "current_price": 3.435e-06,
-          "current_liquidity": 5799.17,
-          "pnl_percent": -78.23529411764706
-        },
-        "NEWYEAR/USDT": {
-          "entry_price": 1.177e-05,
-          "quantity": 15228798.742928721,
-          "entry_time": "2025-12-19T23:54:39.794925",
-          "is_snipe": true,
-          "address": "5qfTzRkH7EWhdp2MJs9n3w9TsCpV1jeFX44Wc57opump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 11329.3,
-          "current_price": 4.46e-06,
-          "current_liquidity": 6903.22,
-          "pnl_percent": -57.757009345794394
-        },
-        "PURK/USDT": {
-          "entry_price": 0.0001266,
-          "quantity": 1345030.1196213076,
-          "entry_time": "2025-12-19T23:54:39.795922",
-          "is_snipe": true,
-          "address": "BBG3vpXVCm2uPBD7LUr7yfP9XUXVNJRHMtiMG7q4pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 34904.67,
-          "current_price": 0.0001369,
-          "current_liquidity": 36838.98,
-          "pnl_percent": 8.135860979462883
-        },
-        "SCP/USDT": {
-          "entry_price": 7.827e-05,
-          "quantity": 1963439.8091543622,
-          "entry_time": "2025-12-19T23:54:39.796920",
-          "is_snipe": true,
-          "address": "HLF7DWt4L9wZcb6wCWKC1ean57nohHPc8LHbsYJrpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 26576.46,
-          "current_price": 5.617e-05,
-          "current_liquidity": 22520.05,
-          "pnl_percent": -28.235594736169666
-        },
-        "FUN/USDT": {
-          "entry_price": 0.0005951,
-          "quantity": 245327.69647015005,
-          "entry_time": "2025-12-19T23:54:39.797434",
-          "is_snipe": true,
-          "address": "29Wv5PYkAR62bmNzQegSwdcXLddSeTrC8n6UFAiRVFUN",
-          "chain": "solana",
-          "dex": "orca",
-          "risk_score": 65,
-          "liquidity_at_entry": 23427.52,
-          "current_price": 0.0005899,
-          "current_liquidity": 23223.56,
-          "pnl_percent": -0.8738027222315647
-        },
-        "2026/USDT": {
-          "entry_price": 0.0004423,
-          "quantity": 297897.4615258222,
-          "entry_time": "2025-12-19T23:54:39.798433",
-          "is_snipe": true,
-          "address": "CQ1eU5VLsw2WyaDgVJPDBb1RyroeZoJaMeRaNkwtpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 72657.58,
-          "current_price": 0.0002228,
-          "current_liquidity": 54049.62,
-          "pnl_percent": -49.626950033913644
-        },
-        "WoW/USDT": {
-          "entry_price": 2.691e-05,
-          "quantity": 4651506.684177911,
-          "entry_time": "2025-12-19T23:54:39.798433",
-          "is_snipe": true,
-          "address": "6YdDyLQ5RnKpjcVFCKVe8GURVxFsAVhXwArW9wrRpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 15986.8,
-          "current_price": 4.685e-06,
-          "current_liquidity": 6626.66,
-          "pnl_percent": -67.88926049795614
-        },
-        "FF/USDT": {
-          "entry_price": 1.539e-05,
-          "quantity": 6973319.166437217,
-          "entry_time": "2025-12-19T23:54:39.800439",
-          "is_snipe": true,
-          "address": "758yZPp2QEmrMgMACiUS2K2sTLsfSw9NprWoGxdxbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 65,
-          "liquidity_at_entry": 18932.98,
-          "current_price": 1.317e-05,
-          "current_liquidity": 17526.15,
-          "pnl_percent": -14.619883040935678
-        },
-        "$HACHI/USDT": {
-          "entry_price": 9.344e-09,
-          "quantity": 10911110110.541023,
-          "entry_time": "2025-12-19T23:54:39.800439",
-          "is_snipe": true,
-          "address": "x95HN3DWvbfCBtTjGm587z8suK3ec6cwQwgZNLbWKyp",
-          "chain": "solana",
-          "dex": "meteora",
-          "risk_score": 20,
-          "liquidity_at_entry": 174905.83,
-          "current_price": 3.518e-09,
-          "current_liquidity": 104351.59,
-          "pnl_percent": -62.35017123287672
-        },
-        "bubba/USDT": {
-          "entry_price": 1.11e-05,
-          "quantity": 8725742.543175725,
-          "entry_time": "2025-12-19T23:54:39.800439",
-          "is_snipe": true,
-          "address": "5ghVo53TgXcUma2xJZX7MnzAo7GCSKaCVGEj4zc2pump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 40,
-          "liquidity_at_entry": 10434.99,
-          "current_price": 4.767e-06,
-          "current_liquidity": 6787.55,
-          "pnl_percent": -32.55855855855856
-        },
-        "ARIAIP/USDT": {
-          "entry_price": 0.03012,
-          "quantity": 3054.87898797437,
-          "entry_time": "2025-12-19T23:54:39.801425",
-          "is_snipe": true,
-          "address": "0xC9cbbD8f211300Dd0e7a3933b7AeEdAC6F61Dd52",
-          "chain": "story",
-          "dex": "storyhunt",
-          "risk_score": 45,
-          "liquidity_at_entry": 73890.47,
-          "current_price": 0.02828,
-          "current_liquidity": 165503.77,
-          "pnl_percent": -6.108897742363883
-        },
-        "NotifAi/USDT": {
-          "entry_price": 0.0005834,
-          "quantity": 149832.54604370694,
-          "entry_time": "2025-12-19T23:54:39.801425",
-          "is_snipe": true,
-          "address": "0x70131b713A5D0e9D900FEcA15D0e1348658E4444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 30,
-          "liquidity_at_entry": 95406.51,
-          "current_price": 0.0006063,
-          "current_liquidity": 97146.88,
-          "pnl_percent": 3.9252656839218414
-        },
-        "cBNB/USDT": {
-          "entry_price": 0.0002277,
-          "quantity": 364697.8128845133,
-          "entry_time": "2025-12-19T23:54:39.802423",
-          "is_snipe": true,
-          "address": "0x7a0Bc0F5dE87bE3B2fE00546DF583668b2994444",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 79562.05,
-          "current_price": 0.0001196,
-          "current_liquidity": 58463.03,
-          "pnl_percent": -47.47474747474748
-        },
-        "SPSC/USDT": {
-          "entry_price": 0.004583,
-          "quantity": 17213.529869978945,
-          "entry_time": "2025-12-19T23:54:39.802423",
-          "is_snipe": true,
-          "address": "4nswj3o1Lo9iWYvvRJxUD8vbCy9ay7QQoXYcncHNbonk",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 20,
-          "liquidity_at_entry": 312760.52,
-          "current_price": 0.003301,
-          "current_liquidity": 273744.14,
-          "pnl_percent": -27.97294348679904
-        },
-        "20267/USDT": {
-          "entry_price": 0.0001892,
-          "quantity": 396115.8933636777,
-          "entry_time": "2025-12-19T23:54:39.803421",
-          "is_snipe": true,
-          "address": "FFELWX2P9akhDAR1YLYQonAeBqrFszQfBRAeXefvpump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 50,
-          "liquidity_at_entry": 43513.0,
-          "current_price": 0.0001061,
-          "current_liquidity": 32293.23,
-          "pnl_percent": -43.921775898520075
-        },
-        "fairystar/USDT": {
-          "entry_price": 3.425e-05,
-          "quantity": 2078769.946662407,
-          "entry_time": "2025-12-19T23:54:39.803421",
-          "is_snipe": true,
-          "address": "0xab22f6cC1ec180330320D50c281a5Ad75b9735Fb",
-          "chain": "base",
-          "dex": "uniswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 16456.32,
-          "current_price": 3.418e-05,
-          "current_liquidity": 16416.61,
-          "pnl_percent": 3.3868613138686277
-        },
-        "tSAT/USDT": {
-          "entry_price": 0.0008793,
-          "quantity": 73076.39972995753,
-          "entry_time": "2025-12-19T23:54:39.804418",
-          "is_snipe": true,
-          "address": "tSATdGGSLYBVCrm3pXiib8NmzKcB1iUdjRRseNGssxu",
-          "chain": "solana",
-          "dex": "raydium",
-          "risk_score": 45,
-          "liquidity_at_entry": 180242.23,
-          "current_price": 0.0008669,
-          "current_liquidity": 179327.54,
-          "pnl_percent": -1.4102126691686534
-        },
-        "FAIR3/USDT": {
-          "entry_price": 0.008325,
-          "quantity": 6965.899177177521,
-          "entry_time": "2025-12-19T23:54:39.805422",
-          "is_snipe": true,
-          "address": "0x6952c5408b9822295ba4a7e694d0C5FfDB8fE320",
-          "chain": "bsc",
-          "dex": "pancakeswap",
-          "risk_score": 95,
-          "liquidity_at_entry": 366.45,
-          "current_price": 0.008559,
-          "current_liquidity": 538373.38,
-          "pnl_percent": 2.8108108108108043
-        },
-        "Pixie/USDT": {
-          "entry_price": 9.131e-05,
-          "quantity": 603346.3488939077,
-          "entry_time": "2025-12-19T23:54:39.805422",
-          "is_snipe": true,
-          "address": "8jbjDAUAvXuh3tGjqCWUve71rWd5QEbgjYwsuq5npump",
-          "chain": "solana",
-          "dex": "pumpswap",
-          "risk_score": 65,
-          "liquidity_at_entry": 30416.26,
-          "current_price": 8.393e-05,
-          "current_liquidity": 29007.09,
-          "pnl_percent": -8.082356806483403
-        },
-        "STRAYDOG/USDT": {
-          "entry_price": 0.001307,
-          "quantity": 40043.594002775506,
-          "entry_time": "2025-12-19T23:54:39.806411",
-          "is_snipe": true,
-          "address": "0xe15Ed6CaD89CB6D71b1f18EfF938C65fBC59B371",
-          "chain": "ethereum",
-          "dex": "uniswap",
-          "risk_score": 20,
-          "liquidity_at_entry": 107628.08,
-          "current_price": 0.000502,
-          "current_liquidity": 66983.1,
-          "pnl_percent": -61.59143075745983
-        }
-      },
+      "positions": {},
       "trades": [
         {
           "timestamp": "2025-12-19T23:54:39.782958",
@@ -88498,13 +86004,44 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 10000.0,
+        "USDT": 8573.75,
         "BETA": 1388888.8888888888,
         "VIB": 213004.4843049327,
         "WTC": 43810.679611650485
       },
       "initial_capital": 10000,
-      "positions": {},
+      "positions": {
+        "BETA/USDT": {
+          "entry_price": 0.00036,
+          "quantity": 1388888.8888888888,
+          "entry_time": "2025-12-19T23:56:41.734716",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00036,
+          "pnl_percent": 0.0
+        },
+        "VIB/USDT": {
+          "entry_price": 0.00223,
+          "quantity": 213004.4843049327,
+          "entry_time": "2025-12-19T23:56:41.734716",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00223,
+          "pnl_percent": 0.0
+        },
+        "WTC/USDT": {
+          "entry_price": 0.0103,
+          "quantity": 43810.679611650485,
+          "entry_time": "2025-12-19T23:56:41.735713",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.0103,
+          "pnl_percent": 0.0
+        }
+      },
       "trades": [
         {
           "timestamp": "2025-12-19T23:56:41.734716",
@@ -89872,8 +87409,8 @@
           "entry_price": 0.299,
           "quantity": 5028.609177962461,
           "entry_time": "2025-12-21T11:10:29.488716",
-          "current_price": 0.2875,
-          "pnl_percent": -3.8461538461538547
+          "current_price": 0.2861,
+          "pnl_percent": -4.3143812709030005
         }
       },
       "trades": [
@@ -91733,8 +89270,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.044,
-          "current_price": 3.776,
-          "pnl_percent": -3.820682628629657
+          "current_price": 3.766,
+          "pnl_percent": -4.075394803871624
         },
         "GIGGLE/USDT": {
           "entry_price": 72.37,
@@ -91743,8 +89280,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.179,
-          "current_price": 70.8,
-          "pnl_percent": -2.1694072129335495
+          "current_price": 70.45,
+          "pnl_percent": -2.6530330247340084
         },
         "TST/USDT": {
           "entry_price": 0.01578,
@@ -91763,8 +89300,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.617,
-          "pnl_percent": -0.6441223832528209
+          "current_price": 0.621,
+          "pnl_percent": 0.0
         },
         "BANK/USDT": {
           "entry_price": 0.0473,
@@ -91773,8 +89310,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 76.133,
-          "current_price": 0.0477,
-          "pnl_percent": 0.8456659619450191
+          "current_price": 0.0475,
+          "pnl_percent": 0.42283298097252064
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -91783,8 +89320,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.067,
-          "pnl_percent": -6.685236768802227
+          "current_price": 0.0672,
+          "pnl_percent": -6.4066852367688165
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -91793,8 +89330,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0546,
-          "pnl_percent": -1.4440433212996262
+          "current_price": 0.054,
+          "pnl_percent": -2.527075812274371
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -91803,8 +89340,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.707,
-          "current_price": 0.2843,
-          "pnl_percent": -2.4699828473413343
+          "current_price": 0.2827,
+          "pnl_percent": -3.01886792452829
         },
         "ANIME/USDT": {
           "entry_price": 0.0088,
@@ -91813,8 +89350,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 69.755,
-          "current_price": 0.00938,
-          "pnl_percent": 6.5909090909090695
+          "current_price": 0.00921,
+          "pnl_percent": 4.6590909090908905
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -91823,8 +89360,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.518,
-          "current_price": 0.773,
-          "pnl_percent": 8.873239436619729
+          "current_price": 0.765,
+          "pnl_percent": 7.7464788732394485
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -91833,8 +89370,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.261,
-          "pnl_percent": -4.744525547445255
+          "current_price": 0.259,
+          "pnl_percent": -5.474452554744536
         },
         "LUMIA/USDT": {
           "entry_price": 0.127,
@@ -91843,8 +89380,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 79.592,
-          "current_price": 0.119,
-          "pnl_percent": -6.299212598425208
+          "current_price": 0.116,
+          "pnl_percent": -8.661417322834641
         },
         "ACT/USDT": {
           "entry_price": 0.0366,
@@ -91853,8 +89390,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.909,
-          "current_price": 0.0348,
-          "pnl_percent": -4.918032786885251
+          "current_price": 0.0359,
+          "pnl_percent": -1.912568306010931
         },
         "DOLO/USDT": {
           "entry_price": 0.03492,
@@ -91863,8 +89400,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.45,
-          "current_price": 0.03533,
-          "pnl_percent": 1.1741122565864792
+          "current_price": 0.03529,
+          "pnl_percent": 1.05956471935853
         }
       },
       "trades": [
@@ -93561,36 +91098,36 @@
           "entry_price": 5.65563212207492,
           "quantity": 528.3185523407716,
           "entry_time": "2025-12-19T20:15:19.723474",
-          "current_price": 5.32,
-          "pnl_percent": -5.934475843379006
+          "current_price": 5.29,
+          "pnl_percent": -6.46492052847274
         },
         "IMX/USDT": {
           "entry_price": 0.237,
           "quantity": 2488.274064207929,
           "entry_time": "2025-12-20T07:44:11.876959",
-          "current_price": 0.225,
-          "pnl_percent": -5.0632911392405
+          "current_price": 0.223,
+          "pnl_percent": -5.907172995780585
         },
         "ARB/USDT": {
           "entry_price": 0.1938,
           "quantity": 3829.1440047184974,
           "entry_time": "2025-12-20T08:30:17.387792",
-          "current_price": 0.1839,
-          "pnl_percent": -5.108359133126927
+          "current_price": 0.1835,
+          "pnl_percent": -5.314757481940147
         },
         "OP/USDT": {
           "entry_price": 0.2841,
           "quantity": 2350.8598989897932,
           "entry_time": "2025-12-20T08:30:17.387792",
-          "current_price": 0.2661,
-          "pnl_percent": -6.335797254487863
+          "current_price": 0.2656,
+          "pnl_percent": -6.511791622668084
         },
         "XRP/USDT": {
           "entry_price": 1.9456280653042148,
           "quantity": 503.270823050564,
           "entry_time": "2025-12-20T08:46:19.759189",
-          "current_price": 1.8797,
-          "pnl_percent": -3.388523555960654
+          "current_price": 1.877,
+          "pnl_percent": -3.5272962252158035
         }
       },
       "trades": [
@@ -95071,36 +92608,36 @@
           "entry_price": 88091.99567737561,
           "quantity": 0.02467583925408906,
           "entry_time": "2025-12-19T17:01:00.667452",
-          "current_price": 87734.73,
-          "pnl_percent": -0.40555974992785293
+          "current_price": 87693.55,
+          "pnl_percent": -0.4523063353393253
         },
         "ETH/USDT": {
           "entry_price": 2971.3230225638504,
           "quantity": 0.6949957015712219,
           "entry_time": "2025-12-19T17:01:01.322643",
-          "current_price": 2943.98,
-          "pnl_percent": -0.9202305624871787
+          "current_price": 2941.53,
+          "pnl_percent": -1.002685414463722
         },
         "BNB/USDT": {
           "entry_price": 847.7544766682959,
           "quantity": 2.3027569727529666,
           "entry_time": "2025-12-19T17:01:01.946243",
-          "current_price": 849.01,
-          "pnl_percent": 0.14809987635080457
+          "current_price": 847.8,
+          "pnl_percent": 0.005369872168992096
         },
         "SOL/USDT": {
           "entry_price": 125.41507624266626,
           "quantity": 14.78740803159528,
           "entry_time": "2025-12-19T17:01:02.565164",
-          "current_price": 123.49,
-          "pnl_percent": -1.5349639774897783
+          "current_price": 123.1,
+          "pnl_percent": -1.845931376054677
         },
         "XRP/USDT": {
           "entry_price": 1.881092662988853,
           "quantity": 936.602297745861,
           "entry_time": "2025-12-19T17:01:03.181062",
-          "current_price": 1.8797,
-          "pnl_percent": -0.07403478926126805
+          "current_price": 1.877,
+          "pnl_percent": -0.21756838827653446
         }
       },
       "trades": [
@@ -97156,13 +94693,44 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 10000.0,
+        "USDT": 8573.75,
         "BETA": 1388888.8888888888,
         "VIB": 213004.4843049327,
         "WTC": 43810.679611650485
       },
       "initial_capital": 10000,
-      "positions": {},
+      "positions": {
+        "BETA/USDT": {
+          "entry_price": 0.00036,
+          "quantity": 1388888.8888888888,
+          "entry_time": "2025-12-19T23:56:49.986376",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00036,
+          "pnl_percent": 0.0
+        },
+        "VIB/USDT": {
+          "entry_price": 0.00223,
+          "quantity": 213004.4843049327,
+          "entry_time": "2025-12-19T23:56:49.987345",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.00223,
+          "pnl_percent": 0.0
+        },
+        "WTC/USDT": {
+          "entry_price": 0.0103,
+          "quantity": 43810.679611650485,
+          "entry_time": "2025-12-19T23:56:49.988383",
+          "is_whale_trade": true,
+          "whale": "GCR (simulated)",
+          "confidence": 84,
+          "current_price": 0.0103,
+          "pnl_percent": 0.0
+        }
+      },
       "trades": [
         {
           "timestamp": "2025-12-19T23:56:49.986376",
@@ -98517,7 +96085,7 @@
         "auto_trade": true
       },
       "balance": {
-        "USDT": 5455.392539672032,
+        "USDT": 5386.372355306977,
         "SOPH": 0,
         "SSV": 121.01910828025478,
         "ANIME": 32698.40753932831,
@@ -98538,7 +96106,7 @@
         "EPIC": 385.4497491555046,
         "ORCA": 0,
         "ACE": 901.41081392379,
-        "LUMIA": 1833.1033973778326,
+        "LUMIA": 2423.0195030620675,
         "DOLO": 8227.103814917858
       },
       "initial_capital": 10000,
@@ -98550,8 +96118,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.013,
-          "current_price": 3.776,
-          "pnl_percent": -3.7961783439490415
+          "current_price": 3.766,
+          "pnl_percent": -4.050955414012735
         },
         "GIGGLE/USDT": {
           "entry_price": 72.34,
@@ -98560,8 +96128,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 73.3,
-          "current_price": 70.8,
-          "pnl_percent": -2.12883605197679
+          "current_price": 70.45,
+          "pnl_percent": -2.612662427426049
         },
         "TST/USDT": {
           "entry_price": 0.01576,
@@ -98580,8 +96148,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 67.837,
-          "current_price": 0.617,
-          "pnl_percent": -0.6441223832528209
+          "current_price": 0.621,
+          "pnl_percent": 0.0
         },
         "BANK/USDT": {
           "entry_price": 0.0472,
@@ -98590,8 +96158,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 75.867,
-          "current_price": 0.0477,
-          "pnl_percent": 1.0593220338983134
+          "current_price": 0.0475,
+          "pnl_percent": 0.6355932203389925
         },
         "YGG/USDT": {
           "entry_price": 0.0718,
@@ -98600,8 +96168,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.071,
-          "current_price": 0.067,
-          "pnl_percent": -6.685236768802227
+          "current_price": 0.0672,
+          "pnl_percent": -6.4066852367688165
         },
         "POLYX/USDT": {
           "entry_price": 0.0554,
@@ -98610,8 +96178,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.146,
-          "current_price": 0.0546,
-          "pnl_percent": -1.4440433212996262
+          "current_price": 0.054,
+          "pnl_percent": -2.527075812274371
         },
         "AVNT/USDT": {
           "entry_price": 0.2915,
@@ -98620,8 +96188,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 66.787,
-          "current_price": 0.2843,
-          "pnl_percent": -2.4699828473413343
+          "current_price": 0.2827,
+          "pnl_percent": -3.01886792452829
         },
         "ANIME/USDT": {
           "entry_price": 0.00881,
@@ -98630,8 +96198,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 70.027,
-          "current_price": 0.00938,
-          "pnl_percent": 6.469920544835417
+          "current_price": 0.00921,
+          "pnl_percent": 4.540295119182747
         },
         "EPIC/USDT": {
           "entry_price": 0.71,
@@ -98640,8 +96208,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 74.343,
-          "current_price": 0.773,
-          "pnl_percent": 8.873239436619729
+          "current_price": 0.765,
+          "pnl_percent": 7.7464788732394485
         },
         "ACE/USDT": {
           "entry_price": 0.274,
@@ -98650,18 +96218,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 62.757,
-          "current_price": 0.261,
-          "pnl_percent": -4.744525547445255
-        },
-        "LUMIA/USDT": {
-          "entry_price": 0.128,
-          "quantity": 1833.1033973778326,
-          "entry_time": "2025-12-23T08:00:36.308353",
-          "is_whale_trade": true,
-          "whale": "Hsaka (simulated)",
-          "confidence": 79.592,
-          "current_price": 0.119,
-          "pnl_percent": -7.031250000000011
+          "current_price": 0.259,
+          "pnl_percent": -5.474452554744536
         },
         "ACT/USDT": {
           "entry_price": 0.0363,
@@ -98670,8 +96228,8 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 60.0,
-          "current_price": 0.0348,
-          "pnl_percent": -4.132231404958686
+          "current_price": 0.0359,
+          "pnl_percent": -1.1019283746556363
         },
         "DOLO/USDT": {
           "entry_price": 0.0349,
@@ -98680,8 +96238,18 @@
           "is_whale_trade": true,
           "whale": "Hsaka (simulated)",
           "confidence": 63.483000000000004,
-          "current_price": 0.03533,
-          "pnl_percent": 1.2320916905444124
+          "current_price": 0.03529,
+          "pnl_percent": 1.1174785100286577
+        },
+        "LUMIA/USDT": {
+          "entry_price": 0.117,
+          "quantity": 2423.0195030620675,
+          "entry_time": "2025-12-23T14:21:31.534969",
+          "is_whale_trade": true,
+          "whale": "Hsaka (simulated)",
+          "confidence": 67.0,
+          "current_price": 0.116,
+          "pnl_percent": -0.8547008547008517
         }
       },
       "trades": [
@@ -99038,6 +96606,26 @@
           "pnl": 0,
           "whale": "Hsaka (simulated)",
           "reason": "MOMENTUM: DOLO/USDT +13.5% with $5M volume"
+        },
+        {
+          "timestamp": "2025-12-23T14:21:31.533971",
+          "action": "SELL",
+          "symbol": "LUMIA/USDT",
+          "price": 0.117,
+          "quantity": 1833.1033973778326,
+          "amount_usdt": 214.47309749320644,
+          "pnl": -20.16413737115615
+        },
+        {
+          "timestamp": "2025-12-23T14:21:31.534969",
+          "action": "WHALE_BUY",
+          "symbol": "LUMIA/USDT",
+          "price": 0.117,
+          "quantity": 2423.0195030620675,
+          "amount_usdt": 283.4932818582619,
+          "pnl": 0,
+          "whale": "Hsaka (simulated)",
+          "reason": "MOMENTUM: LUMIA/USDT +17.0% with $9M volume"
         }
       ],
       "created_at": "2025-12-19T17:30:00",
@@ -100379,22 +97967,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 87734.73,
-          "pnl_percent": -1.2407571622684577
+          "current_price": 87693.55,
+          "pnl_percent": -1.2871117315485736
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.315828",
-          "current_price": 2943.98,
-          "pnl_percent": -1.9394950939522704
+          "current_price": 2941.53,
+          "pnl_percent": -2.021101707115336
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 123.49,
-          "pnl_percent": -2.228148818833653
+          "current_price": 123.1,
+          "pnl_percent": -2.536927035374714
         }
       },
       "trades": [
@@ -100859,15 +98447,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.316798",
-          "current_price": 87734.73,
-          "pnl_percent": -1.147038162496683
+          "current_price": 87693.55,
+          "pnl_percent": -1.1934367206100749
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.929665",
-          "current_price": 2943.98,
-          "pnl_percent": -1.7031764088933588
+          "current_price": 2941.53,
+          "pnl_percent": -1.7849796880590407
         }
       },
       "trades": [
@@ -101316,15 +98904,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.317795",
-          "current_price": 87734.73,
-          "pnl_percent": -1.147038162496683
+          "current_price": 87693.55,
+          "pnl_percent": -1.1934367206100749
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.930851",
-          "current_price": 2943.98,
-          "pnl_percent": -1.7031764088933588
+          "current_price": 2941.53,
+          "pnl_percent": -1.7849796880590407
         }
       },
       "trades": [
@@ -101773,15 +99361,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87734.73,
-          "pnl_percent": -1.147038162496683
+          "current_price": 87693.55,
+          "pnl_percent": -1.1934367206100749
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.932325",
-          "current_price": 2943.98,
-          "pnl_percent": -1.7031764088933588
+          "current_price": 2941.53,
+          "pnl_percent": -1.7849796880590407
         }
       },
       "trades": [
@@ -102230,15 +99818,15 @@
           "entry_price": 88752.75800458087,
           "quantity": 0.037726571320005745,
           "entry_time": "2025-12-21T10:06:06.318793",
-          "current_price": 87734.73,
-          "pnl_percent": -1.147038162496683
+          "current_price": 87693.55,
+          "pnl_percent": -1.1934367206100749
         },
         "ETH/USDT": {
           "entry_price": 2994.989962489851,
           "quantity": 0.22180152896303096,
           "entry_time": "2025-12-21T11:10:32.933357",
-          "current_price": 2943.98,
-          "pnl_percent": -1.7031764088933588
+          "current_price": 2941.53,
+          "pnl_percent": -1.7849796880590407
         }
       },
       "trades": [
@@ -102688,22 +100276,22 @@
           "entry_price": 88836.9812070698,
           "quantity": 0.014591146926651123,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 87734.73,
-          "pnl_percent": -1.2407571622684577
+          "current_price": 87693.55,
+          "pnl_percent": -1.2871117315485736
         },
         "ETH/USDT": {
           "entry_price": 3002.207670479203,
           "quantity": 0.6098667131028813,
           "entry_time": "2025-12-21T10:06:06.319789",
-          "current_price": 2943.98,
-          "pnl_percent": -1.9394950939522704
+          "current_price": 2941.53,
+          "pnl_percent": -2.021101707115336
         },
         "SOL/USDT": {
           "entry_price": 126.30424657827048,
           "quantity": 11.632381284213185,
           "entry_time": "2025-12-21T10:06:06.320787",
-          "current_price": 123.49,
-          "pnl_percent": -2.228148818833653
+          "current_price": 123.1,
+          "pnl_percent": -2.536927035374714
         }
       },
       "trades": [
@@ -105301,7 +102889,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_173": {
@@ -105337,7 +102925,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_174": {
@@ -105373,7 +102961,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_175": {
@@ -105409,7 +102997,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_176": {
@@ -105445,7 +103033,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_177": {
@@ -105481,7 +103069,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_178": {
@@ -105517,7 +103105,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_179": {
@@ -105553,7 +103141,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_180": {
@@ -105589,7 +103177,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_181": {
@@ -105625,7 +103213,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_182": {
@@ -105661,7 +103249,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_183": {
@@ -105697,7 +103285,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_184": {
@@ -105733,7 +103321,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_185": {
@@ -105769,7 +103357,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_186": {
@@ -105805,7 +103393,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_187": {
@@ -105841,7 +103429,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_188": {
@@ -105877,7 +103465,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_189": {
@@ -105913,7 +103501,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_190": {
@@ -105949,7 +103537,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_191": {
@@ -105985,7 +103573,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_192": {
@@ -106021,7 +103609,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "portfolio_193": {
@@ -106057,7 +103645,7 @@
       "positions": {},
       "trades": [],
       "created_at": "2025-12-21T20:50:34.567177",
-      "active": true,
+      "active": false,
       "decision_logs": []
     },
     "118": {
@@ -106085,7 +103673,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_pelosi",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "118"
     },
@@ -106114,7 +103702,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_tuberville",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "119"
     },
@@ -106143,7 +103731,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_crenshaw",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "120"
     },
@@ -106172,7 +103760,7 @@
         "max_positions": 20
       },
       "strategy_id": "congress_all",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "121"
     },
@@ -106201,7 +103789,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_buffett",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "122"
     },
@@ -106230,7 +103818,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_soros",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "123"
     },
@@ -106259,7 +103847,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_dalio",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "124"
     },
@@ -106288,7 +103876,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_simons",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "125"
     },
@@ -106317,7 +103905,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_burry",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "126"
     },
@@ -106346,7 +103934,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_cathie",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "127"
     },
@@ -106365,8 +103953,8 @@
           "is_whale_trade": true,
           "whale": "Paul Tudor Jones",
           "confidence": 70,
-          "current_price": 0.1095,
-          "pnl_percent": -8.444816053511705
+          "current_price": 0.1087,
+          "pnl_percent": -9.11371237458194
         }
       },
       "trades": [
@@ -106399,7 +103987,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_ptj",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "128"
     },
@@ -106428,7 +104016,7 @@
         "max_positions": 20
       },
       "strategy_id": "legend_ackman",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "129"
     },
@@ -106457,7 +104045,7 @@
         "max_positions": 20
       },
       "strategy_id": "whale_cobie",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "130"
     },
@@ -106486,7 +104074,7 @@
         "max_positions": 20
       },
       "strategy_id": "whale_ansem",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "131"
     },
@@ -107191,7 +104779,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_contrarian",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "156"
     },
@@ -107220,7 +104808,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_extreme",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "157"
     },
@@ -107249,7 +104837,7 @@
         "max_positions": 20
       },
       "strategy_id": "funding_oi_combo",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "158"
     },
@@ -107278,7 +104866,7 @@
         "max_positions": 20
       },
       "strategy_id": "social_sentiment",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "159"
     },
@@ -107307,7 +104895,7 @@
         "max_positions": 20
       },
       "strategy_id": "fear_greed_extreme",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "160"
     },
@@ -107568,7 +105156,7 @@
         "max_positions": 20
       },
       "strategy_id": "orderflow_delta",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "169"
     },
@@ -107597,7 +105185,7 @@
         "max_positions": 20
       },
       "strategy_id": "orderflow_imbalance",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "170"
     },
@@ -108003,7 +105591,7 @@
         "max_positions": 20
       },
       "strategy_id": "oi_divergence",
-      "active": true,
+      "active": false,
       "created_at": "2025-12-21T23:47:43.238666",
       "id": "184"
     },
