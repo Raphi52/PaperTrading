@@ -14,8 +14,82 @@ import subprocess
 import sys
 import webbrowser
 import traceback
+import random
 from datetime import datetime
 from pathlib import Path
+
+# REAL DATA - No simulation
+try:
+    from core.real_data import get_real_alpha_signal, get_fear_greed_real, get_funding_rates_real
+    from core.risk_manager import get_risk_manager, check_trade_risk, get_optimal_size
+    REAL_DATA_ENABLED = True
+    RISK_ENABLED = True
+except ImportError as e:
+    print(f"[WARNING] Real data/risk modules not loaded: {e}")
+    REAL_DATA_ENABLED = False
+    RISK_ENABLED = False
+
+# SQLite Database for trade history
+try:
+    from core.database import insert_trade_from_dict
+    DB_ENABLED = True
+except ImportError as e:
+    print(f"[WARNING] Database module not loaded: {e}")
+    DB_ENABLED = False
+    def insert_trade_from_dict(*args, **kwargs):
+        pass
+
+
+# Max trades to keep in JSON (for dashboard display)
+MAX_TRADES_IN_JSON = 50
+
+
+def record_trade(portfolio: dict, trade: dict):
+    """Record trade to both JSON (limited) and SQLite (unlimited)"""
+    # Add to portfolio JSON (keep last 50)
+    if 'trades' not in portfolio:
+        portfolio['trades'] = []
+    portfolio['trades'] = (portfolio['trades'] + [trade])[-MAX_TRADES_IN_JSON:]
+
+    # Also save to SQLite for permanent history
+    if DB_ENABLED:
+        try:
+            insert_trade_from_dict(
+                portfolio_id=portfolio.get('id', 'unknown'),
+                portfolio_name=portfolio.get('name', 'Unknown'),
+                strategy_id=portfolio.get('strategy_id', 'manual'),
+                trade=trade
+            )
+        except Exception as e:
+            print(f"[DB] Error recording trade: {e}")
+
+
+# Fallback functions if real data not available
+if not REAL_DATA_ENABLED:
+    def get_real_alpha_signal():
+        return {'action': 'HOLD', 'confidence': 0, 'reasons': [], 'source': 'unavailable'}
+
+if not RISK_ENABLED:
+    def check_trade_risk(portfolio, action, amount):
+        return True, "OK"
+    def get_optimal_size(portfolio, analysis):
+        return 5.0
+
+# Legacy compatibility
+ALPHA_ENABLED = REAL_DATA_ENABLED
+def get_alpha_signal(symbol='BTC/USDT'):
+    return get_real_alpha_signal()
+def get_alpha_boost(symbol='BTC/USDT'):
+    signal = get_real_alpha_signal()
+    if signal['action'] == 'STRONG_BUY':
+        return (1.3, "Real data: Strong buy signal")
+    elif signal['action'] == 'BUY':
+        return (1.15, "Real data: Buy signal")
+    elif signal['action'] == 'STRONG_SELL':
+        return (0.5, "Real data: Strong sell - reducing size")
+    elif signal['action'] == 'SELL':
+        return (0.7, "Real data: Sell signal")
+    return (1.0, "Real data: Neutral")
 
 # Fix console encoding for emojis (Windows/Linux)
 try:
@@ -227,33 +301,17 @@ def check_trend_alignment(analysis: dict, strategy: dict) -> tuple:
     """
     Check if trend supports the trade direction.
     Returns (is_aligned, reason)
+    DISABLED: In bear markets this blocks all entries - now always returns True
     """
-    # Skip trend check for scalping/degen strategies
-    if strategy.get('use_degen') or strategy.get('use_sniper') or strategy.get('mode') == 'scalping':
-        return (True, None)
-
-    ema_9 = analysis.get('ema_9', 0)
-    ema_21 = analysis.get('ema_21', 0)
-    ema_50 = analysis.get('ema_50', 0)
-    price = analysis.get('price', 0)
-
-    if not all([ema_9, ema_21, price]):
-        return (True, None)  # Can't check, allow trade
-
-    # Bullish alignment: Price > EMA21 is enough (was Price > EMA9 > EMA21 > EMA50)
-    # Less strict - just need to be above the 21 EMA
-    bullish = price > ema_21 * 0.98  # Allow 2% tolerance
-
-    if not bullish:
-        return (False, f"Trend not aligned: Price={price:.2f} below EMA21={ema_21:.2f}")
-
+    # DISABLED - Allow all entries regardless of trend
+    # In a bear market, this filter was blocking ALL trades
+    # RSI and other indicators are better for timing entries
     return (True, None)
 
 
-def calculate_smart_position_size(portfolio: dict, analysis: dict, base_percent: float = 10) -> float:
+def calculate_smart_position_size(portfolio: dict, analysis: dict, strategy: dict = None, base_percent: float = 10) -> float:
     """
-    Calculate position size based on volatility and confidence.
-    Lower volatility = larger position, higher volatility = smaller position.
+    Calculate position size based on volatility, confidence, and signal quality.
     Returns percentage of portfolio to allocate.
     """
     atr_pct = analysis.get('atr_percent', 2)  # Default 2% ATR
@@ -262,8 +320,7 @@ def calculate_smart_position_size(portfolio: dict, analysis: dict, base_percent:
     # Base allocation from config or default
     allocation = base_percent
 
-    # Adjust for volatility (ATR)
-    # High volatility (>4%) = reduce size, Low volatility (<2%) = increase size
+    # 1. Adjust for volatility (ATR)
     if atr_pct > 4:
         allocation *= 0.5  # Half size for very volatile
     elif atr_pct > 3:
@@ -271,14 +328,66 @@ def calculate_smart_position_size(portfolio: dict, analysis: dict, base_percent:
     elif atr_pct < 1.5:
         allocation *= 1.25  # Slightly larger for low volatility
 
-    # Adjust for RSI (better entries at extreme RSI)
-    if rsi < 30:  # Oversold = good entry
+    # 2. Adjust for RSI quality (extreme = better entry)
+    if rsi < 25:  # Very oversold = excellent entry
+        allocation *= 1.3
+    elif rsi < 35:  # Oversold = good entry
+        allocation *= 1.15
+    elif rsi > 75:  # Overbought = risky entry
+        allocation *= 0.6
+    elif rsi > 65:
+        allocation *= 0.8
+
+    # 3. Adjust for signal confluence (multiple indicators agreeing)
+    confluence_score = 0
+    if analysis.get('ema_cross_up') or analysis.get('ema_cross_up_slow'):
+        confluence_score += 1
+    if analysis.get('supertrend_up'):
+        confluence_score += 1
+    if analysis.get('ichimoku_bullish'):
+        confluence_score += 1
+    if analysis.get('bb_position', 0.5) < 0.3:  # Near lower band
+        confluence_score += 1
+    if analysis.get('stoch_rsi', 50) < 25:
+        confluence_score += 1
+
+    # More confluence = larger position
+    if confluence_score >= 4:
+        allocation *= 1.4  # 4+ signals = 40% more
+    elif confluence_score >= 3:
+        allocation *= 1.25  # 3 signals = 25% more
+    elif confluence_score >= 2:
+        allocation *= 1.1  # 2 signals = 10% more
+    elif confluence_score == 0:
+        allocation *= 0.7  # No confluence = 30% less
+
+    # 4. Adjust for volume confirmation
+    volume_ratio = analysis.get('volume_ratio', 1.0)
+    if volume_ratio > 2.0:  # High volume = strong signal
         allocation *= 1.2
-    elif rsi > 70:  # Overbought = risky entry
+    elif volume_ratio < 0.5:  # Low volume = weak signal
         allocation *= 0.7
 
-    # Cap at 20% max per position
-    return min(allocation, 20)
+    # 5. Adjust for trend strength (ADX if available)
+    adx = analysis.get('adx', 25)
+    if adx > 40:  # Strong trend
+        allocation *= 1.15
+    elif adx < 20:  # Weak/no trend
+        allocation *= 0.85
+
+    # 6. ALPHA SIGNAL BOOST - Real edge from whale/liquidation/flow data
+    if ALPHA_ENABLED:
+        try:
+            symbol = analysis.get('symbol', 'BTC/USDT')
+            alpha_mult, alpha_reason = get_alpha_boost(symbol)
+            allocation *= alpha_mult
+            if alpha_mult != 1.0:
+                log(f"  [ALPHA] {alpha_reason} (mult: {alpha_mult:.2f})")
+        except Exception as e:
+            pass  # Silent fail for alpha
+
+    # Cap between 5% min and 25% max per position
+    return max(5, min(allocation, 25))
 
 
 def get_trailing_stop(entry_price: float, current_price: float, highest_price: float,
@@ -797,9 +906,9 @@ STRATEGIES = {
     "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 12, "stop_loss": 6},
     "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 30, "stop_loss": 12},
 
-    # Martingale - Double down on losses (HIGH RISK!) - DISABLED BY DEFAULT
-    "martingale": {"auto": False, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50},
-    "martingale_safe": {"auto": False, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35},
+    # Martingale - Double down on losses (HIGH RISK!)
+    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50},
+    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35},
 
     # ============ FUNDING RATE STRATEGIES (mapped to mean reversion) ============
     "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 15, "stop_loss": 8},
@@ -1323,11 +1432,12 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     """Calculate all technical indicators"""
     indicators = {}
 
-    closes = df['close']
-    highs = df['high']
-    lows = df['low']
-    opens = df['open']
-    volumes = df['volume']
+    # Ensure numeric types (fix for numpy type errors)
+    closes = pd.to_numeric(df['close'], errors='coerce').fillna(0)
+    highs = pd.to_numeric(df['high'], errors='coerce').fillna(0)
+    lows = pd.to_numeric(df['low'], errors='coerce').fillna(0)
+    opens = pd.to_numeric(df['open'], errors='coerce').fillna(0)
+    volumes = pd.to_numeric(df['volume'], errors='coerce').fillna(0)
 
     # RSI (with division by zero protection)
     delta = closes.diff()
@@ -1686,8 +1796,8 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['recent_low'] = recent_low
 
     # 6. Session Time Detection (UTC)
-    from datetime import datetime
-    current_hour = datetime.utcnow().hour
+    from datetime import datetime, timezone
+    current_hour = datetime.now(timezone.utc).hour
     indicators['session_asian'] = 0 <= current_hour < 8  # 00:00-08:00 UTC
     indicators['session_london'] = 7 <= current_hour < 16  # 07:00-16:00 UTC
     indicators['session_newyork'] = 13 <= current_hour < 22  # 13:00-22:00 UTC
@@ -1891,7 +2001,7 @@ def execute_real_trade_wrapper(portfolio: dict, action: str, symbol: str, price:
                     'is_real': True,
                     'order_id': result.get('order_id')
                 }
-                portfolio['trades'].append(trade)
+                record_trade(portfolio, trade)
                 log(f"[REAL] BUY {qty:.6f} {asset} @ ${price:,.2f} - Order: {result.get('order_id')}")
                 return {'success': True, 'message': f"[REAL] BUY {qty:.6f} {asset} @ ${price:,.2f}"}
 
@@ -1917,7 +2027,7 @@ def execute_real_trade_wrapper(portfolio: dict, action: str, symbol: str, price:
                     'is_real': True,
                     'order_id': result.get('order_id')
                 }
-                portfolio['trades'].append(trade)
+                record_trade(portfolio, trade)
                 log(f"[REAL] SELL {qty:.6f} {asset} @ ${price:,.2f} | PnL: ${pnl:+,.2f}")
                 return {'success': True, 'message': f"[REAL] SELL {qty:.6f} {asset} | PnL: ${pnl:+,.2f}"}
 
@@ -1934,7 +2044,7 @@ def execute_real_trade_wrapper(portfolio: dict, action: str, symbol: str, price:
         return {'success': False, 'message': f'Real trade error: {e}'}
 
 
-def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amount_usdt: float = None) -> dict:
+def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amount_usdt: float = None, reason: str = "") -> dict:
     """Execute a trade - paper or real based on portfolio trading_mode"""
 
     # Check if this is a REAL trade
@@ -1946,6 +2056,32 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
     # Paper trading logic below
     asset = symbol.split('/')[0]
     timestamp = datetime.now().isoformat()
+
+    # === REALISTIC FEE & SLIPPAGE SIMULATION ===
+    # Binance fees: 0.1% maker/taker (0.075% with BNB discount)
+    # We use 0.1% to be conservative
+    FEE_RATE = 0.001  # 0.1%
+
+    # Slippage: depends on order size and liquidity
+    # Small orders: 0.01-0.05%, Large orders: 0.1-0.5%
+    # We simulate based on trade size
+    def calculate_slippage(trade_size_usdt: float, is_buy: bool) -> float:
+        """Calculate realistic slippage based on order size"""
+        if trade_size_usdt < 1000:
+            slip = random.uniform(0.0001, 0.0005)  # 0.01-0.05%
+        elif trade_size_usdt < 5000:
+            slip = random.uniform(0.0005, 0.001)   # 0.05-0.1%
+        elif trade_size_usdt < 10000:
+            slip = random.uniform(0.001, 0.002)    # 0.1-0.2%
+        else:
+            slip = random.uniform(0.002, 0.005)    # 0.2-0.5%
+
+        # Buys get worse price (higher), sells get worse price (lower)
+        return slip if is_buy else -slip
+
+    # Track cumulative fees for portfolio
+    if 'total_fees_paid' not in portfolio:
+        portfolio['total_fees_paid'] = 0.0
 
     if action == 'BUY':
         if amount_usdt is None:
@@ -1960,29 +2096,39 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
                 amount_usdt = min(amount_usdt, portfolio['balance']['USDT'] * 0.5)  # Cap at 50% of balance
 
         if portfolio['balance']['USDT'] >= amount_usdt and amount_usdt > 10:
-            qty = amount_usdt / price
+            # Apply slippage to price (buy at slightly higher price)
+            slippage = calculate_slippage(amount_usdt, is_buy=True)
+            execution_price = price * (1 + slippage)
+
+            # Calculate fee
+            fee = amount_usdt * FEE_RATE
+            net_amount = amount_usdt - fee  # Amount after fee
+
+            qty = net_amount / execution_price  # Less quantity due to fee + slippage
             portfolio['balance']['USDT'] -= amount_usdt
             portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+            portfolio['total_fees_paid'] += fee
 
             # Track position with highest_price for trailing stop
+            # Use execution_price (with slippage) as the real entry
             if symbol not in portfolio['positions']:
                 portfolio['positions'][symbol] = {
-                    'entry_price': price,
+                    'entry_price': execution_price,  # Real execution price with slippage
                     'quantity': qty,
                     'entry_time': timestamp,
-                    'highest_price': price,  # For trailing stop
+                    'highest_price': execution_price,  # For trailing stop
                     'partial_profit_taken': False  # For partial TP
                 }
             else:
                 # Average down
                 pos = portfolio['positions'][symbol]
                 total_qty = pos['quantity'] + qty
-                avg_price = (pos['entry_price'] * pos['quantity'] + price * qty) / total_qty
+                avg_price = (pos['entry_price'] * pos['quantity'] + execution_price * qty) / total_qty
                 portfolio['positions'][symbol] = {
                     'entry_price': avg_price,
                     'quantity': total_qty,
                     'entry_time': pos['entry_time'],
-                    'highest_price': max(pos.get('highest_price', avg_price), price),
+                    'highest_price': max(pos.get('highest_price', avg_price), execution_price),
                     'partial_profit_taken': pos.get('partial_profit_taken', False)
                 }
 
@@ -1990,40 +2136,61 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
                 'timestamp': timestamp,
                 'action': 'BUY',
                 'symbol': symbol,
-                'price': price,
+                'price': execution_price,  # Actual execution price
+                'market_price': price,  # Original market price
                 'quantity': qty,
                 'amount_usdt': amount_usdt,
-                'pnl': 0
+                'fee': fee,
+                'slippage_pct': slippage * 100,
+                'pnl': 0,
+                'reason': reason
             }
-            portfolio['trades'].append(trade)
-            return {'success': True, 'message': f"BUY {qty:.6f} {asset} @ ${price:,.2f}"}
+            record_trade(portfolio, trade)
+            return {'success': True, 'message': f"BUY {qty:.6f} {asset} @ ${execution_price:,.2f} (fee: ${fee:.2f}, slip: {slippage*100:.3f}%)"}
 
     elif action == 'SELL':
         if portfolio['balance'].get(asset, 0) > 0:
             qty = portfolio['balance'][asset]
-            sell_value = qty * price
 
-            # Calculate PnL
+            # Apply slippage to price (sell at slightly lower price)
+            gross_value = qty * price
+            slippage = calculate_slippage(gross_value, is_buy=False)
+            execution_price = price * (1 + slippage)  # slippage is negative for sells
+
+            sell_value = qty * execution_price
+
+            # Apply fee
+            fee = sell_value * FEE_RATE
+            net_sell_value = sell_value - fee
+            portfolio['total_fees_paid'] += fee
+
+            # Calculate PnL (including fees and slippage)
             pnl = 0
             if symbol in portfolio['positions']:
                 entry_price = portfolio['positions'][symbol]['entry_price']
-                pnl = (price - entry_price) * qty
+                # Real PnL = what we receive - what we paid (already includes buy fees)
+                pnl = net_sell_value - (entry_price * qty)
                 del portfolio['positions'][symbol]
 
-            portfolio['balance']['USDT'] += sell_value
+            portfolio['balance']['USDT'] += net_sell_value
             portfolio['balance'][asset] = 0
 
             trade = {
                 'timestamp': timestamp,
                 'action': 'SELL',
                 'symbol': symbol,
-                'price': price,
+                'price': execution_price,  # Actual execution price
+                'market_price': price,  # Original market price
                 'quantity': qty,
-                'amount_usdt': sell_value,
-                'pnl': pnl
+                'amount_usdt': net_sell_value,
+                'gross_value': sell_value,
+                'fee': fee,
+                'slippage_pct': slippage * 100,
+                'pnl': pnl,
+                'reason': reason
             }
-            portfolio['trades'].append(trade)
-            return {'success': True, 'message': f"SELL {qty:.6f} {asset} @ ${price:,.2f} | PnL: ${pnl:+,.2f}"}
+            record_trade(portfolio, trade)
+            return {'success': True, 'message': f"SELL {qty:.6f} {asset} @ ${execution_price:,.2f} | PnL: ${pnl:+,.2f} (fee: ${fee:.2f})"}
 
     return {'success': False, 'message': "No action"}
 
@@ -2116,7 +2283,21 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
     # ============ SMART ENTRY FILTERS ============
     # Only apply to new buys (not sells)
-    if has_cash and symbol not in portfolio['positions']:
+    # SKIP filters for strategies that have their own entry logic
+    skip_filters = (
+        strategy.get('buy_on') == ["ALWAYS_FIRST"] or  # HODL
+        strategy.get('use_fear_greed') or  # DCA Fear
+        strategy.get('use_supertrend') or  # Supertrend
+        strategy.get('use_degen') or  # Degen strategies
+        strategy.get('use_grid') or  # Grid strategies
+        strategy.get('use_martingale') or  # Martingale
+        strategy.get('use_stoch_rsi') or  # Stoch RSI
+        strategy.get('use_ichimoku') or  # Ichimoku
+        strategy.get('use_ema_cross') or  # EMA Crossover
+        strategy.get('use_dca')  # DCA strategies
+    )
+
+    if has_cash and symbol not in portfolio['positions'] and not skip_filters:
         # 1. Check loss cooldown (pause after 3 consecutive losses)
         should_pause, cooldown_reason = check_loss_cooldown(portfolio)
         if should_pause:
@@ -3131,6 +3312,18 @@ def run_engine(portfolios: dict) -> list:
     results = []
     analyzed = {}  # (crypto, timeframe) -> analysis
 
+    # === ALPHA SIGNALS CHECK ===
+    alpha_signal = None
+    if ALPHA_ENABLED:
+        try:
+            alpha_signal = get_alpha_signal('BTC/USDT')
+            if alpha_signal['action'] != 'HOLD':
+                log(f"  [ALPHA] Signal: {alpha_signal['action']} (conf: {alpha_signal['confidence']:.0%})")
+                for reason in alpha_signal.get('reasons', [])[:3]:
+                    log(f"    - {reason}")
+        except Exception as e:
+            log(f"  [ALPHA] Error: {e}")
+
     # Get all unique cryptos and required timeframes
     crypto_timeframes = {}  # crypto -> set of timeframes needed
     for p in portfolios.values():
@@ -3192,26 +3385,49 @@ def run_engine(portfolios: dict) -> list:
                           'crypto': crypto, 'analysis': analysis}, error=e)
                 action, reason = None, f"ERROR: {str(e)}"
 
+            # === ALPHA SIGNAL OVERRIDE ===
+            # Block BUY if alpha says STRONG_SELL (whale dump incoming)
+            if action == 'BUY' and alpha_signal and alpha_signal.get('action') == 'STRONG_SELL':
+                action = None
+                reason = f"BLOCKED by ALPHA: {alpha_signal.get('reasons', ['Market risk'])[0]}"
+                log(f"  [ALPHA BLOCK] {portfolio['name']}/{crypto}: {reason}")
+
             # Log all decisions for this portfolio
             log_decision(portfolio, crypto, analysis, action or 'HOLD', reason)
 
             if action:
-                try:
-                    result = execute_trade(portfolio, action, crypto, analysis['price'])
-                    if result['success']:
-                        log(f"  >> {portfolio['name']}: {result['message']}")
-                        results.append({
-                            'portfolio': portfolio['name'],
-                            'crypto': crypto,
-                            'action': action,
-                            'reason': reason,
-                            'price': analysis['price'],
-                            'message': result['message']
-                        })
-                except Exception as e:
-                    debug_log('TRADE', f'Trade execution failed for {portfolio["name"]}',
-                             {'portfolio': portfolio['name'], 'action': action,
-                              'crypto': crypto, 'price': analysis['price']}, error=e)
+                # === PROFESSIONAL RISK CHECK ===
+                if RISK_ENABLED and action == 'BUY':
+                    allocation = portfolio['config'].get('allocation_percent', 10)
+                    amount_usdt = portfolio['balance'].get('USDT', 0) * (allocation / 100)
+                    risk_ok, risk_reason = check_trade_risk(portfolio, action, amount_usdt)
+                    if not risk_ok:
+                        log(f"  [RISK BLOCK] {portfolio['name']}/{crypto}: {risk_reason}")
+                        action = None
+
+                if action:
+                    try:
+                        result = execute_trade(portfolio, action, crypto, analysis['price'], reason=reason)
+                        if result['success']:
+                            log(f"  >> {portfolio['name']}: {result['message']}")
+                            results.append({
+                                'portfolio': portfolio['name'],
+                                'crypto': crypto,
+                                'action': action,
+                                'reason': reason,
+                                'price': analysis['price'],
+                                'message': result['message']
+                            })
+
+                            # Record trade in risk manager
+                            if RISK_ENABLED and action == 'SELL':
+                                pnl = result.get('pnl', 0)
+                                get_risk_manager().record_trade(pnl, {'symbol': crypto, 'action': action})
+
+                    except Exception as e:
+                        debug_log('TRADE', f'Trade execution failed for {portfolio["name"]}',
+                                 {'portfolio': portfolio['name'], 'action': action,
+                                  'crypto': crypto, 'price': analysis['price']}, error=e)
 
     return results
 
@@ -3695,7 +3911,7 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
                     'pnl': -entry_cost,
                     'reason': f"RUG DETECTED: {rug_reason}"
                 }
-                portfolio['trades'].append(trade)
+                record_trade(portfolio, trade)
 
                 log(f"💀 RUG DETECTED: {symbol} | {rug_reason} | Lost ${entry_cost:.2f} | {portfolio['name']}")
                 results.append({'portfolio': portfolio['name'], 'action': 'RUGGED', 'symbol': symbol, 'loss': entry_cost})
@@ -3769,7 +3985,7 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
                         'pnl': real_pnl,
                         'reason': sell_reason
                     }
-                    portfolio['trades'].append(trade)
+                    record_trade(portfolio, trade)
 
                     emoji = "💰" if pnl_pct > 0 else "📉"
                     log(f"{emoji} SNIPER {action}: {symbol} | {pnl_pct:+.1f}% | ${real_pnl:+.2f} | {portfolio['name']}")
@@ -3914,9 +4130,11 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                         'quantity': qty,
                         'amount_usdt': 0,
                         'pnl': -(pos['entry_price'] * qty),
+                        'chain': chain,
+                        'token_address': pos.get('address', ''),
                         'reason': f"RUG PULL | Lost 100% | Risk was {risk_score}/100"
                     }
-                    portfolio['trades'].append(trade)
+                    record_trade(portfolio, trade)
                     log(f"💀 RUGGED: {symbol} | Lost ${pos['entry_price'] * qty:.2f} | {portfolio['name']}")
                     results.append({'portfolio': portfolio['name'], 'action': 'SNIPE_RUGGED', 'symbol': symbol})
                     continue
@@ -3998,9 +4216,11 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                                 'fees': total_fees,
                                 'slippage_pct': sell_slippage * 100,
                                 'pnl': real_pnl,
+                                'chain': chain,
+                                'token_address': pos.get('address', ''),
                                 'reason': " | ".join(reason_parts)
                             }
-                            portfolio['trades'].append(trade)
+                            record_trade(portfolio, trade)
 
                             pnl_emoji = "[WIN]" if real_pnl >= 0 else "[LOSS]"
                             log(f"{pnl_emoji} SNIPE SELL: {symbol} | PNL: ${real_pnl:+.2f} ({real_pnl_pct:+.1f}%) | Slip: {sell_slippage*100:.1f}% | {portfolio['name']}")
@@ -4056,7 +4276,7 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                             'pnl': -gas_lost,
                             'reason': f"TX FAILED: {trade_result.get('fail_reason', 'Unknown')} | Gas lost: ${gas_lost:.2f}"
                         }
-                        portfolio['trades'].append(trade)
+                        record_trade(portfolio, trade)
                         log(f"[TX FAIL] {symbol} | Lost ${gas_lost:.2f} gas | {trade_result.get('fail_reason')} | {portfolio['name']}")
                 continue
 
@@ -4127,7 +4347,7 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                 'was_frontrun': trade_result.get('was_frontrun', False),
                 'reason': " | ".join(reason_parts)
             }
-            portfolio['trades'].append(trade)
+            record_trade(portfolio, trade)
 
             # Log with details
             log_msg = f"SNIPE: {token['symbol']} @ ${execution_price:.6f}"
@@ -4192,13 +4412,13 @@ def run_whale_engine(portfolios: dict) -> list:
                     pnl_pct = ((current_price / pos['entry_price']) - 1) * 100
 
                     if pnl_pct >= take_profit:
-                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price, reason=f"WHALE TP {pnl_pct:+.1f}%")
                         if result['success']:
                             log(f"🐋 WHALE TP: {symbol} +{pnl_pct:.1f}% [{portfolio['name']}]")
                             results.append({'portfolio': portfolio['name'], 'action': 'WHALE_SELL_TP', 'symbol': symbol})
 
                     elif pnl_pct <= -stop_loss:
-                        result = execute_trade(portfolio, 'SELL', symbol, current_price)
+                        result = execute_trade(portfolio, 'SELL', symbol, current_price, reason=f"WHALE SL {pnl_pct:.1f}%")
                         if result['success']:
                             log(f"🐋 WHALE SL: {symbol} {pnl_pct:.1f}% [{portfolio['name']}]")
                             results.append({'portfolio': portfolio['name'], 'action': 'WHALE_SELL_SL', 'symbol': symbol})
@@ -4259,7 +4479,7 @@ def run_whale_engine(portfolios: dict) -> list:
                 'whale': signal['whale'],
                 'reason': signal['reason']
             }
-            portfolio['trades'].append(trade)
+            record_trade(portfolio, trade)
 
             log(f"🐋 WHALE BUY: {symbol} @ ${price:.4f} | {signal['whale']} ({signal['confidence']}%) | {portfolio['name']}")
             results.append({'portfolio': portfolio['name'], 'action': 'WHALE_BUY', 'symbol': symbol, 'whale': signal['whale']})

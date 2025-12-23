@@ -25,6 +25,7 @@ if sys.platform == 'win32':
     os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 import streamlit as st
+from streamlit_autorefresh import st_autorefresh
 import pandas as pd
 import numpy as np
 import requests
@@ -714,9 +715,9 @@ def create_portfolio_chart(port_id: str, port_name: str, history_data: Dict) -> 
     return fig
 
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=30)
 def get_all_prices_cached() -> Dict[str, float]:
-    """Fetch ALL prices once - shared cache for all portfolios"""
+    """Fetch ALL prices once - shared cache for all portfolios (30s cache)"""
     prices = {}
     try:
         url = "https://api.binance.com/api/v3/ticker/price"
@@ -731,9 +732,9 @@ def get_all_prices_cached() -> Dict[str, float]:
     return prices
 
 
-@st.cache_data(ttl=15)
+@st.cache_data(ttl=30)
 def _fetch_dexscreener_batch(addr_tuple: tuple) -> Dict[str, float]:
-    """Cached DexScreener API call"""
+    """Cached DexScreener API call (30s cache)"""
     prices = {}
     addresses = list(addr_tuple)
     try:
@@ -1106,6 +1107,9 @@ def analyze_token(symbol: str, data: Dict) -> Dict:
 # ==================== MAIN APP ====================
 
 def main():
+    # Auto-refresh every 30 seconds
+    st_autorefresh(interval=30000, limit=None, key="auto_refresh")
+
     # Initialize session state for navigation
     if 'page' not in st.session_state:
         st.session_state.page = "📈 Portfolios"
@@ -1143,9 +1147,25 @@ def main():
         st.divider()
 
         # Calculate REAL total PnL from all portfolios - BATCH mode (1 API call)
+        # Use session cache to avoid recalculating on every rerun
+        cache_key = 'portfolio_values_cache'
+        cache_time_key = 'portfolio_values_time'
+        cache_ttl = 5  # seconds
+
+        current_time = time.time()
         pf_data = load_portfolios()
         portfolios = pf_data.get('portfolios', {})
-        all_values = calculate_all_portfolio_values(portfolios)
+
+        # Check if cache is valid
+        if (cache_key not in st.session_state or
+            cache_time_key not in st.session_state or
+            current_time - st.session_state[cache_time_key] > cache_ttl):
+            # Recalculate and cache
+            all_values = calculate_all_portfolio_values(portfolios)
+            st.session_state[cache_key] = all_values
+            st.session_state[cache_time_key] = current_time
+        else:
+            all_values = st.session_state[cache_key]
 
         total_value = sum(v['total_value'] for v in all_values.values())
         total_initial = sum(p.get('initial_capital', 1000) for p in portfolios.values())
@@ -1337,8 +1357,11 @@ def render_portfolios():
 
     # ===================== SUMMARY DASHBOARD =====================
     if portfolios:
-        # Calculate aggregate stats using proper function (handles sniper tokens)
-        all_pf_values = calculate_all_portfolio_values(portfolios)
+        # Use cached portfolio values from session (calculated in sidebar)
+        if 'portfolio_values_cache' in st.session_state:
+            all_pf_values = st.session_state['portfolio_values_cache']
+        else:
+            all_pf_values = calculate_all_portfolio_values(portfolios)
 
         total_aum = 0
         total_initial = 0
@@ -4323,9 +4346,9 @@ pour que tu puisses tester des trades manuellement.
 💡 POUR QUI ? Full control."""
     }
 
-    # Display portfolios with pagination (10 per page)
+    # Display portfolios with pagination (6 per page for better performance)
     portfolio_list = list(portfolios.items())
-    PORTFOLIOS_PER_PAGE = 10
+    PORTFOLIOS_PER_PAGE = 6
 
     # ===================== FILTERING =====================
     # Apply search filter
@@ -4347,8 +4370,11 @@ pour que tu puisses tester des trades manuellement.
             ]
 
     # ===================== SORTING =====================
-    # Calculate portfolio values properly (handles sniper tokens with DexScreener)
-    sort_pf_values = calculate_all_portfolio_values(portfolios)
+    # Use cached portfolio values from session (calculated in sidebar)
+    if 'portfolio_values_cache' in st.session_state:
+        sort_pf_values = st.session_state['portfolio_values_cache']
+    else:
+        sort_pf_values = calculate_all_portfolio_values(portfolios)
 
     def get_pnl_pct(item):
         pid, p = item
@@ -4392,51 +4418,23 @@ pour que tu puisses tester des trades manuellement.
     # Reset page on filter/sort change
     filter_key = f"{search_query}_{selected_category}_{sort_option}"
     if st.session_state.get('last_filter') != filter_key:
-        st.session_state.portfolio_page = 0
+        st.query_params['page'] = '1'
         st.session_state.last_filter = filter_key
 
-    # Pagination
-    if 'portfolio_page' not in st.session_state:
-        st.session_state.portfolio_page = 0
-    current_page = st.session_state.portfolio_page
+    # Pagination via URL query params
     total_pages = max(1, (len(portfolio_list) + PORTFOLIOS_PER_PAGE - 1) // PORTFOLIOS_PER_PAGE)
 
-    # Ensure current page is valid
-    if current_page >= total_pages:
-        current_page = total_pages - 1
-        st.session_state.portfolio_page = current_page
+    # Get page from URL query params (1-indexed for users, 0-indexed internally)
+    try:
+        url_page = int(st.query_params.get('page', 1)) - 1
+    except (ValueError, TypeError):
+        url_page = 0
+
+    # Ensure page is valid
+    current_page = max(0, min(url_page, total_pages - 1))
 
     with col_page_info:
-        st.markdown(f"<div style='text-align:right; color:#888; padding-top: 0.5rem;'>Showing {len(portfolio_list)} portfolios</div>", unsafe_allow_html=True)
-
-    # Pagination controls
-    if total_pages > 1:
-        col_prev, col_pages, col_next = st.columns([1, 3, 1])
-        with col_prev:
-            if st.button("◀", disabled=current_page == 0, use_container_width=True, key="prev_page"):
-                st.session_state.portfolio_page = max(0, current_page - 1)
-                st.rerun()
-        with col_pages:
-            # Page number buttons
-            page_cols = st.columns(min(total_pages, 7))
-            # Show pages around current page
-            start_page = max(0, min(current_page - 3, total_pages - 7))
-            for i, pc in enumerate(page_cols):
-                page_num = start_page + i
-                if page_num < total_pages:
-                    with pc:
-                        if st.button(
-                            str(page_num + 1),
-                            use_container_width=True,
-                            type="primary" if page_num == current_page else "secondary",
-                            key=f"page_{page_num}"
-                        ):
-                            st.session_state.portfolio_page = page_num
-                            st.rerun()
-        with col_next:
-            if st.button("▶", disabled=current_page >= total_pages - 1, use_container_width=True, key="next_page"):
-                st.session_state.portfolio_page = min(total_pages - 1, current_page + 1)
-                st.rerun()
+        st.markdown(f"<div style='text-align:right; color:#888; padding-top: 0.5rem;'>Page {current_page + 1}/{total_pages} • {len(portfolio_list)} portfolios</div>", unsafe_allow_html=True)
 
     # Get current page portfolios
     start_idx = current_page * PORTFOLIOS_PER_PAGE
@@ -4458,12 +4456,12 @@ pour que tu puisses tester des trades manuellement.
                 pid, p = page_portfolios[i + j]
 
                 with col:
-                    # Calculate real portfolio value including positions
-                    pf_value = calculate_portfolio_value(p)
-                    total_value = pf_value['total_value']
-                    usdt_balance = pf_value['usdt_balance']
-                    positions_value = pf_value['positions_value']
-                    unrealized_pnl = pf_value['unrealized_pnl']
+                    # Use pre-calculated values from sort_pf_values (already computed above)
+                    pf_value = sort_pf_values.get(pid, {})
+                    total_value = pf_value.get('total_value', p['balance'].get('USDT', 0))
+                    usdt_balance = pf_value.get('usdt_balance', p['balance'].get('USDT', 0))
+                    positions_value = pf_value.get('positions_value', 0)
+                    unrealized_pnl = pf_value.get('unrealized_pnl', 0)
 
                     initial = p.get('initial_capital', 1000)
                     # Total PnL = (current total value - initial capital)
@@ -4846,13 +4844,21 @@ pour que tu puisses tester des trades manuellement.
 
                     # Show positions detail when there are open positions
                     if positions_count > 0:
-                        with st.expander(f"📊 Open Positions ({positions_count})", expanded=False):
+                        # Use button + session_state instead of expander (avoids calculating when not needed)
+                        show_pos_key = f'show_positions_{pid}'
+                        if st.button(f"📊 Positions ({positions_count})", key=f"pos_btn_{pid}", use_container_width=True):
+                            st.session_state[show_pos_key] = not st.session_state.get(show_pos_key, False)
+                            st.rerun()
+
+                        if st.session_state.get(show_pos_key, False):
                             # Get TP/SL from strategy config
                             strategy_config = p.get('config', {})
                             tp_pct = strategy_config.get('take_profit', 50)
                             sl_pct = strategy_config.get('stop_loss', 25)
 
-                            for pos_detail in pf_value['positions_details']:
+                            # Calculate positions_details on demand (only when button is clicked)
+                            pf_full = calculate_portfolio_value(p)
+                            for pos_detail in pf_full.get('positions_details', []):
                                 pos_symbol = pos_detail['symbol'].replace('/USDT', '').replace('\\USDT', '')
                                 pos_qty = pos_detail['quantity']
                                 pos_entry = pos_detail['entry_price']
@@ -4966,6 +4972,47 @@ pour que tu puisses tester des trades manuellement.
 
                                 st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False}, key=f"position_chart_{pid}_{pos_symbol}")
 
+    # Pagination controls at bottom
+    if total_pages > 1:
+        st.markdown("<br>", unsafe_allow_html=True)
+        col_first, col_prev, col_pages, col_next, col_last = st.columns([1, 1, 3, 1, 1])
+
+        with col_first:
+            if st.button("⏮ First", disabled=current_page == 0, use_container_width=True, key="first_page"):
+                st.query_params['page'] = '1'
+                st.rerun()
+
+        with col_prev:
+            if st.button("◀ Prev", disabled=current_page == 0, use_container_width=True, key="prev_page_bottom"):
+                st.query_params['page'] = str(current_page)  # current_page is 0-indexed, so this gives prev page (1-indexed)
+                st.rerun()
+
+        with col_pages:
+            # Page number buttons
+            page_cols = st.columns(min(total_pages, 5))
+            start_page = max(0, min(current_page - 2, total_pages - 5))
+            for i, pc in enumerate(page_cols):
+                page_num = start_page + i
+                if page_num < total_pages:
+                    with pc:
+                        if st.button(
+                            str(page_num + 1),
+                            use_container_width=True,
+                            type="primary" if page_num == current_page else "secondary",
+                            key=f"page_bottom_{page_num}"
+                        ):
+                            st.query_params['page'] = str(page_num + 1)
+                            st.rerun()
+
+        with col_next:
+            if st.button("Next ▶", disabled=current_page >= total_pages - 1, use_container_width=True, key="next_page_bottom"):
+                st.query_params['page'] = str(current_page + 2)  # +2 because current_page is 0-indexed
+                st.rerun()
+
+        with col_last:
+            if st.button("Last ⏭", disabled=current_page >= total_pages - 1, use_container_width=True, key="last_page"):
+                st.query_params['page'] = str(total_pages)
+                st.rerun()
 
 
 def load_settings() -> Dict:
@@ -5189,15 +5236,18 @@ def render_settings():
                 reset_count = 0
 
                 for pid, portfolio in portfolios_data.get('portfolios', {}).items():
-                    # Reset balance to 10000 USDT
+                    # Reset balance to 10000 USDT only
                     portfolio['balance'] = {'USDT': 10000.0}
-                    portfolio['initial_balance'] = 10000.0
+                    portfolio['initial_capital'] = 10000.0
 
-                    # Clear all positions
+                    # Clear ALL positions completely
                     portfolio['positions'] = {}
 
                     # Clear trade history
                     portfolio['trades'] = []
+
+                    # Clear decision logs
+                    portfolio['decision_logs'] = []
 
                     reset_count += 1
 
@@ -5446,25 +5496,101 @@ def render_debug():
 
         st.divider()
         st.markdown("**Live API Check:**")
-        col1, col2 = st.columns(2)
+
+        # Row 1: Main exchanges
+        col1, col2, col3 = st.columns(3)
         with col1:
             try:
                 r = requests.get("https://api.binance.com/api/v3/ping", timeout=5)
                 if r.status_code == 200:
-                    st.success("Binance: OK")
+                    st.success("✅ Binance")
                 else:
-                    st.error(f"Binance: {r.status_code}")
+                    st.error(f"❌ Binance: {r.status_code}")
             except Exception as e:
-                st.error(f"Binance: {e}")
+                st.error(f"❌ Binance: {str(e)[:30]}")
         with col2:
             try:
                 r = requests.get("https://api.alternative.me/fng/?limit=1", timeout=5)
                 if r.status_code == 200:
-                    st.success("Fear&Greed: OK")
+                    data = r.json()
+                    fng_value = data['data'][0]['value']
+                    st.success(f"✅ Fear&Greed: {fng_value}")
                 else:
-                    st.error(f"Fear&Greed: {r.status_code}")
+                    st.error(f"❌ Fear&Greed: {r.status_code}")
             except Exception as e:
-                st.error(f"Fear&Greed: {e}")
+                st.error(f"❌ Fear&Greed: {str(e)[:30]}")
+        with col3:
+            try:
+                r = requests.get("https://api.coingecko.com/api/v3/ping", timeout=5)
+                if r.status_code == 200:
+                    st.success("✅ CoinGecko")
+                else:
+                    st.error(f"❌ CoinGecko: {r.status_code}")
+            except Exception as e:
+                st.error(f"❌ CoinGecko: {str(e)[:30]}")
+
+        # Row 2: DEX APIs
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            try:
+                r = requests.get("https://api.dexscreener.com/latest/dex/pairs/ethereum/0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852", timeout=5)
+                if r.status_code == 200:
+                    st.success("✅ DexScreener")
+                else:
+                    st.error(f"❌ DexScreener: {r.status_code}")
+            except Exception as e:
+                st.error(f"❌ DexScreener: {str(e)[:30]}")
+        with col2:
+            try:
+                r = requests.get("https://public-api.birdeye.so/public/tokenlist?sort_by=v24hUSD&sort_type=desc&limit=1", timeout=5)
+                if r.status_code == 200:
+                    st.success("✅ Birdeye")
+                else:
+                    st.warning(f"⚠️ Birdeye: {r.status_code}")
+            except Exception as e:
+                st.warning(f"⚠️ Birdeye: {str(e)[:30]}")
+        with col3:
+            try:
+                r = requests.get("https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&amount=1000000", timeout=5)
+                if r.status_code == 200:
+                    st.success("✅ Jupiter")
+                else:
+                    st.error(f"❌ Jupiter: {r.status_code}")
+            except Exception as e:
+                st.error(f"❌ Jupiter: {str(e)[:30]}")
+
+        # Row 3: Blockchain explorers (need API keys)
+        settings = load_settings()
+        st.markdown("---")
+        st.markdown("**Blockchain APIs (require keys):**")
+        col1, col2 = st.columns(2)
+        with col1:
+            etherscan_key = settings.get("etherscan_api_key", "")
+            if etherscan_key:
+                try:
+                    r = requests.get(f"https://api.etherscan.io/api?module=stats&action=ethprice&apikey={etherscan_key}", timeout=5)
+                    if r.status_code == 200 and r.json().get('status') == '1':
+                        eth_price = r.json()['result']['ethusd']
+                        st.success(f"✅ Etherscan (ETH: ${float(eth_price):,.0f})")
+                    else:
+                        st.error("❌ Etherscan: Invalid response")
+                except Exception as e:
+                    st.error(f"❌ Etherscan: {str(e)[:30]}")
+            else:
+                st.warning("⚠️ Etherscan: No API key")
+        with col2:
+            helius_key = settings.get("helius_api_key", "")
+            if helius_key:
+                try:
+                    r = requests.get(f"https://api.helius.xyz/v0/addresses/So11111111111111111111111111111111111111112/balances?api-key={helius_key}", timeout=5)
+                    if r.status_code == 200:
+                        st.success("✅ Helius (Solana)")
+                    else:
+                        st.error(f"❌ Helius: {r.status_code}")
+                except Exception as e:
+                    st.error(f"❌ Helius: {str(e)[:30]}")
+            else:
+                st.warning("⚠️ Helius: No API key")
 
     # TAB 4: Full Report
     with tab4:
