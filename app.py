@@ -4989,8 +4989,8 @@ pour que tu puisses tester des trades manuellement.
 
         with col_pages:
             # Page number buttons
-            page_cols = st.columns(min(total_pages, 5))
-            start_page = max(0, min(current_page - 2, total_pages - 5))
+            page_cols = st.columns(min(total_pages, 7))
+            start_page = max(0, min(current_page - 3, total_pages - 7))
             for i, pc in enumerate(page_cols):
                 page_num = start_page + i
                 if page_num < total_pages:
