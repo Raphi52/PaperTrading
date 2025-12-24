@@ -4492,7 +4492,7 @@ pour que tu puisses tester des trades manuellement.
                         st.markdown(pos_html, unsafe_allow_html=True)
 
                     # Action buttons
-                    btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6, btn_col7 = st.columns(7)
+                    btn_col1, btn_col2, btn_col3, btn_col4, btn_col5, btn_col6, btn_col7, btn_col8 = st.columns(8)
                     with btn_col1:
                         # Take Profit button - sells all positions and converts to USDT
                         if positions_count > 0:
@@ -4537,7 +4537,18 @@ pour que tu puisses tester des trades manuellement.
                             st.session_state[f'show_activity_{pid}'] = not st.session_state.get(f'show_activity_{pid}', False)
                             st.rerun()
                     with btn_col4:
-                        pass  # Removed separate logs button
+                        # Pause/Resume button
+                        is_active = p.get('active', True)
+                        if is_active:
+                            if st.button("⏸️", key=f"pause_{pid}", use_container_width=True, help="Pause trading"):
+                                data['portfolios'][pid]['active'] = False
+                                save_portfolios(data)
+                                st.rerun()
+                        else:
+                            if st.button("▶️", key=f"resume_{pid}", use_container_width=True, help="Resume trading"):
+                                data['portfolios'][pid]['active'] = True
+                                save_portfolios(data)
+                                st.rerun()
                     with btn_col5:
                         if st.button("🔄", key=f"reset_{pid}", use_container_width=True):
                             data['portfolios'][pid]['balance'] = {'USDT': initial}
@@ -4554,6 +4565,10 @@ pour que tu puisses tester des trades manuellement.
                     with btn_col7:
                         if st.button("📈", key=f"chart_{pid}", use_container_width=True, help="Value History Chart"):
                             st.session_state[f'show_chart_{pid}'] = not st.session_state.get(f'show_chart_{pid}', False)
+                            st.rerun()
+                    with btn_col8:
+                        if st.button("⚙️", key=f"settings_{pid}", use_container_width=True, help="Portfolio Settings"):
+                            st.session_state[f'show_settings_{pid}'] = not st.session_state.get(f'show_settings_{pid}', False)
                             st.rerun()
 
                     # Show strategy info if toggled
@@ -4591,6 +4606,54 @@ pour que tu puisses tester des trades manuellement.
                         # Show the chart
                         fig = create_portfolio_chart(pid, p['name'], history_data)
                         st.plotly_chart(fig, use_container_width=True, key=f"portfolio_chart_{pid}")
+
+                    # Show portfolio settings if toggled
+                    if st.session_state.get(f'show_settings_{pid}', False):
+                        st.markdown("#### ⚙️ Portfolio Settings")
+                        config = p.get('config', {})
+
+                        settings_col1, settings_col2, settings_col3 = st.columns(3)
+
+                        with settings_col1:
+                            # Strategy selection
+                            from bot import STRATEGIES
+                            strategy_list = list(STRATEGIES.keys())
+                            current_strategy = p.get('strategy_id', 'manual')
+                            current_idx = strategy_list.index(current_strategy) if current_strategy in strategy_list else 0
+                            new_strategy = st.selectbox(
+                                "Strategy",
+                                strategy_list,
+                                index=current_idx,
+                                key=f"strat_select_{pid}"
+                            )
+                            # Show tooltip for selected strategy
+                            strat_tooltip = STRATEGIES.get(new_strategy, {}).get('tooltip', '')
+                            if strat_tooltip:
+                                st.caption(f"💡 {strat_tooltip}")
+
+                        with settings_col2:
+                            # Take Profit / Stop Loss
+                            current_tp = config.get('take_profit', STRATEGIES.get(current_strategy, {}).get('take_profit', 20))
+                            current_sl = config.get('stop_loss', STRATEGIES.get(current_strategy, {}).get('stop_loss', 10))
+                            new_tp = st.number_input("Take Profit %", min_value=1, max_value=500, value=current_tp, key=f"tp_input_{pid}")
+                            new_sl = st.number_input("Stop Loss %", min_value=1, max_value=100, value=current_sl, key=f"sl_input_{pid}")
+
+                        with settings_col3:
+                            # Allocation and capital
+                            current_alloc = config.get('allocation_percent', 10)
+                            new_alloc = st.number_input("Allocation %", min_value=1, max_value=100, value=current_alloc, key=f"alloc_input_{pid}")
+                            new_capital = st.number_input("Initial Capital $", min_value=100, max_value=1000000, value=int(initial), key=f"capital_input_{pid}")
+
+                        # Save button
+                        if st.button("💾 Save Settings", key=f"save_settings_{pid}", type="primary"):
+                            data['portfolios'][pid]['strategy_id'] = new_strategy
+                            data['portfolios'][pid]['config']['take_profit'] = new_tp
+                            data['portfolios'][pid]['config']['stop_loss'] = new_sl
+                            data['portfolios'][pid]['config']['allocation_percent'] = new_alloc
+                            data['portfolios'][pid]['initial_capital'] = new_capital
+                            save_portfolios(data)
+                            st.success("Settings saved!")
+                            st.rerun()
 
                     # Show unified activity if toggled
                     if st.session_state.get(f'show_activity_{pid}', False):
