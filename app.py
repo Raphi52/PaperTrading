@@ -1150,40 +1150,12 @@ def main():
     pnl_pct = (total_pnl / total_initial * 100) if total_initial > 0 else 0
     pnl_color = COLORS.BUY if total_pnl >= 0 else COLORS.SELL
 
-    # Header with stats and settings icon
-    col_title, col_stats, col_settings = st.columns([2, 4, 1])
-
-    with col_title:
-        st.markdown(f"## 🚀 Trading Bot")
-
-    with col_stats:
-        st.markdown(f"""
-        <div style="display: flex; gap: 2rem; align-items: center; padding-top: 0.5rem;">
-            <div>
-                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Total Value</span>
-                <span style="color: white; font-size: 1.1rem; font-weight: bold; margin-left: 0.5rem;">${total_value:,.0f}</span>
-            </div>
-            <div>
-                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">PnL</span>
-                <span style="color: {pnl_color}; font-size: 1.1rem; font-weight: bold; margin-left: 0.5rem;">{pnl_pct:+.2f}% (${total_pnl:+,.0f})</span>
-            </div>
-            <div>
-                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Positions</span>
-                <span style="color: white; font-size: 1.1rem; margin-left: 0.5rem;">{total_positions}</span>
-            </div>
-            <div>
-                <span style="color: {COLORS.TEXT_SECONDARY}; font-size: 0.8rem;">Portfolios</span>
-                <span style="color: white; font-size: 1.1rem; margin-left: 0.5rem;">{len(portfolios)}</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
+    # Settings button in top right corner
+    _, col_settings = st.columns([10, 1])
     with col_settings:
-        if st.button("⚙️", key="settings_btn", help="Settings"):
+        if st.button("⚙️", key="settings_btn", help="Global Settings"):
             st.session_state.show_settings = not st.session_state.show_settings
             st.rerun()
-
-    st.divider()
 
     # Settings panel (expandable)
     if st.session_state.show_settings:
