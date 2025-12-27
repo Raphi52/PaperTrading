@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Portfolio } from '@/lib/types';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart, ComposedChart, Bar, Cell } from 'recharts';
@@ -273,10 +274,13 @@ const STRATEGY_CATEGORIES: Record<string, string[]> = {
 };
 
 export default function Dashboard() {
+  const searchParams = useSearchParams();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [prices, setPrices] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'portfolios'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'portfolios'>(
+    searchParams.get('tab') === 'portfolios' ? 'portfolios' : 'dashboard'
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'pnl_pct' | 'pnl_usd' | 'worst' | 'value' | 'name' | 'positions'>('pnl_pct');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -455,17 +459,17 @@ export default function Dashboard() {
       <header className="bg-gradient-to-r from-[#0f0f1a] to-[#1a1a2e] border-b border-gray-800 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-8">
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
                 Trading Bot
               </h1>
-              <div className="flex bg-gray-800/50 rounded-lg p-1">
+              <nav className="flex items-center gap-1">
                 <button
                   onClick={() => setActiveTab('dashboard')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === 'dashboard'
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                      ? 'text-white bg-white/10'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   Dashboard
@@ -474,13 +478,19 @@ export default function Dashboard() {
                   onClick={() => setActiveTab('portfolios')}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === 'portfolios'
-                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-lg shadow-blue-500/25'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
+                      ? 'text-white bg-white/10'
+                      : 'text-gray-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  Portfolios ({portfolios.length})
+                  Portfolios
                 </button>
-              </div>
+                <a
+                  href="/trades"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  Trades
+                </a>
+              </nav>
             </div>
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-2 text-sm">
@@ -491,7 +501,7 @@ export default function Dashboard() {
               </div>
               <div className="w-px h-6 bg-gray-700 hidden md:block"></div>
               <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
-                ● Live
+                Live
               </span>
             </div>
           </div>
