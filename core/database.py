@@ -81,7 +81,7 @@ def init_database():
 
     conn.commit()
     conn.close()
-    print("[DB] Database initialized")
+    # Silently initialized (avoid colorama issues with Streamlit)
 
 
 def insert_trade(

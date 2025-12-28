@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { Portfolio } from '@/lib/types';
 
 interface Trade {
+  id?: string;  // Unique trade ID (e.g., T1A2B3C4)
   symbol: string;
   action: 'BUY' | 'SELL';
   price: number;
@@ -15,7 +16,8 @@ interface Trade {
   amount_usdt?: number;
   portfolio: string;
   portfolioId: string;
-  entry_price?: number;
+  entry_price?: number;  // Stored in SELL trades: actual weighted average entry price
+  entry_time?: string;
 }
 
 interface Candle {
@@ -43,11 +45,13 @@ interface Indicators {
 }
 
 // Mini Candlestick Chart Component
-function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
+function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy, entryPrice, entryTime }: {
   symbol: string;
   tradePrice: number;
   tradeTime: string;
   isBuy: boolean;
+  entryPrice?: number;
+  entryTime?: string;
 }) {
   const [candles, setCandles] = useState<Candle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,9 +59,11 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
   useEffect(() => {
     const fetchCandles = async () => {
       try {
-        // Get candles around the trade time
+        // For SELL trades with entry info, get candles from entry time
+        // Otherwise get 24h before trade
         const tradeTs = new Date(tradeTime).getTime();
-        const since = tradeTs - (24 * 60 * 60 * 1000); // 24h before trade
+        const entryTs = entryTime ? new Date(entryTime).getTime() : null;
+        const since = entryTs ? Math.min(entryTs, tradeTs) - (2 * 60 * 60 * 1000) : tradeTs - (24 * 60 * 60 * 1000);
         const res = await fetch(`/api/klines?symbol=${encodeURIComponent(symbol)}&since=${since}`);
         const data = await res.json();
         setCandles(data);
@@ -67,7 +73,7 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
       setLoading(false);
     };
     fetchCandles();
-  }, [symbol, tradeTime]);
+  }, [symbol, tradeTime, entryTime]);
 
   if (loading) {
     return (
@@ -85,10 +91,15 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
     );
   }
 
-  // Find trade candle index
+  // Find trade candle index (exit for SELL, entry for BUY)
   const tradeTs = new Date(tradeTime).getTime();
   let tradeIdx = candles.findIndex(c => c.time >= tradeTs);
   if (tradeIdx === -1) tradeIdx = candles.length - 1;
+
+  // Find entry candle index for SELL trades
+  const entryTs = entryTime ? new Date(entryTime).getTime() : null;
+  let entryIdx = entryTs ? candles.findIndex(c => c.time >= entryTs) : -1;
+  if (entryTs && entryIdx === -1) entryIdx = 0;
 
   // Chart dimensions
   const chartHeight = 280;
@@ -97,13 +108,15 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
   const innerWidth = chartWidth - margin.left - margin.right;
   const innerHeight = chartHeight - margin.top - margin.bottom;
 
-  // Calculate min/max for Y axis
+  // Calculate min/max for Y axis - include entry price for SELL trades
   const allPrices = candles.flatMap(c => [c.high, c.low]);
+  if (entryPrice) allPrices.push(entryPrice);
+  allPrices.push(tradePrice);
   const priceMin = Math.min(...allPrices);
   const priceMax = Math.max(...allPrices);
   const priceRange = priceMax - priceMin;
-  const minPrice = priceMin - priceRange * 0.05;
-  const maxPrice = priceMax + priceRange * 0.05;
+  const minPrice = priceMin - priceRange * 0.08;
+  const maxPrice = priceMax + priceRange * 0.08;
 
   // Scale functions
   const xScale = (i: number) => margin.left + (i / Math.max(1, candles.length - 1)) * innerWidth;
@@ -114,6 +127,9 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
   const candleW = Math.max(2, Math.min(8, gap * 0.8));
 
   const formatPrice = (p: number) => p < 1 ? p.toFixed(6) : p < 100 ? p.toFixed(2) : p.toFixed(0);
+
+  // For SELL trades, we show entry (BUY) and exit (SELL)
+  const showEntry = !isBuy && entryPrice && entryIdx >= 0;
 
   return (
     <div className="bg-[#0d1117] rounded-lg p-3">
@@ -131,47 +147,19 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
           />
         ))}
 
-        {/* Trade price line */}
-        <line
-          x1={margin.left}
-          y1={yScale(tradePrice)}
-          x2={chartWidth - margin.right}
-          y2={yScale(tradePrice)}
-          stroke={isBuy ? '#22c55e' : '#ef4444'}
-          strokeWidth="2"
-          strokeDasharray="6,4"
-        />
-        <rect
-          x={chartWidth - margin.right + 5}
-          y={yScale(tradePrice) - 12}
-          width="70"
-          height="24"
-          fill={isBuy ? '#22c55e' : '#ef4444'}
-          rx="4"
-        />
-        <text
-          x={chartWidth - margin.right + 40}
-          y={yScale(tradePrice)}
-          fill={isBuy ? '#000' : '#fff'}
-          fontSize="11"
-          textAnchor="middle"
-          dominantBaseline="middle"
-          fontWeight="bold"
-        >
-          {isBuy ? 'BUY' : 'SELL'} ${formatPrice(tradePrice)}
-        </text>
-
-        {/* Trade marker vertical line */}
-        <line
-          x1={xScale(tradeIdx)}
-          y1={margin.top}
-          x2={xScale(tradeIdx)}
-          y2={chartHeight - margin.bottom}
-          stroke={isBuy ? '#22c55e' : '#ef4444'}
-          strokeWidth="2"
-          strokeDasharray="4,4"
-          opacity="0.5"
-        />
+        {/* Connection line between entry and exit for SELL trades */}
+        {showEntry && (
+          <line
+            x1={xScale(entryIdx)}
+            y1={yScale(entryPrice)}
+            x2={xScale(tradeIdx)}
+            y2={yScale(tradePrice)}
+            stroke={(tradePrice > entryPrice) ? '#22c55e' : '#ef4444'}
+            strokeWidth="2"
+            strokeDasharray="4,4"
+            opacity="0.6"
+          />
+        )}
 
         {/* Candlesticks */}
         {candles.map((candle, i) => {
@@ -206,15 +194,91 @@ function TradeCandlestickChart({ symbol, tradePrice, tradeTime, isBuy }: {
           );
         })}
 
-        {/* Trade marker dot */}
-        <circle
-          cx={xScale(tradeIdx)}
-          cy={yScale(tradePrice)}
-          r="6"
-          fill={isBuy ? '#22c55e' : '#ef4444'}
-          stroke="#fff"
-          strokeWidth="2"
-        />
+        {/* Entry point (BUY) for SELL trades */}
+        {showEntry && (
+          <>
+            {/* Entry vertical line */}
+            <line
+              x1={xScale(entryIdx)}
+              y1={margin.top}
+              x2={xScale(entryIdx)}
+              y2={chartHeight - margin.bottom}
+              stroke="#22c55e"
+              strokeWidth="1.5"
+              strokeDasharray="4,4"
+              opacity="0.4"
+            />
+            {/* Entry dot */}
+            <circle
+              cx={xScale(entryIdx)}
+              cy={yScale(entryPrice)}
+              r="8"
+              fill="#22c55e"
+              stroke="#fff"
+              strokeWidth="2"
+            />
+            {/* Entry label */}
+            <text
+              x={xScale(entryIdx)}
+              y={yScale(entryPrice) - 14}
+              fill="#22c55e"
+              fontSize="11"
+              textAnchor="middle"
+              fontWeight="bold"
+            >
+              BUY ${formatPrice(entryPrice)}
+            </text>
+          </>
+        )}
+
+        {/* Exit/Trade point */}
+        <>
+          {/* Trade vertical line */}
+          <line
+            x1={xScale(tradeIdx)}
+            y1={margin.top}
+            x2={xScale(tradeIdx)}
+            y2={chartHeight - margin.bottom}
+            stroke={isBuy ? '#22c55e' : '#ef4444'}
+            strokeWidth="1.5"
+            strokeDasharray="4,4"
+            opacity="0.4"
+          />
+          {/* Trade dot */}
+          <circle
+            cx={xScale(tradeIdx)}
+            cy={yScale(tradePrice)}
+            r="8"
+            fill={isBuy ? '#22c55e' : '#ef4444'}
+            stroke="#fff"
+            strokeWidth="2"
+          />
+          {/* Trade label */}
+          <text
+            x={xScale(tradeIdx)}
+            y={yScale(tradePrice) + 18}
+            fill={isBuy ? '#22c55e' : '#ef4444'}
+            fontSize="11"
+            textAnchor="middle"
+            fontWeight="bold"
+          >
+            {isBuy ? 'BUY' : 'SELL'} ${formatPrice(tradePrice)}
+          </text>
+        </>
+
+        {/* P&L indicator for SELL trades */}
+        {showEntry && (
+          <text
+            x={(xScale(entryIdx) + xScale(tradeIdx)) / 2}
+            y={(yScale(entryPrice) + yScale(tradePrice)) / 2 - 8}
+            fill={(tradePrice > entryPrice) ? '#22c55e' : '#ef4444'}
+            fontSize="12"
+            textAnchor="middle"
+            fontWeight="bold"
+          >
+            {tradePrice > entryPrice ? '+' : ''}{(((tradePrice - entryPrice) / entryPrice) * 100).toFixed(1)}%
+          </text>
+        )}
 
         {/* Date labels */}
         {[0, Math.floor(candles.length / 2), candles.length - 1].map(idx => (
@@ -249,6 +313,7 @@ export default function TradesPage() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<'date' | 'pnl_high' | 'pnl_low' | 'symbol'>('date');
   const [filterAction, setFilterAction] = useState<'all' | 'BUY' | 'SELL'>('all');
+  const [filterDate, setFilterDate] = useState<'all' | 'today' | 'yesterday' | '7days' | '30days'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
@@ -298,8 +363,73 @@ export default function TradesPage() {
     );
   }, [portfolios]);
 
+  // Find entry info for a SELL trade
+  const findEntryTrade = (sellTrade: Trade): { entry_price: number; entry_time: string } | null => {
+    if (sellTrade.action !== 'SELL') return null;
+
+    // First: Use stored entry_price if available (accurate for grid/DCA strategies)
+    if (sellTrade.entry_price && sellTrade.entry_price > 0) {
+      // Find the first BUY for this symbol in the portfolio to get entry_time
+      const portfolioTrades = allTrades
+        .filter(t => t.portfolioId === sellTrade.portfolioId && t.symbol === sellTrade.symbol && t.action === 'BUY')
+        .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+      const sellTime = new Date(sellTrade.timestamp).getTime();
+      const firstBuy = portfolioTrades.find(t => new Date(t.timestamp).getTime() < sellTime);
+
+      return {
+        entry_price: sellTrade.entry_price,
+        entry_time: firstBuy?.timestamp || sellTrade.timestamp
+      };
+    }
+
+    // Fallback: Find the most recent BUY before this SELL
+    const portfolioTrades = allTrades
+      .filter(t => t.portfolioId === sellTrade.portfolioId && t.symbol === sellTrade.symbol)
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    const sellTime = new Date(sellTrade.timestamp).getTime();
+    let lastBuy = null;
+
+    for (const t of portfolioTrades) {
+      const tradeTime = new Date(t.timestamp).getTime();
+      if (tradeTime >= sellTime) break;
+      if (t.action === 'BUY') {
+        lastBuy = t;
+      }
+    }
+
+    if (lastBuy) {
+      return { entry_price: lastBuy.price, entry_time: lastBuy.timestamp };
+    }
+    return null;
+  };
+
   const filteredAndSortedTrades = useMemo(() => {
     let trades = [...allTrades];
+
+    // Date filter
+    if (filterDate !== 'all') {
+      const now = new Date();
+      const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const yesterdayStart = new Date(todayStart.getTime() - 24 * 60 * 60 * 1000);
+
+      trades = trades.filter(t => {
+        const tradeDate = new Date(t.timestamp);
+        switch (filterDate) {
+          case 'today':
+            return tradeDate >= todayStart;
+          case 'yesterday':
+            return tradeDate >= yesterdayStart && tradeDate < todayStart;
+          case '7days':
+            return tradeDate >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          case '30days':
+            return tradeDate >= new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          default:
+            return true;
+        }
+      });
+    }
 
     if (filterAction !== 'all') {
       trades = trades.filter(t => t.action === filterAction);
@@ -308,6 +438,7 @@ export default function TradesPage() {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       trades = trades.filter(t =>
+        (t.id || '').toLowerCase().includes(query) ||
         t.symbol.toLowerCase().includes(query) ||
         t.portfolio.toLowerCase().includes(query) ||
         (t.reason || '').toLowerCase().includes(query)
@@ -330,7 +461,7 @@ export default function TradesPage() {
     }
 
     return trades;
-  }, [allTrades, sortBy, filterAction, searchQuery]);
+  }, [allTrades, sortBy, filterAction, filterDate, searchQuery]);
 
   const totalPages = Math.ceil(filteredAndSortedTrades.length / TRADES_PER_PAGE);
   const paginatedTrades = filteredAndSortedTrades.slice(
@@ -409,6 +540,12 @@ export default function TradesPage() {
                 >
                   Trades
                 </a>
+                <a
+                  href="/settings"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  Settings
+                </a>
               </nav>
             </div>
             <div className="flex items-center gap-3">
@@ -462,7 +599,7 @@ export default function TradesPage() {
         <div className="flex flex-wrap gap-3 mb-4">
           <input
             type="text"
-            placeholder="Search symbol, portfolio, reason..."
+            placeholder="Search ID, symbol, portfolio..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
             className="flex-1 min-w-[200px] bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
@@ -480,6 +617,28 @@ export default function TradesPage() {
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                   filterAction === opt.value
                     ? 'bg-blue-600 text-white'
+                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700 hover:text-white'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-1">
+            {[
+              { value: 'all', label: 'All Time' },
+              { value: 'today', label: 'Today' },
+              { value: 'yesterday', label: 'Yesterday' },
+              { value: '7days', label: '7 Days' },
+              { value: '30days', label: '30 Days' },
+            ].map(opt => (
+              <button
+                key={opt.value}
+                onClick={() => { setFilterDate(opt.value as typeof filterDate); setCurrentPage(1); }}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  filterDate === opt.value
+                    ? 'bg-green-600 text-white'
                     : 'bg-gray-800/50 text-gray-400 hover:bg-gray-700 hover:text-white'
                 }`}
               >
@@ -531,6 +690,7 @@ export default function TradesPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-700/50 text-left text-xs text-gray-500 uppercase tracking-wider">
+                  <th className="px-4 py-3">ID</th>
                   <th className="px-4 py-3">Action</th>
                   <th className="px-4 py-3">Symbol</th>
                   <th className="px-4 py-3">Price</th>
@@ -549,10 +709,15 @@ export default function TradesPage() {
 
                   return (
                     <tr
-                      key={i}
+                      key={t.id || i}
                       className="hover:bg-gray-800/50 transition-colors cursor-pointer"
                       onClick={() => setSelectedTrade(t)}
                     >
+                      <td className="px-4 py-3">
+                        <span className="font-mono text-xs text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
+                          {t.id || '-'}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
                           isBuy ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
@@ -643,6 +808,9 @@ export default function TradesPage() {
                 </span>
                 <div>
                   <h2 className="text-xl font-bold flex items-center gap-2">
+                    <span className="font-mono text-sm text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded">
+                      {selectedTrade.id || '-'}
+                    </span>
                     {selectedTrade.symbol}
                     <span className={`text-sm px-2 py-0.5 rounded ${selectedTrade.action === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                       {selectedTrade.action}
@@ -671,18 +839,30 @@ export default function TradesPage() {
 
             <div className="p-4 max-h-[75vh] overflow-y-auto space-y-4">
               {/* Chart */}
-              <div className="bg-gray-800/30 rounded-xl border border-gray-700/50 p-4">
-                <div className="text-sm text-gray-400 mb-3 flex items-center justify-between">
-                  <span>Price Chart at Trade Time</span>
-                  <span className="text-xs text-gray-500">24h window around trade</span>
-                </div>
-                <TradeCandlestickChart
-                  symbol={selectedTrade.symbol}
-                  tradePrice={selectedTrade.price}
-                  tradeTime={selectedTrade.timestamp}
-                  isBuy={selectedTrade.action === 'BUY'}
-                />
-              </div>
+              {(() => {
+                // For SELL trades, find the corresponding BUY trade
+                const entryInfo = selectedTrade.action === 'SELL' ? findEntryTrade(selectedTrade) : null;
+                return (
+                  <div className="bg-gray-800/30 rounded-xl border border-gray-700/50 p-4">
+                    <div className="text-sm text-gray-400 mb-3 flex items-center justify-between">
+                      <span>Price Chart at Trade Time</span>
+                      {entryInfo ? (
+                        <span className="text-xs text-gray-500">From entry to exit</span>
+                      ) : (
+                        <span className="text-xs text-gray-500">24h window around trade</span>
+                      )}
+                    </div>
+                    <TradeCandlestickChart
+                      symbol={selectedTrade.symbol}
+                      tradePrice={selectedTrade.price}
+                      tradeTime={selectedTrade.timestamp}
+                      isBuy={selectedTrade.action === 'BUY'}
+                      entryPrice={entryInfo?.entry_price}
+                      entryTime={entryInfo?.entry_time}
+                    />
+                  </div>
+                );
+              })()}
 
               {/* Indicators */}
               <div className="bg-gray-800/30 rounded-xl border border-gray-700/50 p-4">

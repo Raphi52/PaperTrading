@@ -39,13 +39,28 @@ except ImportError as e:
     def insert_trade_from_dict(*args, **kwargs):
         pass
 
+# Auto-update crypto list
+try:
+    from core.auto_update_cryptos import run_auto_update, should_update
+    AUTO_UPDATE_ENABLED = True
+except ImportError as e:
+    print(f"[WARNING] Auto-update module not loaded: {e}")
+    AUTO_UPDATE_ENABLED = False
+
 
 # Max trades to keep in JSON (for dashboard display)
-MAX_TRADES_IN_JSON = 50
+MAX_TRADES_IN_JSON = 500
 
 
 def record_trade(portfolio: dict, trade: dict):
     """Record trade to both JSON (limited) and SQLite (unlimited)"""
+    # Generate unique trade ID if not present
+    if 'id' not in trade:
+        import hashlib
+        ts = trade.get('timestamp', datetime.now().isoformat())
+        unique_str = f"{portfolio.get('id', '')}-{ts}-{trade.get('symbol', '')}-{random.random()}"
+        trade['id'] = 'T' + hashlib.md5(unique_str.encode()).hexdigest()[:8].upper()
+
     # Add to portfolio JSON (keep last 50)
     if 'trades' not in portfolio:
         portfolio['trades'] = []
@@ -108,6 +123,14 @@ PORTFOLIOS_FILE = "data/portfolios.json"
 LOG_FILE = "data/bot_log.txt"
 DEBUG_FILE = "data/debug_log.json"
 SCAN_INTERVAL = 60  # seconds between scans
+
+# BTC reference cache for beta lag strategies
+_btc_cache = {
+    'change_1h': 0,
+    'change_24h': 0,
+    'price': 0,
+    'last_update': 0
+}
 
 
 def get_debug_state() -> dict:
@@ -644,89 +667,485 @@ def check_correlation_limit(portfolio: dict, symbol: str, max_correlated: int = 
     return (True, None)
 
 
+def detect_market_regime(analysis: dict) -> dict:
+    """
+    Detect current market regime to adapt strategy.
+    Returns: regime type, strength, and recommended approach
+    """
+    rsi = analysis.get('rsi', 50)
+    stoch = analysis.get('stoch_rsi', 50)
+    bb_pos = analysis.get('bb_position', 0.5)
+    mom_1h = analysis.get('momentum_1h', 0)
+    mom_4h = analysis.get('momentum_4h', 0)
+    volume_ratio = analysis.get('volume_ratio', 1.0)
+    trend = analysis.get('trend', 'neutral')
+    atr_pct = analysis.get('atr_percent', 2.0)
+
+    # Detect regime
+    if abs(mom_4h) > 3 and volume_ratio > 1.5:
+        regime = 'TRENDING'
+        strength = min(abs(mom_4h) / 5, 1.0)
+        direction = 'UP' if mom_4h > 0 else 'DOWN'
+    elif atr_pct > 4 and volume_ratio > 2:
+        regime = 'VOLATILE'
+        strength = min(atr_pct / 6, 1.0)
+        direction = 'NEUTRAL'
+    elif 0.3 < bb_pos < 0.7 and abs(mom_1h) < 1:
+        regime = 'RANGING'
+        strength = 1 - abs(bb_pos - 0.5) * 2
+        direction = 'NEUTRAL'
+    elif rsi < 25 or rsi > 75:
+        regime = 'EXTREME'
+        strength = abs(rsi - 50) / 50
+        direction = 'OVERSOLD' if rsi < 25 else 'OVERBOUGHT'
+    else:
+        regime = 'NORMAL'
+        strength = 0.5
+        direction = trend.upper()
+
+    return {
+        'regime': regime,
+        'strength': strength,
+        'direction': direction,
+        'rsi': rsi,
+        'stoch': stoch,
+        'bb_pos': bb_pos,
+        'mom_1h': mom_1h,
+        'volume': volume_ratio
+    }
+
+
+def detect_reversal_pattern(analysis: dict) -> dict:
+    """
+    ADVANCED PATTERN DETECTION
+    Detects multiple reversal and continuation patterns for optimal entries.
+    """
+    # Get all indicators
+    rsi = analysis.get('rsi', 50)
+    rsi_prev = analysis.get('rsi_prev', rsi)
+    stoch = analysis.get('stoch_rsi', 50)
+    stoch_prev = analysis.get('stoch_rsi_prev', stoch)
+    bb_pos = analysis.get('bb_position', 0.5)
+    bb_width = analysis.get('bb_width', 0.05)
+    mom_1h = analysis.get('momentum_1h', 0)
+    mom_4h = analysis.get('momentum_4h', 0)
+    volume_ratio = analysis.get('volume_ratio', 1.0)
+    vwap_dev = analysis.get('vwap_deviation', 0)
+    macd = analysis.get('macd', 0)
+    macd_signal = analysis.get('macd_signal', 0)
+    macd_hist = analysis.get('macd_histogram', 0)
+    macd_hist_prev = analysis.get('macd_hist_prev', macd_hist)
+    ema_9 = analysis.get('ema_9', 0)
+    ema_21 = analysis.get('ema_21', 0)
+    price = analysis.get('price', 0)
+    high = analysis.get('high_24h', price)
+    low = analysis.get('low_24h', price)
+    atr_pct = analysis.get('atr_percent', 2.0)
+
+    patterns = []
+    bullish_score = 0
+    bearish_score = 0
+    pattern_details = {}
+
+    # ============ BULLISH PATTERNS ============
+
+    # 1. RSI BULLISH DIVERGENCE (price lower, RSI higher)
+    # Strong signal when RSI makes higher low while price makes lower low
+    if rsi < 40 and rsi > rsi_prev and mom_1h < 0:
+        patterns.append('RSI_BULL_DIV')
+        bullish_score += 25
+        pattern_details['RSI_BULL_DIV'] = f"RSI rising ({rsi_prev:.0f}→{rsi:.0f}) while price falling"
+
+    # 2. STOCH RSI HOOK FROM OVERSOLD
+    # Stoch turning up from extreme oversold
+    if stoch < 20 and stoch > stoch_prev and stoch_prev < 15:
+        patterns.append('STOCH_HOOK_UP')
+        bullish_score += 20
+        pattern_details['STOCH_HOOK_UP'] = f"Stoch reversing from {stoch_prev:.0f} to {stoch:.0f}"
+
+    # 3. MACD BULLISH CROSSOVER
+    # MACD line crossing above signal line
+    if macd > macd_signal and macd_hist > 0 and macd_hist_prev <= 0:
+        patterns.append('MACD_CROSS_UP')
+        bullish_score += 20
+        pattern_details['MACD_CROSS_UP'] = "MACD crossed above signal"
+
+    # 4. MACD HISTOGRAM REVERSAL
+    # Histogram turning positive after being negative
+    if macd_hist > macd_hist_prev and macd_hist_prev < 0 and macd_hist > -0.5:
+        patterns.append('MACD_HIST_REV')
+        bullish_score += 15
+        pattern_details['MACD_HIST_REV'] = f"Histogram improving {macd_hist_prev:.2f}→{macd_hist:.2f}"
+
+    # 5. BOLLINGER BAND BOUNCE
+    # Price touching lower band and bouncing with volume
+    if bb_pos < 0.1 and mom_1h > 0 and volume_ratio > 1.0:
+        patterns.append('BB_BOUNCE')
+        bullish_score += 25
+        pattern_details['BB_BOUNCE'] = f"Bouncing from BB bottom with {volume_ratio:.1f}x volume"
+
+    # 6. BOLLINGER SQUEEZE BREAKOUT UP
+    # Tight bands expanding upward
+    if bb_width < 0.03 and mom_1h > 0.3 and bb_pos > 0.5:
+        patterns.append('BB_SQUEEZE_UP')
+        bullish_score += 30
+        pattern_details['BB_SQUEEZE_UP'] = "Squeeze breakout to upside"
+
+    # 7. VWAP RECLAIM
+    # Price reclaiming VWAP from below with momentum
+    if vwap_dev > -0.5 and vwap_dev < 1.0 and mom_1h > 0.2:
+        if analysis.get('vwap_dev_prev', vwap_dev) < -1:
+            patterns.append('VWAP_RECLAIM')
+            bullish_score += 20
+            pattern_details['VWAP_RECLAIM'] = "Price reclaiming VWAP"
+
+    # 8. VOLUME CLIMAX BOTTOM (Capitulation)
+    # Extreme volume spike at lows = potential capitulation
+    if volume_ratio > 2.5 and rsi < 30 and mom_1h > -0.5:
+        patterns.append('VOLUME_CLIMAX')
+        bullish_score += 30
+        pattern_details['VOLUME_CLIMAX'] = f"Capitulation volume {volume_ratio:.1f}x with RSI={rsi:.0f}"
+
+    # 9. HIGHER LOW FORMING
+    # Price above recent low with RSI/Stoch improving
+    if bb_pos > 0.15 and bb_pos < 0.4 and rsi > rsi_prev and stoch > stoch_prev:
+        patterns.append('HIGHER_LOW')
+        bullish_score += 15
+        pattern_details['HIGHER_LOW'] = "Potential higher low forming"
+
+    # 10. EMA SUPPORT BOUNCE
+    # Price bouncing off EMA21 support
+    if price > ema_21 and ema_9 > ema_21 and bb_pos < 0.35:
+        patterns.append('EMA_SUPPORT')
+        bullish_score += 15
+        pattern_details['EMA_SUPPORT'] = "Holding EMA21 support"
+
+    # 11. MOMENTUM SHIFT (4h down, 1h up)
+    # Short-term recovery while still in 4h downtrend
+    if mom_4h < -1.5 and mom_1h > 0.5:
+        patterns.append('MOM_SHIFT_UP')
+        bullish_score += 20
+        pattern_details['MOM_SHIFT_UP'] = f"1h recovery ({mom_1h:+.1f}%) vs 4h ({mom_4h:+.1f}%)"
+
+    # 12. TRIPLE OVERSOLD
+    # Multiple indicators all oversold together
+    oversold_count = sum([rsi < 30, stoch < 20, bb_pos < 0.15, vwap_dev < -2])
+    if oversold_count >= 3:
+        patterns.append('TRIPLE_OVERSOLD')
+        bullish_score += 25
+        pattern_details['TRIPLE_OVERSOLD'] = f"{oversold_count} indicators oversold"
+
+    # 13. BULLISH ENGULFING (approximation with momentum)
+    # Strong reversal candle pattern
+    if mom_1h > 1.0 and rsi < 45 and volume_ratio > 1.5:
+        patterns.append('BULL_ENGULF')
+        bullish_score += 20
+        pattern_details['BULL_ENGULF'] = f"Strong reversal candle +{mom_1h:.1f}%"
+
+    # 14. HAMMER PATTERN (approximation)
+    # Price near low but closing higher with volume
+    price_range = high - low if high > low else 1
+    if low > 0 and price > 0:
+        wick_ratio = (price - low) / price_range if price_range > 0 else 0
+        if wick_ratio > 0.6 and rsi < 40 and mom_1h > 0:
+            patterns.append('HAMMER')
+            bullish_score += 20
+            pattern_details['HAMMER'] = "Hammer candle pattern"
+
+    # ============ BEARISH PATTERNS ============
+
+    # 1. RSI BEARISH DIVERGENCE
+    if rsi > 60 and rsi < rsi_prev and mom_1h > 0:
+        patterns.append('RSI_BEAR_DIV')
+        bearish_score += 25
+        pattern_details['RSI_BEAR_DIV'] = f"RSI falling ({rsi_prev:.0f}→{rsi:.0f}) while price rising"
+
+    # 2. STOCH RSI HOOK DOWN FROM OVERBOUGHT
+    if stoch > 80 and stoch < stoch_prev and stoch_prev > 85:
+        patterns.append('STOCH_HOOK_DOWN')
+        bearish_score += 20
+        pattern_details['STOCH_HOOK_DOWN'] = f"Stoch reversing from {stoch_prev:.0f}"
+
+    # 3. MACD BEARISH CROSSOVER
+    if macd < macd_signal and macd_hist < 0 and macd_hist_prev >= 0:
+        patterns.append('MACD_CROSS_DOWN')
+        bearish_score += 20
+        pattern_details['MACD_CROSS_DOWN'] = "MACD crossed below signal"
+
+    # 4. BOLLINGER BAND REJECTION
+    if bb_pos > 0.9 and mom_1h < 0 and volume_ratio > 1.0:
+        patterns.append('BB_REJECTION')
+        bearish_score += 25
+        pattern_details['BB_REJECTION'] = "Rejected from BB top"
+
+    # 5. LOWER HIGH FORMING
+    if bb_pos < 0.85 and bb_pos > 0.6 and rsi < rsi_prev and stoch < stoch_prev:
+        patterns.append('LOWER_HIGH')
+        bearish_score += 15
+        pattern_details['LOWER_HIGH'] = "Potential lower high forming"
+
+    # 6. TRIPLE OVERBOUGHT
+    overbought_count = sum([rsi > 70, stoch > 80, bb_pos > 0.85, vwap_dev > 2])
+    if overbought_count >= 3:
+        patterns.append('TRIPLE_OVERBOUGHT')
+        bearish_score += 25
+        pattern_details['TRIPLE_OVERBOUGHT'] = f"{overbought_count} indicators overbought"
+
+    # 7. BEARISH ENGULFING
+    if mom_1h < -1.0 and rsi > 55 and volume_ratio > 1.5:
+        patterns.append('BEAR_ENGULF')
+        bearish_score += 20
+        pattern_details['BEAR_ENGULF'] = f"Strong reversal candle {mom_1h:.1f}%"
+
+    # ============ CALCULATE SIGNAL STRENGTH ============
+
+    # Bonus for multiple aligned patterns
+    if len([p for p in patterns if 'BULL' in p or 'UP' in p or 'BOUNCE' in p or 'HAMMER' in p or 'OVERSOLD' in p or 'HIGHER' in p or 'SUPPORT' in p or 'RECLAIM' in p or 'CLIMAX' in p]) >= 3:
+        bullish_score += 15  # Multi-pattern bonus
+
+    if len([p for p in patterns if 'BEAR' in p or 'DOWN' in p or 'REJECTION' in p or 'OVERBOUGHT' in p or 'LOWER' in p]) >= 3:
+        bearish_score += 15
+
+    # Determine final signal
+    if bullish_score >= 50 and bullish_score > bearish_score + 20:
+        signal = 'STRONG_BUY'
+    elif bullish_score >= 35 and bullish_score > bearish_score:
+        signal = 'BUY'
+    elif bearish_score >= 50 and bearish_score > bullish_score + 20:
+        signal = 'STRONG_SELL'
+    elif bearish_score >= 35 and bearish_score > bullish_score:
+        signal = 'SELL'
+    else:
+        signal = 'HOLD'
+
+    return {
+        'patterns': patterns,
+        'bullish_score': bullish_score,
+        'bearish_score': bearish_score,
+        'signal': signal,
+        'strength': max(bullish_score, bearish_score),
+        'details': pattern_details,
+        'pattern_count': len(patterns)
+    }
+
+
+def calculate_confluence_score(analysis: dict, strategy: dict = None) -> dict:
+    """
+    ADVANCED CONFLUENCE SYSTEM
+    Calculates a smart entry score based on multiple aligned signals.
+    Only triggers when multiple independent indicators agree.
+    """
+    rsi = analysis.get('rsi', 50)
+    stoch = analysis.get('stoch_rsi', 50)
+    bb_pos = analysis.get('bb_position', 0.5)
+    mom_1h = analysis.get('momentum_1h', 0)
+    mom_4h = analysis.get('momentum_4h', 0)
+    volume_ratio = analysis.get('volume_ratio', 1.0)
+    trend = analysis.get('trend', 'neutral')
+    vwap_dev = analysis.get('vwap_deviation', 0)
+
+    # Get market regime and reversal patterns
+    regime = detect_market_regime(analysis)
+    reversal = detect_reversal_pattern(analysis)
+
+    # ============ BULLISH CONFLUENCE ============
+    bullish_signals = 0
+    bullish_reasons = []
+
+    # Category 1: Oversold indicators (need 2+ to confirm)
+    oversold_count = 0
+    if rsi < 35:
+        oversold_count += 1
+        bullish_reasons.append(f"RSI={rsi:.0f}")
+    if stoch < 30:
+        oversold_count += 1
+        bullish_reasons.append(f"Stoch={stoch:.0f}")
+    if bb_pos < 0.2:
+        oversold_count += 1
+        bullish_reasons.append(f"BB={bb_pos:.0%}")
+    if vwap_dev < -2:
+        oversold_count += 1
+        bullish_reasons.append(f"VWAP={vwap_dev:.1f}%")
+
+    if oversold_count >= 2:
+        bullish_signals += oversold_count * 10
+
+    # Category 2: Momentum turning up
+    if mom_1h > 0 and mom_4h < 0:  # Short-term recovery
+        bullish_signals += 15
+        bullish_reasons.append(f"MomShift")
+    elif mom_1h > 0.2:
+        bullish_signals += 10
+        bullish_reasons.append(f"Mom+")
+
+    # Category 3: Volume confirmation
+    if volume_ratio > 1.3 and mom_1h > 0:
+        bullish_signals += 15
+        bullish_reasons.append(f"Vol={volume_ratio:.1f}x")
+
+    # Category 4: Trend support
+    if trend == 'bullish':
+        bullish_signals += 10
+        bullish_reasons.append("Trend↑")
+    elif trend == 'neutral' and mom_1h > 0:
+        bullish_signals += 5
+
+    # Category 5: Reversal patterns
+    if reversal['bullish_score'] > 30:
+        bullish_signals += reversal['bullish_score'] // 2
+        bullish_reasons.extend(reversal['patterns'][:2])
+
+    # Category 6: Market regime bonus
+    if regime['regime'] == 'EXTREME' and regime['direction'] == 'OVERSOLD':
+        bullish_signals += 20
+        bullish_reasons.append("Extreme↓")
+
+    # ============ BEARISH PENALTIES ============
+    # Reduce score if bearish signals present
+    if rsi > 70:
+        bullish_signals -= 20
+    if mom_1h < -1:
+        bullish_signals -= 15
+    if trend == 'bearish' and mom_4h < -2:
+        bullish_signals -= 25
+    if regime['regime'] == 'VOLATILE' and mom_1h < 0:
+        bullish_signals -= 15
+
+    # ============ FINAL SCORE ============
+    score = max(0, min(100, bullish_signals))
+
+    # Determine action
+    if score >= 60:
+        action = 'STRONG_BUY'
+        min_confirmations = 4
+    elif score >= 45:
+        action = 'BUY'
+        min_confirmations = 3
+    elif score >= 30:
+        action = 'WEAK_BUY'
+        min_confirmations = 2
+    else:
+        action = 'NO_ENTRY'
+        min_confirmations = 0
+
+    # Final check: must have minimum unique confirmations
+    actual_confirmations = len(bullish_reasons)
+    if actual_confirmations < min_confirmations:
+        action = 'NO_ENTRY'
+        score = min(score, 25)
+
+    return {
+        'score': score,
+        'action': action,
+        'confirmations': actual_confirmations,
+        'min_required': min_confirmations,
+        'reasons': bullish_reasons,
+        'regime': regime['regime'],
+        'reversal_patterns': reversal['patterns']
+    }
+
+
 def get_best_entry_score(analysis: dict, strategy: dict, portfolio: dict) -> dict:
     """
-    Calculate overall entry quality score combining all factors.
-    Returns dict with score (0-100), factors, and recommendation
-    RELAXED: Higher base score, less penalties
+    Calculate overall entry quality using advanced confluence system.
     """
-    score = 60  # Base score (was 50)
-    factors = []
+    # Use the new confluence system
+    confluence = calculate_confluence_score(analysis, strategy)
 
-    # 1. RSI quality - RELAXED penalties
-    rsi = analysis.get('rsi', 50)
-    if rsi < 30:
-        score += 20
-        factors.append(f"RSI oversold ({rsi:.0f}): +20")
-    elif rsi < 45:  # Was 40
-        score += 10
-        factors.append(f"RSI low ({rsi:.0f}): +10")
-    elif rsi > 75:  # Was 70
-        score -= 15  # Was -20
-        factors.append(f"RSI overbought ({rsi:.0f}): -15")
-    elif rsi > 65:  # Was 60
-        score -= 5  # Was -10
-        factors.append(f"RSI high ({rsi:.0f}): -5")
+    # Map to old format for compatibility
+    score = confluence['score']
 
-    # 2. Trend alignment (0-15 points)
-    trend_ok, _ = check_trend_alignment(analysis, strategy)
-    if trend_ok:
-        score += 15
-        factors.append("Trend aligned: +15")
-    else:
-        score -= 15
-        factors.append("Trend not aligned: -15")
-
-    # 3. Volume (0-10 points)
-    volume_ratio = analysis.get('volume_ratio', 1.0)
-    if volume_ratio > 1.5:
-        score += 10
-        factors.append(f"High volume ({volume_ratio:.1f}x): +10")
-    elif volume_ratio < 0.7:
-        score -= 10
-        factors.append(f"Low volume ({volume_ratio:.1f}x): -10")
-
-    # 4. Momentum (0-10 points)
-    mom_1h = analysis.get('momentum_1h', 0)
-    if -2 < mom_1h < 2:
-        score += 5
-        factors.append(f"Stable momentum ({mom_1h:.1f}%): +5")
-    elif mom_1h > 5:
-        score -= 10
-        factors.append(f"Already pumped ({mom_1h:.1f}%): -10")
-
-    # 5. Win streak bonus (0-10 points)
-    win_bonus = calculate_win_streak_bonus(portfolio)
-    if win_bonus > 1.2:
-        score += 10
-        factors.append(f"Win streak bonus ({win_bonus:.1f}x): +10")
-
-    # 6. Loss cooldown penalty
-    should_pause, _ = check_loss_cooldown(portfolio)
-    if should_pause:
-        score -= 30
-        factors.append("Loss cooldown active: -30")
-
-    # Clamp score
-    score = max(0, min(100, score))
-
-    # Recommendation - RELAXED thresholds
-    if score >= 65:  # Was 70
+    if confluence['action'] == 'STRONG_BUY':
         recommendation = "STRONG_BUY"
-    elif score >= 50:  # Was 55
+    elif confluence['action'] == 'BUY':
         recommendation = "BUY"
-    elif score >= 40:  # Was 45
+    elif confluence['action'] == 'WEAK_BUY':
         recommendation = "NEUTRAL"
-    elif score >= 25:  # Was 30
-        recommendation = "WEAK"
     else:
         recommendation = "SKIP"
 
     return {
         'score': score,
-        'factors': factors,
-        'recommendation': recommendation
+        'factors': confluence['reasons'],
+        'recommendation': recommendation,
+        'confluence': confluence
     }
+
+
+# ============ POSITION ROTATION ============
+
+def find_worst_position(portfolio: dict, current_prices: dict = None) -> tuple:
+    """
+    Find the worst performing position in a portfolio.
+    Returns (symbol, position, pnl_pct) or (None, None, 0) if no positions.
+    """
+    positions = portfolio.get('positions', {})
+    if not positions:
+        return (None, None, 0)
+
+    worst_symbol = None
+    worst_pos = None
+    worst_pnl = float('inf')
+
+    for symbol, pos in positions.items():
+        # Skip shorts (handled differently)
+        if pos.get('type') == 'SHORT':
+            continue
+
+        entry_price = pos.get('entry_price', 0)
+        if entry_price <= 0:
+            continue
+
+        # Get current price
+        current_price = pos.get('current_price', entry_price)
+        if current_prices and symbol in current_prices:
+            current_price = current_prices[symbol]
+
+        # Calculate PnL %
+        pnl_pct = ((current_price - entry_price) / entry_price) * 100
+
+        if pnl_pct < worst_pnl:
+            worst_pnl = pnl_pct
+            worst_symbol = symbol
+            worst_pos = pos
+
+    return (worst_symbol, worst_pos, worst_pnl)
+
+
+def should_rotate_position(portfolio: dict, new_opportunity_score: int, analysis: dict, strategy: dict) -> tuple:
+    """
+    Determine if we should close worst position for a better opportunity.
+    Returns (should_rotate, worst_symbol, reason)
+    """
+    config = portfolio.get('config', {})
+
+    # Check if rotation is enabled (default: True for aggressive strategies)
+    rotation_enabled = config.get('position_rotation', True)
+    if not rotation_enabled:
+        return (False, None, "Rotation disabled")
+
+    # Find worst position
+    worst_symbol, worst_pos, worst_pnl = find_worst_position(portfolio)
+    if not worst_symbol:
+        return (False, None, "No positions to rotate")
+
+    # Rotation thresholds
+    min_score_advantage = config.get('rotation_min_score', 25)  # New opp must be 25+ better
+    max_loss_to_keep = config.get('rotation_max_loss', -3)  # Auto-rotate if position is -3%+
+
+    # Case 1: Worst position is at significant loss - always rotate for better opp
+    if worst_pnl <= max_loss_to_keep and new_opportunity_score >= 50:
+        return (True, worst_symbol, f"Rotating {worst_symbol} ({worst_pnl:.1f}%) for better opportunity (score: {new_opportunity_score})")
+
+    # Case 2: New opportunity is significantly better
+    # Estimate worst position's "score" based on its current state
+    worst_score = max(0, 50 + worst_pnl * 2)  # Rough estimate: 0% = 50, -5% = 40, +5% = 60
+
+    score_advantage = new_opportunity_score - worst_score
+    if score_advantage >= min_score_advantage:
+        return (True, worst_symbol, f"Rotating {worst_symbol} (score ~{worst_score:.0f}) for better opportunity (score: {new_opportunity_score})")
+
+    return (False, None, f"Not worth rotating (advantage: {score_advantage:.0f} < {min_score_advantage})")
 
 
 # ============ PORTFOLIO HISTORY TRACKING ============
@@ -814,25 +1233,36 @@ STRATEGIES = {
     "god_mode_only": {"auto": True, "buy_on": ["GOD_MODE_BUY"], "sell_on": [], "take_profit": 100, "stop_loss": 30, "tooltip": "Attend le signal parfait (tous indicateurs alignés)"},
     "hodl": {"auto": True, "buy_on": ["ALWAYS_FIRST"], "sell_on": [], "take_profit": 200, "stop_loss": 50, "tooltip": "Buy & Hold long terme - TP élevé"},
 
-    # Indicator-based
-    "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 25, "stop_loss": 15, "tooltip": "RSI <30 buy, >70 sell - oscillateur classique"},
-    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 30, "stop_loss": 20, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
+    # BTC CORRELATION / BETA LAG STRATEGIES (Long only)
+    "btc_beta_lag": {"auto": True, "use_btc_lag": True, "min_btc_gain": 1.0, "max_alt_gain": 0.3, "take_profit": 12, "stop_loss": 6, "tooltip": "Achète altcoins en retard sur BTC (BTC +1%, alt <0.3%)"},
+    "btc_beta_lag_aggressive": {"auto": True, "use_btc_lag": True, "min_btc_gain": 0.5, "max_alt_gain": 0.1, "take_profit": 8, "stop_loss": 4, "tooltip": "Beta lag agressif - écarts plus petits"},
+    "btc_beta_lag_safe": {"auto": True, "use_btc_lag": True, "min_btc_gain": 2.0, "max_alt_gain": 0.5, "take_profit": 15, "stop_loss": 8, "tooltip": "Beta lag conservateur - gros écarts seulement"},
 
-    # DEGEN STRATEGIES - Fast exits
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 2, "tooltip": "Scalping rapide - petits gains fréquents"},
-    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
-    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 15, "stop_loss": 8, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
-    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 25, "stop_loss": 12, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
+    # SHORT STRATEGIES (Paper shorting) - DAY TRADING (TP 8-12%, SL 4-6%)
+    "btc_beta_lag_short": {"auto": True, "use_btc_lag_short": True, "min_btc_drop": 1.0, "max_alt_drop": 0.3, "take_profit": 8, "stop_loss": 4, "can_short": True, "tooltip": "SHORT altcoins en retard sur baisse BTC"},
+    "rsi_short": {"auto": True, "use_rsi_short": True, "overbought": 75, "take_profit": 10, "stop_loss": 5, "can_short": True, "tooltip": "SHORT quand RSI > 75 + patterns bearish"},
+    "rsi_short_aggressive": {"auto": True, "use_rsi_short": True, "overbought": 70, "take_profit": 6, "stop_loss": 3, "can_short": True, "tooltip": "SHORT agressif RSI > 70"},
+    "mean_reversion_short": {"auto": True, "use_mean_rev_short": True, "std_dev": 2.0, "take_profit": 8, "stop_loss": 4, "can_short": True, "tooltip": "SHORT les pumps excessifs (+2 std dev)"},
 
-    # SNIPER STRATEGIES - ULTRA CONSERVATIVE (learned from losses)
-    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 20, "min_liquidity": 300000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 3, "tooltip": "Snipe tokens DEX - liquidité $300k+, risque faible"},
-    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 200000, "take_profit": 18, "stop_loss": 10, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe DEX modéré - liquidité $200k+"},
-    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 150000, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 1.5, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe agressif - liquidité $150k+, high risk"},
+    # Indicator-based - SWING (TP 15-20%, SL 8-10%)
+    "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 18, "stop_loss": 9, "tooltip": "RSI <30 buy, >70 sell - oscillateur classique"},
+    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
 
-    # QUICK FLIP ONLY - Very short holds
-    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 150000, "take_profit": 12, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 3, "tooltip": "Quick flip - sort en 1h max"},
-    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 100000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 5, "tooltip": "Spray & pray - plusieurs petites positions"},
-    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 100000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 0.5, "allocation_percent": 1, "max_positions": 3, "tooltip": "Ultra quick flip - 30min max hold"},
+    # DEGEN STRATEGIES - Fast exits (SCALP/DAY)
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "max_hold_hours": 2, "tooltip": "Scalping rapide - petits gains fréquents"},
+    "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 7, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
+    "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
+    "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
+
+    # SNIPER STRATEGIES - QUICK FLIP (TP 8-15%, SL 4-8%)
+    "sniper_safe": {"auto": True, "use_sniper": True, "max_risk": 20, "min_liquidity": 300000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 3, "tooltip": "Snipe tokens DEX - liquidité $300k+, risque faible"},
+    "sniper_degen": {"auto": True, "use_sniper": True, "max_risk": 30, "min_liquidity": 200000, "take_profit": 12, "stop_loss": 6, "max_hold_hours": 2, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe DEX modéré - liquidité $200k+"},
+    "sniper_yolo": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 150000, "take_profit": 15, "stop_loss": 8, "max_hold_hours": 1.5, "allocation_percent": 1, "max_positions": 5, "tooltip": "Snipe agressif - liquidité $150k+, high risk"},
+
+    # QUICK FLIP ONLY - Very short holds (TP 5-10%, SL 2.5-5%)
+    "sniper_all_in": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 150000, "take_profit": 8, "stop_loss": 4, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 3, "tooltip": "Quick flip - sort en 1h max"},
+    "sniper_spray": {"auto": True, "use_sniper": True, "max_risk": 40, "min_liquidity": 100000, "take_profit": 10, "stop_loss": 5, "max_hold_hours": 1, "allocation_percent": 1, "max_positions": 5, "tooltip": "Spray & pray - plusieurs petites positions"},
+    "sniper_quickflip": {"auto": True, "use_sniper": True, "max_risk": 35, "min_liquidity": 100000, "take_profit": 6, "stop_loss": 3, "max_hold_hours": 0.5, "allocation_percent": 1, "max_positions": 3, "tooltip": "Ultra quick flip - 30min max hold"},
 
     # WHALE COPY TRADING
     "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48, "tooltip": "Copie GCR - légendaire trader crypto"},
@@ -858,202 +1288,202 @@ STRATEGIES = {
     "legend_ptj": {"auto": True, "use_whale": True, "whale_ids": ["legend_ptj"], "take_profit": 40, "stop_loss": 20, "tooltip": "Style Paul Tudor Jones - macro + technique"},
     "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20, "tooltip": "Style Bill Ackman - activist investing"},
 
-    # EMA Crossover
-    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 15, "stop_loss": 7, "tooltip": "EMA 9/21 crossover - trend following classique"},
-    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 20, "stop_loss": 10, "tooltip": "EMA 12/26 crossover - moins de faux signaux"},
+    # EMA Crossover - DAY/SWING (TP 12-18%, SL 6-9%)
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 12, "stop_loss": 6, "tooltip": "EMA 9/21 crossover - trend following classique"},
+    "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 18, "stop_loss": 9, "tooltip": "EMA 12/26 crossover - moins de faux signaux"},
 
-    # VWAP Strategy
-    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Achète sous VWAP, vend au-dessus"},
-    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 12, "stop_loss": 6, "tooltip": "Suit la tendance relative au VWAP"},
+    # VWAP Strategy - INTRADAY (TP 5-10%, SL 2.5-5%)
+    "vwap_bounce": {"auto": True, "use_vwap": True, "deviation": 1.5, "take_profit": 5, "stop_loss": 2.5, "tooltip": "Achète sous VWAP, vend au-dessus"},
+    "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 8, "stop_loss": 4, "tooltip": "Suit la tendance relative au VWAP"},
 
-    # Supertrend
-    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 15, "stop_loss": 8, "tooltip": "Supertrend ATR - support/résistance dynamique"},
-    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Supertrend rapide - signaux fréquents"},
+    # Supertrend - DAY TRADING (TP 10-15%, SL 5-7%)
+    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 14, "stop_loss": 7, "tooltip": "Supertrend ATR - support/résistance dynamique"},
+    "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Supertrend rapide - signaux fréquents"},
 
-    # Stochastic RSI
-    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Stoch RSI - momentum oscillator"},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI agressif - seuils relaxés"},
+    # Stochastic RSI - DAY TRADING (TP 8-12%, SL 4-6%)
+    "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - momentum oscillator"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 7, "stop_loss": 3.5, "tooltip": "Stoch RSI agressif - seuils relaxés"},
 
-    # Breakout
-    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 20, "stop_loss": 8, "tooltip": "Breakout des ranges avec volume"},
-    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Breakout rapide - confirmation volume forte"},
+    # Breakout - SWING (TP 15-20%, SL 7-10%)
+    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout des ranges avec volume"},
+    "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Breakout rapide - confirmation volume forte"},
 
-    # Mean Reversion
-    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20, "take_profit": 10, "stop_loss": 5, "tooltip": "Retour à la moyenne - achète les excès"},
-    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 8, "stop_loss": 4, "tooltip": "Mean reversion serrée - trades fréquents"},
+    # Mean Reversion - SHORT TERM (TP 6-10%, SL 3-5%)
+    "mean_reversion": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "period": 20, "take_profit": 8, "stop_loss": 4, "tooltip": "Retour à la moyenne - achète les excès"},
+    "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 6, "stop_loss": 3, "tooltip": "Mean reversion serrée - trades fréquents"},
 
-    # Grid Trading
-    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 8, "stop_loss": 4, "tooltip": "Grille de niveaux - range trading"},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 3, "tooltip": "Grille serrée - micro profits"},
+    # Grid Trading - RANGE (TP 4-6%, SL 2-3%)
+    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 3, "tooltip": "Grille de niveaux - range trading"},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 4, "stop_loss": 2, "tooltip": "Grille serrée - micro profits"},
 
     # DCA Accumulator
     "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10, "tooltip": "DCA sur dips de 3%+"},
     "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0, "take_profit": 12, "stop_loss": 8, "tooltip": "DCA agressif - achète dès 2% dip"},
 
-    # Ichimoku Cloud
-    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 20, "stop_loss": 10, "tooltip": "Ichimoku classique - système complet"},
-    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 15, "stop_loss": 8, "tooltip": "Ichimoku rapide - périodes réduites"},
-    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 8, "stop_loss": 4, "tooltip": "Ichimoku scalping + filtre RSI"},
-    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 25, "stop_loss": 12, "tooltip": "Ichimoku swing - trades journaliers"},
-    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 35, "stop_loss": 15, "tooltip": "Ichimoku long terme - position trading"},
-    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 25, "stop_loss": 10, "tooltip": "Trade le breakout du nuage Kumo"},
-    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Tenkan/Kijun crossover"},
-    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Confirmation Chikou Span"},
-    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 12, "stop_loss": 6, "tooltip": "Ichimoku + RSI momentum"},
-    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 30, "stop_loss": 12, "tooltip": "Ichimoku - tous signaux requis"},
+    # Ichimoku Cloud - SWING/POSITION (different timeframes)
+    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 18, "stop_loss": 9, "tooltip": "Ichimoku classique - système complet"},
+    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 12, "stop_loss": 6, "tooltip": "Ichimoku rapide - périodes réduites"},
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 5, "stop_loss": 2.5, "tooltip": "Ichimoku scalping + filtre RSI"},
+    "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 22, "stop_loss": 11, "tooltip": "Ichimoku swing - trades journaliers"},
+    "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 40, "stop_loss": 18, "tooltip": "Ichimoku long terme - position trading"},
+    "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Trade le breakout du nuage Kumo"},
+    "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 15, "stop_loss": 7, "tooltip": "Tenkan/Kijun crossover"},
+    "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Confirmation Chikou Span"},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 8, "stop_loss": 4, "tooltip": "Ichimoku + RSI momentum"},
+    "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 28, "stop_loss": 14, "tooltip": "Ichimoku - tous signaux requis"},
 
     # Martingale
     "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50, "tooltip": "Martingale x2 - RISQUE TRÈS ÉLEVÉ"},
     "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35, "tooltip": "Martingale modérée x1.5 - risque élevé"},
 
-    # Funding Rate Strategies
-    "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 15, "stop_loss": 8, "tooltip": "Contre le funding rate extrême"},
-    "funding_extreme": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 20, "stop_loss": 10, "tooltip": "Funding rate très extrême seulement"},
+    # Funding Rate Strategies - DAY TRADING (TP 10-15%, SL 5-7%)
+    "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 12, "stop_loss": 6, "tooltip": "Contre le funding rate extrême"},
+    "funding_extreme": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 16, "stop_loss": 8, "tooltip": "Funding rate très extrême seulement"},
 
-    # Open Interest Strategies
-    "oi_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout avec hausse Open Interest"},
-    "oi_divergence": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence prix/OI"},
+    # Open Interest Strategies - DAY TRADING (TP 12-16%, SL 6-8%)
+    "oi_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 14, "stop_loss": 7, "tooltip": "Breakout avec hausse Open Interest"},
+    "oi_divergence": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Divergence prix/OI"},
 
-    # Combined Funding + OI
-    "funding_oi_combo": {"auto": True, "use_breakout": True, "use_mean_rev": True, "take_profit": 15, "stop_loss": 8, "tooltip": "Combo Funding + Open Interest"},
+    # Combined Funding + OI - DAY TRADING
+    "funding_oi_combo": {"auto": True, "use_breakout": True, "use_mean_rev": True, "take_profit": 12, "stop_loss": 6, "tooltip": "Combo Funding + Open Interest"},
 
-    # Bollinger Squeeze
-    "bollinger_squeeze": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 15, "stop_loss": 8, "tooltip": "Squeeze Bollinger - bandes serrées avant explosion"},
-    "bollinger_squeeze_tight": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "Squeeze rapide - breakout imminent"},
+    # Bollinger Squeeze - DAY TRADING (TP 10-14%, SL 5-7%)
+    "bollinger_squeeze": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 12, "stop_loss": 6, "tooltip": "Squeeze Bollinger - bandes serrées avant explosion"},
+    "bollinger_squeeze_tight": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 8, "stop_loss": 4, "tooltip": "Squeeze rapide - breakout imminent"},
 
-    # RSI Divergence
-    "rsi_divergence": {"auto": True, "use_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI/prix - reversal signal"},
-    "rsi_divergence_fast": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 10, "stop_loss": 5, "tooltip": "Divergence RSI rapide"},
+    # RSI Divergence - DAY TRADING (TP 10-14%, SL 5-7%)
+    "rsi_divergence": {"auto": True, "use_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence RSI/prix - reversal signal"},
+    "rsi_divergence_fast": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 8, "stop_loss": 4, "tooltip": "Divergence RSI rapide"},
 
-    # ADX Trend
-    "adx_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 18, "stop_loss": 9, "tooltip": "ADX fort - suit les tendances établies"},
-    "adx_strong": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 25, "stop_loss": 12, "tooltip": "ADX très fort - tendances puissantes"},
+    # ADX Trend - SWING (TP 14-20%, SL 7-10%)
+    "adx_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 14, "stop_loss": 7, "tooltip": "ADX fort - suit les tendances établies"},
+    "adx_strong": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 20, "stop_loss": 10, "tooltip": "ADX très fort - tendances puissantes"},
 
-    # MACD
-    "macd_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "Reversal MACD - changement de momentum"},
-    "macd_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 15, "stop_loss": 8, "tooltip": "MACD signal crossover"},
+    # MACD - DAY TRADING (TP 8-12%, SL 4-6%)
+    "macd_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Reversal MACD - changement de momentum"},
+    "macd_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 12, "stop_loss": 6, "tooltip": "MACD signal crossover"},
 
-    # Parabolic SAR
-    "parabolic_sar": {"auto": True, "use_supertrend": True, "period": 10, "take_profit": 15, "stop_loss": 8, "tooltip": "Parabolic SAR - stop & reverse"},
-    "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 10, "stop_loss": 5, "tooltip": "Parabolic SAR rapide"},
+    # Parabolic SAR - DAY TRADING (TP 10-14%, SL 5-7%)
+    "parabolic_sar": {"auto": True, "use_supertrend": True, "period": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "Parabolic SAR - stop & reverse"},
+    "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 8, "stop_loss": 4, "tooltip": "Parabolic SAR rapide"},
 
-    # Williams %R
-    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "Williams %R - momentum oscillator"},
-    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 15, "stop_loss": 8, "tooltip": "Williams %R extrême - niveaux stricts"},
+    # Williams %R - DAY TRADING (TP 8-12%, SL 4-6%)
+    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Williams %R - momentum oscillator"},
+    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 12, "stop_loss": 6, "tooltip": "Williams %R extrême - niveaux stricts"},
 
-    # Donchian Channel
-    "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 20, "stop_loss": 10, "tooltip": "Donchian 20 - breakout channel"},
-    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "Donchian rapide - breakout court"},
+    # Donchian Channel - SWING (TP 14-18%, SL 7-9%)
+    "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 16, "stop_loss": 8, "tooltip": "Donchian 20 - breakout channel"},
+    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 10, "stop_loss": 5, "tooltip": "Donchian rapide - breakout court"},
 
-    # Keltner Channel
-    "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Keltner Channel - bandes ATR"},
-    "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Keltner serré - range trading"},
+    # Keltner Channel - DAY TRADING (TP 8-12%, SL 4-6%)
+    "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Keltner Channel - bandes ATR"},
+    "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 6, "stop_loss": 3, "tooltip": "Keltner serré - range trading"},
 
-    # CCI Momentum
-    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "CCI momentum - trend strength"},
-    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 18, "stop_loss": 9, "tooltip": "CCI extrême - reversals"},
+    # CCI Momentum - DAY TRADING (TP 8-14%, SL 4-7%)
+    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "CCI momentum - trend strength"},
+    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 14, "stop_loss": 7, "tooltip": "CCI extrême - reversals"},
 
-    # Aroon Indicator
-    "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Aroon - identifie nouvelles tendances"},
-    "aroon_fast": {"auto": True, "use_ema_cross": True, "fast_ema": 7, "take_profit": 10, "stop_loss": 5, "tooltip": "Aroon rapide - tendances courtes"},
+    # Aroon Indicator - DAY TRADING (TP 10-14%, SL 5-7%)
+    "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Aroon - identifie nouvelles tendances"},
+    "aroon_fast": {"auto": True, "use_ema_cross": True, "fast_ema": 7, "take_profit": 8, "stop_loss": 4, "tooltip": "Aroon rapide - tendances courtes"},
 
-    # OBV Trend
-    "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 15, "stop_loss": 8, "tooltip": "OBV - On Balance Volume trend"},
-    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "OBV rapide - volume spikes"},
+    # OBV Trend - DAY TRADING (TP 10-14%, SL 5-7%)
+    "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "OBV - On Balance Volume trend"},
+    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "OBV rapide - volume spikes"},
 
-    # Multi-indicator combos
-    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 15, "stop_loss": 8, "tooltip": "Combo RSI + MACD confirmation"},
-    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Combo Bollinger + RSI"},
-    "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Trend + Momentum alignment"},
+    # Multi-indicator combos - DAY/SWING (TP 10-14%, SL 5-7%)
+    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 12, "stop_loss": 6, "tooltip": "Combo RSI + MACD confirmation"},
+    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Combo Bollinger + RSI"},
+    "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Trend + Momentum alignment"},
 
-    # Trailing Stop strategies
-    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2, "tooltip": "Trailing 2% - lock profits vite"},
-    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 3, "tooltip": "Trailing 3% - balance risque/gain"},
-    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 5, "tooltip": "Trailing 5% - laisse courir"},
-    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 1.5, "tooltip": "Ultra tight trailing - micro gains"},
-    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 5, "tooltip": "Trailing swing - gros moves"},
+    # Trailing Stop strategies - SCALPING (TP 3-6%, SL 1.5-3%)
+    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 2, "tooltip": "Trailing 2% - lock profits vite"},
+    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3, "tooltip": "Trailing 3% - balance risque/gain"},
+    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 10, "stop_loss": 5, "tooltip": "Trailing 5% - laisse courir"},
+    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 3, "stop_loss": 1.5, "tooltip": "Ultra tight trailing - micro gains"},
+    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 8, "tooltip": "Trailing swing - gros moves"},
 
-    # Scalping variants
-    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3, "tooltip": "Scalp RSI - quick reversals"},
-    "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "tooltip": "Scalp Bollinger touches"},
-    "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 7, "stop_loss": 3.5, "tooltip": "Scalp MACD crosses"},
+    # Scalping variants - SCALPING (TP 3-6%, SL 1.5-3%)
+    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 2, "tooltip": "Scalp RSI - quick reversals"},
+    "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 3, "stop_loss": 1.5, "tooltip": "Scalp Bollinger touches"},
+    "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "tooltip": "Scalp MACD crosses"},
 
-    # Sector-specific
-    "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "tooltip": "Focus tokens DeFi (AAVE, UNI...)"},
-    "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9, "tooltip": "Focus Layer 2 (ARB, OP, MATIC)"},
-    "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12, "tooltip": "Focus Gaming/Metaverse tokens"},
-    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 25, "stop_loss": 12, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
-    "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15, "tooltip": "Chasse aux memecoins (DOGE, SHIB, PEPE)"},
+    # Sector-specific - SWING (TP 15-25%, SL 7-12%)
+    "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9, "tooltip": "Focus tokens DeFi (AAVE, UNI...)"},
+    "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 16, "stop_loss": 8, "tooltip": "Focus Layer 2 (ARB, OP, MATIC)"},
+    "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 22, "stop_loss": 11, "tooltip": "Focus Gaming/Metaverse tokens"},
+    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 22, "stop_loss": 11, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
+    "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 25, "stop_loss": 12, "tooltip": "Chasse aux memecoins (DOGE, SHIB, PEPE)"},
 
-    # Risk-adjusted
-    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 20, "stop_loss": 10, "tooltip": "DCA conservateur - dips de 5%+ seulement"},
-    "medium_risk_swing": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 18, "stop_loss": 9, "tooltip": "Swing trading risque modéré"},
-    "high_risk_leverage": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 30, "stop_loss": 15, "tooltip": "Style leverage - gros gains/pertes"},
+    # Risk-adjusted - POSITION (varies by risk)
+    "low_risk_dca": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 18, "stop_loss": 9, "tooltip": "DCA conservateur - dips de 5%+ seulement"},
+    "medium_risk_swing": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "take_profit": 16, "stop_loss": 8, "tooltip": "Swing trading risque modéré"},
+    "high_risk_leverage": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 25, "stop_loss": 12, "tooltip": "Style leverage - gros gains/pertes"},
 
-    # Pivot Points
-    "pivot_classic": {"auto": True, "use_grid": True, "grid_size": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Pivots classiques - S1/S2/R1/R2"},
-    "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Pivots Fibonacci - retracements"},
+    # Pivot Points - INTRADAY (TP 6-10%, SL 3-5%)
+    "pivot_classic": {"auto": True, "use_grid": True, "grid_size": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Pivots classiques - S1/S2/R1/R2"},
+    "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Pivots Fibonacci - retracements"},
 
-    # Volume Weighted
-    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 15, "stop_loss": 7, "tooltip": "Breakout avec volume 2x normal"},
-    "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Climax de volume - reversal probable"},
+    # Volume Weighted - DAY TRADING (TP 10-15%, SL 5-7%)
+    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 14, "stop_loss": 7, "tooltip": "Breakout avec volume 2x normal"},
+    "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Climax de volume - reversal probable"},
 
-    # Multi-timeframe
-    "mtf_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 20, "stop_loss": 10, "tooltip": "Multi-timeframe trend alignment"},
-    "mtf_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8, "tooltip": "MTF momentum confirmation"},
+    # Multi-timeframe - SWING (TP 15-20%, SL 8-10%)
+    "mtf_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 18, "stop_loss": 9, "tooltip": "Multi-timeframe trend alignment"},
+    "mtf_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 6, "tooltip": "MTF momentum confirmation"},
 
-    # Range trading
-    "range_sniper": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 8, "stop_loss": 4, "tooltip": "Snipe les bords du range"},
-    "range_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 7, "tooltip": "Attend le breakout du range"},
+    # Range trading - SCALP (TP 5-8%, SL 2.5-4%)
+    "range_sniper": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 6, "stop_loss": 3, "tooltip": "Snipe les bords du range"},
+    "range_breakout": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 12, "stop_loss": 6, "tooltip": "Attend le breakout du range"},
 
-    # Heikin Ashi
-    "heikin_ashi": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "take_profit": 15, "stop_loss": 8, "tooltip": "Heikin Ashi - bougies lissées"},
-    "heikin_ashi_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 6, "tooltip": "HA reversal patterns"},
+    # Heikin Ashi - DAY TRADING (TP 10-15%, SL 5-7%)
+    "heikin_ashi": {"auto": True, "use_ema_cross": True, "use_rsi": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Heikin Ashi - bougies lissées"},
+    "heikin_ashi_reversal": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "HA reversal patterns"},
 
-    # Order flow
-    "orderflow_delta": {"auto": True, "use_breakout": True, "volume_mult": 2.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Delta volume - buy vs sell pressure"},
-    "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Order imbalance detection"},
+    # Order flow - DAY TRADING (TP 8-12%, SL 4-6%)
+    "orderflow_delta": {"auto": True, "use_breakout": True, "volume_mult": 2.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Delta volume - buy vs sell pressure"},
+    "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Order imbalance detection"},
 
-    # Sentiment
-    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Sentiment social - Twitter/Reddit"},
-    "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Fear <20 ou Greed >80 seulement"},
+    # Sentiment - SWING (TP 15-22%, SL 8-11%)
+    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Sentiment social - Twitter/Reddit"},
+    "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 22, "stop_loss": 11, "tooltip": "Fear <20 ou Greed >80 seulement"},
 
     # ICT/SMC STRATEGIES
-    # Fibonacci Retracement
-    "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 15, "stop_loss": 8, "tooltip": "Fib retracement 38.2/50/61.8%"},
-    "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 12, "stop_loss": 6, "tooltip": "Fib agressif - 23.6% entries"},
-    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 20, "stop_loss": 10, "tooltip": "Fib conservateur - 61.8%+ seulement"},
+    # Fibonacci Retracement - SWING (TP 12-18%, SL 6-9%)
+    "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 14, "stop_loss": 7, "tooltip": "Fib retracement 38.2/50/61.8%"},
+    "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 10, "stop_loss": 5, "tooltip": "Fib agressif - 23.6% entries"},
+    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 18, "stop_loss": 9, "tooltip": "Fib conservateur - 61.8%+ seulement"},
 
-    # Volume Profile
-    "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Volume Profile - POC trading"},
-    "volume_profile_vah": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Trade au Value Area High"},
-    "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "Trade au Value Area Low"},
+    # Volume Profile - INTRADAY (TP 6-10%, SL 3-5%)
+    "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Volume Profile - POC trading"},
+    "volume_profile_vah": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Trade au Value Area High"},
+    "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Trade au Value Area Low"},
 
-    # Order Blocks ICT
-    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 15, "stop_loss": 8, "tooltip": "Order block bullish - support institutionnel"},
-    "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 15, "stop_loss": 8, "tooltip": "Order block bearish - résistance instit."},
-    "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Order blocks bull & bear"},
+    # Order Blocks ICT - DAY TRADING (TP 10-15%, SL 5-7%)
+    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 12, "stop_loss": 6, "tooltip": "Order block bullish - support institutionnel"},
+    "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Order block bearish - résistance instit."},
+    "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Order blocks bull & bear"},
 
-    # Fair Value Gaps
-    "fvg_fill": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 10, "stop_loss": 5, "tooltip": "FVG fill - comble les gaps"},
-    "fvg_rejection": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 12, "stop_loss": 6, "tooltip": "FVG rejection - rebond sur gap"},
-    "fvg_aggressive": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 8, "tooltip": "FVG agressif - trade tous les gaps"},
+    # Fair Value Gaps - DAY TRADING (TP 8-12%, SL 4-6%)
+    "fvg_fill": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 8, "stop_loss": 4, "tooltip": "FVG fill - comble les gaps"},
+    "fvg_rejection": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 10, "stop_loss": 5, "tooltip": "FVG rejection - rebond sur gap"},
+    "fvg_aggressive": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 6, "tooltip": "FVG agressif - trade tous les gaps"},
 
-    # Liquidity Sweep/Stop Hunt
-    "liquidity_sweep": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 8, "tooltip": "Liquidity sweep - faux breakdowns"},
-    "liquidity_grab": {"auto": True, "use_dca": True, "dip_threshold": 4.0, "take_profit": 20, "stop_loss": 10, "tooltip": "Liquidity grab - stop hunt puis reversal"},
-    "stop_hunt": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 25, "stop_loss": 12, "tooltip": "Stop hunt recovery - après cascade de SL"},
+    # Liquidity Sweep/Stop Hunt - SWING (TP 12-20%, SL 6-10%)
+    "liquidity_sweep": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 12, "stop_loss": 6, "tooltip": "Liquidity sweep - faux breakdowns"},
+    "liquidity_grab": {"auto": True, "use_dca": True, "dip_threshold": 4.0, "take_profit": 16, "stop_loss": 8, "tooltip": "Liquidity grab - stop hunt puis reversal"},
+    "stop_hunt": {"auto": True, "use_dca": True, "dip_threshold": 5.0, "take_profit": 20, "stop_loss": 10, "tooltip": "Stop hunt recovery - après cascade de SL"},
 
-    # Session Trading
-    "session_asian": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5, "tooltip": "Session Asie - range trading"},
-    "session_london": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Session Londres - breakout matinal"},
-    "session_newyork": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Session NY - volatilité US"},
-    "session_overlap": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 15, "stop_loss": 8, "tooltip": "Overlap London/NY - max volatilité"},
+    # Session Trading - INTRADAY (TP 6-12%, SL 3-6%)
+    "session_asian": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 6, "stop_loss": 3, "tooltip": "Session Asie - range trading"},
+    "session_london": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5, "tooltip": "Session Londres - breakout matinal"},
+    "session_newyork": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 10, "stop_loss": 5, "tooltip": "Session NY - volatilité US"},
+    "session_overlap": {"auto": True, "use_breakout": True, "lookback": 15, "take_profit": 12, "stop_loss": 6, "tooltip": "Overlap London/NY - max volatilité"},
 
-    # RSI Divergence variants
-    "rsi_divergence_bull": {"auto": True, "use_rsi": True, "oversold": 30, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI bullish - reversal haut"},
-    "rsi_divergence_bear": {"auto": True, "use_rsi": True, "overbought": 70, "take_profit": 15, "stop_loss": 8, "tooltip": "Divergence RSI bearish - reversal bas"},
-    "rsi_divergence_hidden": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence cachée - continuation"},
+    # RSI Divergence variants - DAY TRADING (TP 10-14%, SL 5-7%)
+    "rsi_divergence_bull": {"auto": True, "use_rsi": True, "oversold": 30, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence RSI bullish - reversal haut"},
+    "rsi_divergence_bear": {"auto": True, "use_rsi": True, "overbought": 70, "take_profit": 12, "stop_loss": 6, "tooltip": "Divergence RSI bearish - reversal bas"},
+    "rsi_divergence_hidden": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Divergence cachée - continuation"},
 }
 
 # Timeframes per strategy type - optimized for each trading style
@@ -1212,6 +1642,40 @@ def get_fear_greed_index() -> dict:
     except Exception as e:
         debug_log('API', 'Fear&Greed API failed', {'url': url}, error=e)
     return {'value': 50, 'classification': 'Neutral'}  # Default neutral
+
+
+def get_btc_reference() -> dict:
+    """Get BTC price change for beta lag comparison"""
+    global _btc_cache
+    import time
+
+    # Cache for 60 seconds
+    if time.time() - _btc_cache['last_update'] < 60 and _btc_cache['price'] > 0:
+        return _btc_cache
+
+    try:
+        from core.exchange import get_exchange
+        exchange = get_exchange()
+        if exchange:
+            ticker = exchange.fetch_ticker('BTC/USDT')
+            if ticker:
+                _btc_cache['price'] = ticker.get('last', 0)
+                _btc_cache['change_24h'] = ticker.get('percentage', 0) or 0
+                # Estimate 1h change from OHLCV
+                try:
+                    ohlcv = exchange.fetch_ohlcv('BTC/USDT', '1h', limit=2)
+                    if ohlcv and len(ohlcv) >= 2:
+                        prev_close = ohlcv[-2][4]
+                        curr_close = ohlcv[-1][4]
+                        if prev_close > 0:
+                            _btc_cache['change_1h'] = ((curr_close / prev_close) - 1) * 100
+                except:
+                    _btc_cache['change_1h'] = _btc_cache['change_24h'] / 24  # Rough estimate
+                _btc_cache['last_update'] = time.time()
+    except Exception as e:
+        pass  # Keep cached values
+
+    return _btc_cache
 
 
 def get_funding_rate(symbol: str) -> dict:
@@ -1489,6 +1953,7 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     rsi_max = rsi.rolling(window=14).max()
     stoch_rsi = ((rsi - rsi_min) / (rsi_max - rsi_min)) * 100
     indicators['stoch_rsi'] = stoch_rsi.iloc[-1] if not pd.isna(stoch_rsi.iloc[-1]) else 50
+    indicators['stoch_rsi_prev'] = stoch_rsi.iloc[-2] if len(stoch_rsi) > 1 and not pd.isna(stoch_rsi.iloc[-2]) else indicators['stoch_rsi']
     indicators['stoch_rsi_k'] = stoch_rsi.rolling(window=3).mean().iloc[-1] if not pd.isna(stoch_rsi.rolling(window=3).mean().iloc[-1]) else 50
 
     # Bollinger Bands (for mean reversion)
@@ -1574,13 +2039,34 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
     indicators['momentum_1h'] = (closes.iloc[-1] - closes.iloc[-2]) / closes.iloc[-2] * 100
     indicators['momentum_4h'] = (closes.iloc[-1] - closes.iloc[-5]) / closes.iloc[-5] * 100 if len(closes) > 5 else 0
 
-    # Scalping signals (quick reversals) - ULTRA RELAXED pour generer des trades
-    indicators['scalp_buy'] = indicators['rsi'] < 50 and indicators['momentum_1h'] > 0
-    indicators['scalp_sell'] = indicators['rsi'] > 55 and indicators['momentum_1h'] < 0
+    # 24h High/Low for pattern detection
+    indicators['high_24h'] = highs.iloc[-24:].max() if len(highs) >= 24 else highs.max()
+    indicators['low_24h'] = lows.iloc[-24:].min() if len(lows) >= 24 else lows.min()
+    indicators['price_range_24h'] = indicators['high_24h'] - indicators['low_24h']
+    indicators['price_position_24h'] = (closes.iloc[-1] - indicators['low_24h']) / indicators['price_range_24h'] if indicators['price_range_24h'] > 0 else 0.5
 
-    # Momentum signals (riding the wave) - ULTRA RELAXED pour generer des trades
-    indicators['momentum_buy'] = indicators['volume_ratio'] > 1.1 and indicators['momentum_1h'] > 0.15 and indicators['rsi'] < 75
-    indicators['momentum_sell'] = indicators['volume_ratio'] > 1.1 and indicators['momentum_1h'] < -0.15 and indicators['rsi'] > 25
+    # Scalping signals - CONFLUENCE required (multiple conditions)
+    # Buy: RSI low + momentum turning up + not at BB top
+    scalp_buy_conditions = (
+        indicators['rsi'] < 40 and  # Actually oversold, not just below 50
+        indicators['momentum_1h'] > 0.1 and  # Momentum clearly positive
+        indicators['bb_position'] < 0.4 and  # Not at top of BB
+        indicators['stoch_rsi'] < 50  # Stoch also suggests low
+    )
+    indicators['scalp_buy'] = scalp_buy_conditions
+    indicators['scalp_sell'] = indicators['rsi'] > 65 and indicators['momentum_1h'] < -0.2
+
+    # Momentum signals - CONFLUENCE required
+    # Buy: Strong volume + good momentum + RSI not overbought + trend confirmation
+    momentum_buy_conditions = (
+        indicators['volume_ratio'] > 1.5 and  # Strong volume spike, not just 1.1x
+        indicators['momentum_1h'] > 0.3 and  # Clear positive momentum
+        indicators['rsi'] < 60 and  # Not overbought
+        indicators['rsi'] > 30 and  # Not panic selling
+        indicators.get('trend', 'neutral') != 'bearish'  # Trend not against us
+    )
+    indicators['momentum_buy'] = momentum_buy_conditions
+    indicators['momentum_sell'] = indicators['volume_ratio'] > 1.5 and indicators['momentum_1h'] < -0.3 and indicators['rsi'] > 40
 
     # ============ ADDITIONAL INDICATORS FOR MISSING STRATEGIES ============
 
@@ -1824,6 +2310,44 @@ def calculate_indicators(df: pd.DataFrame) -> dict:
         # Hidden bearish divergence (trend continuation)
         if price_now < price_prev and rsi_now > rsi_prev and rsi_now > 50:
             indicators['rsi_hidden_bear_div'] = True
+
+    # ============ ADAPTIVE TP INDICATORS ============
+
+    # ATR as percentage of price (for adaptive TP)
+    tr = pd.concat([highs - lows, abs(highs - closes.shift(1)), abs(lows - closes.shift(1))], axis=1).max(axis=1)
+    atr_14 = tr.rolling(window=14).mean()
+    current_price = closes.iloc[-1]
+    atr_value = atr_14.iloc[-1] if not pd.isna(atr_14.iloc[-1]) else current_price * 0.02
+    indicators['atr'] = atr_value
+    indicators['atr_percent'] = (atr_value / current_price * 100) if current_price > 0 else 2.0
+
+    # Market type detection: choppy vs trending
+    # Uses ADX (already calculated) + EMA crossover frequency
+    adx_value = indicators.get('adx', 20)
+
+    # Count EMA crossovers in last 20 candles (many crossings = choppy)
+    ema_9_series = closes.ewm(span=9).mean()
+    ema_21_series = closes.ewm(span=21).mean()
+    crossovers = 0
+    for i in range(-20, -1):
+        if (ema_9_series.iloc[i] > ema_21_series.iloc[i]) != (ema_9_series.iloc[i+1] > ema_21_series.iloc[i+1]):
+            crossovers += 1
+
+    # Determine market type
+    # ADX < 20 = no trend (choppy)
+    # ADX > 25 = trending
+    # Many crossovers (>4) = very choppy
+    if adx_value < 20 or crossovers > 4:
+        indicators['market_type'] = 'choppy'
+        indicators['market_type_score'] = max(0, 50 - adx_value + crossovers * 5)  # Higher = more choppy
+    elif adx_value > 30 and crossovers < 2:
+        indicators['market_type'] = 'trending'
+        indicators['market_type_score'] = min(100, adx_value + (2 - crossovers) * 10)  # Higher = stronger trend
+    else:
+        indicators['market_type'] = 'mixed'
+        indicators['market_type_score'] = 50
+
+    indicators['ema_crossovers'] = crossovers
 
     return indicators
 
@@ -2141,7 +2665,21 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
 
     elif action == 'SELL':
         if portfolio['balance'].get(asset, 0) > 0:
-            qty = portfolio['balance'][asset]
+            # BUG FIX: Use position quantity instead of balance to prevent overselling
+            # The balance can get corrupted if shared between portfolios
+            if symbol in portfolio['positions']:
+                pos_qty = portfolio['positions'][symbol].get('quantity', 0)
+                balance_qty = portfolio['balance'].get(asset, 0)
+
+                # Use the SMALLER of balance or position to be safe
+                qty = min(pos_qty, balance_qty) if pos_qty > 0 else balance_qty
+
+                # Log warning if there's a discrepancy
+                if abs(balance_qty - pos_qty) > pos_qty * 0.01:  # More than 1% difference
+                    log(f"⚠️ BALANCE MISMATCH: {symbol} balance={balance_qty:.2f} position={pos_qty:.2f} - using {qty:.2f}")
+            else:
+                # No position tracked, use balance (legacy compatibility)
+                qty = portfolio['balance'][asset]
 
             # Apply slippage to price (sell at slightly lower price)
             gross_value = qty * price
@@ -2157,6 +2695,7 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
 
             # Calculate PnL (including fees and slippage)
             pnl = 0
+            entry_price = 0
             if symbol in portfolio['positions']:
                 entry_price = portfolio['positions'][symbol]['entry_price']
                 # Real PnL = what we receive - what we paid (already includes buy fees)
@@ -2178,10 +2717,120 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
                 'fee': fee,
                 'slippage_pct': slippage * 100,
                 'pnl': pnl,
-                'reason': reason
+                'reason': reason,
+                'entry_price': entry_price  # Store entry price for chart display
             }
             record_trade(portfolio, trade)
             return {'success': True, 'message': f"SELL {qty:.6f} {asset} @ ${execution_price:,.2f} | PnL: ${pnl:+,.2f} (fee: ${fee:.2f})"}
+
+    # ============ SHORT SELLING (Paper Trading) ============
+    # SHORT = Open a short position (bet price will go down)
+    # COVER = Close a short position (buy back to close)
+
+    elif action == 'SHORT':
+        if 'short_positions' not in portfolio:
+            portfolio['short_positions'] = {}
+
+        # Don't short if already have a short on this symbol
+        if symbol in portfolio.get('short_positions', {}):
+            return {'success': False, 'message': f"Already short {symbol}"}
+
+        if amount_usdt is None:
+            allocation = portfolio['config'].get('allocation_percent', 10)
+            amount_usdt = portfolio['balance']['USDT'] * (allocation / 100)
+
+        # Need margin (collateral) to short - use 100% margin (1x leverage)
+        margin_required = amount_usdt  # 1x leverage = full collateral
+
+        if portfolio['balance']['USDT'] >= margin_required and amount_usdt > 10:
+            # Apply slippage (short at slightly lower price = worse for us)
+            slippage = calculate_slippage(amount_usdt, is_buy=False)
+            execution_price = price * (1 + slippage)
+
+            # Calculate fee on notional value
+            fee = amount_usdt * FEE_RATE
+            qty = amount_usdt / execution_price
+
+            # Lock margin
+            portfolio['balance']['USDT'] -= margin_required
+            portfolio['total_fees_paid'] += fee
+
+            # Track short position
+            portfolio['short_positions'][symbol] = {
+                'entry_price': execution_price,
+                'quantity': qty,
+                'margin_used': margin_required,
+                'entry_time': timestamp,
+                'lowest_price': execution_price  # For trailing stop on shorts
+            }
+
+            trade = {
+                'timestamp': timestamp,
+                'action': 'SHORT',
+                'symbol': symbol,
+                'price': execution_price,
+                'market_price': price,
+                'quantity': qty,
+                'amount_usdt': amount_usdt,
+                'margin_used': margin_required,
+                'fee': fee,
+                'slippage_pct': slippage * 100,
+                'pnl': 0,
+                'reason': reason
+            }
+            record_trade(portfolio, trade)
+            return {'success': True, 'message': f"SHORT {qty:.6f} {asset} @ ${execution_price:,.2f} (margin: ${margin_required:.2f}, fee: ${fee:.2f})"}
+
+    elif action == 'COVER':
+        # Close short position
+        if 'short_positions' not in portfolio:
+            portfolio['short_positions'] = {}
+
+        if symbol in portfolio.get('short_positions', {}):
+            pos = portfolio['short_positions'][symbol]
+            qty = pos['quantity']
+            entry_price = pos['entry_price']
+            margin_used = pos['margin_used']
+
+            # Apply slippage (cover at slightly higher price = worse for us)
+            slippage = calculate_slippage(qty * price, is_buy=True)
+            execution_price = price * (1 + slippage)
+
+            # Calculate PnL for short: profit if price went DOWN
+            # PnL = (entry_price - exit_price) * quantity
+            gross_pnl = (entry_price - execution_price) * qty
+
+            # Fee on cover
+            cover_value = qty * execution_price
+            fee = cover_value * FEE_RATE
+            portfolio['total_fees_paid'] += fee
+
+            # Net PnL after fee
+            net_pnl = gross_pnl - fee
+
+            # Return margin + PnL to balance
+            portfolio['balance']['USDT'] += margin_used + net_pnl
+
+            # Remove short position
+            del portfolio['short_positions'][symbol]
+
+            trade = {
+                'timestamp': timestamp,
+                'action': 'COVER',
+                'symbol': symbol,
+                'price': execution_price,
+                'market_price': price,
+                'quantity': qty,
+                'amount_usdt': cover_value,
+                'fee': fee,
+                'slippage_pct': slippage * 100,
+                'pnl': net_pnl,
+                'reason': reason
+            }
+            record_trade(portfolio, trade)
+
+            pnl_emoji = "📈" if net_pnl > 0 else "📉"
+            return {'success': True, 'message': f"COVER {qty:.6f} {asset} @ ${execution_price:,.2f} | PnL: ${net_pnl:+,.2f} {pnl_emoji} (fee: ${fee:.2f})"}
 
     return {'success': False, 'message': "No action"}
 
@@ -2221,17 +2870,80 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 highest_price = current_price
 
             # Get TP/SL from strategy or config
-            take_profit = strategy.get('take_profit', config.get('take_profit', 50))
-            stop_loss = strategy.get('stop_loss', config.get('stop_loss', 25))
+            base_take_profit = strategy.get('take_profit', config.get('take_profit', 50))
+            base_stop_loss = strategy.get('stop_loss', config.get('stop_loss', 25))
 
-            # 1. Check trailing stop loss (if in profit)
-            if config.get('use_trailing_stop', True) and pnl_pct > 5:
-                trail_pct = config.get('trailing_stop_pct', 5)
+            # ============ ADAPTIVE TP based on market conditions ============
+            # In choppy markets, reduce TP to capture small waves
+            # In trending markets, keep full TP to ride the trend
+            market_type = analysis.get('market_type', 'mixed') if analysis else 'mixed'
+            atr_pct = analysis.get('atr_percent', 2.0) if analysis else 2.0
+
+            if config.get('use_adaptive_tp', True):  # Enabled by default
+                if market_type == 'choppy':
+                    # Choppy market: reduce TP significantly (min 1.5x ATR or half of base TP)
+                    adaptive_tp = max(atr_pct * 1.5, base_take_profit * 0.4)
+                    take_profit = min(base_take_profit, adaptive_tp)
+                    # Also tighten SL in choppy markets
+                    stop_loss = min(base_stop_loss, max(atr_pct * 1.0, base_stop_loss * 0.6))
+                elif market_type == 'trending':
+                    # Trending market: use full TP, can even extend if strong trend
+                    adx_val = analysis.get('adx', 25) if analysis else 25
+                    if adx_val > 40:  # Very strong trend
+                        take_profit = base_take_profit * 1.2
+                    else:
+                        take_profit = base_take_profit
+                    stop_loss = base_stop_loss
+                else:  # Mixed
+                    # Use ATR-based adjustment
+                    volatility_mult = max(0.6, min(1.2, atr_pct / 2.0))
+                    take_profit = base_take_profit * volatility_mult
+                    stop_loss = base_stop_loss * volatility_mult
+            else:
+                take_profit = base_take_profit
+                stop_loss = base_stop_loss
+
+            # ============ FORCE MINIMUM 1.5:1 REWARD/RISK RATIO ============
+            # This is critical - never risk more than potential reward
+            min_ratio = 1.5
+            if take_profit < stop_loss * min_ratio:
+                # Either increase TP or decrease SL
+                if stop_loss > 5:  # If SL is too wide, tighten it
+                    stop_loss = take_profit / min_ratio
+                else:  # Otherwise extend TP
+                    take_profit = stop_loss * min_ratio
+
+            # 1. Check trailing stop loss (MORE AGGRESSIVE - activate at 2% instead of 5%)
+            # Also check for profit give-back (was up, now giving back gains)
+            trail_activation = config.get('trailing_activation', 2)  # Activate at 2% profit
+            trail_pct = config.get('trailing_stop_pct', 3)  # Trail by 3%
+
+            if config.get('use_trailing_stop', True) and pnl_pct > trail_activation:
                 _, trail_triggered, trail_reason = get_trailing_stop(
                     entry_price, current_price, highest_price, stop_loss, trail_pct
                 )
                 if trail_triggered:
                     return ('SELL', trail_reason)
+
+            # 1b. SECURE PROFIT: Multiple levels to protect gains
+            highest_pnl = ((highest_price - entry_price) / entry_price * 100) if entry_price > 0 else 0
+
+            # Level 1: Was up 2%+, now lost 60% of gains but still positive
+            if highest_pnl >= 2 and pnl_pct < highest_pnl * 0.4 and pnl_pct > 0.5:
+                return ('SELL', f"SECURE PROFIT L1: Was +{highest_pnl:.1f}%, securing +{pnl_pct:.1f}%")
+
+            # Level 2: Was up 4%+, now lost 40% of gains
+            if highest_pnl >= 4 and pnl_pct < highest_pnl * 0.6 and pnl_pct > 1:
+                return ('SELL', f"SECURE PROFIT L2: Was +{highest_pnl:.1f}%, securing +{pnl_pct:.1f}%")
+
+            # Level 3: Was up 6%+, now lost 30% of gains
+            if highest_pnl >= 6 and pnl_pct < highest_pnl * 0.7 and pnl_pct > 2:
+                return ('SELL', f"SECURE PROFIT L3: Was +{highest_pnl:.1f}%, securing +{pnl_pct:.1f}%")
+
+            # Level 4: Momentum reversal - was up, now dropping fast
+            if highest_pnl >= 1.5 and pnl_pct < 0.5 and pnl_pct > 0:
+                # Almost gave back all gains, exit now
+                return ('SELL', f"SECURE PROFIT URGENT: Was +{highest_pnl:.1f}%, now only +{pnl_pct:.1f}%")
 
             # 2. Check partial profit (sell 50% at first target)
             if config.get('use_partial_tp', False):
@@ -2244,9 +2956,11 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                     pos['partial_profit_taken'] = True
                     return ('PARTIAL_SELL', partial_reason)
 
-            # 3. Check take profit (full)
+            # 3. Check take profit (full) - may be adaptive
             if pnl_pct >= take_profit:
-                return ('SELL', f"TP HIT: +{pnl_pct:.1f}% (target: {take_profit}%)")
+                # Show if adaptive TP was used
+                adaptive_note = f" [{market_type}]" if take_profit != base_take_profit else ""
+                return ('SELL', f"TP HIT: +{pnl_pct:.1f}% (target: {take_profit:.1f}%{adaptive_note})")
 
             # 4. Check stop loss
             if pnl_pct <= -stop_loss:
@@ -2263,30 +2977,155 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 except:
                     pass
 
-    # Check max positions
-    if len(portfolio['positions']) >= config.get('max_positions', 10):
-        if symbol not in portfolio['positions']:
-            return (None, f"Max positions ({config.get('max_positions', 10)}) reached")
+    # ============ CHECK SHORT POSITION EXITS (TP/SL for shorts) ============
+    # For shorts: profit when price goes DOWN, loss when price goes UP
+    if 'short_positions' not in portfolio:
+        portfolio['short_positions'] = {}
+
+    if symbol in portfolio.get('short_positions', {}):
+        pos = portfolio['short_positions'][symbol]
+        entry_price = pos.get('entry_price', 0)
+        lowest_price = pos.get('lowest_price', entry_price)
+
+        if entry_price > 0 and current_price > 0:
+            # Short PnL: positive when price drops
+            pnl_pct = ((entry_price - current_price) / entry_price) * 100
+
+            # Update lowest price for trailing stop on shorts
+            if current_price < lowest_price:
+                pos['lowest_price'] = current_price
+                lowest_price = current_price
+
+            # Get TP/SL from strategy or config
+            base_take_profit = strategy.get('take_profit', config.get('take_profit', 50))
+            base_stop_loss = strategy.get('stop_loss', config.get('stop_loss', 25))
+
+            # ADAPTIVE TP for shorts (same logic as longs)
+            market_type = analysis.get('market_type', 'mixed') if analysis else 'mixed'
+            atr_pct = analysis.get('atr_percent', 2.0) if analysis else 2.0
+
+            if config.get('use_adaptive_tp', True):
+                if market_type == 'choppy':
+                    adaptive_tp = max(atr_pct * 1.5, base_take_profit * 0.4)
+                    take_profit = min(base_take_profit, adaptive_tp)
+                    stop_loss = min(base_stop_loss, max(atr_pct * 1.0, base_stop_loss * 0.6))
+                elif market_type == 'trending':
+                    adx_val = analysis.get('adx', 25) if analysis else 25
+                    take_profit = base_take_profit * 1.2 if adx_val > 40 else base_take_profit
+                    stop_loss = base_stop_loss
+                else:
+                    volatility_mult = max(0.6, min(1.2, atr_pct / 2.0))
+                    take_profit = base_take_profit * volatility_mult
+                    stop_loss = base_stop_loss * volatility_mult
+            else:
+                take_profit = base_take_profit
+                stop_loss = base_stop_loss
+
+            # FORCE MINIMUM 1.5:1 RATIO for shorts too
+            min_ratio = 1.5
+            if take_profit < stop_loss * min_ratio:
+                if stop_loss > 5:
+                    stop_loss = take_profit / min_ratio
+                else:
+                    take_profit = stop_loss * min_ratio
+
+            # 1. Check trailing stop for shorts (MORE AGGRESSIVE)
+            trail_activation = config.get('trailing_activation', 2)
+            trail_pct = config.get('trailing_stop_pct', 3)
+
+            if config.get('use_trailing_stop', True) and pnl_pct > trail_activation:
+                # For shorts: trail from lowest price going UP
+                trail_price = lowest_price * (1 + trail_pct / 100)
+                if current_price >= trail_price:
+                    return ('COVER', f"SHORT TRAIL: Price rose to ${current_price:.2f} from low ${lowest_price:.2f}")
+
+            # 1b. SECURE SHORT PROFIT - Multiple levels
+            lowest_pnl = ((entry_price - lowest_price) / entry_price * 100) if entry_price > 0 else 0
+            if lowest_pnl >= 2 and pnl_pct < lowest_pnl * 0.4 and pnl_pct > 0.5:
+                return ('COVER', f"SECURE SHORT L1: Was +{lowest_pnl:.1f}%, securing +{pnl_pct:.1f}%")
+            if lowest_pnl >= 4 and pnl_pct < lowest_pnl * 0.6 and pnl_pct > 1:
+                return ('COVER', f"SECURE SHORT L2: Was +{lowest_pnl:.1f}%, securing +{pnl_pct:.1f}%")
+
+            # 2. Check take profit (price dropped enough) - may be adaptive
+            if pnl_pct >= take_profit:
+                adaptive_note = f" [{market_type}]" if take_profit != base_take_profit else ""
+                return ('COVER', f"SHORT TP HIT: +{pnl_pct:.1f}% (target: {take_profit:.1f}%{adaptive_note})")
+
+            # 3. Check stop loss (price rose too much)
+            if pnl_pct <= -stop_loss:
+                return ('COVER', f"SHORT SL HIT: {pnl_pct:.1f}% (limit: -{stop_loss}%)")
+
+            # 4. Check max hold time for shorts
+            max_hold_hours = strategy.get('max_hold_hours', config.get('max_hold_hours', 0))
+            if max_hold_hours > 0:
+                try:
+                    entry_time = datetime.fromisoformat(pos.get('entry_time', datetime.now().isoformat()))
+                    hold_hours = (datetime.now() - entry_time).total_seconds() / 3600
+                    if hold_hours >= max_hold_hours:
+                        return ('COVER', f"SHORT TIME EXIT: Held {hold_hours:.1f}h (max: {max_hold_hours}h)")
+                except:
+                    pass
+
+    # Check max positions (include shorts) - WITH ROTATION LOGIC
+    max_positions = config.get('max_positions', 10)
+    at_max_positions = len(portfolio['positions']) >= max_positions
+    rotation_candidate = None  # Symbol to close if rotating
+
+    if at_max_positions and symbol not in portfolio['positions']:
+        # Calculate opportunity score for potential rotation
+        entry_score = get_best_entry_score(analysis, strategy, portfolio)
+        new_score = entry_score.get('score', 0)
+
+        # Check if we should rotate
+        should_rotate, worst_symbol, rotate_reason = should_rotate_position(
+            portfolio, new_score, analysis, strategy
+        )
+
+        if should_rotate and worst_symbol:
+            # Mark for rotation - we'll close worst position and buy new one
+            rotation_candidate = worst_symbol
+            log_trade(f"🔄 ROTATION: {rotate_reason}")
+        else:
+            return (None, f"Max positions ({max_positions}) - {rotate_reason}")
 
     has_position = portfolio['balance'].get(asset, 0) > 0
-    has_cash = portfolio['balance']['USDT'] > 100
+    has_cash = portfolio['balance']['USDT'] > 100 or rotation_candidate is not None
     rsi = analysis.get('rsi', 50)
 
     # ============ SMART ENTRY FILTERS ============
     # Only apply to new buys (not sells)
-    # SKIP filters for strategies that have their own entry logic
+    # SKIP filters only for strategies that MUST have their own timing
     skip_filters = (
         strategy.get('buy_on') == ["ALWAYS_FIRST"] or  # HODL
-        strategy.get('use_fear_greed') or  # DCA Fear
-        strategy.get('use_supertrend') or  # Supertrend
-        strategy.get('use_degen') or  # Degen strategies
-        strategy.get('use_grid') or  # Grid strategies
-        strategy.get('use_martingale') or  # Martingale
-        strategy.get('use_stoch_rsi') or  # Stoch RSI
-        strategy.get('use_ichimoku') or  # Ichimoku
-        strategy.get('use_ema_cross') or  # EMA Crossover
-        strategy.get('use_dca')  # DCA strategies
+        strategy.get('use_fear_greed') or  # DCA Fear - timing based on Fear index
+        strategy.get('use_martingale') or  # Martingale - has its own logic
+        strategy.get('use_btc_lag') or  # BTC Beta Lag - timing specific
+        strategy.get('use_btc_lag_short') or  # BTC Beta Lag SHORT
+        strategy.get('use_rsi_short') or  # RSI Overbought SHORT
+        strategy.get('use_mean_rev_short')  # Mean Reversion SHORT
     )
+
+    # ============ UNIVERSAL SAFETY FILTERS (apply to ALL strategies) ============
+    if has_cash and symbol not in portfolio['positions']:
+        # A. Don't buy in strong downtrend (price far below EMA50)
+        ema50 = analysis.get('ema_50', current_price)
+        price_vs_ema50 = ((current_price - ema50) / ema50 * 100) if ema50 > 0 else 0
+        if price_vs_ema50 < -8:  # More than 8% below EMA50 = strong downtrend
+            return (None, f"DOWNTREND: Price {price_vs_ema50:.1f}% below EMA50")
+
+        # B. Don't chase massive pumps (>10% in last 4h)
+        mom_4h = analysis.get('momentum_4h', 0)
+        if mom_4h > 10 and not strategy.get('use_breakout'):
+            return (None, f"PUMP CHASE: Already +{mom_4h:.1f}% in 4h")
+
+        # C. Check loss streak - reduce activity after losses
+        recent_trades = portfolio.get('trades', [])[-10:]
+        recent_losses = sum(1 for t in recent_trades if t.get('pnl', 0) < 0)
+        if recent_losses >= 7:  # 7+ losses in last 10 trades
+            # Only allow very high quality entries
+            entry_score = get_best_entry_score(analysis, strategy, portfolio)
+            if entry_score['score'] < 70:
+                return (None, f"LOSS STREAK: {recent_losses}/10 losses, need score>70 (got {entry_score['score']})")
 
     if has_cash and symbol not in portfolio['positions'] and not skip_filters:
         # 1. Check loss cooldown (pause after 3 consecutive losses)
@@ -2330,76 +3169,148 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
     # ============ STRATEGY SIGNALS ============
 
-    # EMA Crossover
+    # EMA Crossover - SMART ENTRY with pattern detection
     if strategy.get('use_ema_cross'):
         fast = strategy.get('fast_ema', 9)
-        # Use slow crossover (12/26) if specified
-        if fast == 12:
-            if analysis.get('ema_cross_up_slow') and has_cash:
-                return ('BUY', f"EMA 12/26 crossover UP | RSI={rsi:.0f}")
-            elif analysis.get('ema_cross_down_slow') and has_position:
-                return ('SELL', f"EMA 12/26 crossover DOWN | RSI={rsi:.0f}")
-        else:
-            # Default fast crossover (9/21)
-            if analysis.get('ema_cross_up') and has_cash:
-                return ('BUY', f"EMA 9/21 crossover UP | RSI={rsi:.0f}")
-            elif analysis.get('ema_cross_down') and has_position:
-                return ('SELL', f"EMA 9/21 crossover DOWN | RSI={rsi:.0f}")
-        return (None, f"EMA: No crossover signal | RSI={rsi:.0f}")
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        mom_4h = analysis.get('momentum_4h', 0)
+        bb_pos = analysis.get('bb_position', 0.5)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
 
-    # Degen strategies - ASSOUPLI pour plus d'action
+        # Get pattern and regime data
+        reversal = detect_reversal_pattern(analysis)
+        regime = detect_market_regime(analysis)
+
+        # Determine which crossover signal to use
+        if fast == 12:
+            cross_up = analysis.get('ema_cross_up_slow')
+            cross_down = analysis.get('ema_cross_down_slow')
+            ema_type = "12/26"
+        else:
+            cross_up = analysis.get('ema_cross_up')
+            cross_down = analysis.get('ema_cross_down')
+            ema_type = "9/21"
+
+        if cross_up and has_cash:
+            # SMART CONFLUENCE: EMA crossover + multiple confirmations
+            confirmations = 0
+            reasons = [f"EMA{ema_type}✓"]
+
+            # Price action quality
+            if rsi < 55 and rsi > 30:  # Not overbought, not oversold
+                confirmations += 1
+                reasons.append(f"RSI={rsi:.0f}")
+
+            if stoch < 65:
+                confirmations += 1
+                reasons.append(f"Stoch={stoch:.0f}")
+
+            if mom_1h > 0.1:  # Clear positive momentum
+                confirmations += 1
+                reasons.append(f"Mom+{mom_1h:.1f}%")
+
+            if bb_pos < 0.6 and bb_pos > 0.2:  # Room to run
+                confirmations += 1
+                reasons.append(f"BB={bb_pos:.0%}")
+
+            if volume_ratio > 1.1:  # Volume confirms
+                confirmations += 1
+                reasons.append(f"Vol={volume_ratio:.1f}x")
+
+            # Pattern bonus
+            if reversal['bullish_score'] >= 20:
+                confirmations += 1
+                if reversal['patterns']:
+                    reasons.append(reversal['patterns'][0])
+
+            # Regime check - don't enter in volatile downtrend
+            if regime['regime'] == 'VOLATILE' and mom_4h < -1:
+                return (None, f"EMA: Crossover UP but volatile regime ({regime['regime']}) - wait")
+
+            # Need 2+ confirmations for entry (was 4, too restrictive)
+            if confirmations >= 2:
+                return ('BUY', f"EMA SMART ({confirmations}/6): {' | '.join(reasons[:5])}")
+            else:
+                return (None, f"EMA: Crossover UP but only {confirmations}/2 confirms")
+
+        elif cross_down and has_position:
+            if rsi > 55 or stoch > 60 or reversal['bearish_score'] >= 25:
+                return ('SELL', f"EMA {ema_type} DOWN | RSI={rsi:.0f} | Stoch={stoch:.0f}")
+
+        return (None, f"EMA: No crossover | RSI={rsi:.0f} | Regime={regime['regime']}")
+
+    # Degen strategies - USE ADVANCED CONFLUENCE + VOLUME
     if strategy.get('use_degen'):
         mode = strategy.get('mode', 'hybrid')
         mom = analysis.get('momentum_1h', 0)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        confluence = calculate_confluence_score(analysis, strategy)
+        reversal = detect_reversal_pattern(analysis)
+        ema9 = analysis.get('ema_9', current_price)
+        ema21 = analysis.get('ema_21', current_price)
 
-        if mode == 'scalping':
-            # Quick reversals - entries/exits plus frequentes
-            if analysis.get('scalp_buy') and has_cash:
-                return ('BUY', f"SCALP: RSI={rsi:.0f}<40 + momentum>0.1%")
-            elif analysis.get('scalp_sell') and has_position:
-                return ('SELL', f"SCALP: RSI={rsi:.0f}>60 + momentum<-0.1%")
-            elif has_position and rsi > 50 and mom < 0:
-                return ('SELL', f"SCALP EXIT: RSI={rsi:.0f} + momentum negatif")
+        # SELL conditions (keep these simple for quick exits)
+        if has_position:
+            if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
+                return ('SELL', f"DEGEN EXIT: Sell signal triggered")
+            elif rsi > 65 or mom < -0.3:  # Exit earlier
+                return ('SELL', f"DEGEN EXIT: RSI={rsi:.0f} | Mom={mom:.1f}%")
+            elif ema9 < ema21:  # EMA cross down = exit
+                return ('SELL', f"DEGEN EXIT: EMA9 crossed below EMA21")
 
-        elif mode == 'momentum':
-            # Ride the wave - volume + momentum
-            if analysis.get('momentum_buy') and has_cash:
-                return ('BUY', f"MOMENTUM: Vol spike + momentum={mom:.1f}%")
-            elif analysis.get('momentum_sell') and has_position:
-                return ('SELL', f"MOMENTUM: Vol spike + negative momentum")
-            elif has_position and mom < -0.2:
-                return ('SELL', f"MOMENTUM LOSS: {mom:.1f}% negatif")
+        # BUY conditions - STRICTER now
+        if has_cash:
+            # MUST have volume confirmation
+            if volume_ratio < 0.8:
+                return (None, f"DEGEN: Low volume ({volume_ratio:.1f}x) - waiting")
 
-        else:  # hybrid - combines both - le plus actif
-            if (analysis.get('scalp_buy') or analysis.get('momentum_buy')) and has_cash:
-                return ('BUY', f"HYBRID: Signal detected | RSI={rsi:.0f} | Mom={mom:.1f}%")
-            elif has_position:
-                if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
-                    return ('SELL', f"HYBRID: Exit signal triggered")
-                elif rsi > 65 or mom < -0.2:
-                    return ('SELL', f"HYBRID: RSI={rsi:.0f} ou Mom={mom:.1f}% negatif")
+            # MUST be in uptrend (EMA9 > EMA21)
+            if ema9 < ema21:
+                return (None, f"DEGEN: Downtrend (EMA9 < EMA21) - waiting")
 
-        return (None, f"DEGEN {mode}: Waiting | RSI={rsi:.0f} | Mom={mom:.1f}%")
+            # Higher thresholds for safety
+            min_score = 45 if mode == 'hybrid' else 50
+            min_confirms = 3 if mode == 'hybrid' else 4
 
-    # VWAP Strategy
+            if confluence['score'] >= min_score and confluence['confirmations'] >= min_confirms:
+                if rsi < 60:  # Don't buy overbought
+                    reasons = ' | '.join(confluence['reasons'][:4])
+                    return ('BUY', f"DEGEN {mode.upper()} ({confluence['score']}/100): {reasons}")
+
+            # Stricter reversal pattern requirements
+            if reversal['bullish_score'] >= 50 and mom > 0.5 and rsi < 40:
+                patterns = ', '.join(reversal['patterns'][:2])
+                return ('BUY', f"DEGEN REVERSAL: {patterns} | Mom={mom:+.1f}%")
+
+        return (None, f"DEGEN {mode}: Score={confluence['score']} | Need {min_score}+ with {min_confirms}+ confirmations")
+
+    # VWAP Strategy - WITH CONFLUENCE
     if strategy.get('use_vwap'):
         deviation = strategy.get('deviation', 1.5)
         vwap_dev = analysis.get('vwap_deviation', 0)
         trend_follow = strategy.get('trend_follow', False)
+        confluence = calculate_confluence_score(analysis, strategy)
+        mom_1h = analysis.get('momentum_1h', 0)
 
         if trend_follow:
+            # Trend following: buy above VWAP with confluence
             if vwap_dev > deviation and has_cash:
-                return ('BUY', f"VWAP TREND: Price {vwap_dev:.1f}% above VWAP")
+                if confluence['score'] >= 40 and mom_1h > 0:
+                    return ('BUY', f"VWAP TREND ({confluence['score']}/100): VWAP+{vwap_dev:.1f}% | Mom={mom_1h:+.1f}%")
             elif vwap_dev < -deviation and has_position:
                 return ('SELL', f"VWAP TREND: Price {vwap_dev:.1f}% below VWAP")
         else:
+            # Mean reversion: buy below VWAP with confluence
             if vwap_dev < -deviation and has_cash:
-                return ('BUY', f"VWAP BOUNCE: Price {vwap_dev:.1f}% below VWAP")
+                if confluence['score'] >= 35 and confluence['confirmations'] >= 2:
+                    reasons = ' | '.join(confluence['reasons'][:3])
+                    return ('BUY', f"VWAP BOUNCE ({confluence['score']}/100): {reasons}")
             elif vwap_dev > deviation and has_position:
                 return ('SELL', f"VWAP BOUNCE: Price {vwap_dev:.1f}% above VWAP")
-        return (None, f"VWAP: Deviation={vwap_dev:.1f}% (threshold={deviation}%)")
+        return (None, f"VWAP: Dev={vwap_dev:.1f}% | Score={confluence['score']}")
 
-    # Supertrend (normal vs fast)
+    # Supertrend - WITH CONFLUENCE
     if strategy.get('use_supertrend'):
         period = strategy.get('period', 10)
         if period == 7:
@@ -2407,26 +3318,38 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         else:
             supertrend_up = analysis.get('supertrend_up', False)
 
+        confluence = calculate_confluence_score(analysis, strategy)
+        mom_1h = analysis.get('momentum_1h', 0)
+
         if supertrend_up and not has_position and has_cash:
-            if rsi < 70:
-                return ('BUY', f"SUPERTREND: Uptrend confirmed | RSI={rsi:.0f}")
+            # Supertrend up + confluence confirmation
+            if confluence['score'] >= 35 and rsi < 65:
+                reasons = ' | '.join(confluence['reasons'][:3])
+                return ('BUY', f"SUPERTREND UP ({confluence['score']}/100): {reasons}")
         elif not supertrend_up and has_position:
             return ('SELL', f"SUPERTREND: Downtrend signal")
-        return (None, f"SUPERTREND: {'Up' if supertrend_up else 'Down'} | RSI={rsi:.0f}")
+        return (None, f"SUPERTREND: {'Up' if supertrend_up else 'Down'} | Score={confluence['score']}")
 
-    # Stochastic RSI - RELAXED defaults (was 20/80)
+    # Stochastic RSI - USE ADVANCED CONFLUENCE
     if strategy.get('use_stoch_rsi'):
-        oversold = strategy.get('oversold', 30)  # Was 20
-        overbought = strategy.get('overbought', 70)  # Was 80
+        oversold = strategy.get('oversold', 30)
+        overbought = strategy.get('overbought', 70)
         stoch = analysis.get('stoch_rsi', 50)
+        confluence = calculate_confluence_score(analysis, strategy)
 
         if stoch < oversold and has_cash:
-            return ('BUY', f"STOCH RSI: {stoch:.0f} < {oversold} oversold")
+            # Use confluence system - require good score AND confirmations
+            if confluence['score'] >= 40 and confluence['confirmations'] >= 3:
+                reasons = ' | '.join(confluence['reasons'][:4])
+                return ('BUY', f"STOCH RSI ({confluence['score']}/100): {reasons}")
+            else:
+                return (None, f"STOCH RSI: {stoch:.0f} oversold | Score={confluence['score']} (need 40+, {confluence['confirmations']} confirms)")
+
         elif stoch > overbought and has_position:
             return ('SELL', f"STOCH RSI: {stoch:.0f} > {overbought} overbought")
-        return (None, f"STOCH RSI: {stoch:.0f} (range {oversold}-{overbought})")
+        return (None, f"STOCH RSI: {stoch:.0f} | Score={confluence['score']}")
 
-    # Breakout (normal vs tight)
+    # Breakout - WITH CONFLUENCE
     if strategy.get('use_breakout'):
         lookback = strategy.get('lookback', 20)
         if lookback == 10:
@@ -2436,54 +3359,130 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             breakout_up = analysis.get('breakout_up', False)
             breakout_down = analysis.get('breakout_down', False)
 
+        confluence = calculate_confluence_score(analysis, strategy)
+
         if breakout_up and has_cash:
-            return ('BUY', f"BREAKOUT UP: Price broke {lookback}-period high with volume")
+            # Breakout + minimal confluence for confirmation
+            if confluence['score'] >= 15 and rsi < 75:
+                return ('BUY', f"BREAKOUT UP ({confluence['score']}/100): {lookback}-period high | RSI={rsi:.0f}")
+            else:
+                return (None, f"BREAKOUT: Signal but score {confluence['score']} < 15")
         elif breakout_down and has_position:
             return ('SELL', f"BREAKOUT DOWN: Price broke {lookback}-period low")
-        return (None, f"BREAKOUT: Waiting for {lookback}-period break")
+        return (None, f"BREAKOUT: Waiting | Score={confluence['score']}")
 
-    # Mean Reversion (normal vs tight) - assoupli (1.5σ au lieu de 2σ)
+    # Mean Reversion - WITH CONFLUENCE
     if strategy.get('use_mean_rev'):
-        std_threshold = strategy.get('std_dev', 1.5)  # 1.5 au lieu de 2.0
+        std_threshold = strategy.get('std_dev', 1.5)
         period = strategy.get('period', 20)
         if period == 14:
             deviation = analysis.get('deviation_from_mean_tight', 0)
         else:
             deviation = analysis.get('deviation_from_mean', 0)
 
+        confluence = calculate_confluence_score(analysis, strategy)
+        mom_1h = analysis.get('momentum_1h', 0)
+
         if deviation < -std_threshold and has_cash:
-            return ('BUY', f"MEAN REV: {deviation:.1f}σ below mean (threshold=-{std_threshold})")
+            # Mean reversion + minimal confluence
+            if confluence['score'] >= 20 and mom_1h > -3:
+                reasons = ' | '.join(confluence['reasons'][:3])
+                return ('BUY', f"MEAN REV ({confluence['score']}/100): {deviation:.1f}σ | {reasons}")
+            else:
+                return (None, f"MEAN REV: {deviation:.1f}σ but score={confluence['score']} < 20 or mom={mom_1h:.1f}%")
         elif deviation > std_threshold and has_position:
-            return ('SELL', f"MEAN REV: {deviation:.1f}σ above mean (threshold={std_threshold})")
-        return (None, f"MEAN REV: Deviation={deviation:.1f}σ (threshold=±{std_threshold})")
+            return ('SELL', f"MEAN REV: {deviation:.1f}σ above mean")
+        return (None, f"MEAN REV: {deviation:.1f}σ | Score={confluence['score']}")
 
-    # Grid Trading - assoupli (25%/75% au lieu de 15%/85%)
+    # Grid Trading - IMPROVED with volume and trend filter
     if strategy.get('use_grid'):
-        grid_size = strategy.get('grid_size', 2.0)
         bb_pos = analysis.get('bb_position', 0.5)
-        buy_threshold = 0.25 + (grid_size * 0.02)   # 25% au lieu de 15%
-        sell_threshold = 0.75 - (grid_size * 0.02)  # 75% au lieu de 85%
+        buy_threshold = 0.15  # Stricter: only buy at extreme lows
+        sell_threshold = 0.70  # Exit earlier
+        confluence = calculate_confluence_score(analysis, strategy)
+        regime = detect_market_regime(analysis)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        ema9 = analysis.get('ema_9', current_price)
+        ema21 = analysis.get('ema_21', current_price)
+        mom_1h = analysis.get('momentum_1h', 0)
 
+        # SELL conditions - exit earlier to lock profits
+        if has_position:
+            if bb_pos > sell_threshold:
+                return ('SELL', f"GRID: BB={bb_pos:.0%} > {sell_threshold:.0%}")
+            if mom_1h < -1.5:  # Momentum turning negative
+                return ('SELL', f"GRID EXIT: Momentum dropping ({mom_1h:.1f}%)")
+            if ema9 < ema21 and bb_pos > 0.5:  # EMA cross down in upper half
+                return ('SELL', f"GRID EXIT: EMA bearish cross, BB={bb_pos:.0%}")
+
+        # BUY conditions - STRICTER
         if bb_pos < buy_threshold and has_cash:
-            return ('BUY', f"GRID: BB position={bb_pos:.0%} < {buy_threshold:.0%}")
-        elif bb_pos > sell_threshold and has_position:
-            return ('SELL', f"GRID: BB position={bb_pos:.0%} > {sell_threshold:.0%}")
-        return (None, f"GRID: BB position={bb_pos:.0%} (buy<{buy_threshold:.0%}, sell>{sell_threshold:.0%})")
+            # Grid buy: need confluence + not in volatile crash
+            if regime['regime'] == 'VOLATILE' and regime['direction'] == 'DOWN':
+                return (None, f"GRID: Volatile down market - waiting")
 
-    # DCA Accumulator
+            # Need volume confirmation
+            if volume_ratio < 0.7:
+                return (None, f"GRID: Low volume ({volume_ratio:.1f}x) - waiting")
+
+            # Need uptrend or at least not strong downtrend
+            if ema9 < ema21 * 0.98:  # More than 2% below EMA21
+                return (None, f"GRID: Strong downtrend - waiting for reversal")
+
+            # Need momentum stabilizing
+            if mom_1h < -2:
+                return (None, f"GRID: Momentum still falling ({mom_1h:.1f}%) - waiting")
+
+            # Higher confluence requirement
+            if confluence['score'] >= 50 and confluence['confirmations'] >= 4:
+                reasons = ' | '.join(confluence['reasons'][:4])
+                return ('BUY', f"GRID ({confluence['score']}/100): BB={bb_pos:.0%} | {reasons}")
+            else:
+                return (None, f"GRID: BB={bb_pos:.0%} | Score={confluence['score']} (need 50+)")
+        return (None, f"GRID: BB={bb_pos:.0%} | Score={confluence['score']} | Regime={regime['regime']}")
+
+    # DCA Accumulator - USE ADVANCED CONFLUENCE
     if strategy.get('use_dca'):
         dip_threshold = strategy.get('dip_threshold', 3.0)
         change = analysis.get('change_24h', 0)
+        mom_1h = analysis.get('momentum_1h', 0)
+        confluence = calculate_confluence_score(analysis, strategy)
+        reversal = detect_reversal_pattern(analysis)
+        regime = detect_market_regime(analysis)
 
         if change < -dip_threshold and has_cash:
-            return ('BUY', f"DCA: 24h change={change:.1f}% < -{dip_threshold}% dip")
-        return (None, f"DCA: 24h change={change:.1f}% (waiting for -{dip_threshold}% dip)")
+            # DCA: Buy dips but only with confluence + momentum recovery
+
+            # Don't buy during panic (extremely high volume + falling)
+            if regime['regime'] == 'VOLATILE' and mom_1h < -2:
+                return (None, f"DCA: Panic selling detected - waiting for stabilization")
+
+            # Check for reversal signals (ideal for DCA)
+            if reversal['bullish_score'] >= 35 and mom_1h > -0.5:
+                patterns = ', '.join(reversal['patterns'][:2]) if reversal['patterns'] else 'Recovery'
+                return ('BUY', f"DCA REVERSAL: Dip={change:.1f}% | {patterns} | Mom={mom_1h:+.1f}%")
+
+            # Or use confluence score
+            if confluence['score'] >= 40 and confluence['confirmations'] >= 3:
+                reasons = ' | '.join(confluence['reasons'][:3])
+                return ('BUY', f"DCA ({confluence['score']}/100): Dip={change:.1f}% | {reasons}")
+            else:
+                return (None, f"DCA: Dip={change:.1f}% | Score={confluence['score']} | Reversal={reversal['bullish_score']}")
+
+        return (None, f"DCA: 24h={change:.1f}% | Waiting for -{dip_threshold}% dip")
 
     # Ichimoku Cloud - Enhanced with variants
     if strategy.get('use_ichimoku'):
         tenkan = strategy.get('tenkan', 9)
         rsi_filter = strategy.get('rsi_filter', 0)
         rsi = analysis.get('rsi', 50)
+
+        # Get smart confirmations
+        reversal = detect_reversal_pattern(analysis)
+        regime = detect_market_regime(analysis)
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
 
         # Use fast indicators for tenkan <= 7, normal otherwise
         if tenkan <= 7:
@@ -2495,44 +3494,80 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
             bearish = analysis.get('ichimoku_bearish', False)
             above = analysis.get('above_cloud', False)
 
-        # Additional filters for variants
         rsi_ok = rsi > rsi_filter if rsi_filter > 0 else True
 
-        # Kumo breakout - price just broke above cloud
+        # Kumo breakout - SMART with volume confirmation
         if strategy.get('kumo_break'):
             price = analysis.get('close', 0)
             cloud_top = max(analysis.get('senkou_a', 0), analysis.get('senkou_b', 0))
-            if price > cloud_top * 1.005 and has_cash:  # 0.5% above cloud
-                return ('BUY', f"ICHIMOKU KUMO BREAK: Price broke above cloud")
+            if price > cloud_top * 1.005 and has_cash:
+                # Need volume or momentum confirmation
+                if volume_ratio > 1.2 or mom_1h > 0.3:
+                    return ('BUY', f"ICHIMOKU KUMO: Break + Vol={volume_ratio:.1f}x Mom={mom_1h:+.1f}%")
+                return (None, f"ICHIMOKU: Kumo break but no volume confirmation")
 
-        # TK Cross - Tenkan crosses above Kijun
+        # TK Cross - SMART with multiple confirmations
         if strategy.get('tk_cross'):
             tk = analysis.get('tenkan', 0)
             kj = analysis.get('kijun', 0)
             if tk > kj and above and has_cash:
-                return ('BUY', f"ICHIMOKU TK CROSS: Tenkan > Kijun + above cloud")
+                confirmations = 1  # TK cross
+                if rsi < 65:
+                    confirmations += 1
+                if stoch < 70:
+                    confirmations += 1
+                if mom_1h > 0:
+                    confirmations += 1
+                if confirmations >= 3:
+                    return ('BUY', f"ICHIMOKU TK SMART: TK cross + {confirmations} confirms")
+                return (None, f"ICHIMOKU: TK cross but only {confirmations}/3 confirms")
 
-        # Chikou confirmation - lagging span confirms
+        # Chikou confirmation - with pattern detection
         if strategy.get('chikou_confirm'):
             if bullish and above and rsi > 45 and has_cash:
-                return ('BUY', f"ICHIMOKU CHIKOU: Bullish + RSI {rsi:.0f} confirms")
+                if reversal['bullish_score'] >= 15 or mom_1h > 0:
+                    return ('BUY', f"ICHIMOKU CHIKOU: Bullish + Pattern score {reversal['bullish_score']}")
+                return (None, f"ICHIMOKU: Chikou ok but no pattern confirmation")
 
-        # Conservative - require all conditions
+        # Conservative - require ALL conditions including smart checks
         if strategy.get('require_all'):
             if bullish and above and rsi > 50 and rsi < 70 and has_cash:
-                return ('BUY', f"ICHIMOKU SAFE: All conditions met, RSI={rsi:.0f}")
+                if stoch < 75 and mom_1h > -0.5 and regime['regime'] != 'VOLATILE':
+                    return ('BUY', f"ICHIMOKU SAFE: All conditions + regime={regime['regime']}")
+                return (None, f"ICHIMOKU: Bullish but regime={regime['regime']} or stoch={stoch:.0f}")
             elif bearish and has_position:
                 return ('SELL', f"ICHIMOKU SAFE: Bearish signal")
             return (None, f"ICHIMOKU SAFE: Waiting for all conditions")
 
-        # Standard Ichimoku logic with optional RSI filter
+        # Standard Ichimoku - SMART: need 3+ confirmations
         if bullish and above and rsi_ok and has_cash:
-            return ('BUY', f"ICHIMOKU: Bullish + above cloud" + (f" RSI={rsi:.0f}" if rsi_filter else ""))
+            confirmations = 2  # Bullish + above cloud
+            reasons = ["Bullish", "Above cloud"]
+
+            if rsi < 60:
+                confirmations += 1
+                reasons.append(f"RSI={rsi:.0f}")
+            if stoch < 65:
+                confirmations += 1
+                reasons.append(f"Stoch={stoch:.0f}")
+            if mom_1h > 0:
+                confirmations += 1
+                reasons.append(f"Mom+")
+            if volume_ratio > 1.1:
+                confirmations += 1
+                reasons.append(f"Vol={volume_ratio:.1f}x")
+
+            if confirmations >= 3:
+                return ('BUY', f"ICHIMOKU SMART ({confirmations}/6): {' | '.join(reasons[:4])}")
+            return (None, f"ICHIMOKU: Bullish but only {confirmations}/3 confirms")
+
         elif bearish and has_position:
-            return ('SELL', f"ICHIMOKU: Bearish signal")
+            if rsi > 55 or stoch > 60:
+                return ('SELL', f"ICHIMOKU: Bearish + RSI={rsi:.0f}")
+
         cloud_status = "above" if above else "below"
         trend = "bullish" if bullish else ("bearish" if bearish else "neutral")
-        return (None, f"ICHIMOKU: {trend}, {cloud_status} cloud")
+        return (None, f"ICHIMOKU: {trend}, {cloud_status} cloud | Regime={regime['regime']}")
 
     # Trailing Stop Strategy - tight entry, rising stop-loss that locks in gains
     if strategy.get('use_trailing'):
@@ -2585,43 +3620,90 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
             return (None, f"TRAILING: Waiting for RSI < {entry_rsi} (currently {rsi:.0f})")
 
-    # ============ MISSING STRATEGY IMPLEMENTATIONS ============
+    # ============ SMART STRATEGY IMPLEMENTATIONS ============
 
-    # MACD Strategy
+    # MACD Strategy - SMART with confluence
     if strategy.get('use_macd'):
         macd = analysis.get('macd', 0)
         macd_signal = analysis.get('macd_signal', 0)
         macd_hist = analysis.get('macd_histogram', 0)
+        macd_hist_prev = analysis.get('macd_hist_prev', macd_hist)
         mode = strategy.get('mode', 'crossover')
+
+        # Get smart confirmations
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        bb_pos = analysis.get('bb_position', 0.5)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        reversal = detect_reversal_pattern(analysis)
 
         if mode == 'crossover':
             if macd > macd_signal and macd_hist > 0 and has_cash:
-                return ('BUY', f"MACD CROSS: MACD crossed above signal")
-            elif macd < macd_signal and macd_hist < 0 and has_position:
-                return ('SELL', f"MACD CROSS: MACD crossed below signal")
-        else:  # histogram reversal
-            if macd_hist > 0 and analysis.get('macd_hist_prev', 0) < 0 and has_cash:
-                return ('BUY', f"MACD REVERSAL: Histogram turned positive")
-            elif macd_hist < 0 and analysis.get('macd_hist_prev', 0) > 0 and has_position:
-                return ('SELL', f"MACD REVERSAL: Histogram turned negative")
-        return (None, f"MACD: hist={macd_hist:.4f}")
+                # SMART: MACD cross needs confirmations
+                confirmations = 1  # MACD cross
+                reasons = ["MACD✓"]
 
-    # Bollinger Bands Strategy
+                if rsi < 60:
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch < 65:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if mom_1h > 0:
+                    confirmations += 1
+                    reasons.append(f"Mom+")
+                if bb_pos < 0.7:
+                    confirmations += 1
+                    reasons.append(f"BB={bb_pos:.0%}")
+                if volume_ratio > 1.1:
+                    confirmations += 1
+                    reasons.append(f"Vol={volume_ratio:.1f}x")
+
+                if confirmations >= 4:
+                    return ('BUY', f"MACD SMART ({confirmations}/6): {' | '.join(reasons[:4])}")
+                return (None, f"MACD: Cross UP but only {confirmations}/4 confirms")
+
+            elif macd < macd_signal and macd_hist < 0 and has_position:
+                if rsi > 50 or stoch > 55:
+                    return ('SELL', f"MACD CROSS DOWN + RSI={rsi:.0f}")
+
+        else:  # histogram reversal
+            if macd_hist > 0 and macd_hist_prev < 0 and has_cash:
+                if rsi < 55 and mom_1h > -0.5:
+                    return ('BUY', f"MACD REVERSAL: Hist+ | RSI={rsi:.0f} | Mom={mom_1h:+.1f}%")
+                return (None, f"MACD: Hist reversal but RSI={rsi:.0f} or Mom={mom_1h:.1f}%")
+            elif macd_hist < 0 and macd_hist_prev > 0 and has_position:
+                return ('SELL', f"MACD REVERSAL: Histogram turned negative")
+
+        return (None, f"MACD: hist={macd_hist:.4f} | RSI={rsi:.0f}")
+
+    # Bollinger Bands Strategy - SMART with momentum check
     if strategy.get('use_bb'):
         bb_pos = analysis.get('bb_position', 0.5)
         rsi = analysis.get('rsi', 50)
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        reversal = detect_reversal_pattern(analysis)
 
         if strategy.get('mode') == 'combo':
             if bb_pos < 0.2 and rsi < 35 and has_cash:
-                return ('BUY', f"BB+RSI: Near lower band + oversold")
+                # Need momentum confirmation - not still falling
+                if mom_1h > -0.5 and (stoch < 30 or reversal['bullish_score'] >= 20):
+                    return ('BUY', f"BB+RSI SMART: BB={bb_pos:.0%} RSI={rsi:.0f} Mom={mom_1h:+.1f}%")
+                return (None, f"BB+RSI: Oversold but still falling (mom={mom_1h:.1f}%)")
             elif bb_pos > 0.8 and rsi > 65 and has_position:
                 return ('SELL', f"BB+RSI: Near upper band + overbought")
         else:
             if bb_pos < 0.1 and has_cash:
-                return ('BUY', f"BB: Price at lower band ({bb_pos:.2f})")
+                # Need confirmation - volume or pattern
+                if volume_ratio > 1.2 or reversal['bullish_score'] >= 25 or mom_1h > 0:
+                    return ('BUY', f"BB SMART: Lower band + confirmed (Vol={volume_ratio:.1f}x)")
+                return (None, f"BB: At lower band but no confirmation")
             elif bb_pos > 0.9 and has_position:
                 return ('SELL', f"BB: Price at upper band ({bb_pos:.2f})")
-        return (None, f"BB: position={bb_pos:.2f}")
+
+        return (None, f"BB: pos={bb_pos:.0%} | RSI={rsi:.0f}")
 
     # Bollinger Squeeze Strategy
     if strategy.get('use_bb_squeeze'):
@@ -2895,6 +3977,13 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         multiplier = strategy.get('multiplier', 2.0)
         max_levels = strategy.get('max_levels', 4)
 
+        # Get smart confirmations
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        bb_pos = analysis.get('bb_position', 0.5)
+        reversal = detect_reversal_pattern(analysis)
+        regime = detect_market_regime(analysis)
+
         # Count consecutive losses
         trades = portfolio.get('trades', [])
         consecutive_losses = 0
@@ -2905,64 +3994,206 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 else:
                     break
 
+        # SMART MARTINGALE: Only double down when market shows reversal signs
         if consecutive_losses > 0 and consecutive_losses <= max_levels:
-            if has_cash and rsi < 50:  # 50 au lieu de 45
-                portfolio['_martingale_level'] = consecutive_losses
-                portfolio['_martingale_multiplier'] = multiplier
-                return ('BUY', f"MARTINGALE: Level {consecutive_losses}/{max_levels} | RSI={rsi:.0f}")
-        elif consecutive_losses > max_levels:
-            if has_cash and rsi < 30:  # 30 au lieu de 25
-                portfolio['_martingale_level'] = 0
-                return ('BUY', f"MARTINGALE RESET: Max level reached, RSI={rsi:.0f}")
+            if has_cash:
+                # Need multiple confirmations for martingale entry
+                confirmations = 0
+                reasons = [f"Level {consecutive_losses}"]
 
-        if rsi < 40 and has_cash:  # 40 au lieu de 35
-            portfolio['_martingale_level'] = 0
-            return ('BUY', f"MARTINGALE: Normal entry RSI={rsi:.0f} < 40")
-        elif rsi > 60 and has_position:  # 60 au lieu de 65
-            return ('SELL', f"MARTINGALE: RSI={rsi:.0f} > 60")
-        return (None, f"MARTINGALE: RSI={rsi:.0f} | Losses={consecutive_losses}")
+                if rsi < 45:
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch < 40:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if mom_1h > -1:  # Not crashing hard
+                    confirmations += 1
+                    reasons.append("Mom stable")
+                if reversal['bullish_score'] >= 20:
+                    confirmations += 1
+                    reasons.append("Pattern+")
+                if regime['regime'] != 'VOLATILE':
+                    confirmations += 1
+
+                # Need 3+ confirmations for martingale
+                if confirmations >= 3:
+                    portfolio['_martingale_level'] = consecutive_losses
+                    portfolio['_martingale_multiplier'] = multiplier
+                    return ('BUY', f"MARTINGALE SMART ({confirmations}/5): {' | '.join(reasons[:4])}")
+                return (None, f"MARTINGALE: Level {consecutive_losses} but only {confirmations}/3 confirms")
+
+        elif consecutive_losses > max_levels:
+            # Max level - need strong reversal signal
+            if has_cash and rsi < 30 and reversal['bullish_score'] >= 30:
+                portfolio['_martingale_level'] = 0
+                return ('BUY', f"MARTINGALE RESET: RSI={rsi:.0f} + Pattern={reversal['bullish_score']}")
+            return (None, f"MARTINGALE: Max level - waiting for strong reversal")
+
+        # Normal entry - smart conditions
+        if has_cash:
+            if rsi < 35 and stoch < 35 and mom_1h > -0.5:
+                portfolio['_martingale_level'] = 0
+                return ('BUY', f"MARTINGALE ENTRY: RSI={rsi:.0f} Stoch={stoch:.0f} Mom={mom_1h:+.1f}%")
+        elif has_position:
+            if rsi > 65 and stoch > 70:
+                return ('SELL', f"MARTINGALE: RSI={rsi:.0f} Stoch={stoch:.0f}")
+
+        return (None, f"MARTINGALE: RSI={rsi:.0f} Stoch={stoch:.0f} | Losses={consecutive_losses}")
 
     # ============ EXISTING STRATEGIES ============
 
-    # Aggressive Strategy - vraiment agressif (RSI < 45, sell > 55)
+    # Aggressive Strategy - SMART: agressif mais avec confirmations
     if strategy.get('use_aggressive'):
-        mom = analysis.get('momentum_1h', 0)
-        if rsi < 45 and has_cash:
-            return ('BUY', f"AGGRESSIVE: RSI={rsi:.0f} < 45")
-        elif rsi < 50 and mom > 0.2 and has_cash:
-            return ('BUY', f"AGGRESSIVE: RSI={rsi:.0f} + momentum={mom:.1f}%")
-        elif rsi > 55 and has_position:
-            return ('SELL', f"AGGRESSIVE: RSI={rsi:.0f} > 55")
-        elif mom < -0.3 and has_position:
-            return ('SELL', f"AGGRESSIVE: Momentum={mom:.1f}% negatif")
-        return (None, f"AGGRESSIVE: RSI={rsi:.0f} | Mom={mom:.1f}%")
+        mom_1h = analysis.get('momentum_1h', 0)
+        stoch = analysis.get('stoch_rsi', 50)
+        bb_pos = analysis.get('bb_position', 0.5)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        reversal = detect_reversal_pattern(analysis)
+
+        if has_cash:
+            # Aggressive but need 2+ confirmations
+            confirmations = 0
+            reasons = []
+
+            if rsi < 45:
+                confirmations += 1
+                reasons.append(f"RSI={rsi:.0f}")
+            if stoch < 50:
+                confirmations += 1
+                reasons.append(f"Stoch={stoch:.0f}")
+            if mom_1h > 0:
+                confirmations += 1
+                reasons.append(f"Mom+{mom_1h:.1f}%")
+            if bb_pos < 0.5:
+                confirmations += 1
+                reasons.append(f"BB={bb_pos:.0%}")
+            if reversal['bullish_score'] >= 15:
+                confirmations += 1
+                reasons.append("Pattern+")
+
+            if confirmations >= 3:
+                return ('BUY', f"AGGRESSIVE ({confirmations}/5): {' | '.join(reasons[:4])}")
+            elif rsi < 35 and mom_1h > -0.3:  # Very oversold exception
+                return ('BUY', f"AGGRESSIVE: RSI={rsi:.0f} very low + mom stable")
+
+        elif has_position:
+            if rsi > 60 and stoch > 55:
+                return ('SELL', f"AGGRESSIVE: RSI={rsi:.0f} Stoch={stoch:.0f}")
+            elif mom_1h < -0.5 and reversal['bearish_score'] >= 20:
+                return ('SELL', f"AGGRESSIVE: Mom={mom_1h:.1f}% + bearish pattern")
+
+        return (None, f"AGGRESSIVE: RSI={rsi:.0f} Stoch={stoch:.0f} | Mom={mom_1h:+.1f}%")
 
     signal = analysis.get('signal', 'HOLD')
 
-    # RSI Strategy - RELAXED 40/65 levels (was 30/70)
+    # RSI Strategy - SMART ENTRY with confluence
     if strategy.get('use_rsi', False):
-        rsi_oversold = config.get('rsi_oversold', 40)  # Relaxed from 30
-        rsi_overbought = config.get('rsi_overbought', 65)  # Relaxed from 70
+        rsi_oversold = config.get('rsi_oversold', 35)
+        rsi_overbought = config.get('rsi_overbought', 70)
 
-        if rsi < rsi_oversold and has_cash:
-            return ('BUY', f"RSI={rsi:.0f} < {rsi_oversold} oversold")
-        elif rsi > rsi_overbought and has_position:
-            return ('SELL', f"RSI={rsi:.0f} > {rsi_overbought} overbought")
-        return (None, f"RSI={rsi:.0f} (buy<{rsi_oversold}, sell>{rsi_overbought})")
+        # Get confluence and pattern data
+        confluence = calculate_confluence_score(analysis, strategy)
+        reversal = detect_reversal_pattern(analysis)
+        regime = detect_market_regime(analysis)
 
-    # DCA Fear & Greed Strategy
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        bb_pos = analysis.get('bb_position', 0.5)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+
+        if has_cash:
+            # RSI oversold - but need confirmation!
+            if rsi < rsi_oversold:
+                confirmations = 0
+                reasons = [f"RSI={rsi:.0f}"]
+
+                # Check for multiple confirmations
+                if stoch < 25:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if bb_pos < 0.2:
+                    confirmations += 1
+                    reasons.append(f"BB={bb_pos:.0%}")
+                if mom_1h > -0.5:  # Not falling hard
+                    confirmations += 1
+                    reasons.append("Mom stable")
+                if volume_ratio > 1.2:  # Volume confirmation
+                    confirmations += 1
+                    reasons.append(f"Vol={volume_ratio:.1f}x")
+                if reversal['bullish_score'] >= 20:
+                    confirmations += 1
+                    reasons.append(f"Pattern:{reversal['patterns'][0] if reversal['patterns'] else 'none'}")
+                if regime['regime'] != 'VOLATILE' or regime['direction'] == 'OVERSOLD':
+                    confirmations += 1
+
+                # Need 3+ confirmations to enter
+                if confirmations >= 3:
+                    return ('BUY', f"RSI SMART ({confluence['score']}/100): {' | '.join(reasons[:4])}")
+                else:
+                    return (None, f"RSI: {rsi:.0f} oversold but only {confirmations} confirms (need 3)")
+
+        elif has_position:
+            if rsi > rsi_overbought and stoch > 75:
+                return ('SELL', f"RSI={rsi:.0f} > {rsi_overbought} overbought + Stoch={stoch:.0f}")
+
+        return (None, f"RSI={rsi:.0f} | Stoch={stoch:.0f} | Confluence={confluence['score']}")
+
+    # DCA Fear & Greed Strategy - SMART with technical confirmation
     if strategy.get('use_fear_greed', False):
         fng = get_fear_greed_index()
         fear_value = fng['value']
         fear_class = fng['classification']
 
-        if fear_value < 25 and has_cash:
-            return ('BUY', f"FEAR&GREED: {fear_value} Extreme Fear!")
-        elif fear_value < 40 and has_cash and rsi < 40:
-            return ('BUY', f"FEAR&GREED: {fear_value} Fear + RSI={rsi:.0f}")
-        elif fear_value > 80 and has_position:
-            return ('SELL', f"FEAR&GREED: {fear_value} Extreme Greed!")
-        return (None, f"FEAR&GREED: {fear_value} ({fear_class}) | RSI={rsi:.0f}")
+        # Get technical confirmation
+        confluence = calculate_confluence_score(analysis, strategy)
+        reversal = detect_reversal_pattern(analysis)
+
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        bb_pos = analysis.get('bb_position', 0.5)
+
+        if has_cash:
+            # Extreme Fear (<20) - still need SOME technical confirmation
+            if fear_value < 20:
+                if rsi < 45 and mom_1h > -2:  # Not in freefall
+                    return ('BUY', f"F&G EXTREME ({fear_value}): Fear={fear_value} + RSI={rsi:.0f} | Not freefall")
+                else:
+                    return (None, f"F&G: Extreme fear {fear_value} but market still falling (mom={mom_1h:.1f}%)")
+
+            # Fear (20-40) - need more confirmation
+            elif fear_value < 40:
+                confirmations = 0
+                reasons = [f"Fear={fear_value}"]
+
+                if rsi < 40:
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch < 35:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if bb_pos < 0.3:
+                    confirmations += 1
+                    reasons.append(f"BB low")
+                if mom_1h > -0.5:  # Momentum stabilizing
+                    confirmations += 1
+                    reasons.append("Mom stable")
+                if reversal['bullish_score'] >= 25:
+                    confirmations += 1
+                    reasons.append("Pattern+")
+
+                if confirmations >= 3:
+                    return ('BUY', f"F&G SMART ({confluence['score']}/100): {' | '.join(reasons[:4])}")
+                else:
+                    return (None, f"F&G: Fear={fear_value} but only {confirmations} confirms (need 3)")
+
+        elif has_position:
+            if fear_value > 80 and rsi > 65 and stoch > 70:
+                return ('SELL', f"F&G GREED: {fear_value} + RSI={rsi:.0f} + Stoch={stoch:.0f}")
+            elif fear_value > 75 and reversal['bearish_score'] >= 30:
+                return ('SELL', f"F&G GREED: {fear_value} + Bearish pattern detected")
+
+        return (None, f"F&G: {fear_value} ({fear_class}) | RSI={rsi:.0f} | Score={confluence['score']}")
 
     # HODL Strategy
     if strategy.get('buy_on') == ["ALWAYS_FIRST"]:
@@ -3245,7 +4476,7 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
 
         return (None, f"SESSION: Waiting for {session.upper()} session")
 
-    # 7. RSI Divergence Strategy (Enhanced)
+    # 7. RSI Divergence Strategy - SMART with confirmations
     if strategy.get('use_divergence'):
         div_type = strategy.get('type', 'bullish')
         bull_div = analysis.get('rsi_bullish_div', False)
@@ -3253,19 +4484,248 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         hidden_bull = analysis.get('rsi_hidden_bull_div', False)
         hidden_bear = analysis.get('rsi_hidden_bear_div', False)
 
+        # Get confirmations
+        stoch = analysis.get('stoch_rsi', 50)
+        mom_1h = analysis.get('momentum_1h', 0)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        reversal = detect_reversal_pattern(analysis)
+
         if div_type == 'bullish':
             if bull_div and has_cash:
-                return ('BUY', f"RSI DIVERGENCE: Bullish divergence detected | RSI={rsi:.0f}")
+                # Need confirmation for divergence entry
+                confirmations = 1  # Divergence itself
+                reasons = ["Bull Div"]
+
+                if rsi < 45:
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch < 40:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if mom_1h > -0.5:  # Not still falling hard
+                    confirmations += 1
+                    reasons.append("Mom stable")
+                if volume_ratio > 1.1:
+                    confirmations += 1
+                    reasons.append(f"Vol={volume_ratio:.1f}x")
+
+                if confirmations >= 3:
+                    return ('BUY', f"RSI DIV SMART ({confirmations}/5): {' | '.join(reasons[:4])}")
+                return (None, f"RSI DIV: Divergence but only {confirmations}/3 confirms")
+
         elif div_type == 'bearish':
             if bear_div and has_position:
-                return ('SELL', f"RSI DIVERGENCE: Bearish divergence detected | RSI={rsi:.0f}")
+                if rsi > 55 or stoch > 60:
+                    return ('SELL', f"RSI DIVERGENCE: Bearish + RSI={rsi:.0f} Stoch={stoch:.0f}")
+
         elif div_type == 'hidden':
             if hidden_bull and has_cash:
-                return ('BUY', f"HIDDEN DIVERGENCE: Bullish continuation | RSI={rsi:.0f}")
+                if rsi < 50 and mom_1h > 0:
+                    return ('BUY', f"HIDDEN DIV: Bullish continuation | RSI={rsi:.0f} Mom+")
             if hidden_bear and has_position:
-                return ('SELL', f"HIDDEN DIVERGENCE: Bearish continuation | RSI={rsi:.0f}")
+                if rsi > 50 and mom_1h < 0:
+                    return ('SELL', f"HIDDEN DIV: Bearish continuation | RSI={rsi:.0f}")
 
-        return (None, f"RSI DIV: Bull={bull_div} | Bear={bear_div} | Hidden Bull={hidden_bull}")
+        return (None, f"RSI DIV: Bull={bull_div} | Bear={bear_div} | Stoch={stoch:.0f}")
+
+    # ============ BTC CORRELATION / BETA LAG STRATEGY ============
+
+    if strategy.get('use_btc_lag'):
+        # Get BTC reference data
+        btc_ref = get_btc_reference()
+        btc_change_1h = btc_ref.get('change_1h', 0)
+
+        # Get altcoin change
+        alt_change_1h = analysis.get('momentum_1h', 0)
+        alt_symbol = symbol.split('/')[0]
+
+        # Skip BTC itself
+        if alt_symbol == 'BTC':
+            return (None, "BTC LAG: Cannot trade BTC against itself")
+
+        # Strategy parameters
+        min_btc_gain = strategy.get('min_btc_gain', 1.0)  # BTC must be up at least this %
+        max_alt_gain = strategy.get('max_alt_gain', 0.3)  # Alt must be up less than this %
+
+        # Get confirmations
+        stoch = analysis.get('stoch_rsi', 50)
+        bb_pos = analysis.get('bb_position', 0.5)
+        volume_ratio = analysis.get('volume_ratio', 1.0)
+        reversal = detect_reversal_pattern(analysis)
+
+        if has_cash:
+            # BUY condition: BTC up, altcoin lagging
+            if btc_change_1h >= min_btc_gain and alt_change_1h < max_alt_gain:
+                lag = btc_change_1h - alt_change_1h
+
+                # Need confirmations for quality entry
+                confirmations = 1  # Lag detected
+                reasons = [f"BTC+{btc_change_1h:.1f}%", f"{alt_symbol}{alt_change_1h:+.1f}%", f"Lag={lag:.1f}%"]
+
+                if rsi < 60:  # Not overbought
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch < 65:
+                    confirmations += 1
+                if bb_pos < 0.7:  # Room to run
+                    confirmations += 1
+                if volume_ratio > 0.8:  # Decent volume
+                    confirmations += 1
+                if reversal['bullish_score'] >= 15:
+                    confirmations += 1
+                    reasons.append("Pattern+")
+
+                if confirmations >= 2:
+                    return ('BUY', f"BTC LAG ({confirmations}/6): {' | '.join(reasons[:4])}")
+                return (None, f"BTC LAG: Lag detected but only {confirmations}/2 confirms")
+
+            # Check if alt is AHEAD of BTC (potential short opportunity - log only)
+            elif btc_change_1h < -min_btc_gain and alt_change_1h > -max_alt_gain:
+                return (None, f"BTC LAG SHORT: BTC{btc_change_1h:+.1f}% vs {alt_symbol}{alt_change_1h:+.1f}% (no short in paper)")
+
+        elif has_position:
+            # Sell when alt catches up or BTC reverses
+            if alt_change_1h >= btc_change_1h or btc_change_1h < 0:
+                if rsi > 55 or stoch > 60:
+                    return ('SELL', f"BTC LAG EXIT: {alt_symbol} caught up or BTC reversed")
+
+        return (None, f"BTC LAG: BTC{btc_change_1h:+.1f}% | {alt_symbol}{alt_change_1h:+.1f}% | Wait for gap")
+
+    # ============ SHORT STRATEGIES (PAPER ONLY) ============
+
+    # BTC Beta Lag SHORT - Short alts that haven't followed BTC down
+    if strategy.get('use_btc_lag_short'):
+        btc_ref = get_btc_reference()
+        btc_change_1h = btc_ref.get('change_1h', 0)
+        alt_change_1h = analysis.get('momentum_1h', 0)
+        alt_symbol = symbol.split('/')[0]
+
+        if alt_symbol == 'BTC':
+            return (None, "BTC LAG SHORT: Cannot trade BTC against itself")
+
+        min_btc_drop = strategy.get('min_btc_drop', 1.0)  # BTC must be DOWN at least this %
+        max_alt_drop = strategy.get('max_alt_drop', 0.3)  # Alt must be down LESS than this %
+
+        stoch = analysis.get('stoch_rsi', 50)
+        bb_pos = analysis.get('bb_position', 0.5)
+        reversal = detect_reversal_pattern(analysis)
+
+        # Check for existing short position - handle exit
+        has_short = symbol in portfolio.get('short_positions', {})
+
+        if has_cash and not has_short:
+            # SHORT condition: BTC dropping, altcoin NOT dropping (lagging behind)
+            if btc_change_1h <= -min_btc_drop and alt_change_1h > -max_alt_drop:
+                lag = alt_change_1h - btc_change_1h  # Positive = alt hasn't dropped
+
+                confirmations = 1  # Lag detected
+                reasons = [f"BTC{btc_change_1h:+.1f}%", f"{alt_symbol}{alt_change_1h:+.1f}%", f"Lag={lag:.1f}%"]
+
+                if rsi > 45:  # Not oversold
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch > 40:
+                    confirmations += 1
+                if bb_pos > 0.4:  # Room to fall
+                    confirmations += 1
+                if reversal['bearish_score'] >= 15:
+                    confirmations += 1
+                    reasons.append("BearPattern")
+
+                if confirmations >= 3:
+                    return ('SHORT', f"BTC LAG SHORT ({confirmations}/5): {' | '.join(reasons[:4])}")
+                return (None, f"BTC LAG SHORT: Lag detected but only {confirmations}/3 confirms")
+
+        elif has_short:
+            # Cover when alt catches up (drops) or BTC reverses (goes up)
+            if alt_change_1h <= btc_change_1h or btc_change_1h > 0:
+                if rsi < 45 or stoch < 40:
+                    return ('COVER', f"BTC LAG SHORT EXIT: {alt_symbol} caught down or BTC reversed up")
+
+        return (None, f"BTC LAG SHORT: BTC{btc_change_1h:+.1f}% | {alt_symbol}{alt_change_1h:+.1f}% | Wait for drop gap")
+
+    # RSI Overbought SHORT - Short when RSI extremely high with bearish patterns
+    if strategy.get('use_rsi_short'):
+        overbought = strategy.get('overbought', 75)
+        stoch = analysis.get('stoch_rsi', 50)
+        reversal = detect_reversal_pattern(analysis)
+        bb_pos = analysis.get('bb_position', 0.5)
+
+        has_short = symbol in portfolio.get('short_positions', {})
+
+        if has_cash and not has_short:
+            if rsi >= overbought:
+                confirmations = 1  # RSI overbought
+                reasons = [f"RSI={rsi:.0f}"]
+
+                if stoch > 75:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if bb_pos > 0.85:  # At upper band
+                    confirmations += 1
+                    reasons.append("BB_HIGH")
+                if reversal['bearish_score'] >= 20:
+                    confirmations += 1
+                    reasons.append(f"Bear={reversal['bearish_score']}")
+                if trend == 'bearish':
+                    confirmations += 1
+                    reasons.append("TREND_DOWN")
+
+                # Require 3+ confirmations for short
+                if confirmations >= 3:
+                    return ('SHORT', f"RSI SHORT ({confirmations}/5): {' | '.join(reasons)}")
+                return (None, f"RSI SHORT: Overbought but only {confirmations}/3 confirms")
+
+        elif has_short:
+            # Cover when RSI drops or hits support
+            if rsi < 50 or bb_pos < 0.3:
+                return ('COVER', f"RSI SHORT EXIT: RSI={rsi:.0f} BB={bb_pos:.2f}")
+
+        return (None, f"RSI SHORT: RSI={rsi:.0f} | Stoch={stoch:.0f} | Wait for overbought")
+
+    # Mean Reversion SHORT - Short excessive pumps
+    if strategy.get('use_mean_rev_short'):
+        std_dev_threshold = strategy.get('std_dev', 2.0)
+        bb_pos = analysis.get('bb_position', 0.5)
+        bb_width = analysis.get('bb_width', 0.02)
+        mom_1h = analysis.get('momentum_1h', 0)
+        mom_24h = analysis.get('momentum_24h', 0)
+        stoch = analysis.get('stoch_rsi', 50)
+        reversal = detect_reversal_pattern(analysis)
+
+        has_short = symbol in portfolio.get('short_positions', {})
+
+        if has_cash and not has_short:
+            # Detect excessive pump: way above upper BB + big momentum
+            is_pumped = bb_pos > 0.95 and mom_1h > 5  # Above upper band + strong 1h pump
+
+            if is_pumped:
+                confirmations = 1  # Pump detected
+                reasons = [f"BB={bb_pos:.2f}", f"Mom1h={mom_1h:.1f}%"]
+
+                if rsi > 70:
+                    confirmations += 1
+                    reasons.append(f"RSI={rsi:.0f}")
+                if stoch > 80:
+                    confirmations += 1
+                    reasons.append(f"Stoch={stoch:.0f}")
+                if mom_24h > 15:  # Extended 24h move
+                    confirmations += 1
+                    reasons.append(f"Mom24h={mom_24h:.1f}%")
+                if reversal['bearish_score'] >= 15:
+                    confirmations += 1
+                    reasons.append("BearPattern")
+
+                if confirmations >= 3:
+                    return ('SHORT', f"MEAN REV SHORT ({confirmations}/5): {' | '.join(reasons)}")
+                return (None, f"MEAN REV SHORT: Pump detected but only {confirmations}/3 confirms")
+
+        elif has_short:
+            # Cover when price returns to mean
+            if bb_pos < 0.6 or rsi < 50:
+                return ('COVER', f"MEAN REV EXIT: Price returning to mean BB={bb_pos:.2f}")
+
+        return (None, f"MEAN REV SHORT: BB={bb_pos:.2f} | Mom1h={mom_1h:.1f}% | Wait for pump")
 
     # ============ EXTERNAL DATA STRATEGIES ============
 
@@ -3302,6 +4762,17 @@ def run_engine(portfolios: dict) -> list:
     """Run the trading engine for all portfolios"""
     results = []
     analyzed = {}  # (crypto, timeframe) -> analysis
+
+    # === AUTO-UPDATE CRYPTO LIST (once per day) ===
+    if AUTO_UPDATE_ENABLED and should_update():
+        try:
+            update_result = run_auto_update()
+            if update_result.get('updated'):
+                log(f"[AUTO-UPDATE] Updated crypto list: {update_result['cryptos_count']} cryptos")
+                # Reload portfolios to get new crypto lists
+                portfolios = load_portfolios()['portfolios']
+        except Exception as e:
+            log(f"[AUTO-UPDATE] Error: {e}")
 
     # === ALPHA SIGNALS CHECK ===
     alpha_signal = None
@@ -3395,6 +4866,25 @@ def run_engine(portfolios: dict) -> list:
                     if not risk_ok:
                         log(f"  [RISK BLOCK] {portfolio['name']}/{crypto}: {risk_reason}")
                         action = None
+
+                # === POSITION ROTATION ===
+                # Check if this is a rotation (reason contains "Rotating")
+                if action == 'BUY' and "Rotating" in reason:
+                    try:
+                        # Extract symbol to close from reason
+                        # Format: "Rotating SYMBOL (...) for better opportunity..."
+                        parts = reason.split()
+                        if len(parts) >= 2:
+                            close_symbol = parts[1]  # The symbol after "Rotating"
+                            if close_symbol in portfolio['positions']:
+                                close_pos = portfolio['positions'][close_symbol]
+                                close_price = close_pos.get('current_price', close_pos.get('entry_price', 0))
+                                if close_price > 0:
+                                    close_result = execute_trade(portfolio, 'SELL', close_symbol, close_price, reason=f"🔄 ROTATION: Making room for {crypto}")
+                                    if close_result['success']:
+                                        log(f"  🔄 {portfolio['name']}: Closed {close_symbol} for rotation -> {crypto}")
+                    except Exception as e:
+                        log(f"  [ROTATION ERROR] {portfolio['name']}: {e}")
 
                 if action:
                     try:

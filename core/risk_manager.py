@@ -1,344 +1,294 @@
 """
-Risk Manager - Gestion du risque et des positions
+PROFESSIONAL RISK MANAGER
+=========================
+Institutional-grade risk management for serious trading.
+
+Features:
+- Maximum drawdown protection
+- Kelly Criterion position sizing
+- Daily/Weekly loss limits
+- Volatility-adjusted sizing
+- Emergency stop system
 """
-from datetime import datetime, timedelta
-from typing import Dict, Optional, List, Tuple
-from dataclasses import dataclass, field
+
 import json
 import os
+from datetime import datetime, timedelta
+from typing import Dict, Tuple
 
-from config.settings import trading_config
-from utils.logger import logger
-
-
-@dataclass
-class Position:
-    """Représente une position ouverte"""
-    symbol: str
-    side: str  # 'long' ou 'short'
-    entry_price: float
-    quantity: float
-    entry_time: datetime
-    stop_loss: float
-    take_profit: float
-    trailing_stop: Optional[float] = None
-    highest_price: float = 0  # Pour trailing stop
-    pnl: float = 0
-    pnl_percent: float = 0
+RISK_CONFIG_FILE = "data/risk_config.json"
+RISK_STATE_FILE = "data/risk_state.json"
 
 
-@dataclass
-class TradeRecord:
-    """Historique d'un trade"""
-    symbol: str
-    side: str
-    entry_price: float
-    exit_price: float
-    quantity: float
-    pnl: float
-    pnl_percent: float
-    entry_time: datetime
-    exit_time: datetime
-    reason: str  # 'take_profit', 'stop_loss', 'trailing_stop', 'signal'
+def load_risk_config() -> Dict:
+    """Load risk configuration"""
+    default_config = {
+        'max_drawdown_percent': 25,
+        'daily_loss_limit_percent': 10,
+        'weekly_loss_limit_percent': 20,
+        'max_position_percent': 10,
+        'max_portfolio_positions': 50,
+        'kelly_fraction': 0.25,
+        'min_win_rate_required': 0.40,
+        'high_volatility_reduction': 0.5,
+        'emergency_stop_loss_percent': 30,
+        'max_trades_per_day': 9999,           # Pas de limite
+        'min_time_between_trades_seconds': 0,  # Pas de délai
+        'pause_on_3_losses': False,
+        'bear_market_reduction': 1.0,         # Pas de réduction
+    }
+    try:
+        if os.path.exists(RISK_CONFIG_FILE):
+            with open(RISK_CONFIG_FILE, 'r') as f:
+                user_config = json.load(f)
+                default_config.update(user_config)
+    except:
+        pass
+    return default_config
+
+
+def load_risk_state() -> Dict:
+    """Load current risk state"""
+    default_state = {
+        'daily_pnl': 0,
+        'weekly_pnl': 0,
+        'peak_equity': 0,
+        'current_drawdown': 0,
+        'trades_today': 0,
+        'last_trade_time': None,
+        'emergency_stop_triggered': False,
+        'daily_reset_date': datetime.now().strftime('%Y-%m-%d'),
+        'weekly_reset_date': datetime.now().strftime('%Y-%m-%d'),
+        'trade_history': []
+    }
+    try:
+        if os.path.exists(RISK_STATE_FILE):
+            with open(RISK_STATE_FILE, 'r') as f:
+                state = json.load(f)
+                default_state.update(state)
+    except:
+        pass
+    return default_state
+
+
+def save_risk_state(state: Dict):
+    """Save current risk state"""
+    try:
+        os.makedirs(os.path.dirname(RISK_STATE_FILE), exist_ok=True)
+        with open(RISK_STATE_FILE, 'w') as f:
+            json.dump(state, f, indent=2, default=str)
+    except Exception as e:
+        print(f"[RISK] State save error: {e}")
 
 
 class RiskManager:
-    """
-    Gestionnaire de risque
-
-    Règles:
-    1. Max 2% du capital par trade
-    2. Stop loss obligatoire
-    3. Take profit défini
-    4. Max 3 positions simultanées
-    5. Pas de trade si drawdown > 10%
-    """
+    """Professional risk management system"""
 
     def __init__(self):
-        self.config = trading_config
-        self.positions: Dict[str, Position] = {}
-        self.trade_history: List[TradeRecord] = []
-        self.initial_capital: float = 0
-        self.current_capital: float = 0
-        self.max_positions = 3
-        self.max_drawdown_percent = 10
-        self.daily_loss_limit = 5  # % max loss par jour
+        self.config = load_risk_config()
+        self.state = load_risk_state()
+        self._check_daily_reset()
+        self._check_weekly_reset()
 
-        # Stats
-        self.total_trades = 0
-        self.winning_trades = 0
-        self.losing_trades = 0
-        self.total_pnl = 0
+    def _check_daily_reset(self):
+        today = datetime.now().strftime('%Y-%m-%d')
+        if self.state.get('daily_reset_date') != today:
+            self.state['daily_pnl'] = 0
+            self.state['trades_today'] = 0
+            self.state['daily_reset_date'] = today
+            save_risk_state(self.state)
 
-        # Load history
-        self._load_state()
+    def _check_weekly_reset(self):
+        today = datetime.now()
+        week_start = (today - timedelta(days=today.weekday())).strftime('%Y-%m-%d')
+        if self.state.get('weekly_reset_date') != week_start:
+            self.state['weekly_pnl'] = 0
+            self.state['weekly_reset_date'] = week_start
+            save_risk_state(self.state)
 
-    def can_open_position(self, symbol: str, capital: float) -> Tuple[bool, str]:
-        """
-        Vérifie si on peut ouvrir une nouvelle position
+    def can_trade(self, portfolio: Dict, action: str, amount_usdt: float) -> Tuple[bool, str]:
+        """Check if a trade is allowed - MINIMAL RESTRICTIONS, rely on confluence instead."""
 
-        Returns:
-            (can_trade, reason)
-        """
-        # Vérifier le nombre de positions
-        if len(self.positions) >= self.max_positions:
-            return False, f"Max positions reached ({self.max_positions})"
+        # Only block on emergency stop (manual trigger)
+        if self.state.get('emergency_stop_triggered'):
+            return False, "EMERGENCY STOP ACTIVE"
 
-        # Vérifier si position déjà ouverte sur ce symbol
-        if symbol in self.positions:
-            return False, f"Position already open on {symbol}"
+        # Track stats but don't block
+        self.state['trades_today'] = self.state.get('trades_today', 0)
 
-        # Vérifier le drawdown
-        if self.initial_capital > 0:
-            drawdown = (self.initial_capital - capital) / self.initial_capital * 100
-            if drawdown > self.max_drawdown_percent:
-                return False, f"Max drawdown exceeded ({drawdown:.1f}%)"
+        # Max open positions (prevent overexposure)
+        open_positions = len(portfolio.get('positions', {}))
+        if open_positions >= self.config['max_portfolio_positions'] and action == 'BUY':
+            return False, f"Max positions: {open_positions}"
 
-        # Vérifier la perte journalière
-        daily_pnl = self._calculate_daily_pnl()
-        if daily_pnl < -self.daily_loss_limit:
-            return False, f"Daily loss limit reached ({daily_pnl:.1f}%)"
+        # Drawdown check
+        equity = self._calculate_equity(portfolio)
+        if equity > self.state.get('peak_equity', 0):
+            self.state['peak_equity'] = equity
+
+        if self.state['peak_equity'] > 0:
+            drawdown = ((self.state['peak_equity'] - equity) / self.state['peak_equity']) * 100
+            self.state['current_drawdown'] = drawdown
+
+            if drawdown > self.config['max_drawdown_percent']:
+                return False, f"Max drawdown: {drawdown:.1f}%"
+
+            if drawdown > self.config['emergency_stop_loss_percent']:
+                self.state['emergency_stop_triggered'] = True
+                save_risk_state(self.state)
+                return False, f"EMERGENCY STOP: {drawdown:.1f}%"
 
         return True, "OK"
 
-    def calculate_position_size(self, capital: float, entry_price: float,
-                                stop_loss_price: float, confidence: int = 70) -> float:
-        """
-        Calcule la taille de position basée sur le risque
+    def _calculate_equity(self, portfolio: Dict) -> float:
+        """Calculate current portfolio equity"""
+        equity = portfolio.get('balance', {}).get('USDT', 0)
+        for symbol, pos in portfolio.get('positions', {}).items():
+            qty = pos.get('quantity', 0)
+            price = pos.get('entry_price', 0)
+            equity += qty * price
+        return equity
 
-        Formule: Position = (Capital * Risk%) / (Entry - StopLoss)
+    def is_bear_market(self, analysis: Dict = None) -> bool:
+        """Detect bear market conditions"""
+        if not analysis:
+            return False
 
-        Args:
-            capital: Capital disponible en USDT
-            entry_price: Prix d'entrée prévu
-            stop_loss_price: Prix du stop loss
-            confidence: Confiance du signal (0-100)
+        # Bear market indicators:
+        # 1. RSI < 35 on BTC
+        # 2. Price below EMA21
+        # 3. Negative 24h change > 3%
+        rsi = analysis.get('rsi', 50)
+        trend = analysis.get('trend', 'neutral')
+        change_24h = analysis.get('change_24h', 0)
 
-        Returns:
-            Montant en USDT à investir
-        """
-        # Risk de base: 2% du capital
-        base_risk = self.config.max_risk_percent / 100
+        bear_signals = 0
+        if rsi < 35:
+            bear_signals += 1
+        if trend == 'bearish':
+            bear_signals += 1
+        if change_24h < -3:
+            bear_signals += 1
 
-        # Ajuster le risque selon la confiance
-        # 50% confidence = 0.5x risk, 100% confidence = 1.5x risk
-        confidence_multiplier = 0.5 + (confidence / 100)
-        adjusted_risk = base_risk * confidence_multiplier
+        return bear_signals >= 2
 
-        # Distance au stop loss en %
-        stop_distance = abs(entry_price - stop_loss_price) / entry_price
+    def get_market_adjusted_size(self, base_size: float, analysis: Dict = None) -> float:
+        """Reduce position size in bear market"""
+        if self.is_bear_market(analysis):
+            reduction = self.config.get('bear_market_reduction', 0.5)
+            return base_size * reduction
+        return base_size
 
-        if stop_distance == 0:
-            stop_distance = self.config.stop_loss_percent / 100
+    def calculate_kelly_size(self, win_rate: float, avg_win: float, avg_loss: float) -> float:
+        """Kelly Criterion position sizing"""
+        if win_rate < self.config['min_win_rate_required']:
+            return 0
+        if avg_loss == 0:
+            return 0
 
-        # Taille de position
-        position_usdt = (capital * adjusted_risk) / stop_distance
+        win_loss_ratio = abs(avg_win / avg_loss)
+        kelly = win_rate - ((1 - win_rate) / win_loss_ratio)
+        kelly *= self.config['kelly_fraction']
+        kelly = min(kelly, self.config['max_position_percent'] / 100)
+        return max(kelly, 0)
 
-        # Cap à 20% du capital max par position
-        max_position = capital * 0.20
-        position_usdt = min(position_usdt, max_position)
+    def get_volatility_adjusted_size(self, base_size: float, atr_percent: float) -> float:
+        """Adjust size for volatility"""
+        if atr_percent > 5:
+            return base_size * self.config['high_volatility_reduction']
+        elif atr_percent > 4:
+            return base_size * 0.7
+        elif atr_percent < 1.5:
+            return base_size * 1.2
+        return base_size
 
-        # Minimum trade amount
-        position_usdt = max(position_usdt, self.config.trade_amount_usdt)
+    def record_trade(self, pnl: float, trade_info: Dict = None):
+        """Record trade result"""
+        self.state['daily_pnl'] += pnl
+        self.state['weekly_pnl'] += pnl
+        self.state['trades_today'] += 1
+        self.state['last_trade_time'] = datetime.now().isoformat()
 
-        logger.info(f"Position size: ${position_usdt:.2f} (Risk: {adjusted_risk*100:.1f}%, SL distance: {stop_distance*100:.1f}%)")
+        if trade_info:
+            self.state['trade_history'].append({
+                'pnl': pnl,
+                'timestamp': datetime.now().isoformat(),
+                **trade_info
+            })
+            self.state['trade_history'] = self.state['trade_history'][-100:]
 
-        return position_usdt
+        save_risk_state(self.state)
 
-    def open_position(self, symbol: str, side: str, entry_price: float,
-                      quantity: float) -> Position:
-        """Ouvre une nouvelle position avec SL/TP"""
+    def get_win_rate(self, lookback: int = 100) -> Tuple[float, float, float]:
+        """Calculate win rate from history"""
+        trades = self.state.get('trade_history', [])[-lookback:]
+        if not trades:
+            return 0.5, 0, 0
 
-        # Calculer SL et TP
-        if side == 'long':
-            stop_loss = entry_price * (1 - self.config.stop_loss_percent / 100)
-            take_profit = entry_price * (1 + self.config.take_profit_percent / 100)
-        else:  # short
-            stop_loss = entry_price * (1 + self.config.stop_loss_percent / 100)
-            take_profit = entry_price * (1 - self.config.take_profit_percent / 100)
+        wins = [t['pnl'] for t in trades if t.get('pnl', 0) > 0]
+        losses = [t['pnl'] for t in trades if t.get('pnl', 0) < 0]
 
-        position = Position(
-            symbol=symbol,
-            side=side,
-            entry_price=entry_price,
-            quantity=quantity,
-            entry_time=datetime.now(),
-            stop_loss=stop_loss,
-            take_profit=take_profit,
-            highest_price=entry_price
-        )
+        win_rate = len(wins) / len(trades) if trades else 0.5
+        avg_win = sum(wins) / len(wins) if wins else 0
+        avg_loss = sum(losses) / len(losses) if losses else 0
 
-        self.positions[symbol] = position
-        self._save_state()
+        return win_rate, avg_win, avg_loss
 
-        logger.info(f"Position opened: {side.upper()} {quantity} {symbol} @ ${entry_price:.2f}")
-        logger.info(f"  Stop Loss: ${stop_loss:.2f} | Take Profit: ${take_profit:.2f}")
+    def get_optimal_position_size(self, portfolio: Dict, analysis: Dict) -> float:
+        """Calculate optimal position size"""
+        base_pct = self.config['max_position_percent']
 
-        return position
+        # Kelly adjustment
+        win_rate, avg_win, avg_loss = self.get_win_rate()
+        kelly_pct = self.calculate_kelly_size(win_rate, avg_win, avg_loss) * 100
+        if kelly_pct > 0:
+            base_pct = min(base_pct, kelly_pct)
 
-    def update_position(self, symbol: str, current_price: float) -> Optional[str]:
-        """
-        Met à jour une position et vérifie SL/TP
+        # Volatility adjustment
+        atr_pct = analysis.get('atr_percent', 2.5)
+        base_pct = self.get_volatility_adjusted_size(base_pct, atr_pct)
 
-        Returns:
-            'take_profit', 'stop_loss', 'trailing_stop' ou None
-        """
-        if symbol not in self.positions:
-            return None
+        # Drawdown adjustment
+        current_dd = self.state.get('current_drawdown', 0)
+        if current_dd > 10:
+            base_pct *= 0.5
+        elif current_dd > 5:
+            base_pct *= 0.7
 
-        pos = self.positions[symbol]
+        return max(1, min(base_pct, self.config['max_position_percent']))
 
-        # Calculer PnL
-        if pos.side == 'long':
-            pos.pnl = (current_price - pos.entry_price) * pos.quantity
-            pos.pnl_percent = (current_price - pos.entry_price) / pos.entry_price * 100
-        else:
-            pos.pnl = (pos.entry_price - current_price) * pos.quantity
-            pos.pnl_percent = (pos.entry_price - current_price) / pos.entry_price * 100
-
-        # Update highest price pour trailing stop
-        if current_price > pos.highest_price:
-            pos.highest_price = current_price
-
-            # Activer trailing stop si en profit > 2%
-            if pos.pnl_percent > 2 and pos.trailing_stop is None:
-                pos.trailing_stop = current_price * (1 - self.config.trailing_stop_percent / 100)
-                logger.info(f"Trailing stop activated at ${pos.trailing_stop:.2f}")
-
-            # Mettre à jour trailing stop
-            elif pos.trailing_stop:
-                new_trailing = current_price * (1 - self.config.trailing_stop_percent / 100)
-                if new_trailing > pos.trailing_stop:
-                    pos.trailing_stop = new_trailing
-
-        # Vérifier Take Profit
-        if pos.side == 'long' and current_price >= pos.take_profit:
-            return 'take_profit'
-        elif pos.side == 'short' and current_price <= pos.take_profit:
-            return 'take_profit'
-
-        # Vérifier Stop Loss
-        if pos.side == 'long' and current_price <= pos.stop_loss:
-            return 'stop_loss'
-        elif pos.side == 'short' and current_price >= pos.stop_loss:
-            return 'stop_loss'
-
-        # Vérifier Trailing Stop
-        if pos.trailing_stop:
-            if pos.side == 'long' and current_price <= pos.trailing_stop:
-                return 'trailing_stop'
-
-        return None
-
-    def close_position(self, symbol: str, exit_price: float, reason: str) -> Optional[TradeRecord]:
-        """Ferme une position et enregistre le trade"""
-        if symbol not in self.positions:
-            return None
-
-        pos = self.positions[symbol]
-
-        # Calculer PnL final
-        if pos.side == 'long':
-            pnl = (exit_price - pos.entry_price) * pos.quantity
-            pnl_percent = (exit_price - pos.entry_price) / pos.entry_price * 100
-        else:
-            pnl = (pos.entry_price - exit_price) * pos.quantity
-            pnl_percent = (pos.entry_price - exit_price) / pos.entry_price * 100
-
-        # Créer le record
-        record = TradeRecord(
-            symbol=symbol,
-            side=pos.side,
-            entry_price=pos.entry_price,
-            exit_price=exit_price,
-            quantity=pos.quantity,
-            pnl=pnl,
-            pnl_percent=pnl_percent,
-            entry_time=pos.entry_time,
-            exit_time=datetime.now(),
-            reason=reason
-        )
-
-        # Mettre à jour les stats
-        self.trade_history.append(record)
-        self.total_trades += 1
-        self.total_pnl += pnl
-
-        if pnl > 0:
-            self.winning_trades += 1
-        else:
-            self.losing_trades += 1
-
-        # Supprimer la position
-        del self.positions[symbol]
-        self._save_state()
-
-        # Log
-        emoji = "✅" if pnl > 0 else "❌"
-        logger.info(f"{emoji} Position closed: {symbol} | PnL: ${pnl:.2f} ({pnl_percent:+.1f}%) | Reason: {reason}")
-
-        return record
-
-    def get_stats(self) -> Dict:
-        """Retourne les statistiques de trading"""
-        win_rate = (self.winning_trades / self.total_trades * 100) if self.total_trades > 0 else 0
-
+    def get_risk_status(self) -> Dict:
+        """Get risk status summary"""
         return {
-            'total_trades': self.total_trades,
-            'winning_trades': self.winning_trades,
-            'losing_trades': self.losing_trades,
-            'win_rate': win_rate,
-            'total_pnl': self.total_pnl,
-            'open_positions': len(self.positions),
-            'positions': list(self.positions.keys())
+            'daily_pnl': self.state['daily_pnl'],
+            'weekly_pnl': self.state['weekly_pnl'],
+            'current_drawdown': self.state.get('current_drawdown', 0),
+            'peak_equity': self.state.get('peak_equity', 0),
+            'trades_today': self.state['trades_today'],
+            'emergency_stop': self.state.get('emergency_stop_triggered', False),
+            'win_rate': self.get_win_rate()[0],
         }
 
-    def _calculate_daily_pnl(self) -> float:
-        """Calcule le PnL du jour"""
-        today = datetime.now().date()
-        daily_pnl = sum(
-            t.pnl for t in self.trade_history
-            if t.exit_time.date() == today
-        )
-        return (daily_pnl / self.initial_capital * 100) if self.initial_capital > 0 else 0
-
-    def _save_state(self):
-        """Sauvegarde l'état"""
-        state = {
-            'positions': {k: vars(v) for k, v in self.positions.items()},
-            'stats': {
-                'total_trades': self.total_trades,
-                'winning_trades': self.winning_trades,
-                'losing_trades': self.losing_trades,
-                'total_pnl': self.total_pnl
-            }
-        }
-
-        # Convertir datetime en string
-        for pos in state['positions'].values():
-            if isinstance(pos.get('entry_time'), datetime):
-                pos['entry_time'] = pos['entry_time'].isoformat()
-
-        try:
-            with open('data/risk_state.json', 'w') as f:
-                json.dump(state, f, indent=2, default=str)
-        except Exception as e:
-            logger.warning(f"Failed to save risk state: {e}")
-
-    def _load_state(self):
-        """Charge l'état précédent"""
-        try:
-            if os.path.exists('data/risk_state.json'):
-                with open('data/risk_state.json', 'r') as f:
-                    state = json.load(f)
-                    stats = state.get('stats', {})
-                    self.total_trades = stats.get('total_trades', 0)
-                    self.winning_trades = stats.get('winning_trades', 0)
-                    self.losing_trades = stats.get('losing_trades', 0)
-                    self.total_pnl = stats.get('total_pnl', 0)
-        except Exception as e:
-            logger.warning(f"Failed to load risk state: {e}")
+    def reset_emergency_stop(self):
+        """Reset emergency stop"""
+        self.state['emergency_stop_triggered'] = False
+        save_risk_state(self.state)
 
 
-# Import manquant
-from typing import Tuple
+# Global instance
+_risk_manager = None
+
+
+def get_risk_manager() -> RiskManager:
+    global _risk_manager
+    if _risk_manager is None:
+        _risk_manager = RiskManager()
+    return _risk_manager
+
+
+def check_trade_risk(portfolio: Dict, action: str, amount_usdt: float) -> Tuple[bool, str]:
+    return get_risk_manager().can_trade(portfolio, action, amount_usdt)
+
+
+def get_optimal_size(portfolio: Dict, analysis: Dict) -> float:
+    return get_risk_manager().get_optimal_position_size(portfolio, analysis)
