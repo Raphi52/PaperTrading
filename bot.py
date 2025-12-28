@@ -1249,7 +1249,7 @@ STRATEGIES = {
     "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
 
     # DEGEN STRATEGIES - Fast exits (SCALP/DAY)
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "max_hold_hours": 2, "tooltip": "Scalping rapide - petits gains fréquents"},
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 5, "max_hold_hours": 2, "tooltip": "Scalping rapide - SL élargi"},
     "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 7, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
@@ -1302,7 +1302,7 @@ STRATEGIES = {
 
     # Stochastic RSI - DAY TRADING (TP 8-12%, SL 4-6%)
     "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - momentum oscillator"},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 7, "stop_loss": 3.5, "tooltip": "Stoch RSI agressif - seuils relaxés"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - seuils élargis"},
 
     # Breakout - SWING (TP 15-20%, SL 7-10%)
     "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout des ranges avec volume"},
@@ -1314,11 +1314,16 @@ STRATEGIES = {
 
     # Grid Trading - RANGE (TP 4-6%, SL 2-3%)
     "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 3, "tooltip": "Grille de niveaux - range trading"},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 4, "stop_loss": 2, "tooltip": "Grille serrée - micro profits"},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 4, "tooltip": "Grille serrée - SL élargi"},
 
     # DCA Accumulator
     "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10, "tooltip": "DCA sur dips de 3%+"},
     "dca_aggressive": {"auto": True, "use_dca": True, "dip_threshold": 2.0, "take_profit": 12, "stop_loss": 8, "tooltip": "DCA agressif - achète dès 2% dip"},
+
+    # AVERAGING DOWN - Renforcement de positions en perte
+    "reinforce_safe": {"auto": True, "use_reinforce": True, "reinforce_threshold": -5, "reinforce_levels": 2, "reinforce_mult": 1.0, "take_profit": 12, "stop_loss": 0, "tooltip": "Renforce à -5%, max 2x, même taille"},
+    "reinforce_moderate": {"auto": True, "use_reinforce": True, "reinforce_threshold": -4, "reinforce_levels": 3, "reinforce_mult": 1.5, "take_profit": 15, "stop_loss": 0, "tooltip": "Renforce à -4%, max 3x, taille x1.5"},
+    "reinforce_aggressive": {"auto": True, "use_reinforce": True, "reinforce_threshold": -3, "reinforce_levels": 4, "reinforce_mult": 2.0, "take_profit": 18, "stop_loss": 0, "tooltip": "Renforce à -3%, max 4x, taille x2"},
 
     # Ichimoku Cloud - SWING/POSITION (different timeframes)
     "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 18, "stop_loss": 9, "tooltip": "Ichimoku classique - système complet"},
@@ -1333,8 +1338,8 @@ STRATEGIES = {
     "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 28, "stop_loss": 14, "tooltip": "Ichimoku - tous signaux requis"},
 
     # Martingale
-    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 4, "take_profit": 15, "stop_loss": 50, "tooltip": "Martingale x2 - RISQUE TRÈS ÉLEVÉ"},
-    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 3, "take_profit": 12, "stop_loss": 35, "tooltip": "Martingale modérée x1.5 - risque élevé"},
+    "martingale": {"auto": True, "use_martingale": True, "multiplier": 2.0, "max_levels": 999, "take_profit": 15, "stop_loss": 0, "tooltip": "Martingale x2 - NO LIMIT, tout ou rien"},
+    "martingale_safe": {"auto": True, "use_martingale": True, "multiplier": 1.5, "max_levels": 999, "take_profit": 12, "stop_loss": 0, "tooltip": "Martingale x1.5 - NO LIMIT"},
 
     # Funding Rate Strategies - DAY TRADING (TP 10-15%, SL 5-7%)
     "funding_contrarian": {"auto": True, "use_mean_rev": True, "std_dev": 1.8, "take_profit": 12, "stop_loss": 6, "tooltip": "Contre le funding rate extrême"},
@@ -1396,15 +1401,15 @@ STRATEGIES = {
     "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Combo Bollinger + RSI"},
     "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Trend + Momentum alignment"},
 
-    # Trailing Stop strategies - SCALPING (TP 3-6%, SL 1.5-3%)
-    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 2, "tooltip": "Trailing 2% - lock profits vite"},
-    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 3, "tooltip": "Trailing 3% - balance risque/gain"},
-    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 10, "stop_loss": 5, "tooltip": "Trailing 5% - laisse courir"},
-    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 3, "stop_loss": 1.5, "tooltip": "Ultra tight trailing - micro gains"},
-    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 8, "tooltip": "Trailing swing - gros moves"},
+    # Trailing Stop strategies - SCALPING (TP élargis, SL élargis)
+    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 4, "tooltip": "Trailing - SL élargi"},
+    "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 5, "tooltip": "Trailing medium - balance"},
+    "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 6, "tooltip": "Trailing wide - laisse courir"},
+    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 3, "tooltip": "Trailing scalp - micro gains"},
+    "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "tooltip": "Trailing swing - gros moves"},
 
-    # Scalping variants - SCALPING (TP 3-6%, SL 1.5-3%)
-    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 4, "stop_loss": 2, "tooltip": "Scalp RSI - quick reversals"},
+    # Scalping variants - SCALPING (TP/SL élargis)
+    "scalp_rsi": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 4, "tooltip": "Scalp RSI - SL élargi"},
     "scalp_bb": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 3, "stop_loss": 1.5, "tooltip": "Scalp Bollinger touches"},
     "scalp_macd": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 2.5, "tooltip": "Scalp MACD crosses"},
 
@@ -1445,7 +1450,7 @@ STRATEGIES = {
     "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Order imbalance detection"},
 
     # Sentiment - SWING (TP 15-22%, SL 8-11%)
-    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Sentiment social - Twitter/Reddit"},
+    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 12, "tooltip": "Sentiment social - SL élargi pour volatilité"},
     "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 22, "stop_loss": 11, "tooltip": "Fear <20 ou Greed >80 seulement"},
 
     # ICT/SMC STRATEGIES
@@ -1555,6 +1560,9 @@ STRATEGY_TIMEFRAMES = {
     "dca_fear": "4h",
     "dca_accumulator": "4h",
     "dca_aggressive": "4h",
+    "reinforce_safe": "1h",
+    "reinforce_moderate": "1h",
+    "reinforce_aggressive": "1h",
     "hodl": "4h",
     "god_mode_only": "4h",
 
@@ -2663,6 +2671,63 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
             record_trade(portfolio, trade)
             return {'success': True, 'message': f"BUY {qty:.6f} {asset} @ ${execution_price:,.2f} (fee: ${fee:.2f}, slip: {slippage*100:.3f}%)"}
 
+    elif action == 'REINFORCE':
+        # Reinforcement buy - averaging down on existing position
+        reinforce_level = portfolio.pop('_reinforce_level', 1)
+        old_qty = portfolio.pop('_reinforce_old_qty', 0)
+        old_price = portfolio.pop('_reinforce_old_price', price)
+
+        if amount_usdt is None:
+            allocation = portfolio['config'].get('allocation_percent', 5)
+            reinforce_mult = 1.5  # Default multiplier
+            amount_usdt = portfolio['balance']['USDT'] * (allocation / 100) * (reinforce_mult ** (reinforce_level - 1))
+
+        if portfolio['balance']['USDT'] >= amount_usdt and amount_usdt > 10:
+            # Apply slippage
+            slippage = calculate_slippage(amount_usdt, is_buy=True)
+            execution_price = price * (1 + slippage)
+
+            # Calculate fee
+            fee = amount_usdt * FEE_RATE
+            net_amount = amount_usdt - fee
+
+            qty = net_amount / execution_price
+            portfolio['balance']['USDT'] -= amount_usdt
+            portfolio['balance'][asset] = portfolio['balance'].get(asset, 0) + qty
+            portfolio['total_fees_paid'] += fee
+
+            # Calculate new average price
+            total_qty = old_qty + qty
+            avg_price = (old_price * old_qty + execution_price * qty) / total_qty if total_qty > 0 else execution_price
+
+            # Update position with new average and reinforce level
+            portfolio['positions'][symbol] = {
+                'entry_price': avg_price,
+                'quantity': total_qty,
+                'entry_time': portfolio['positions'].get(symbol, {}).get('entry_time', timestamp),
+                'highest_price': max(portfolio['positions'].get(symbol, {}).get('highest_price', avg_price), execution_price),
+                'partial_profit_taken': False,
+                'reinforce_level': reinforce_level  # Track reinforcement level
+            }
+
+            trade = {
+                'timestamp': timestamp,
+                'action': 'REINFORCE',
+                'symbol': symbol,
+                'price': execution_price,
+                'market_price': price,
+                'quantity': qty,
+                'amount_usdt': amount_usdt,
+                'fee': fee,
+                'slippage_pct': slippage * 100,
+                'pnl': 0,
+                'reason': reason,
+                'reinforce_level': reinforce_level,
+                'new_avg_price': avg_price
+            }
+            record_trade(portfolio, trade)
+            return {'success': True, 'message': f"REINFORCE L{reinforce_level}: +{qty:.6f} {asset} @ ${execution_price:,.2f} | New avg: ${avg_price:,.2f}"}
+
     elif action == 'SELL':
         if portfolio['balance'].get(asset, 0) > 0:
             # BUG FIX: Use position quantity instead of balance to prevent overselling
@@ -2962,8 +3027,8 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 adaptive_note = f" [{market_type}]" if take_profit != base_take_profit else ""
                 return ('SELL', f"TP HIT: +{pnl_pct:.1f}% (target: {take_profit:.1f}%{adaptive_note})")
 
-            # 4. Check stop loss
-            if pnl_pct <= -stop_loss:
+            # 4. Check stop loss (skip if stop_loss=0, e.g. Martingale)
+            if stop_loss > 0 and pnl_pct <= -stop_loss:
                 return ('SELL', f"SL HIT: {pnl_pct:.1f}% (limit: -{stop_loss}%)")
 
             # 5. Check max hold time if configured
@@ -3051,8 +3116,8 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 adaptive_note = f" [{market_type}]" if take_profit != base_take_profit else ""
                 return ('COVER', f"SHORT TP HIT: +{pnl_pct:.1f}% (target: {take_profit:.1f}%{adaptive_note})")
 
-            # 3. Check stop loss (price rose too much)
-            if pnl_pct <= -stop_loss:
+            # 3. Check stop loss (price rose too much) - skip if stop_loss=0
+            if stop_loss > 0 and pnl_pct <= -stop_loss:
                 return ('COVER', f"SHORT SL HIT: {pnl_pct:.1f}% (limit: -{stop_loss}%)")
 
             # 4. Check max hold time for shorts
@@ -3250,14 +3315,16 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         ema9 = analysis.get('ema_9', current_price)
         ema21 = analysis.get('ema_21', current_price)
 
-        # SELL conditions (keep these simple for quick exits)
+        # SELL conditions - MORE PATIENT (was too nervous)
         if has_position:
-            if analysis.get('scalp_sell') or analysis.get('momentum_sell'):
-                return ('SELL', f"DEGEN EXIT: Sell signal triggered")
-            elif rsi > 65 or mom < -0.3:  # Exit earlier
-                return ('SELL', f"DEGEN EXIT: RSI={rsi:.0f} | Mom={mom:.1f}%")
-            elif ema9 < ema21:  # EMA cross down = exit
-                return ('SELL', f"DEGEN EXIT: EMA9 crossed below EMA21")
+            if analysis.get('scalp_sell') and analysis.get('momentum_sell'):
+                return ('SELL', f"DEGEN EXIT: Strong sell signal")
+            elif rsi > 75 and mom < -1:  # Only exit on real overbought + weakness
+                return ('SELL', f"DEGEN EXIT: RSI={rsi:.0f} overbought + Mom={mom:.1f}%")
+            elif mom < -3:  # Strong momentum drop only
+                return ('SELL', f"DEGEN EXIT: Strong drop Mom={mom:.1f}%")
+            elif ema9 < ema21 * 0.98:  # Significant EMA cross (2%+ gap)
+                return ('SELL', f"DEGEN EXIT: EMA bearish cross")
 
         # BUY conditions - STRICTER now
         if has_cash:
@@ -3398,7 +3465,7 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     if strategy.get('use_grid'):
         bb_pos = analysis.get('bb_position', 0.5)
         buy_threshold = 0.15  # Stricter: only buy at extreme lows
-        sell_threshold = 0.70  # Exit earlier
+        sell_threshold = 0.85  # Exit at 85% BB (was 70%)
         confluence = calculate_confluence_score(analysis, strategy)
         regime = detect_market_regime(analysis)
         volume_ratio = analysis.get('volume_ratio', 1.0)
@@ -3406,13 +3473,13 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         ema21 = analysis.get('ema_21', current_price)
         mom_1h = analysis.get('momentum_1h', 0)
 
-        # SELL conditions - exit earlier to lock profits
+        # SELL conditions - more patient exits
         if has_position:
             if bb_pos > sell_threshold:
                 return ('SELL', f"GRID: BB={bb_pos:.0%} > {sell_threshold:.0%}")
-            if mom_1h < -1.5:  # Momentum turning negative
+            if mom_1h < -3:  # Only exit on strong momentum drop (was -1.5)
                 return ('SELL', f"GRID EXIT: Momentum dropping ({mom_1h:.1f}%)")
-            if ema9 < ema21 and bb_pos > 0.5:  # EMA cross down in upper half
+            if ema9 < ema21 * 0.98 and bb_pos > 0.6:  # Stricter EMA cross condition
                 return ('SELL', f"GRID EXIT: EMA bearish cross, BB={bb_pos:.0%}")
 
         # BUY conditions - STRICTER
@@ -3470,6 +3537,69 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return (None, f"DCA: Dip={change:.1f}% | Score={confluence['score']} | Reversal={reversal['bullish_score']}")
 
         return (None, f"DCA: 24h={change:.1f}% | Waiting for -{dip_threshold}% dip")
+
+    # AVERAGING DOWN - Renforce les positions en perte
+    if strategy.get('use_reinforce'):
+        reinforce_threshold = strategy.get('reinforce_threshold', -5)  # Renforce si position à -5%
+        max_levels = strategy.get('reinforce_levels', 3)  # Max 3 renforcements
+        reinforce_mult = strategy.get('reinforce_mult', 1.5)  # Multiplier pour chaque renforcement
+
+        # Check current position
+        if has_position:
+            pos = portfolio['positions'].get(symbol, {})
+            entry_price = pos.get('entry_price', current_price)
+            current_level = pos.get('reinforce_level', 0)
+            pnl_pct = ((current_price - entry_price) / entry_price) * 100 if entry_price > 0 else 0
+
+            # TP check - exit with profit
+            take_profit = strategy.get('take_profit', 12)
+            if pnl_pct >= take_profit:
+                return ('SELL', f"REINFORCE TP: +{pnl_pct:.1f}% (avg entry: ${entry_price:.2f})")
+
+            # Should we reinforce?
+            if pnl_pct <= reinforce_threshold and current_level < max_levels:
+                # Check if price is stabilizing (not free falling)
+                mom_1h = analysis.get('momentum_1h', 0)
+                rsi = analysis.get('rsi', 50)
+                reversal = detect_reversal_pattern(analysis)
+
+                # Only reinforce if showing signs of recovery
+                if mom_1h > -2 and rsi < 70:
+                    # Calculate new position size
+                    old_qty = pos.get('quantity', 0)
+                    base_amount = portfolio.get('config', {}).get('allocation_percent', 5) / 100 * portfolio['balance'].get('USDT', 0)
+                    reinforce_amount = base_amount * (reinforce_mult ** current_level)
+
+                    # Check we have enough capital
+                    available = portfolio['balance'].get('USDT', 0)
+                    max_position_pct = 0.3  # Max 30% of portfolio in one position
+                    max_allowed = portfolio.get('initial_capital', 10000) * max_position_pct
+                    current_value = old_qty * current_price
+
+                    if available >= reinforce_amount and (current_value + reinforce_amount) <= max_allowed:
+                        # Store reinforcement info for execute_trade
+                        portfolio['_reinforce_level'] = current_level + 1
+                        portfolio['_reinforce_old_qty'] = old_qty
+                        portfolio['_reinforce_old_price'] = entry_price
+                        return ('REINFORCE', f"REINFORCE L{current_level+1}: P&L={pnl_pct:.1f}% | Adding ${reinforce_amount:.0f} @ ${current_price:.2f}")
+                    else:
+                        return (None, f"REINFORCE: Would reinforce but capital limit reached")
+                else:
+                    return (None, f"REINFORCE: P&L={pnl_pct:.1f}% but still falling (mom={mom_1h:.1f}%)")
+
+            return (None, f"REINFORCE: P&L={pnl_pct:.1f}% (threshold={reinforce_threshold}%) | Level={current_level}/{max_levels}")
+
+        # No position yet - initial buy on dip
+        else:
+            change = analysis.get('change_24h', 0)
+            mom_1h = analysis.get('momentum_1h', 0)
+            confluence = calculate_confluence_score(analysis, strategy)
+
+            # Buy on initial dip with reversal signals
+            if change < -3 and confluence['score'] >= 35 and mom_1h > -1:
+                return ('BUY', f"REINFORCE INIT: Dip={change:.1f}% | Score={confluence['score']}")
+
+            return (None, f"REINFORCE: Waiting for entry (24h={change:.1f}%)")
 
     # Ichimoku Cloud - Enhanced with variants
     if strategy.get('use_ichimoku'):
@@ -5424,8 +5554,8 @@ def check_sniper_positions_realtime(portfolios: dict) -> list:
                     should_sell = True
                     sell_reason = f"TP HIT: +{pnl_pct:.1f}% >= {take_profit}%"
 
-                # 2. STOP LOSS - Sell if down SL%
-                elif pnl_pct <= -stop_loss:
+                # 2. STOP LOSS - Sell if down SL% (skip if stop_loss=0)
+                elif stop_loss > 0 and pnl_pct <= -stop_loss:
                     should_sell = True
                     sell_reason = f"SL HIT: {pnl_pct:.1f}% <= -{stop_loss}%"
 
@@ -5635,8 +5765,8 @@ def run_sniper_engine(portfolios: dict, new_tokens: list) -> list:
                         should_sell = True
                         sell_reason = f"TP hit {gross_pnl_pct:.1f}%"
 
-                    # Stop loss trigger
-                    elif gross_pnl_pct <= -stop_loss:
+                    # Stop loss trigger (skip if stop_loss=0)
+                    elif stop_loss > 0 and gross_pnl_pct <= -stop_loss:
                         should_sell = True
                         sell_reason = f"SL hit {gross_pnl_pct:.1f}%"
 
@@ -5898,7 +6028,7 @@ def run_whale_engine(portfolios: dict) -> list:
                             log(f"🐋 WHALE TP: {symbol} +{pnl_pct:.1f}% [{portfolio['name']}]")
                             results.append({'portfolio': portfolio['name'], 'action': 'WHALE_SELL_TP', 'symbol': symbol})
 
-                    elif pnl_pct <= -stop_loss:
+                    elif stop_loss > 0 and pnl_pct <= -stop_loss:
                         result = execute_trade(portfolio, 'SELL', symbol, current_price, reason=f"WHALE SL {pnl_pct:.1f}%")
                         if result['success']:
                             log(f"🐋 WHALE SL: {symbol} {pnl_pct:.1f}% [{portfolio['name']}]")
