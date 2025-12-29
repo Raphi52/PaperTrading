@@ -1249,7 +1249,7 @@ STRATEGIES = {
     "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
 
     # DEGEN STRATEGIES - Fast exits (SCALP/DAY)
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 5, "max_hold_hours": 2, "tooltip": "Scalping rapide - SL élargi"},
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 5, "max_hold_hours": 6, "tooltip": "Scalping - hold plus long"},
     "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 7, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
@@ -1302,7 +1302,7 @@ STRATEGIES = {
 
     # Stochastic RSI - DAY TRADING (TP 8-12%, SL 4-6%)
     "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - momentum oscillator"},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - seuils élargis"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - seuils élargis"},
 
     # Breakout - SWING (TP 15-20%, SL 7-10%)
     "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout des ranges avec volume"},
@@ -3300,8 +3300,19 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
                 return (None, f"EMA: Crossover UP but only {confirmations}/2 confirms")
 
         elif cross_down and has_position:
-            if rsi > 55 or stoch > 60 or reversal['bearish_score'] >= 25:
-                return ('SELL', f"EMA {ema_type} DOWN | RSI={rsi:.0f} | Stoch={stoch:.0f}")
+            # Only sell on EMA DOWN if REALLY bearish or already in profit
+            pos = portfolio['positions'].get(symbol, {})
+            entry_price = pos.get('entry_price', current_price)
+            pnl_pct = ((current_price - entry_price) / entry_price * 100) if entry_price > 0 else 0
+
+            # Sell if: in profit OR (RSI bearish AND momentum dropping)
+            if pnl_pct > 2:  # Already in profit - secure it
+                return ('SELL', f"EMA DOWN SECURE: +{pnl_pct:.1f}% | RSI={rsi:.0f}")
+            elif rsi < 45 and mom_4h < -1:  # Really bearish
+                return ('SELL', f"EMA DOWN BEARISH: RSI={rsi:.0f} | Mom4h={mom_4h:.1f}%")
+            elif reversal['bearish_score'] >= 40:  # Strong bearish pattern
+                return ('SELL', f"EMA DOWN PATTERN: Bearish={reversal['bearish_score']}")
+            # Don't sell just because of EMA cross if RSI/Stoch are neutral/high
 
         return (None, f"EMA: No crossover | RSI={rsi:.0f} | Regime={regime['regime']}")
 
