@@ -132,6 +132,19 @@ _btc_cache = {
     'last_update': 0
 }
 
+# Fear & Greed cache (data updates hourly, cache 5 min)
+_fear_greed_cache = {
+    'value': 50,
+    'classification': 'Neutral',
+    'last_update': 0
+}
+
+# Funding rates cache per symbol (cache 10 min)
+_funding_cache = {}  # {symbol: {'rate': X, 'raw': X, 'timestamp': X, 'last_update': time}}
+
+# Open Interest cache per symbol (cache 10 min)
+_oi_cache = {}  # {symbol: {'oi': X, 'symbol': X, 'last_update': time}}
+
 
 def get_debug_state() -> dict:
     """Load current debug state"""
@@ -1632,7 +1645,14 @@ def get_strategy_timeframe(strategy_id: str) -> str:
 
 
 def get_fear_greed_index() -> dict:
-    """Fetch Fear & Greed Index from Alternative.me API"""
+    """Fetch Fear & Greed Index from Alternative.me API (cached 5 min)"""
+    global _fear_greed_cache
+    import time
+
+    # Cache for 300 seconds (5 minutes) - data only updates hourly anyway
+    if time.time() - _fear_greed_cache['last_update'] < 300:
+        return _fear_greed_cache
+
     try:
         url = "https://api.alternative.me/fng/?limit=1"
         response = requests.get(url, timeout=5)
@@ -1640,16 +1660,16 @@ def get_fear_greed_index() -> dict:
             data = response.json()
             if data.get('data') and len(data['data']) > 0:
                 fng = data['data'][0]
-                return {
-                    'value': int(fng.get('value', 50)),
-                    'classification': fng.get('value_classification', 'Neutral')
-                }
+                _fear_greed_cache['value'] = int(fng.get('value', 50))
+                _fear_greed_cache['classification'] = fng.get('value_classification', 'Neutral')
+                _fear_greed_cache['last_update'] = time.time()
+                return _fear_greed_cache
         else:
             debug_log('API', f'Fear&Greed API returned status {response.status_code}',
                      {'url': url, 'status': response.status_code})
     except Exception as e:
         debug_log('API', 'Fear&Greed API failed', {'url': url}, error=e)
-    return {'value': 50, 'classification': 'Neutral'}  # Default neutral
+    return _fear_greed_cache  # Return cached value on error
 
 
 def get_btc_reference() -> dict:
@@ -1687,7 +1707,15 @@ def get_btc_reference() -> dict:
 
 
 def get_funding_rate(symbol: str) -> dict:
-    """Fetch funding rate from Binance Futures API"""
+    """Fetch funding rate from Binance Futures API (cached 10 min per symbol)"""
+    global _funding_cache
+    import time
+
+    # Check cache (10 minutes TTL)
+    if symbol in _funding_cache:
+        if time.time() - _funding_cache[symbol].get('last_update', 0) < 600:
+            return _funding_cache[symbol]
+
     try:
         # Convert symbol format: BTC/USDT -> BTCUSDT
         futures_symbol = symbol.replace('/', '')
@@ -1697,18 +1725,28 @@ def get_funding_rate(symbol: str) -> dict:
             data = response.json()
             if data and len(data) > 0:
                 rate = float(data[0].get('fundingRate', 0))
-                return {
+                _funding_cache[symbol] = {
                     'rate': rate * 100,  # Convert to percentage
                     'raw': rate,
-                    'timestamp': data[0].get('fundingTime')
+                    'timestamp': data[0].get('fundingTime'),
+                    'last_update': time.time()
                 }
+                return _funding_cache[symbol]
     except Exception as e:
         pass  # Silently fail for non-futures pairs
-    return {'rate': 0, 'raw': 0, 'timestamp': None}
+    return _funding_cache.get(symbol, {'rate': 0, 'raw': 0, 'timestamp': None})
 
 
 def get_open_interest(symbol: str) -> dict:
-    """Fetch open interest from Binance Futures API"""
+    """Fetch open interest from Binance Futures API (cached 10 min per symbol)"""
+    global _oi_cache
+    import time
+
+    # Check cache (10 minutes TTL)
+    if symbol in _oi_cache:
+        if time.time() - _oi_cache[symbol].get('last_update', 0) < 600:
+            return _oi_cache[symbol]
+
     try:
         futures_symbol = symbol.replace('/', '')
         url = f"https://fapi.binance.com/fapi/v1/openInterest?symbol={futures_symbol}"
@@ -1716,13 +1754,15 @@ def get_open_interest(symbol: str) -> dict:
         if response.status_code == 200:
             data = response.json()
             if data:
-                return {
+                _oi_cache[symbol] = {
                     'oi': float(data.get('openInterest', 0)),
-                    'symbol': data.get('symbol')
+                    'symbol': data.get('symbol'),
+                    'last_update': time.time()
                 }
+                return _oi_cache[symbol]
     except Exception as e:
         pass  # Silently fail for non-futures pairs
-    return {'oi': 0, 'symbol': None}
+    return _oi_cache.get(symbol, {'oi': 0, 'symbol': None})
 
 
 def get_funding_and_oi(symbol: str) -> dict:
@@ -2900,6 +2940,48 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
     return {'success': False, 'message': "No action"}
 
 
+def calculate_dynamic_tp_sl(analysis: dict, strategy: dict) -> tuple:
+    """
+    Calculate dynamic TP/SL based on ATR volatility.
+    Returns: (take_profit, stop_loss) adjusted for current market conditions.
+    """
+    base_tp = strategy.get('take_profit', 15)
+    base_sl = strategy.get('stop_loss', 7)
+
+    # Get ATR-based volatility (ATR as % of price)
+    atr = analysis.get('atr', 0)
+    price = analysis.get('close', analysis.get('price', 0))
+
+    if atr <= 0 or price <= 0:
+        return base_tp, base_sl
+
+    volatility_pct = (atr / price) * 100  # ATR as percentage of price
+
+    # Adjust TP/SL based on volatility
+    # Low volatility (<1.5%): Reduce TP/SL by 20% (tighter targets in quiet markets)
+    # Normal volatility (1.5-3%): Use base TP/SL
+    # High volatility (>3%): Increase TP/SL by 30% (wider stops in volatile markets)
+
+    if volatility_pct < 1.5:
+        # Low volatility - tighter targets achievable
+        factor = 0.8
+    elif volatility_pct > 3.0:
+        # High volatility - need wider stops
+        factor = 1.3
+    else:
+        # Normal volatility
+        factor = 1.0
+
+    dynamic_tp = round(base_tp * factor, 1)
+    dynamic_sl = round(base_sl * factor, 1)
+
+    # Ensure minimum values
+    dynamic_tp = max(dynamic_tp, 3.0)  # Min 3% TP
+    dynamic_sl = max(dynamic_sl, 2.0)  # Min 2% SL
+
+    return dynamic_tp, dynamic_sl
+
+
 def should_trade(portfolio: dict, analysis: dict) -> tuple:
     """
     Determine if we should trade based on strategy.
@@ -3156,6 +3238,17 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
     has_position = portfolio['balance'].get(asset, 0) > 0
     has_cash = portfolio['balance']['USDT'] > 100 or rotation_candidate is not None
     rsi = analysis.get('rsi', 50)
+
+    # ============ TRADING HOURS FILTER (23:00-09:00 UTC = high loss period) ============
+    # Only block new buys, allow sells/exits anytime
+    from datetime import datetime
+    current_hour = datetime.utcnow().hour
+    # Block trading during worst hours (23:00-09:00 UTC based on analysis)
+    # Can be disabled per strategy with time_filter: False
+    if has_cash and symbol not in portfolio['positions']:
+        if strategy.get('time_filter', True):  # Default ON
+            if current_hour >= 23 or current_hour < 9:
+                return (None, f"OFF-HOURS: {current_hour}:00 UTC (blocked 23:00-09:00)")
 
     # ============ SMART ENTRY FILTERS ============
     # Only apply to new buys (not sells)
@@ -6240,10 +6333,16 @@ def main():
             except Exception as e:
                 log(f"Warning: Price update failed: {e}")
 
-            # Save portfolios (always save to keep prices updated)
-            save_portfolios(portfolios, counter)
-            if total_results:
-                log(f"💾 Saved {len(total_results)} trades")
+            # Save portfolios only when needed (trades OR every 10 minutes)
+            should_save = len(total_results) > 0  # Trades executed
+            if not should_save and counter % 10 == 0:  # Every 10 scans (~10 min)
+                should_save = True
+                log("💾 Periodic save (10 min)")
+
+            if should_save:
+                save_portfolios(portfolios, counter)
+                if total_results:
+                    log(f"💾 Saved {len(total_results)} trades")
 
             # Summary
             scan_duration = time.time() - scan_start
