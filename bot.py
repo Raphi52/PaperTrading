@@ -5093,12 +5093,16 @@ def run_engine(portfolios: dict) -> list:
 
             if action:
                 # === PROFESSIONAL RISK CHECK ===
-                if RISK_ENABLED and action == 'BUY':
+                # Check risk for all entry actions (BUY, SHORT)
+                if RISK_ENABLED and action in ('BUY', 'SHORT'):
                     allocation = portfolio['config'].get('allocation_percent', 10)
                     amount_usdt = portfolio['balance'].get('USDT', 0) * (allocation / 100)
                     risk_ok, risk_reason = check_trade_risk(portfolio, action, amount_usdt)
                     if not risk_ok:
-                        log(f"  [RISK BLOCK] {portfolio['name']}/{crypto}: {risk_reason}")
+                        # Log with current drawdown info
+                        rm = get_risk_manager()
+                        drawdown = rm.state.get('current_drawdown', 0)
+                        log(f"  [RISK BLOCK] {portfolio['name']}/{crypto}: {risk_reason} (DD: {drawdown:.1f}%)")
                         action = None
 
                 # === POSITION ROTATION ===
@@ -5134,8 +5138,8 @@ def run_engine(portfolios: dict) -> list:
                                 'message': result['message']
                             })
 
-                            # Record trade in risk manager
-                            if RISK_ENABLED and action == 'SELL':
+                            # Record trade in risk manager (all trades for stats)
+                            if RISK_ENABLED:
                                 pnl = result.get('pnl', 0)
                                 get_risk_manager().record_trade(pnl, {'symbol': crypto, 'action': action})
 
