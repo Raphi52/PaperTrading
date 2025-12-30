@@ -74,7 +74,7 @@ export function PortfolioCard({ portfolio, prices }: PortfolioCardProps) {
         <div className="px-4 py-2 border-t border-gray-700">
           <div className="flex flex-wrap gap-1">
             {Object.entries(portfolio.positions).slice(0, 5).map(([symbol, pos]) => {
-              const pnlPct = pos.pnl_percent;
+              const pnlPct = pos.pnl_percent ?? 0;
               return (
                 <span
                   key={symbol}

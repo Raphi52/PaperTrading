@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import { Portfolio } from '@/lib/types';
@@ -273,7 +273,7 @@ const STRATEGY_CATEGORIES: Record<string, string[]> = {
   '💥 Breakout': ['breakout'],
 };
 
-export default function Dashboard() {
+function DashboardContent() {
   const searchParams = useSearchParams();
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [prices, setPrices] = useState<Record<string, number>>({});
@@ -484,6 +484,12 @@ export default function Dashboard() {
                 >
                   Portfolios
                 </button>
+                <a
+                  href="/positions"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  Positions
+                </a>
                 <a
                   href="/trades"
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
@@ -1221,7 +1227,7 @@ export default function Dashboard() {
                           <Tooltip
                             contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: '8px' }}
                             labelStyle={{ color: '#9ca3af' }}
-                            formatter={(value: number) => [`$${value.toFixed(2)}`, 'Value']}
+                            formatter={(value) => [`$${(value as number).toFixed(2)}`, 'Value']}
                           />
                           <Area type="monotone" dataKey="value" stroke="#10b981" fill="url(#valueGradient)" strokeWidth={2} />
                         </AreaChart>
@@ -1237,5 +1243,13 @@ export default function Dashboard() {
         );
       })()}
     </main>
+  );
+}
+
+export default function Dashboard() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center text-white">Loading...</div>}>
+      <DashboardContent />
+    </Suspense>
   );
 }

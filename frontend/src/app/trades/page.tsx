@@ -13,9 +13,11 @@ interface Trade {
   timestamp: string;
   reason?: string;
   pnl?: number;
+  pnl_pct?: number;
+  fee?: number;
   amount_usdt?: number;
   portfolio: string;
-  portfolioId: string;
+  portfolioId?: string;
   entry_price?: number;  // Stored in SELL trades: actual weighted average entry price
   entry_time?: string;
 }
@@ -438,7 +440,7 @@ export default function TradesPage() {
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       trades = trades.filter(t =>
-        (t.id || '').toLowerCase().includes(query) ||
+        ((t as Trade).id || '').toLowerCase().includes(query) ||
         t.symbol.toLowerCase().includes(query) ||
         t.portfolio.toLowerCase().includes(query) ||
         (t.reason || '').toLowerCase().includes(query)
@@ -533,6 +535,12 @@ export default function TradesPage() {
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
                 >
                   Portfolios
+                </a>
+                <a
+                  href="/positions"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  Positions
                 </a>
                 <a
                   href="/trades"
@@ -709,13 +717,13 @@ export default function TradesPage() {
 
                   return (
                     <tr
-                      key={t.id || i}
+                      key={`${t.portfolioId}-${t.timestamp}-${i}`}
                       className="hover:bg-gray-800/50 transition-colors cursor-pointer"
                       onClick={() => setSelectedTrade(t)}
                     >
                       <td className="px-4 py-3">
                         <span className="font-mono text-xs text-blue-400 bg-blue-500/10 px-1.5 py-0.5 rounded">
-                          {t.id || '-'}
+                          {(t as Trade).id || '-'}
                         </span>
                       </td>
                       <td className="px-4 py-3">

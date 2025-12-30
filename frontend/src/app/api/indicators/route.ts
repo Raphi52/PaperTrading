@@ -142,8 +142,8 @@ export async function GET(request: Request) {
     const bb = calculateBB(closes);
 
     // Volume analysis
-    const volume24h = volumes.slice(-24).reduce((a, b) => a + b, 0);
-    const avgVolume = volumes.reduce((a, b) => a + b, 0) / volumes.length;
+    const volume24h = volumes.slice(-24).reduce((a: number, b: number) => a + b, 0);
+    const avgVolume = volumes.reduce((a: number, b: number) => a + b, 0) / volumes.length;
     const currentVolume = volumes[volumes.length - 1];
     const volumeRatio = avgVolume > 0 ? currentVolume / avgVolume : 1;
 
