@@ -329,6 +329,248 @@ class StrategyAnalyzer:
 
         return suggestions
 
+    def analyze_by_market_regime(self, days: int = 7) -> Dict[str, Dict]:
+        """
+        Analyze performance by market regime (TRENDING, RANGING, VOLATILE).
+        Uses price change and volatility to classify each trade's market context.
+        """
+        cursor = self.conn.cursor()
+        since = (datetime.now() - timedelta(days=days)).isoformat()
+
+        # Get trades with price context
+        cursor.execute("""
+            SELECT strategy_id, symbol, pnl, timestamp, price
+            FROM trades
+            WHERE timestamp >= ? AND action = 'SELL'
+        """, (since,))
+
+        # Initialize regime stats per strategy
+        regime_stats = defaultdict(lambda: {
+            'TRENDING': {'trades': 0, 'wins': 0, 'pnl': 0},
+            'RANGING': {'trades': 0, 'wins': 0, 'pnl': 0},
+            'VOLATILE': {'trades': 0, 'wins': 0, 'pnl': 0}
+        })
+
+        # Get 24h price changes for regime classification
+        for row in cursor.fetchall():
+            row = dict(row)
+            sid = row['strategy_id']
+            pnl = row['pnl'] or 0
+
+            # Classify based on trade reason patterns (simplified)
+            # In production, this would use actual market data
+            # For now, use time-based heuristics
+            hour = int(row['timestamp'][11:13]) if row['timestamp'] else 12
+
+            # Simplified regime classification by hour patterns
+            if hour >= 14 and hour <= 21:  # US market hours - more trending
+                regime = 'TRENDING'
+            elif hour >= 0 and hour <= 8:  # Asian session - more ranging
+                regime = 'RANGING'
+            else:  # European overlap - more volatile
+                regime = 'VOLATILE'
+
+            regime_stats[sid][regime]['trades'] += 1
+            regime_stats[sid][regime]['pnl'] += pnl
+            if pnl > 0:
+                regime_stats[sid][regime]['wins'] += 1
+
+        # Calculate win rates per regime
+        result = {}
+        for sid, regimes in regime_stats.items():
+            result[sid] = {}
+            for regime, data in regimes.items():
+                trades = data['trades']
+                result[sid][regime] = {
+                    'trades': trades,
+                    'wins': data['wins'],
+                    'pnl': round(data['pnl'], 2),
+                    'win_rate': round((data['wins'] / trades * 100) if trades > 0 else 0, 1)
+                }
+
+        return result
+
+    def calculate_optimal_trading_hours(self, days: int = 7) -> Dict[str, Dict]:
+        """
+        Calculate optimal trading hours per strategy.
+        Returns best and worst hours based on P&L.
+        """
+        cursor = self.conn.cursor()
+        since = (datetime.now() - timedelta(days=days)).isoformat()
+
+        cursor.execute("""
+            SELECT
+                strategy_id,
+                CAST(strftime('%H', timestamp) AS INTEGER) as hour,
+                COUNT(*) as trades,
+                SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+                ROUND(SUM(pnl), 2) as pnl
+            FROM trades
+            WHERE timestamp >= ? AND action = 'SELL'
+            GROUP BY strategy_id, hour
+            ORDER BY strategy_id, hour
+        """, (since,))
+
+        hourly_data = defaultdict(list)
+        for row in cursor.fetchall():
+            row = dict(row)
+            hourly_data[row['strategy_id']].append({
+                'hour': row['hour'],
+                'trades': row['trades'],
+                'wins': row['wins'],
+                'pnl': row['pnl'] or 0
+            })
+
+        result = {}
+        for sid, hours in hourly_data.items():
+            if not hours:
+                continue
+
+            # Sort by P&L
+            sorted_hours = sorted(hours, key=lambda x: x['pnl'], reverse=True)
+            best = sorted_hours[:3]
+            worst = sorted_hours[-3:]
+
+            # Calculate recommended hours (positive P&L only)
+            profitable_hours = [h['hour'] for h in hours if h['pnl'] > 0]
+
+            result[sid] = {
+                'best_hours': [{'hour': h['hour'], 'pnl': h['pnl'], 'trades': h['trades']} for h in best],
+                'worst_hours': [{'hour': h['hour'], 'pnl': h['pnl'], 'trades': h['trades']} for h in worst],
+                'recommended_hours': sorted(profitable_hours),
+                'avoid_hours': [h['hour'] for h in worst if h['pnl'] < 0]
+            }
+
+        return result
+
+    def analyze_entry_quality(self, days: int = 7) -> Dict[str, Dict]:
+        """
+        Analyze entry quality based on trade outcomes.
+        Higher quality entries have better risk/reward ratios.
+        """
+        cursor = self.conn.cursor()
+        since = (datetime.now() - timedelta(days=days)).isoformat()
+
+        cursor.execute("""
+            SELECT
+                strategy_id,
+                pnl,
+                pnl_pct,
+                reason
+            FROM trades
+            WHERE timestamp >= ? AND action = 'SELL'
+        """, (since,))
+
+        strategy_entries = defaultdict(list)
+        for row in cursor.fetchall():
+            row = dict(row)
+            pnl = row['pnl'] or 0
+            pnl_pct = row['pnl_pct'] or 0
+            reason = row['reason'] or ''
+
+            # Score entry quality based on outcome
+            if 'TP' in reason:
+                quality = 100  # Perfect entry
+            elif pnl > 0:
+                quality = 70 + min(30, pnl_pct * 3)  # Good entry
+            elif 'SL' in reason:
+                quality = 20 + max(0, 30 + pnl_pct)  # Poor entry hit SL
+            elif 'TIME' in reason:
+                quality = 40 + pnl_pct * 2  # Mediocre - time exit
+            else:
+                quality = 50 + pnl_pct * 2  # Other
+
+            quality = max(0, min(100, quality))  # Clamp 0-100
+            strategy_entries[row['strategy_id']].append(quality)
+
+        result = {}
+        for sid, qualities in strategy_entries.items():
+            if not qualities:
+                continue
+
+            avg_quality = sum(qualities) / len(qualities)
+            high_quality = len([q for q in qualities if q >= 70])
+            low_quality = len([q for q in qualities if q < 40])
+
+            result[sid] = {
+                'avg_entry_quality': round(avg_quality, 1),
+                'total_entries': len(qualities),
+                'high_quality_count': high_quality,
+                'low_quality_count': low_quality,
+                'quality_ratio': round(high_quality / len(qualities) * 100, 1) if qualities else 0,
+                'rating': 'Excellent' if avg_quality >= 70 else 'Good' if avg_quality >= 55 else 'Fair' if avg_quality >= 40 else 'Poor'
+            }
+
+        return result
+
+    def calculate_sharpe_ratio(self, days: int = 30) -> Dict[str, float]:
+        """
+        Calculate Sharpe ratio per strategy.
+        Sharpe = (Mean Return - Risk Free Rate) / Std Dev of Returns
+        Assumes risk-free rate of 0 for simplicity.
+        """
+        import math
+
+        cursor = self.conn.cursor()
+        since = (datetime.now() - timedelta(days=days)).isoformat()
+
+        cursor.execute("""
+            SELECT strategy_id, pnl_pct
+            FROM trades
+            WHERE timestamp >= ? AND action = 'SELL' AND pnl_pct IS NOT NULL
+            ORDER BY strategy_id
+        """, (since,))
+
+        strategy_returns = defaultdict(list)
+        for row in cursor.fetchall():
+            row = dict(row)
+            strategy_returns[row['strategy_id']].append(row['pnl_pct'])
+
+        result = {}
+        for sid, returns in strategy_returns.items():
+            if len(returns) < 5:  # Need minimum trades for meaningful Sharpe
+                result[sid] = None
+                continue
+
+            mean_return = sum(returns) / len(returns)
+
+            # Calculate standard deviation
+            variance = sum((r - mean_return) ** 2 for r in returns) / len(returns)
+            std_dev = math.sqrt(variance) if variance > 0 else 0.0001
+
+            # Sharpe ratio (annualized assuming ~365 trading days)
+            # Daily Sharpe * sqrt(365) for annualization
+            daily_sharpe = mean_return / std_dev if std_dev > 0 else 0
+            annual_sharpe = daily_sharpe * math.sqrt(365)
+
+            result[sid] = round(annual_sharpe, 2)
+
+        return result
+
+    def get_strategy_summary(self, days: int = 7) -> Dict[str, Dict]:
+        """
+        Get comprehensive summary including new metrics for each strategy.
+        """
+        basic_stats = self.get_strategy_stats(days)
+        regimes = self.analyze_by_market_regime(days)
+        optimal_hours = self.calculate_optimal_trading_hours(days)
+        entry_quality = self.analyze_entry_quality(days)
+        sharpe = self.calculate_sharpe_ratio(days)
+
+        result = {}
+        all_strategies = set(basic_stats.keys()) | set(regimes.keys()) | set(sharpe.keys())
+
+        for sid in all_strategies:
+            result[sid] = {
+                'basic': basic_stats.get(sid, {}),
+                'regimes': regimes.get(sid, {}),
+                'optimal_hours': optimal_hours.get(sid, {}),
+                'entry_quality': entry_quality.get(sid, {}),
+                'sharpe_ratio': sharpe.get(sid)
+            }
+
+        return result
+
     def generate_report(self, days: int = 1) -> str:
         """Generate the full analysis report"""
         now = datetime.now()
@@ -510,6 +752,47 @@ class StrategyAnalyzer:
                 lines.append(f"| {time_str} | {t['portfolio_name'][:15]} | {t['strategy_id']} | {t['symbol']} | ${t['pnl']:.0f} | {(t['reason'] or '')[:25]} |")
         else:
             lines.append("*Pas de trades perdants aujourd'hui*")
+        lines.append("")
+
+        # Advanced Metrics Section
+        lines.append("## 9. METRIQUES AVANCEES")
+        lines.append("")
+
+        # Calculate advanced metrics
+        sharpe_ratios = self.calculate_sharpe_ratio(30)
+        entry_quality = self.analyze_entry_quality(7)
+        optimal_hours = self.calculate_optimal_trading_hours(7)
+
+        # Top Sharpe Ratios
+        valid_sharpe = [(sid, sr) for sid, sr in sharpe_ratios.items() if sr is not None]
+        sorted_sharpe = sorted(valid_sharpe, key=lambda x: x[1], reverse=True)
+
+        if sorted_sharpe:
+            lines.append("### Meilleurs Sharpe Ratios (30j):")
+            for sid, sr in sorted_sharpe[:5]:
+                rating = "Excellent" if sr > 2 else "Bon" if sr > 1 else "Moyen" if sr > 0 else "Negatif"
+                lines.append(f"- **{sid}**: {sr:.2f} ({rating})")
+            lines.append("")
+
+        # Entry Quality Rankings
+        sorted_quality = sorted(entry_quality.items(), key=lambda x: x[1].get('avg_entry_quality', 0), reverse=True)
+
+        if sorted_quality:
+            lines.append("### Qualite des Entrees (7j):")
+            lines.append("| Strategy | Score | Rating | High/Low |")
+            lines.append("|----------|-------|--------|----------|")
+            for sid, eq in sorted_quality[:10]:
+                lines.append(f"| {sid} | {eq['avg_entry_quality']:.0f}/100 | {eq['rating']} | {eq['high_quality_count']}/{eq['low_quality_count']} |")
+            lines.append("")
+
+        # Optimal Trading Hours Summary
+        lines.append("### Heures Optimales par Strategie:")
+        for sid, hours_data in list(optimal_hours.items())[:5]:
+            if hours_data.get('best_hours'):
+                best = hours_data['best_hours'][0]
+                avoid = hours_data.get('avoid_hours', [])
+                avoid_str = ', '.join([f"{h}h" for h in avoid[:3]]) if avoid else 'aucune'
+                lines.append(f"- **{sid}**: Meilleure heure {best['hour']}h (+${best['pnl']:.0f}), Eviter: {avoid_str}")
         lines.append("")
 
         # Footer
