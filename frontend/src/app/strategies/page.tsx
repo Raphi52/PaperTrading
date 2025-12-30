@@ -149,6 +149,9 @@ export default function StrategiesPage() {
           <Link href="/positions" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
             Positions
           </Link>
+          <Link href="/analytics" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
+            Analytics
+          </Link>
           <Link href="/settings" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
             Settings
           </Link>

@@ -503,6 +503,12 @@ function DashboardContent() {
                   Strategies
                 </a>
                 <a
+                  href="/analytics"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
+                >
+                  Analytics
+                </a>
+                <a
                   href="/settings"
                   className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
                 >
