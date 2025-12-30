@@ -1289,7 +1289,7 @@ STRATEGIES = {
     "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20, "tooltip": "Style Bill Ackman - activist investing"},
 
     # EMA Crossover - DAY/SWING (TP 12-18%, SL 6-9%)
-    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 12, "stop_loss": 6, "tooltip": "EMA 9/21 crossover - trend following classique"},
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 10, "stop_loss": 6, "tooltip": "EMA 9/21 crossover - TP réduit"},
     "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 18, "stop_loss": 9, "tooltip": "EMA 12/26 crossover - moins de faux signaux"},
 
     # VWAP Strategy - INTRADAY (TP 5-10%, SL 2.5-5%)
@@ -1302,10 +1302,10 @@ STRATEGIES = {
 
     # Stochastic RSI - DAY TRADING (TP 8-12%, SL 4-6%)
     "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - momentum oscillator"},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - seuils élargis"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 80, "take_profit": 8, "stop_loss": 5, "tooltip": "Stoch RSI - TP réduit"},
 
     # Breakout - SWING (TP 15-20%, SL 7-10%)
-    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 18, "stop_loss": 9, "tooltip": "Breakout des ranges avec volume"},
+    "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 14, "stop_loss": 9, "tooltip": "Breakout - TP réduit"},
     "breakout_tight": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Breakout rapide - confirmation volume forte"},
 
     # Mean Reversion - SHORT TERM (TP 6-10%, SL 3-5%)
@@ -1314,7 +1314,7 @@ STRATEGIES = {
 
     # Grid Trading - RANGE (TP 4-6%, SL 2-3%)
     "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 3, "tooltip": "Grille de niveaux - range trading"},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 1.0, "levels": 10, "take_profit": 5, "stop_loss": 4, "tooltip": "Grille serrée - SL élargi"},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 5, "tooltip": "Grille serrée - moins de trades"},
 
     # DCA Accumulator
     "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10, "tooltip": "DCA sur dips de 3%+"},
@@ -1327,14 +1327,14 @@ STRATEGIES = {
 
     # Ichimoku Cloud - SWING/POSITION (different timeframes)
     "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 18, "stop_loss": 9, "tooltip": "Ichimoku classique - système complet"},
-    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 12, "stop_loss": 6, "tooltip": "Ichimoku rapide - périodes réduites"},
-    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 5, "stop_loss": 2.5, "tooltip": "Ichimoku scalping + filtre RSI"},
+    "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 12, "stop_loss": 8, "tooltip": "Ichimoku rapide - périodes réduites"},
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 5, "stop_loss": 4, "tooltip": "Ichimoku scalping + filtre RSI"},
     "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 22, "stop_loss": 11, "tooltip": "Ichimoku swing - trades journaliers"},
     "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 40, "stop_loss": 18, "tooltip": "Ichimoku long terme - position trading"},
     "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Trade le breakout du nuage Kumo"},
     "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 15, "stop_loss": 7, "tooltip": "Tenkan/Kijun crossover"},
     "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Confirmation Chikou Span"},
-    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 8, "stop_loss": 4, "tooltip": "Ichimoku + RSI momentum"},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 8, "stop_loss": 6, "tooltip": "Ichimoku + RSI momentum"},
     "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 28, "stop_loss": 14, "tooltip": "Ichimoku - tous signaux requis"},
 
     # Martingale
@@ -1374,7 +1374,7 @@ STRATEGIES = {
 
     # Williams %R - DAY TRADING (TP 8-12%, SL 4-6%)
     "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Williams %R - momentum oscillator"},
-    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 12, "stop_loss": 6, "tooltip": "Williams %R extrême - niveaux stricts"},
+    "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 10, "stop_loss": 6, "tooltip": "Williams %R - TP réduit"},
 
     # Donchian Channel - SWING (TP 14-18%, SL 7-9%)
     "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 16, "stop_loss": 8, "tooltip": "Donchian 20 - breakout channel"},
@@ -1386,7 +1386,7 @@ STRATEGIES = {
 
     # CCI Momentum - DAY TRADING (TP 8-14%, SL 4-7%)
     "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "CCI momentum - trend strength"},
-    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 14, "stop_loss": 7, "tooltip": "CCI extrême - reversals"},
+    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 11, "stop_loss": 7, "tooltip": "CCI extrême - reversals"},
 
     # Aroon Indicator - DAY TRADING (TP 10-14%, SL 5-7%)
     "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Aroon - identifie nouvelles tendances"},
@@ -1417,7 +1417,7 @@ STRATEGIES = {
     "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9, "tooltip": "Focus tokens DeFi (AAVE, UNI...)"},
     "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 16, "stop_loss": 8, "tooltip": "Focus Layer 2 (ARB, OP, MATIC)"},
     "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 22, "stop_loss": 11, "tooltip": "Focus Gaming/Metaverse tokens"},
-    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 22, "stop_loss": 11, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
+    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 11, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
     "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 25, "stop_loss": 12, "tooltip": "Chasse aux memecoins (DOGE, SHIB, PEPE)"},
 
     # Risk-adjusted - POSITION (varies by risk)
@@ -1450,7 +1450,7 @@ STRATEGIES = {
     "orderflow_imbalance": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Order imbalance detection"},
 
     # Sentiment - SWING (TP 15-22%, SL 8-11%)
-    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 20, "stop_loss": 12, "tooltip": "Sentiment social - SL élargi pour volatilité"},
+    "social_sentiment": {"auto": True, "use_fear_greed": True, "take_profit": 16, "stop_loss": 12, "tooltip": "Sentiment social - SL élargi pour volatilité"},
     "fear_greed_extreme": {"auto": True, "use_fear_greed": True, "extreme_only": True, "take_profit": 22, "stop_loss": 11, "tooltip": "Fear <20 ou Greed >80 seulement"},
 
     # ICT/SMC STRATEGIES
