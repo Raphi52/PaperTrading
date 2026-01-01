@@ -3,6 +3,140 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { api } from '@/lib/api';
 import { Portfolio, Position } from '@/lib/types';
+import Header from '@/components/Header';
+
+interface Candle {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
+// Candlestick Chart Component
+function CandlestickChart({ symbol, entryPrice, entryTime, tpPct = 20, slPct = 10 }: {
+  symbol: string;
+  entryPrice: number;
+  entryTime: string;
+  tpPct?: number;
+  slPct?: number;
+}) {
+  const [candles, setCandles] = useState<Candle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCandles = async () => {
+      try {
+        const since = new Date(entryTime).getTime();
+        const res = await fetch(`/api/klines?symbol=${encodeURIComponent(symbol)}&since=${since}`);
+        const data = await res.json();
+        setCandles(data);
+      } catch (e) {
+        console.error('Failed to fetch candles:', e);
+      }
+      setLoading(false);
+    };
+    fetchCandles();
+  }, [symbol, entryTime]);
+
+  if (loading) {
+    return (
+      <div className="h-[280px] flex items-center justify-center text-gray-500 bg-[#0d1117] rounded-lg">
+        <div className="animate-pulse">Loading chart...</div>
+      </div>
+    );
+  }
+
+  if (candles.length < 2) {
+    return (
+      <div className="h-[280px] flex items-center justify-center text-gray-500 text-sm bg-[#0d1117] rounded-lg">
+        Pas assez de donnees
+      </div>
+    );
+  }
+
+  const tpPrice = entryPrice * (1 + tpPct / 100);
+  const slPrice = entryPrice * (1 - slPct / 100);
+
+  const allPrices = candles.flatMap(c => [c.high, c.low]);
+  const priceMin = Math.min(...allPrices, slPrice);
+  const priceMax = Math.max(...allPrices, tpPrice);
+  const priceRange = priceMax - priceMin;
+  const minPrice = priceMin - priceRange * 0.05;
+  const maxPrice = priceMax + priceRange * 0.05;
+
+  const formatDate = (ts: number) => {
+    const d = new Date(ts);
+    return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')} ${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+  };
+
+  const chartHeight = 200;
+  const chartWidth = 400;
+  const margin = { top: 15, right: 60, bottom: 30, left: 10 };
+  const innerWidth = chartWidth - margin.left - margin.right;
+  const innerHeight = chartHeight - margin.top - margin.bottom;
+
+  const xScale = (i: number) => margin.left + (i / Math.max(1, candles.length - 1)) * innerWidth;
+  const yScale = (price: number) => margin.top + (1 - (price - minPrice) / (maxPrice - minPrice)) * innerHeight;
+
+  const gap = innerWidth / candles.length;
+  const candleW = Math.max(2, Math.min(8, gap * 0.8));
+
+  return (
+    <div className="bg-[#0d1117] rounded-lg p-3">
+      <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-[280px]" preserveAspectRatio="xMidYMid meet">
+        {/* Background grid */}
+        {[0, 0.25, 0.5, 0.75, 1].map(pct => (
+          <line
+            key={pct}
+            x1={margin.left}
+            y1={margin.top + pct * innerHeight}
+            x2={chartWidth - margin.right}
+            y2={margin.top + pct * innerHeight}
+            stroke="#1e293b"
+            strokeWidth="1"
+          />
+        ))}
+
+        {/* TP Line (green) */}
+        <line x1={margin.left} y1={yScale(tpPrice)} x2={chartWidth - margin.right} y2={yScale(tpPrice)} stroke="#22c55e" strokeWidth="1" strokeDasharray="6,4" />
+        <rect x={chartWidth - margin.right + 5} y={yScale(tpPrice) - 10} width="50" height="20" fill="#22c55e" rx="4" />
+        <text x={chartWidth - margin.right + 30} y={yScale(tpPrice)} fill="#000" fontSize="11" textAnchor="middle" dominantBaseline="middle" fontWeight="bold">TP +{tpPct}%</text>
+
+        {/* Entry Line (orange dashed) */}
+        <line x1={margin.left} y1={yScale(entryPrice)} x2={chartWidth - margin.right} y2={yScale(entryPrice)} stroke="#f59e0b" strokeWidth="1.5" strokeDasharray="4,3" />
+        <rect x={chartWidth - margin.right + 5} y={yScale(entryPrice) - 10} width="50" height="20" fill="#f59e0b" rx="4" />
+        <text x={chartWidth - margin.right + 30} y={yScale(entryPrice)} fill="#000" fontSize="10" textAnchor="middle" dominantBaseline="middle" fontWeight="bold">ENTRY</text>
+
+        {/* SL Line (red) */}
+        <line x1={margin.left} y1={yScale(slPrice)} x2={chartWidth - margin.right} y2={yScale(slPrice)} stroke="#ef4444" strokeWidth="1" strokeDasharray="6,4" />
+        <rect x={chartWidth - margin.right + 5} y={yScale(slPrice) - 10} width="50" height="20" fill="#ef4444" rx="4" />
+        <text x={chartWidth - margin.right + 30} y={yScale(slPrice)} fill="#fff" fontSize="11" textAnchor="middle" dominantBaseline="middle" fontWeight="bold">SL -{slPct}%</text>
+
+        {/* Candlesticks */}
+        {candles.map((candle, i) => {
+          const x = xScale(i);
+          const isGreen = candle.close >= candle.open;
+          const color = isGreen ? '#22c55e' : '#ef4444';
+          const bodyTop = yScale(Math.max(candle.open, candle.close));
+          const bodyBottom = yScale(Math.min(candle.open, candle.close));
+          const bodyH = Math.max(2, bodyBottom - bodyTop);
+
+          return (
+            <g key={i}>
+              <line x1={x} y1={yScale(candle.high)} x2={x} y2={yScale(candle.low)} stroke={color} strokeWidth="1" />
+              <rect x={x - candleW / 2} y={bodyTop} width={candleW} height={bodyH} fill={color} rx="1" />
+            </g>
+          );
+        })}
+
+        {/* Date labels */}
+        <text x={margin.left} y={chartHeight - 5} fill="#64748b" fontSize="9">{formatDate(candles[0].time)}</text>
+        <text x={chartWidth - margin.right} y={chartHeight - 5} fill="#64748b" fontSize="9" textAnchor="end">{formatDate(candles[candles.length - 1].time)}</text>
+      </svg>
+    </div>
+  );
+}
 
 interface ExtendedPosition extends Position {
   portfolioId: string;
@@ -172,56 +306,7 @@ export default function PositionsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#0a0a0f]/95 backdrop-blur-sm border-b border-gray-800">
-        <div className="max-w-[1600px] mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-8">
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Trading Bot
-              </h1>
-              <nav className="flex items-center gap-1">
-                <a
-                  href="/"
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
-                >
-                  Dashboard
-                </a>
-                <a
-                  href="/positions"
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white bg-white/10"
-                >
-                  Positions
-                </a>
-                <a
-                  href="/trades"
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
-                >
-                  Trades
-                </a>
-                <a
-                  href="/settings"
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5"
-                >
-                  Settings
-                </a>
-              </nav>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 text-sm">
-                <span className="text-gray-500">BTC</span>
-                <span className="font-mono font-bold">${(prices['BTC/USDT'] || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-                <span className="text-gray-500 ml-2">ETH</span>
-                <span className="font-mono font-bold">${(prices['ETH/USDT'] || 0).toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
-              </div>
-              <div className="w-px h-6 bg-gray-700 hidden md:block"></div>
-              <span className="px-3 py-1.5 rounded-full text-xs font-medium bg-green-500/20 text-green-400 border border-green-500/30">
-                Live
-              </span>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header prices={prices} />
 
       {/* Stats Bar */}
       <div className="bg-gradient-to-r from-[#1a1a2e] via-[#16213e] to-[#1a1a2e] border-b border-gray-800">
@@ -417,7 +502,7 @@ export default function PositionsPage() {
           onClick={() => setSelectedPosition(null)}
         >
           <div
-            className="bg-[#1a1a2e] rounded-2xl border border-gray-700 w-full max-w-lg overflow-hidden"
+            className="bg-[#1a1a2e] rounded-2xl border border-gray-700 w-full max-w-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -434,6 +519,17 @@ export default function PositionsPage() {
                   &times;
                 </button>
               </div>
+            </div>
+
+            {/* Chart */}
+            <div className="px-6 pt-4">
+              <CandlestickChart
+                symbol={selectedPosition.symbol}
+                entryPrice={selectedPosition.entry_price}
+                entryTime={selectedPosition.entry_time}
+                tpPct={20}
+                slPct={10}
+              />
             </div>
 
             {/* Content */}

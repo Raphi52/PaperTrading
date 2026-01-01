@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import Link from 'next/link';
+import Header from '@/components/Header';
 
 interface StrategyStats {
   strategy_id: string;
@@ -132,29 +132,15 @@ export default function StrategiesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white p-6">
-      {/* Header */}
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+      <Header />
+
+      <div className="p-6">
+      {/* Page Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold">Strategies</h1>
           <span className="text-gray-400">({strategies.length} total)</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Link href="/" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
-            Dashboard
-          </Link>
-          <Link href="/trades" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
-            Trades
-          </Link>
-          <Link href="/positions" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
-            Positions
-          </Link>
-          <Link href="/analytics" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
-            Analytics
-          </Link>
-          <Link href="/settings" className="px-3 py-1.5 bg-[#1a1a2e] hover:bg-[#252540] rounded text-sm">
-            Settings
-          </Link>
         </div>
       </div>
 
@@ -326,6 +312,7 @@ export default function StrategiesPage() {
         <span className="flex items-center gap-1">
           <span className="w-3 h-3 bg-gray-700 rounded"></span> Other = Signal/Trail
         </span>
+      </div>
       </div>
     </div>
   );

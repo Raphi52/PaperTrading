@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
 
 interface Settings {
   binance_api_key_masked: string;
@@ -108,35 +109,7 @@ export default function SettingsPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0a0f] text-white">
-      {/* Header */}
-      <header className="bg-gradient-to-r from-[#0f0f1a] to-[#1a1a2e] border-b border-gray-800 sticky top-0 z-50">
-        <div className="max-w-[1200px] mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-8">
-              <a href="/" className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-                Trading Bot
-              </a>
-              <nav className="flex items-center gap-1">
-                <a href="/" className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5">
-                  Dashboard
-                </a>
-                <a href="/?tab=portfolios" className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5">
-                  Portfolios
-                </a>
-                <a href="/positions" className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5">
-                  Positions
-                </a>
-                <a href="/trades" className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-white/5">
-                  Trades
-                </a>
-                <a href="/settings" className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white bg-white/10">
-                  Settings
-                </a>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* Message Toast */}
       {message && (

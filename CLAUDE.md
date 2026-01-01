@@ -1,375 +1,353 @@
 # CLAUDE.md - Paper Trading Bot
 
-## Project Overview
-
-This is a **multi-strategy cryptocurrency paper trading bot** with a modern Next.js dashboard. It simulates trading across **200+ portfolios**, each running a different trading strategy. The bot can also execute real trades on Binance and DEXs (Solana, Ethereum, BSC).
-
-**Primary Language:** Python 3.11+ (backend), TypeScript/Next.js 14 (frontend)
-**Database:** SQLite for trade history (unlimited storage), JSON for dashboard state
-**Architecture:** Python trading engine + Next.js REST API frontend
-
-## Quick Start Commands
+## Quick Reference
 
 ```bash
-# Run the trading bot (background engine)
-python bot.py
+# Start everything
+python bot.py                    # Trading engine (background)
+cd frontend && npm run dev       # Dashboard on localhost:3000
 
-# Run the Next.js dashboard (in frontend/ directory)
-cd frontend && npm run dev
+# Analytics
+python analyze_strategies.py     # Full strategy analysis
 
-# Or build and run production
-cd frontend && npm run build && npm start
+# Quick stats
+python -c "from core.database import get_global_stats; print(get_global_stats())"
 ```
+
+## Project Overview
+
+**Multi-strategy crypto paper trading bot** with 305 portfolios running 80+ unique strategies.
+
+| Metric | Value |
+|--------|-------|
+| Total Portfolios | 305 |
+| Unique Strategies | 80+ |
+| Supported Cryptos | 63 |
+| Scan Interval | 60 seconds |
+
+**Stack:** Python 3.11+ (backend) + Next.js 16 (frontend) + SQLite (trades DB)
+
+## Live Performance Tracking
+
+### Get Current Stats
+```python
+from core.database import get_strategy_performance, get_global_stats
+
+# Global stats
+stats = get_global_stats()
+print(f"Win Rate: {stats['win_rate']}%")
+print(f"Total PnL: ${stats['total_pnl']:.2f}")
+print(f"Total Trades: {stats['total_trades']}")
+
+# Strategy performance
+perf = get_strategy_performance()
+sorted_perf = sorted(perf, key=lambda x: x.get('total_pnl', 0), reverse=True)
+for s in sorted_perf[:10]:
+    print(f"{s['strategy_id']}: ${s['total_pnl']:.2f} ({s['win_rate']:.1f}% WR)")
+```
+
+### Top Performing Strategies (Historical)
+| Strategy | Typical PnL | Win Rate | Style |
+|----------|-------------|----------|-------|
+| stoch_rsi | +$5000-8000 | 75-80% | Momentum |
+| degen_scalp | +$2000-4000 | 45-50% | Fast scalping |
+| dca_fear | +$1000-1500 | 85%+ | Fear-based DCA |
+| degen_full | +$500-1000 | 45-50% | Aggressive |
+| grid_tight | +$500-1500 | 60-65% | Range trading |
+
+### Strategies Needing Optimization
+| Strategy | Issue | Fix Approach |
+|----------|-------|--------------|
+| ichimoku | Low WR (45%) | Widen TP, tighten entry conditions |
+| stoch_rsi_aggressive | Small losses | Raise overbought threshold |
+| ema_crossover | Choppy markets | Add trend filter |
+| supertrend_fast | Whipsaws | Increase ATR multiplier |
+| ichimoku_scalp | Very low WR | Reduce trade frequency |
 
 ## Architecture
 
 ```
 PaperTrading/
-├── bot.py                  # Main trading engine (runs independently)
-├── core/                   # Core modules
-│   ├── database.py         # SQLite trade storage & analytics
+├── bot.py                  # Main engine (4500+ lines)
+│   ├── STRATEGIES dict     # ~line 1200 - All strategy configs
+│   ├── should_trade()      # ~line 2800 - Entry/exit logic
+│   ├── execute_trade()     # ~line 2600 - Trade execution
+│   └── run_engine()        # ~line 4200 - Main loop
+├── core/
+│   ├── database.py         # SQLite storage & analytics
 │   ├── exchange.py         # CCXT Binance connection
-│   ├── confluence.py       # Multi-signal confluence engine
-│   ├── real_executor.py    # Real trade execution (Binance + DEX)
-│   ├── risk_guard.py       # Risk limits and daily loss protection
-│   ├── risk_manager.py     # Advanced risk management
-│   ├── security.py         # Key encryption (AES-256)
+│   ├── confluence.py       # Multi-signal engine
+│   ├── risk_manager.py     # Risk management
 │   ├── alpha_signals.py    # Alpha signal generation
-│   ├── real_data.py        # Real market data fetching
-│   ├── jupiter.py          # Solana DEX (Jupiter)
-│   ├── uniswap.py          # Ethereum DEX (Uniswap V3)
-│   └── pancakeswap.py      # BSC DEX (PancakeSwap)
-├── signals/                # Trading signal generators
-│   ├── technical.py        # RSI, MACD, Bollinger, EMA
-│   ├── sentiment.py        # Fear & Greed, social sentiment
-│   ├── onchain.py          # Whale movements, exchange flows
-│   ├── degen.py            # Degen momentum signals
-│   └── godmode.py          # Multi-confluence "god mode"
-├── sniper/                 # Token sniping modules
-│   ├── dex_sniper.py       # New token detection
-│   ├── dexscreener.py      # DexScreener API
-│   ├── token_sniper.py     # Token analysis
-│   └── whale_tracker.py    # Whale wallet tracking
-├── frontend/               # Next.js 14 Dashboard
-│   ├── src/app/
-│   │   ├── page.tsx        # Main dashboard (portfolios overview)
-│   │   ├── trades/page.tsx # Trade history with filters
-│   │   ├── settings/       # Settings management
-│   │   └── api/            # REST API endpoints
-│   └── package.json
-├── config/                 # Configuration
-│   ├── settings.py         # Global settings
-│   └── degen_config.py     # Degen strategy config
-└── data/                   # Runtime data
-    ├── portfolios.json     # Portfolio state (limited to 500 trades/portfolio)
-    ├── trading.db          # SQLite database (unlimited trades)
-    ├── settings.json       # User settings
-    └── bot_log.txt         # Trading log
+│   └── real_data.py        # Market data fetching
+├── frontend/               # Next.js 16 Dashboard
+│   └── src/app/
+│       ├── page.tsx        # Main dashboard
+│       ├── trades/         # Trade history
+│       ├── analytics/      # Charts & stats
+│       ├── strategies/     # Strategy management
+│       └── api/            # REST endpoints
+└── data/
+    ├── portfolios.json     # Portfolio state
+    ├── trading.db          # SQLite database
+    └── settings.json       # API keys & config
 ```
 
-## Key Files
+## Strategy Optimization Guide
 
-### bot.py (Trading Engine)
-- **STRATEGIES dict** (~line 1200): Defines 150+ trading strategies with TP/SL
-- **should_trade()** (~line 2800): Core decision logic for all strategies
-- **execute_trade()** (~line 2600): Paper/real trade execution with fee simulation
-- **run_engine()** (~line 4200): Main loop - scans every 60 seconds
-- **analyze_crypto()** (~line 2400): Fetches price data and calculates indicators
-
-### core/database.py (SQLite Storage)
-- **init_database()**: Creates trades and portfolio_snapshots tables
-- **insert_trade()**: Records every trade with full details
-- **get_strategy_performance()**: Analytics by strategy
-- **get_daily_pnl()**: Daily P&L breakdown
-- **get_global_stats()**: Global win rate, total P&L, etc.
-
-### frontend/src/app/page.tsx (Dashboard)
-- Portfolio cards with real-time P&L
-- Total balance calculation
-- Active positions display
-- Quick actions (pause/resume)
-
-### frontend/src/app/trades/page.tsx (Trade History)
-- Filterable trade list from SQLite
-- Date range filters
-- Strategy/portfolio filters
-- Trade detail modal with legitimacy analysis
-
-### data/portfolios.json
-Structure:
-```json
-{
-  "portfolios": {
-    "portfolio_id": {
-      "id": "portfolio_id",
-      "name": "Strategy Name",
-      "strategy_id": "rsi_strategy",
-      "config": {
-        "cryptos": ["BTC/USDT", "ETH/USDT"],
-        "allocation_percent": 5,
-        "max_positions": 20,
-        "auto_trade": true
-      },
-      "balance": {"USDT": 10000.0},
-      "positions": {},
-      "trades": [],  // Limited to last 500
-      "initial_capital": 10000,
-      "active": true
-    }
-  }
-}
-```
-
-## Trading Strategies (150+)
-
-The bot supports 150+ strategies grouped into categories:
-
-| Category | Count | Examples |
-|----------|-------|----------|
-| RSI-based | 30 | rsi_strategy, rsi_divergence, rsi_momentum |
-| Degen/Momentum | 13 | degen_scalp, degen_hybrid, degen_momentum |
-| Whale Copy | 11 | whale_gcr, whale_hsaka, whale_cobie |
-| Ichimoku | 10 | ichimoku, ichimoku_fast, ichimoku_cloud |
-| Scalping | 10 | scalp_rsi, scalp_bb, scalp_ema |
-| Legendary Investors | 8 | legend_buffett, legend_soros, legend_dalio |
-| EMA Crossover | 8 | ema_crossover, ema_crossover_slow, ema_signal |
-| Sniper | 7 | sniper_safe, sniper_degen, sniper_volume |
-| Grid Trading | 7 | grid_trading, grid_tight, grid_adaptive |
-| Congress Copy | 4 | congress_pelosi, congress_all |
-| Reinforcement | 3 | reinforce_safe, reinforce_moderate, reinforce_aggressive |
-| Martingale | 1 | martingale (no SL, unlimited levels) |
-| Other | 50+ | vwap, supertrend, breakout, mean_reversion, etc. |
-
-### Strategy Flags (used in should_trade())
-- `use_rsi` - RSI oversold/overbought
-- `use_ema_cross` - EMA 9/21 or 12/26 crossover
-- `use_degen` - Momentum/scalping modes
-- `use_sniper` - New token hunting
-- `use_whale` - Copy trader signals
-- `use_ichimoku` - Ichimoku cloud system
-- `use_grid` - Range trading
-- `use_mean_rev` - Mean reversion
-- `use_breakout` - Consolidation breaks
-- `use_fear_greed` - Fear & Greed contrarian
-- `use_martingale` - Double down on losses (no SL)
-- `use_reinforce` - Averaging down system
-- `use_stoch_rsi` - Stochastic RSI momentum
-
-## Smart Trading Filters
-
-### Entry filters (applied before any buy):
-1. **Loss cooldown** - Pause 2h after 3 consecutive losses
-2. **Token safety** - Block risky memecoins for non-degen strategies
-3. **Pump chase prevention** - Don't buy if >5% in 1h or >15% in 24h
-4. **Trend alignment** - Require EMA stack (Price > EMA9 > EMA21)
-5. **RSI quality** - Skip overbought entries
-6. **Volume confirmation** - Require adequate volume
-7. **Correlation limit** - Max 2 positions in similar assets
-8. **Entry quality score** - Skip low-score entries (<40/100)
-
-### Exit mechanisms:
-- **Take Profit (TP)** - Configurable per strategy
-- **Stop Loss (SL)** - Configurable per strategy (0 = disabled)
-- **Trailing Stop** - Locks in profits (5% trail from high)
-- **Partial TP** - Sell 50% at first target
-- **Time-based exit** - max_hold_hours for degen strategies
-- **EMA DOWN** - Smart exit (only if in profit OR RSI<45 AND bearish)
-
-## Fee Simulation
-
-All trades simulate realistic transaction costs:
-- **CEX (Binance):** 0.1% per trade (buy + sell = 0.2% total)
-- **DEX trades:** 0.3% swap fee + estimated gas
-- **Slippage:** 0.05% - 0.5% based on volume
-
-Martingale and reinforcement strategies pay fees on every buy, making them realistic.
-
-## Special Strategies
-
-### Martingale (`use_martingale`)
-- No stop loss (SL = 0)
-- Unlimited levels (max_levels = 999)
-- Doubles position size on each loss
-- Goal: Recover all losses on eventual win
-
-### Position Reinforcement (`use_reinforce`)
-- Averages down when position drops below threshold
-- `reinforce_threshold`: -3% to -5% (when to buy more)
-- `reinforce_levels`: 2-4 (max reinforcements)
-- `reinforce_mult`: 1.0-2.0 (size multiplier each level)
-- Recalculates average entry price
-
-## API Integrations
-
-| Service | Purpose | Config Location |
-|---------|---------|-----------------|
-| Binance | Price data, real trading | data/settings.json |
-| CoinGecko | Price fallback | None (public) |
-| DexScreener | DEX token prices | None (public) |
-| Helius | Solana RPC | data/settings.json |
-| Etherscan | ETH gas prices | data/settings.json |
-| Alternative.me | Fear & Greed Index | None (public) |
-
-## Database Schema (SQLite)
-
-### trades table
-```sql
-CREATE TABLE trades (
-    id INTEGER PRIMARY KEY,
-    timestamp TEXT,
-    portfolio_id TEXT,
-    portfolio_name TEXT,
-    strategy_id TEXT,
-    action TEXT,  -- BUY, SELL, REINFORCE
-    symbol TEXT,
-    price REAL,
-    quantity REAL,
-    amount_usdt REAL,
-    pnl REAL,
-    pnl_pct REAL,
-    fee REAL,
-    slippage REAL,
-    is_real INTEGER,
-    reason TEXT,  -- Exit reason (TP HIT, SL HIT, EMA DOWN, etc.)
-    token_address TEXT,
-    chain TEXT
-);
-```
-
-### Key indexes for performance
-- `idx_trades_portfolio` - Fast portfolio queries
-- `idx_trades_timestamp` - Date range filters
-- `idx_trades_strategy` - Strategy analytics
-- `idx_trades_symbol` - Symbol performance
-
-## File Locking
-
-Both `bot.py` and the frontend access `portfolios.json`. File locking prevents corruption:
-- Lock file: `data/portfolios.lock`
-- Functions: `acquire_lock()`, `release_lock()`
-- Atomic writes: Write to temp file, then rename
-
-## Real Trading Mode
-
-**DISABLED BY DEFAULT** - Requires explicit activation:
-
-1. Set `real_trading.enabled: true` in settings.json
-2. Configure wallet keys (encrypted with master password)
-3. Set risk limits per portfolio:
-   - `trading_mode`: "paper" or "real"
-   - `max_daily_loss_usd`: Daily loss limit
-   - `max_trade_size_usd`: Max position size
-
-Security layers:
-- AES-256 key encryption
-- Master password (bcrypt hash)
-- Daily loss limits with auto-lock
-- Emergency stop button
-
-## Development Guidelines
-
-### Code Style
-- Functions use snake_case
-- Constants use UPPER_SNAKE_CASE
-- Type hints for function parameters
-- Docstrings for public functions
-
-### Adding a New Strategy
-1. Add to `STRATEGIES` dict in bot.py:
-```python
-"my_strategy": {
-    "auto": True,
-    "use_rsi": True,  # or other flag
-    "take_profit": 20,
-    "stop_loss": 10,
-    "tooltip": "Description here"
-}
-```
-
-2. If new flag needed, add logic to `should_trade()`:
-```python
-if strategy.get('use_my_flag'):
-    if buy_condition and has_cash:
-        return ('BUY', "Buy reason")
-    elif sell_condition and has_position:
-        return ('SELL', "Sell reason")
-    return (None, "Waiting...")
-```
-
-3. Add timeframe to `STRATEGY_TIMEFRAMES` if not 1h default
-
-### Testing Changes
+### 1. Analyze Performance
 ```bash
-# Run bot with visible output
-python bot.py
-
-# Query trades from SQLite
 python -c "
-from core.database import get_recent_trades, get_strategy_performance
-print(get_strategy_performance())
+from core.database import get_strategy_performance
+perf = get_strategy_performance()
+for s in sorted(perf, key=lambda x: x['total_pnl'])[:10]:
+    print(f\"{s['strategy_id']}: {s['total_trades']} trades, \${s['total_pnl']:.2f}, WR: {s['win_rate']:.1f}%\")
 "
+```
 
-# Check specific portfolio
-python -c "
+### 2. Modify Strategy Parameters
+Edit `STRATEGIES` dict in `bot.py` (~line 1200):
+
+```python
+"strategy_name": {
+    "auto": True,
+    "use_rsi": True,           # Strategy flag
+    "take_profit": 15,         # TP percentage
+    "stop_loss": 8,            # SL percentage (0 = disabled)
+    "rsi_oversold": 30,        # Entry threshold
+    "rsi_overbought": 70,      # Exit threshold
+    "confirmations": 2,        # Bars to confirm signal
+    "tooltip": "Description"
+}
+```
+
+### 3. Key Parameters to Tune
+
+| Parameter | Effect | When to Increase | When to Decrease |
+|-----------|--------|------------------|------------------|
+| take_profit | Exit target | Low WR, high avg loss | High WR, small gains |
+| stop_loss | Risk limit | Too many big losses | Stopped out too often |
+| rsi_oversold | Entry point | Missing entries | Too many bad entries |
+| rsi_overbought | Exit point | Exiting too early | Holding too long |
+| confirmations | Signal quality | False signals | Missing moves |
+
+### 4. Strategy Flags Reference
+
+```python
+# In should_trade() function
+use_rsi          # RSI oversold/overbought
+use_ema_cross    # EMA crossover signals
+use_stoch_rsi    # Stochastic RSI
+use_degen        # Momentum scalping
+use_grid         # Range/grid trading
+use_ichimoku     # Ichimoku cloud
+use_breakout     # Breakout detection
+use_mean_rev     # Mean reversion
+use_martingale   # Double down on loss
+use_reinforce    # Average down
+use_trailing     # Trailing stop
+```
+
+## Common Tasks
+
+### Boost Winning Strategies
+```python
+import json
+with open('data/portfolios.json', 'r') as f:
+    data = json.load(f)
+
+for p in data['portfolios'].values():
+    if p['strategy_id'] in ['stoch_rsi', 'degen_scalp', 'dca_fear']:
+        p['config']['allocation_percent'] = min(20, p['config'].get('allocation_percent', 5) + 5)
+
+with open('data/portfolios.json', 'w') as f:
+    json.dump(data, f, indent=2)
+```
+
+### Check Portfolio Health
+```python
 import json
 with open('data/portfolios.json') as f:
     data = json.load(f)
-print(data['portfolios']['portfolio_3'])
-"
+
+for pid, p in data['portfolios'].items():
+    balance = p.get('balance', {}).get('USDT', 10000)
+    initial = p.get('initial_capital', 10000)
+    pnl_pct = ((balance / initial) - 1) * 100
+    if pnl_pct < -30:
+        print(f"WARNING: {p['name']}: {pnl_pct:.1f}%")
 ```
 
-## Common Issues
+### Reset a Portfolio
+```python
+import json
+with open('data/portfolios.json', 'r') as f:
+    data = json.load(f)
 
-### Portfolio not trading
-- Check `active: true` in portfolio
-- Check `auto_trade: true` in config
-- Check strategy has `auto: True` in STRATEGIES
-- Check `cryptos` list is not empty
+pid = 'portfolio_X'  # Replace with actual ID
+data['portfolios'][pid]['balance'] = {'USDT': 10000}
+data['portfolios'][pid]['positions'] = {}
+data['portfolios'][pid]['trades'] = []
 
-### Encoding errors (Windows)
-Fixed at top of bot.py:
+with open('data/portfolios.json', 'w') as f:
+    json.dump(data, f, indent=2)
+```
+
+## Bot Commands
+
+### Restart Bot
+```bash
+# Find and kill existing bot
+tasklist | findstr python
+taskkill //F //PID <PID>
+
+# Start new instance
+python bot.py
+```
+
+### Check Bot Status
+```bash
+# View recent log
+tail -50 data/bot_log.txt
+
+# Check if running
+tasklist | findstr python
+```
+
+## Frontend Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Main dashboard - all portfolios |
+| `/trades` | Trade history with filters |
+| `/analytics` | Charts and performance graphs |
+| `/strategies` | Strategy management |
+| `/positions` | Open positions |
+| `/settings` | API keys and config |
+
+## Database Queries
+
+### Recent Trades
+```sql
+SELECT * FROM trades ORDER BY timestamp DESC LIMIT 50;
+```
+
+### Strategy Performance
+```sql
+SELECT strategy_id,
+       COUNT(*) as trades,
+       SUM(pnl) as total_pnl,
+       AVG(pnl) as avg_pnl,
+       SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) as win_rate
+FROM trades
+WHERE action = 'SELL'
+GROUP BY strategy_id
+ORDER BY total_pnl DESC;
+```
+
+### Daily PnL
+```sql
+SELECT DATE(timestamp) as day, SUM(pnl) as daily_pnl
+FROM trades WHERE action = 'SELL'
+GROUP BY DATE(timestamp)
+ORDER BY day DESC LIMIT 30;
+```
+
+## Troubleshooting
+
+### Bot Not Trading
+1. Check `active: true` in portfolio
+2. Check `auto_trade: true` in config
+3. Check strategy has `auto: True` in STRATEGIES
+4. Verify `cryptos` list is not empty
+5. Check for loss cooldown (2h after 3 consecutive losses)
+
+### File Lock Stuck
+```bash
+del data\portfolios.lock
+```
+
+### Encoding Errors (Windows)
+Already fixed in bot.py:
 ```python
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 ```
 
-### File lock stuck
-Delete `data/portfolios.lock` if bot crashed
+### Frontend Not Loading
+```bash
+cd frontend
+del .next\dev\lock
+npm run dev
+```
 
-### Missing prices
-- Binance API rate limited - uses cached prices
-- DEX tokens need DexScreener lookup
+## Strategy Categories
 
-## Performance Notes
+### Conservative (Low Risk)
+- `hodl` - Buy and hold
+- `dca_fear` - DCA on fear index
+- `grid_tight` - Tight grid trading
+- `reinforce_safe` - Safe averaging down
 
-- Bot scans every 60 seconds (`SCAN_INTERVAL`)
-- 200+ portfolios × N cryptos per portfolio = many API calls
-- Uses caching to reduce API load
-- JSON limited to 500 trades/portfolio (SQLite unlimited)
-- Dashboard refreshes on demand via REST API
+### Moderate
+- `stoch_rsi` - Stochastic RSI momentum
+- `ema_crossover` - EMA cross signals
+- `supertrend` - Trend following
+- `breakout` - Breakout detection
 
-## Recent Optimizations (Dec 2024)
+### Aggressive (High Risk)
+- `degen_scalp` - Fast scalping
+- `degen_full` - Full degen mode
+- `martingale` - Double down (no SL)
+- `meme_hunter` - Memecoin hunting
 
-### Exit Logic Improvements
-- **EMA DOWN**: Only sells if in profit OR (RSI<45 AND mom_4h<-1) OR bearish_score>=40
-- **Degen exit**: Changed from (RSI>65 OR mom<-0.3) to (RSI>75 AND mom<-1)
-- **TIME EXIT**: Extended degen_scalp from 2h to 6h max hold
+### Specialized
+- `ichimoku_*` - Ichimoku variants
+- `trailing_*` - Trailing stop variants
+- `grid_*` - Grid trading variants
+- `order_block_*` - Order block strategies
 
-### Stop Loss Adjustments
-- **Trailing strategies**: Widened SL from 1.5-3% to 3-6%
-- **Grid strategies**: Widened SL from 2% to 4%
-- **Social sentiment**: Widened SL from 9% to 12%
+## API Integrations
 
-### Threshold Adjustments
-- **stoch_rsi_aggressive**: Raised overbought from 65 to 80
-- **Grid BB exit**: Raised from 70% to 85%
-- **Degen momentum exit**: Changed from -1.5% to -3%
+| Service | Purpose | Rate Limit |
+|---------|---------|------------|
+| Binance | Price data | 1200/min |
+| CoinGecko | Fallback prices | 50/min |
+| DexScreener | DEX prices | 300/min |
+| Alternative.me | Fear & Greed | 10/min |
 
-### Confirmation Reductions (to increase activity)
-- **EMA crossover**: 4→2 confirmations
-- **Ichimoku**: 4→3 confirmations
-- **Breakout**: score >= 30 → >= 15
-- **Mean reversion**: score >= 35 → >= 20
+## Performance Tips
 
-## Repository
+1. **Reduce API calls**: Bot caches prices for 60s
+2. **Limit portfolios**: More portfolios = more API calls
+3. **Use SQLite**: JSON limited to 500 trades/portfolio
+4. **Monitor memory**: Large portfolios.json can slow down
+
+## File Structure
+
+```
+data/
+├── portfolios.json    # Portfolio state (read/write by bot + frontend)
+├── trading.db         # SQLite database (unlimited trades)
+├── settings.json      # API keys and configuration
+├── bot_log.txt        # Trading log
+├── portfolios.lock    # File lock (auto-created)
+└── crypto_update_state.json  # Crypto list cache
+```
+
+## Git Workflow
+
+```bash
+# Status
+git status
+
+# Commit changes
+git add -A
+git commit -m "Description"
+
+# Push
+git push origin main
+```
+
+## Contact
 
 GitHub: https://github.com/Raphi52/PaperTrading
