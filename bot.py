@@ -47,6 +47,23 @@ except ImportError as e:
     print(f"[WARNING] Auto-update module not loaded: {e}")
     AUTO_UPDATE_ENABLED = False
 
+# Multi-timeframe Pattern Scoring System
+try:
+    from core.pattern_scoring import (
+        calculate_pattern_clarity_score,
+        should_rotate_for_better_pattern,
+        find_best_opportunity,
+        MIN_PATTERN_SCORE,
+        calculate_cascade_score,
+        find_best_cascade_opportunity,
+        CASCADE_CONFIGS
+    )
+    PATTERN_SCORING_ENABLED = True
+except ImportError as e:
+    print(f"[WARNING] Pattern scoring module not loaded: {e}")
+    PATTERN_SCORING_ENABLED = False
+    MIN_PATTERN_SCORE = 75
+
 
 # Max trades to keep in JSON (for dashboard display)
 MAX_TRADES_IN_JSON = 500
@@ -1259,10 +1276,10 @@ STRATEGIES = {
 
     # Indicator-based - SWING (TP 15-20%, SL 8-10%)
     "rsi_strategy": {"auto": True, "use_rsi": True, "take_profit": 18, "stop_loss": 9, "tooltip": "RSI <30 buy, >70 sell - oscillateur classique"},
-    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 25, "stop_loss": 12, "tooltip": "Achète quand Fear & Greed < 25 (peur extrême)"},
+    "dca_fear": {"auto": True, "use_fear_greed": True, "take_profit": 15, "stop_loss": 8, "fear_threshold": 20, "tooltip": "DCA Fear optimisé - TP 15%, SL 8%, Fear < 20"},
 
     # DEGEN STRATEGIES - Fast exits (SCALP/DAY)
-    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 5, "max_hold_hours": 6, "tooltip": "Scalping - hold plus long"},
+    "degen_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 10, "stop_loss": 4, "max_hold_hours": 6, "tooltip": "Scalping - hold plus long"},
     "degen_momentum": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 15, "stop_loss": 7, "max_hold_hours": 6, "tooltip": "Suit le momentum - trades directionnels"},
     "degen_hybrid": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 10, "stop_loss": 5, "max_hold_hours": 4, "tooltip": "Mix scalping + momentum"},
     "degen_full": {"auto": True, "use_degen": True, "mode": "hybrid", "risk": 20, "take_profit": 20, "stop_loss": 10, "max_hold_hours": 8, "tooltip": "Mode DEGEN complet - risque élevé"},
@@ -1281,6 +1298,242 @@ STRATEGIES = {
     "whale_gcr": {"auto": True, "use_whale": True, "whale_ids": ["trader_1"], "take_profit": 25, "stop_loss": 10, "max_hold_hours": 48, "tooltip": "Copie GCR - légendaire trader crypto"},
     "whale_hsaka": {"auto": True, "use_whale": True, "whale_ids": ["trader_2"], "take_profit": 20, "stop_loss": 8, "max_hold_hours": 24, "tooltip": "Copie Hsaka - analyste technique réputé"},
     "whale_cobie": {"auto": True, "use_whale": True, "whale_ids": ["trader_3"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 72, "tooltip": "Copie Cobie - VC & early investor"},
+
+    # PATTERN SCANNER STRATEGIES - Always on best pattern
+    # These scan all cryptos and position ONLY on the clearest pattern
+    "pattern_scanner": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "min_pattern_score": 80,
+        "take_profit": 12, 
+        "stop_loss": 5,
+        "max_positions": 1,  # Only 1 position at a time
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 15,  # Rotate if new score is 15+ points better
+        "tooltip": "Scanner - toujours sur le meilleur pattern"
+    },
+    "pattern_scanner_multi": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "min_pattern_score": 75,
+        "take_profit": 15, 
+        "stop_loss": 6,
+        "max_positions": 3,  # Top 3 patterns
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 20,
+        "tooltip": "Scanner multi - top 3 patterns"
+    },
+    "pattern_scanner_aggressive": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "min_pattern_score": 70,
+        "take_profit": 20, 
+        "stop_loss": 8,
+        "max_positions": 5,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 25,
+        "tooltip": "Scanner agressif - top 5 patterns, seuil bas"
+    },
+    "pattern_scanner_scalp": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "min_pattern_score": 85,
+        "take_profit": 5, 
+        "stop_loss": 2,
+        "max_positions": 1,
+        "max_hold_hours": 2,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 10,
+        "tooltip": "Scanner scalp - patterns tres clairs, sorties rapides"
+    },
+    "pattern_scanner_swing": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "min_pattern_score": 80,
+        "take_profit": 25, 
+        "stop_loss": 10,
+        "max_positions": 2,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 20,
+        "tooltip": "Scanner swing - hold long, gros TP"
+    },
+    
+    # TIMEFRAME-SPECIFIC PATTERN SCANNERS
+    "pattern_M1": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["1m"],
+        "min_pattern_score": 85,
+        "take_profit": 2, 
+        "stop_loss": 1,
+        "max_positions": 1,
+        "max_hold_hours": 0.5,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 10,
+        "tooltip": "Scanner M1 - ultra scalping"
+    },
+    "pattern_M5": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["5m"],
+        "min_pattern_score": 82,
+        "take_profit": 3, 
+        "stop_loss": 1.5,
+        "max_positions": 1,
+        "max_hold_hours": 1,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 12,
+        "tooltip": "Scanner M5 - scalping rapide"
+    },
+    "pattern_M15": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["15m"],
+        "min_pattern_score": 80,
+        "take_profit": 5, 
+        "stop_loss": 2.5,
+        "max_positions": 1,
+        "max_hold_hours": 2,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 15,
+        "tooltip": "Scanner M15 - day trading court"
+    },
+    "pattern_M30": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["30m"],
+        "min_pattern_score": 78,
+        "take_profit": 8, 
+        "stop_loss": 4,
+        "max_positions": 2,
+        "max_hold_hours": 4,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 18,
+        "tooltip": "Scanner M30 - day trading"
+    },
+    "pattern_H1": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["1h"],
+        "min_pattern_score": 75,
+        "take_profit": 12, 
+        "stop_loss": 5,
+        "max_positions": 2,
+        "max_hold_hours": 12,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 20,
+        "tooltip": "Scanner H1 - swing intraday"
+    },
+    "pattern_H4": {
+        "auto": True, 
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["4h"],
+        "min_pattern_score": 72,
+        "take_profit": 18, 
+        "stop_loss": 8,
+        "max_positions": 3,
+        "max_hold_hours": 48,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 22,
+        "tooltip": "Scanner H4 - swing trading"
+    },
+    "pattern_D1": {
+        "auto": True,
+        "use_pattern_scanner": True,
+        "scan_timeframes": ["1d"],
+        "min_pattern_score": 70,
+        "take_profit": 30,
+        "stop_loss": 12,
+        "max_positions": 3,
+        "max_hold_hours": 168,
+        "enable_pattern_rotation": True,
+        "rotation_threshold": 25,
+        "tooltip": "Scanner D1 - position trading"
+    },
+
+    # ============ CASCADE CONFLUENCE STRATEGIES ============
+    # Attendent que les timeframes s'alignent en cascade avant d'entrer
+
+    "cascade_default": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "default",
+        "min_cascade_score": 70,
+        "take_profit": 15,
+        "stop_loss": 6,
+        "max_positions": 3,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Standard - D1/H4 -> H1/M30 -> M15/M5"
+    },
+    "cascade_aggressive": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "aggressive",
+        "min_cascade_score": 60,
+        "take_profit": 10,
+        "stop_loss": 5,
+        "max_positions": 5,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Agressive - H4/H1 -> M30/M15 -> M5/M1"
+    },
+    "cascade_conservative": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "conservative",
+        "min_cascade_score": 80,
+        "take_profit": 25,
+        "stop_loss": 10,
+        "max_positions": 2,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Conservative - filtre strict, gros moves"
+    },
+    "cascade_scalp": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "scalp",
+        "min_cascade_score": 55,
+        "take_profit": 5,
+        "stop_loss": 2.5,
+        "max_positions": 5,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Scalp - H1/M30 -> M15/M5 -> M5/M1"
+    },
+    "cascade_swing": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "swing",
+        "min_cascade_score": 75,
+        "take_profit": 20,
+        "stop_loss": 8,
+        "max_positions": 3,
+        "max_hold_hours": 168,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Swing - D1/H4 -> H4/H1 -> H1/M30"
+    },
+    "cascade_intraday": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "intraday",
+        "min_cascade_score": 65,
+        "take_profit": 8,
+        "stop_loss": 4,
+        "max_positions": 4,
+        "max_hold_hours": 24,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Intraday - H4/H1 -> H1/M30 -> M15/M5"
+    },
+    "cascade_momentum": {
+        "auto": True,
+        "use_cascade": True,
+        "cascade_config": "momentum",
+        "min_cascade_score": 65,
+        "take_profit": 12,
+        "stop_loss": 5,
+        "max_positions": 4,
+        "enable_cascade_rotation": True,
+        "tooltip": "Cascade Momentum - reaction rapide aux moves forts"
+    },
+
     "whale_ansem": {"auto": True, "use_whale": True, "whale_ids": ["trader_4"], "take_profit": 30, "stop_loss": 12, "max_hold_hours": 48, "tooltip": "Copie Ansem - spécialiste SOL memecoins"},
     "whale_degen": {"auto": True, "use_whale": True, "whale_ids": ["trader_5"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 24, "tooltip": "Copie whale degen anonyme"},
     "whale_smart_money": {"auto": True, "use_whale": True, "whale_ids": ["trader_1", "trader_2", "trader_3"], "take_profit": 20, "stop_loss": 10, "max_hold_hours": 48, "tooltip": "Agrège plusieurs top whales"},
@@ -1302,7 +1555,7 @@ STRATEGIES = {
     "legend_ackman": {"auto": True, "use_whale": True, "whale_ids": ["legend_ackman"], "take_profit": 50, "stop_loss": 20, "tooltip": "Style Bill Ackman - activist investing"},
 
     # EMA Crossover - DAY/SWING (TP 12-18%, SL 6-9%)
-    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "slow_ema": 21, "take_profit": 10, "stop_loss": 6, "tooltip": "EMA 9/21 crossover - TP réduit"},
+    "ema_crossover": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 12, "stop_loss": 5, "tooltip": "EMA 9/21 crossover - TP réduit"},
     "ema_crossover_slow": {"auto": True, "use_ema_cross": True, "fast_ema": 12, "slow_ema": 26, "take_profit": 18, "stop_loss": 9, "tooltip": "EMA 12/26 crossover - moins de faux signaux"},
 
     # VWAP Strategy - INTRADAY (TP 5-10%, SL 2.5-5%)
@@ -1310,12 +1563,12 @@ STRATEGIES = {
     "vwap_trend": {"auto": True, "use_vwap": True, "deviation": 0.5, "trend_follow": True, "take_profit": 8, "stop_loss": 4, "tooltip": "Suit la tendance relative au VWAP"},
 
     # Supertrend - DAY TRADING (TP 10-15%, SL 5-7%)
-    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 14, "stop_loss": 7, "tooltip": "Supertrend ATR - support/résistance dynamique"},
+    "supertrend": {"auto": True, "use_supertrend": True, "period": 10, "multiplier": 3.0, "take_profit": 14, "stop_loss": 12, "tooltip": "Supertrend optimisé - SL élargi à 12%"},
     "supertrend_fast": {"auto": True, "use_supertrend": True, "period": 7, "multiplier": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Supertrend rapide - signaux fréquents"},
 
     # Stochastic RSI - DAY TRADING (TP 8-12%, SL 4-6%)
     "stoch_rsi": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Stoch RSI - momentum oscillator"},
-    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 80, "take_profit": 8, "stop_loss": 5, "tooltip": "Stoch RSI - TP réduit"},
+    "stoch_rsi_aggressive": {"auto": True, "use_stoch_rsi": True, "oversold": 8, "overbought": 88, "take_profit": 22, "stop_loss": 6, "tooltip": "StochRSI optimisé - oversold 20, TP 12%, SL 7%"},
 
     # Breakout - SWING (TP 15-20%, SL 7-10%)
     "breakout": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 14, "stop_loss": 9, "tooltip": "Breakout - TP réduit"},
@@ -1326,8 +1579,8 @@ STRATEGIES = {
     "mean_reversion_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "period": 14, "take_profit": 6, "stop_loss": 3, "tooltip": "Mean reversion serrée - trades fréquents"},
 
     # Grid Trading - RANGE (TP 4-6%, SL 2-3%)
-    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 3, "tooltip": "Grille de niveaux - range trading"},
-    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 2.0, "levels": 5, "take_profit": 6, "stop_loss": 5, "tooltip": "Grille serrée - moins de trades"},
+    "grid_trading": {"auto": True, "use_grid": True, "grid_size": 2.5, "levels": 4, "take_profit": 12, "stop_loss": 5, "tooltip": "Grille de niveaux - range trading"},
+    "grid_tight": {"auto": True, "use_grid": True, "grid_size": 2.5, "levels": 4, "take_profit": 8, "stop_loss": 10, "tooltip": "Grid optimisé - TP 8%, SL 10%, meilleur ratio"},
 
     # DCA Accumulator
     "dca_accumulator": {"auto": True, "use_dca": True, "dip_threshold": 3.0, "take_profit": 15, "stop_loss": 10, "tooltip": "DCA sur dips de 3%+"},
@@ -1339,15 +1592,15 @@ STRATEGIES = {
     "reinforce_aggressive": {"auto": True, "use_reinforce": True, "reinforce_threshold": -3, "reinforce_levels": 4, "reinforce_mult": 2.0, "take_profit": 18, "stop_loss": 0, "tooltip": "Renforce à -3%, max 4x, taille x2"},
 
     # Ichimoku Cloud - SWING/POSITION (different timeframes)
-    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 18, "stop_loss": 9, "tooltip": "Ichimoku classique - système complet"},
+    "ichimoku": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "take_profit": 12, "stop_loss": 15, "require_cloud_confirm": True, "tooltip": "Ichimoku optimisé - TP réduit, SL élargi, confirmation cloud"},
     "ichimoku_fast": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "take_profit": 12, "stop_loss": 8, "tooltip": "Ichimoku rapide - périodes réduites"},
-    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 40, "take_profit": 5, "stop_loss": 4, "tooltip": "Ichimoku scalping + filtre RSI"},
+    "ichimoku_scalp": {"auto": True, "use_ichimoku": True, "tenkan": 5, "kijun": 13, "senkou": 26, "rsi_filter": 25, "take_profit": 10, "stop_loss": 4, "tooltip": "Ichimoku scalping + filtre RSI"},
     "ichimoku_swing": {"auto": True, "use_ichimoku": True, "tenkan": 12, "kijun": 30, "senkou": 60, "take_profit": 22, "stop_loss": 11, "tooltip": "Ichimoku swing - trades journaliers"},
     "ichimoku_long": {"auto": True, "use_ichimoku": True, "tenkan": 20, "kijun": 60, "senkou": 120, "take_profit": 40, "stop_loss": 18, "tooltip": "Ichimoku long terme - position trading"},
     "ichimoku_kumo_break": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "kumo_break": True, "take_profit": 20, "stop_loss": 10, "tooltip": "Trade le breakout du nuage Kumo"},
     "ichimoku_tk_cross": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "tk_cross": True, "take_profit": 15, "stop_loss": 7, "tooltip": "Tenkan/Kijun crossover"},
     "ichimoku_chikou": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "chikou_confirm": True, "take_profit": 18, "stop_loss": 9, "tooltip": "Confirmation Chikou Span"},
-    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 50, "take_profit": 8, "stop_loss": 6, "tooltip": "Ichimoku + RSI momentum"},
+    "ichimoku_momentum": {"auto": True, "use_ichimoku": True, "tenkan": 7, "kijun": 22, "senkou": 44, "rsi_filter": 30, "take_profit": 14, "stop_loss": 5, "tooltip": "Ichimoku + RSI momentum"},
     "ichimoku_conservative": {"auto": True, "use_ichimoku": True, "tenkan": 9, "kijun": 26, "senkou": 52, "require_all": True, "take_profit": 28, "stop_loss": 14, "tooltip": "Ichimoku - tous signaux requis"},
 
     # Martingale
@@ -1386,20 +1639,20 @@ STRATEGIES = {
     "parabolic_sar_fast": {"auto": True, "use_supertrend": True, "period": 7, "take_profit": 8, "stop_loss": 4, "tooltip": "Parabolic SAR rapide"},
 
     # Williams %R - DAY TRADING (TP 8-12%, SL 4-6%)
-    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "Williams %R - momentum oscillator"},
+    "williams_r": {"auto": True, "use_stoch_rsi": True, "oversold": 15, "overbought": 85, "take_profit": 14, "stop_loss": 4, "tooltip": "Williams %R - momentum oscillator"},
     "williams_r_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 10, "stop_loss": 6, "tooltip": "Williams %R - TP réduit"},
 
     # Donchian Channel - SWING (TP 14-18%, SL 7-9%)
     "donchian_breakout": {"auto": True, "use_breakout": True, "lookback": 20, "take_profit": 16, "stop_loss": 8, "tooltip": "Donchian 20 - breakout channel"},
-    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 10, "stop_loss": 5, "tooltip": "Donchian rapide - breakout court"},
+    "donchian_fast": {"auto": True, "use_breakout": True, "lookback": 10, "take_profit": 14, "stop_loss": 5, "tooltip": "Donchian rapide - breakout court"},
 
     # Keltner Channel - DAY TRADING (TP 8-12%, SL 4-6%)
     "keltner_channel": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 10, "stop_loss": 5, "tooltip": "Keltner Channel - bandes ATR"},
     "keltner_tight": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 6, "stop_loss": 3, "tooltip": "Keltner serré - range trading"},
 
     # CCI Momentum - DAY TRADING (TP 8-14%, SL 4-7%)
-    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 10, "stop_loss": 5, "tooltip": "CCI momentum - trend strength"},
-    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 10, "overbought": 90, "take_profit": 11, "stop_loss": 7, "tooltip": "CCI extrême - reversals"},
+    "cci_momentum": {"auto": True, "use_stoch_rsi": True, "oversold": 15, "overbought": 85, "take_profit": 14, "stop_loss": 4, "tooltip": "CCI momentum - trend strength"},
+    "cci_extreme": {"auto": True, "use_stoch_rsi": True, "oversold": 5, "overbought": 95, "take_profit": 25, "stop_loss": 7, "tooltip": "CCI extrême - reversals"},
 
     # Aroon Indicator - DAY TRADING (TP 10-14%, SL 5-7%)
     "aroon_trend": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Aroon - identifie nouvelles tendances"},
@@ -1407,18 +1660,18 @@ STRATEGIES = {
 
     # OBV Trend - DAY TRADING (TP 10-14%, SL 5-7%)
     "obv_trend": {"auto": True, "use_breakout": True, "lookback": 20, "volume_mult": 1.5, "take_profit": 12, "stop_loss": 6, "tooltip": "OBV - On Balance Volume trend"},
-    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.0, "take_profit": 8, "stop_loss": 4, "tooltip": "OBV rapide - volume spikes"},
+    "obv_fast": {"auto": True, "use_breakout": True, "lookback": 10, "volume_mult": 2.5, "take_profit": 12, "stop_loss": 4, "tooltip": "OBV rapide - volume spikes"},
 
     # Multi-indicator combos - DAY/SWING (TP 10-14%, SL 5-7%)
-    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 35, "overbought": 65, "take_profit": 12, "stop_loss": 6, "tooltip": "Combo RSI + MACD confirmation"},
-    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 10, "stop_loss": 5, "tooltip": "Combo Bollinger + RSI"},
+    "rsi_macd_combo": {"auto": True, "use_rsi": True, "oversold": 25, "overbought": 75, "take_profit": 18, "stop_loss": 5, "tooltip": "Combo RSI + MACD confirmation"},
+    "bb_rsi_combo": {"auto": True, "use_stoch_rsi": True, "oversold": 20, "overbought": 80, "take_profit": 12, "stop_loss": 4, "tooltip": "Combo Bollinger + RSI"},
     "trend_momentum": {"auto": True, "use_ema_cross": True, "fast_ema": 9, "take_profit": 12, "stop_loss": 6, "tooltip": "Trend + Momentum alignment"},
 
     # Trailing Stop strategies - SCALPING (TP élargis, SL élargis)
-    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 6, "stop_loss": 4, "tooltip": "Trailing - SL élargi"},
+    "trailing_tight": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 16, "stop_loss": 6, "tooltip": "Trailing - SL élargi"},
     "trailing_medium": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 8, "stop_loss": 5, "tooltip": "Trailing medium - balance"},
     "trailing_wide": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 12, "stop_loss": 6, "tooltip": "Trailing wide - laisse courir"},
-    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 5, "stop_loss": 3, "tooltip": "Trailing scalp - micro gains"},
+    "trailing_scalp": {"auto": True, "use_degen": True, "mode": "scalping", "take_profit": 15, "stop_loss": 5, "tooltip": "Trailing scalp - micro gains"},
     "trailing_swing": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 10, "tooltip": "Trailing swing - gros moves"},
 
     # Scalping variants - SCALPING (TP/SL élargis)
@@ -1430,7 +1683,7 @@ STRATEGIES = {
     "defi_hunter": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 9, "tooltip": "Focus tokens DeFi (AAVE, UNI...)"},
     "layer2_focus": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 16, "stop_loss": 8, "tooltip": "Focus Layer 2 (ARB, OP, MATIC)"},
     "gaming_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 22, "stop_loss": 11, "tooltip": "Focus Gaming/Metaverse tokens"},
-    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 18, "stop_loss": 11, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
+    "ai_tokens": {"auto": True, "use_degen": True, "mode": "momentum", "take_profit": 20, "stop_loss": 8, "tooltip": "Focus tokens AI (FET, AGIX, RNDR)"},
     "meme_hunter": {"auto": True, "use_degen": True, "mode": "hybrid", "take_profit": 25, "stop_loss": 12, "tooltip": "Chasse aux memecoins (DOGE, SHIB, PEPE)"},
 
     # Risk-adjusted - POSITION (varies by risk)
@@ -1443,7 +1696,7 @@ STRATEGIES = {
     "pivot_fibonacci": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Pivots Fibonacci - retracements"},
 
     # Volume Weighted - DAY TRADING (TP 10-15%, SL 5-7%)
-    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 2.0, "take_profit": 14, "stop_loss": 7, "tooltip": "Breakout avec volume 2x normal"},
+    "volume_breakout": {"auto": True, "use_breakout": True, "volume_mult": 3.0, "take_profit": 15, "stop_loss": 5, "tooltip": "Breakout avec volume 2x normal"},
     "volume_climax": {"auto": True, "use_mean_rev": True, "std_dev": 2.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Climax de volume - reversal probable"},
 
     # Multi-timeframe - SWING (TP 15-20%, SL 8-10%)
@@ -1470,7 +1723,7 @@ STRATEGIES = {
     # Fibonacci Retracement - SWING (TP 12-18%, SL 6-9%)
     "fib_retracement": {"auto": True, "use_mean_rev": True, "std_dev": 1.5, "take_profit": 14, "stop_loss": 7, "tooltip": "Fib retracement 38.2/50/61.8%"},
     "fib_aggressive": {"auto": True, "use_mean_rev": True, "std_dev": 1.2, "take_profit": 10, "stop_loss": 5, "tooltip": "Fib agressif - 23.6% entries"},
-    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.0, "take_profit": 18, "stop_loss": 9, "tooltip": "Fib conservateur - 61.8%+ seulement"},
+    "fib_conservative": {"auto": True, "use_mean_rev": True, "std_dev": 2.2, "take_profit": 20, "stop_loss": 8, "tooltip": "Fib conservateur - 61.8%+ seulement"},
 
     # Volume Profile - INTRADAY (TP 6-10%, SL 3-5%)
     "volume_profile": {"auto": True, "use_grid": True, "grid_size": 1.0, "take_profit": 8, "stop_loss": 4, "tooltip": "Volume Profile - POC trading"},
@@ -1478,7 +1731,7 @@ STRATEGIES = {
     "volume_profile_val": {"auto": True, "use_grid": True, "grid_size": 1.5, "take_profit": 10, "stop_loss": 5, "tooltip": "Trade au Value Area Low"},
 
     # Order Blocks ICT - DAY TRADING (TP 10-15%, SL 5-7%)
-    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 25, "take_profit": 12, "stop_loss": 6, "tooltip": "Order block bullish - support institutionnel"},
+    "order_block_bull": {"auto": True, "use_stoch_rsi": True, "oversold": 15, "take_profit": 18, "stop_loss": 4, "tooltip": "Order block bullish - support institutionnel"},
     "order_block_bear": {"auto": True, "use_stoch_rsi": True, "overbought": 75, "take_profit": 12, "stop_loss": 6, "tooltip": "Order block bearish - résistance instit."},
     "order_block_all": {"auto": True, "use_stoch_rsi": True, "oversold": 30, "overbought": 70, "take_profit": 10, "stop_loss": 5, "tooltip": "Order blocks bull & bear"},
 
@@ -2674,16 +2927,24 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
 
             # Track position with highest_price for trailing stop
             # Use execution_price (with slippage) as the real entry
+            # Get TP/SL from strategy to store in position
+            strategy_id = portfolio.get('strategy_id', '')
+            strat_config = STRATEGIES.get(strategy_id, {})
+            pos_tp = strat_config.get('take_profit', 20)
+            pos_sl = strat_config.get('stop_loss', 10)
+
             if symbol not in portfolio['positions']:
                 portfolio['positions'][symbol] = {
                     'entry_price': execution_price,  # Real execution price with slippage
                     'quantity': qty,
                     'entry_time': timestamp,
                     'highest_price': execution_price,  # For trailing stop
-                    'partial_profit_taken': False  # For partial TP
+                    'partial_profit_taken': False,  # For partial TP
+                    'take_profit': pos_tp,
+                    'stop_loss': pos_sl
                 }
             else:
-                # Average down
+                # Average down - keep original TP/SL
                 pos = portfolio['positions'][symbol]
                 total_qty = pos['quantity'] + qty
                 avg_price = (pos['entry_price'] * pos['quantity'] + execution_price * qty) / total_qty
@@ -2692,7 +2953,9 @@ def execute_trade(portfolio: dict, action: str, symbol: str, price: float, amoun
                     'quantity': total_qty,
                     'entry_time': pos['entry_time'],
                     'highest_price': max(pos.get('highest_price', avg_price), execution_price),
-                    'partial_profit_taken': pos.get('partial_profit_taken', False)
+                    'partial_profit_taken': pos.get('partial_profit_taken', False),
+                    'take_profit': pos.get('take_profit', pos_tp),
+                    'stop_loss': pos.get('stop_loss', pos_sl)
                 }
 
             trade = {
@@ -3324,6 +3587,204 @@ def should_trade(portfolio: dict, analysis: dict) -> tuple:
         entry_score = get_best_entry_score(analysis, strategy, portfolio)
         if entry_score['recommendation'] == 'SKIP':
             return (None, f"Entry score too low: {entry_score['score']}/100")
+
+        # 9. PATTERN CLARITY CHECK (Multi-Timeframe)
+        if PATTERN_SCORING_ENABLED and strategy.get('use_pattern_scoring', True):
+            try:
+                pattern_result = calculate_pattern_clarity_score(symbol)
+                pattern_score = pattern_result.get('score', 0)
+                pattern_conf = pattern_result.get('confidence', 'LOW')
+                pattern_dir = pattern_result.get('direction', 'neutral')
+                min_score = strategy.get('min_pattern_score', MIN_PATTERN_SCORE)
+                
+                if pattern_score < min_score:
+                    return (None, f"Pattern {pattern_score}/{min_score} ({pattern_conf})")
+                
+                # Store for position tracking
+                analysis['_pattern_score'] = pattern_score
+                analysis['_pattern_conf'] = pattern_conf
+                
+                # 10. PROACTIVE PATTERN ROTATION
+                # Check if this opportunity is much better than current positions
+                if strategy.get('enable_pattern_rotation', True) and len(portfolio.get('positions', {})) > 0:
+                    for pos_symbol, pos in portfolio.get('positions', {}).items():
+                        if pos_symbol == symbol:
+                            continue  # Skip same symbol
+                        
+                        should_rot, rot_reason = should_rotate_for_better_pattern(
+                            portfolio, pos_symbol, symbol, pattern_score
+                        )
+                        
+                        if should_rot:
+                            # Mark position for rotation - will sell it first
+                            log_trade(f"[PATTERN ROTATION] {pos_symbol} -> {symbol}: {rot_reason}")
+                            # Store rotation info in analysis
+                            analysis['_rotation_from'] = pos_symbol
+                            analysis['_rotation_reason'] = rot_reason
+                            break  # Only rotate one position at a time
+                            
+            except Exception:
+                pass
+
+    # ============ PATTERN SCANNER STRATEGY ============
+    # This strategy scans all cryptos and only trades the best pattern
+    if strategy.get('use_pattern_scanner') and PATTERN_SCORING_ENABLED:
+        if has_cash and symbol not in portfolio['positions']:
+            try:
+                # Get timeframes to scan (default: multi-TF)
+                scan_tfs = strategy.get('scan_timeframes', ['5m', '15m', '1h', '4h'])
+                from core.pattern_scoring import fetch_multi_timeframe_data
+                
+                # Fetch and score this symbol
+                mtf_data = fetch_multi_timeframe_data(symbol, scan_tfs)
+                pattern_result = calculate_pattern_clarity_score(symbol, mtf_data)
+                pattern_score = pattern_result.get('score', 0)
+                pattern_dir = pattern_result.get('direction', 'neutral')
+                min_score = strategy.get('min_pattern_score', 80)
+                
+                # Only proceed if score meets threshold AND direction is bullish
+                if pattern_score >= min_score and pattern_dir == 'bullish':
+                    # Check if this is better than current positions
+                    should_enter = True
+                    
+                    # Check against existing positions
+                    for pos_symbol, pos in portfolio.get('positions', {}).items():
+                        pos_score = pos.get('pattern_score', 50)
+                        rotation_thresh = strategy.get('rotation_threshold', 20)
+                        
+                        # If new pattern is significantly better, trigger rotation
+                        if pattern_score > pos_score + rotation_thresh:
+                            analysis['_rotation_from'] = pos_symbol
+                            analysis['_rotation_reason'] = f'Score {pattern_score} >> {pos_score}'
+                            log_trade(f'[SCANNER] {symbol} ({pattern_score}) beats {pos_symbol} ({pos_score})')
+                        elif pattern_score <= pos_score:
+                            # Current position has equal or better pattern
+                            should_enter = False
+                    
+                    if should_enter:
+                        # Store pattern info
+                        analysis['_pattern_score'] = pattern_score
+                        analysis['_pattern_conf'] = pattern_result.get('confidence', 'MEDIUM')
+                        patterns_str = ', '.join([p['name'] for p in pattern_result.get('patterns', [])[:2]])
+                        return ('BUY', f'PATTERN SCAN: Score {pattern_score} ({patterns_str})')
+                
+                return (None, f'Pattern {pattern_score}/{min_score} ({pattern_dir})')
+            except Exception as e:
+                return (None, f'Scanner error: {str(e)[:30]}')
+        
+        # Check if we should exit current position for better pattern
+        if symbol in portfolio['positions']:
+            pos = portfolio['positions'][symbol]
+            pos_score = pos.get('pattern_score', 50)
+            
+            # Re-analyze current position
+            try:
+                scan_tfs = strategy.get('scan_timeframes', ['5m', '15m', '1h', '4h'])
+                from core.pattern_scoring import fetch_multi_timeframe_data
+                mtf_data = fetch_multi_timeframe_data(symbol, scan_tfs)
+                current_result = calculate_pattern_clarity_score(symbol, mtf_data)
+                current_score = current_result.get('score', 50)
+                current_dir = current_result.get('direction', 'neutral')
+                
+                # Exit if pattern turned bearish or score dropped significantly
+                if current_dir == 'bearish' and current_score > 60:
+                    return ('SELL', f'Pattern turned bearish (score {current_score})')
+                
+                if current_score < pos_score - 30:  # Lost 30+ points
+                    return ('SELL', f'Pattern degraded: {pos_score} -> {current_score}')
+                    
+            except Exception:
+                pass
+        
+        return (None, 'Pattern scanner - no action')
+
+    # ============ CASCADE CONFLUENCE STRATEGY ============
+    # Waits for D1/H4 trend -> H1/M30 setup -> M15/M5 entry trigger
+    if strategy.get('use_cascade') and PATTERN_SCORING_ENABLED:
+        cascade_config_name = strategy.get('cascade_config', 'default')
+        cascade_cfg = CASCADE_CONFIGS.get(cascade_config_name, CASCADE_CONFIGS['default'])
+        min_cascade = strategy.get('min_cascade_score', cascade_cfg.get('min_cascade_score', 70))
+
+        if has_cash and symbol not in portfolio['positions']:
+            try:
+                # Calculate cascade score for this symbol
+                cascade_result = calculate_cascade_score(symbol, cascade_cfg)
+                cascade_score = cascade_result.get('score', 0)
+                cascade_complete = cascade_result.get('cascade_complete', False)
+                cascade_dir = cascade_result.get('direction', 'neutral')
+                cascade_phase = cascade_result.get('phase', 'WAITING')
+
+                # Only enter if cascade is COMPLETE and score meets threshold
+                if cascade_complete and cascade_score >= min_cascade and cascade_dir == 'bullish':
+                    # Check max positions limit
+                    max_pos = strategy.get('max_positions', 3)
+                    current_pos_count = len(portfolio.get('positions', {}))
+
+                    if current_pos_count < max_pos:
+                        should_enter = True
+
+                        # Check against existing positions for rotation
+                        for pos_symbol, pos in portfolio.get('positions', {}).items():
+                            pos_cascade_score = pos.get('cascade_score', 50)
+
+                            if cascade_score > pos_cascade_score + 20:
+                                analysis['_rotation_from'] = pos_symbol
+                                analysis['_rotation_reason'] = f'Cascade {cascade_score} >> {pos_cascade_score}'
+                                log_trade(f'[CASCADE] {symbol} ({cascade_score}) beats {pos_symbol} ({pos_cascade_score})')
+
+                        if should_enter:
+                            analysis['_cascade_score'] = cascade_score
+                            analysis['_cascade_phase'] = cascade_phase
+                            phases = cascade_result.get('phases', {})
+                            trend_info = phases.get('trend', {})
+                            entry_info = phases.get('entry', {})
+
+                            trend_patterns = [p['name'] for p in trend_info.get('patterns', [])[:1]]
+                            entry_patterns = [p['name'] for p in entry_info.get('patterns', [])[:1]]
+
+                            pattern_str = ' + '.join(trend_patterns + entry_patterns) if trend_patterns else 'Multi-TF'
+                            return ('BUY', f'CASCADE COMPLETE: Score {cascade_score} | {pattern_str}')
+
+                # Log phase for monitoring
+                return (None, f'Cascade {cascade_phase}: Score {cascade_score}/{min_cascade} ({cascade_dir})')
+
+            except Exception as e:
+                return (None, f'Cascade error: {str(e)[:30]}')
+
+        # Check existing cascade positions for exit
+        if symbol in portfolio['positions']:
+            pos = portfolio['positions'][symbol]
+            pos_cascade_score = pos.get('cascade_score', 50)
+
+            try:
+                cascade_result = calculate_cascade_score(symbol, cascade_cfg)
+                current_score = cascade_result.get('score', 50)
+                current_dir = cascade_result.get('direction', 'neutral')
+                cascade_complete = cascade_result.get('cascade_complete', False)
+                current_phase = cascade_result.get('phase', 'UNKNOWN')
+
+                # Exit conditions:
+                # 1. Cascade broke (direction flipped to bearish + complete)
+                if cascade_complete and current_dir == 'bearish' and current_score >= 60:
+                    return ('SELL', f'Cascade BEARISH: Score {current_score} | Exit signal')
+
+                # 2. Score dropped significantly (30+ points)
+                if current_score < pos_cascade_score - 30:
+                    return ('SELL', f'Cascade degraded: {pos_cascade_score} -> {current_score}')
+
+                # 3. Trend phase broke (was aligned, now not)
+                phases = cascade_result.get('phases', {})
+                if not phases.get('trend', {}).get('aligned', False):
+                    entry_price = pos.get('entry_price', current_price)
+                    pnl_pct = ((current_price - entry_price) / entry_price * 100) if entry_price > 0 else 0
+
+                    if pnl_pct < 0:  # Only exit if in loss
+                        return ('SELL', f'Cascade TREND broke ({current_phase}) | PnL: {pnl_pct:.1f}%')
+
+            except Exception:
+                pass
+
+        return (None, 'Cascade - no action')
 
     # ============ STRATEGY SIGNALS ============
 
@@ -5106,21 +5567,40 @@ def run_engine(portfolios: dict) -> list:
                         action = None
 
                 # === POSITION ROTATION ===
-                # Check if this is a rotation (reason contains "Rotating")
-                if action == 'BUY' and "Rotating" in reason:
+                # Check for pattern-based rotation (stored in analysis)
+                rotation_symbol = analysis.get('_rotation_from')
+                if action == 'BUY' and rotation_symbol and rotation_symbol in portfolio.get('positions', {}):
                     try:
-                        # Extract symbol to close from reason
-                        # Format: "Rotating SYMBOL (...) for better opportunity..."
+                        close_pos = portfolio['positions'][rotation_symbol]
+                        close_price = close_pos.get('current_price', close_pos.get('entry_price', 0))
+                        if close_price > 0:
+                            rot_reason = analysis.get('_rotation_reason', 'Better pattern found')
+                            close_result = execute_trade(portfolio, 'SELL', rotation_symbol, close_price, 
+                                                        reason=f"PATTERN ROTATION: {rot_reason}")
+                            if close_result['success']:
+                                log(f"  [ROTATION] {portfolio['name']}: {rotation_symbol} -> {crypto} | {rot_reason}")
+                            else:
+                                # Failed to close, skip the buy
+                                action = None
+                                reason = f"Rotation failed: couldn't close {rotation_symbol}"
+                    except Exception as e:
+                        log(f"  [ROTATION ERROR] {portfolio['name']}: {e}")
+                        action = None  # Cancel buy if rotation fails
+                
+                # Legacy rotation check (reason-based)
+                elif action == 'BUY' and "Rotating" in reason:
+                    try:
                         parts = reason.split()
                         if len(parts) >= 2:
-                            close_symbol = parts[1]  # The symbol after "Rotating"
-                            if close_symbol in portfolio['positions']:
+                            close_symbol = parts[1]
+                            if close_symbol in portfolio.get('positions', {}):
                                 close_pos = portfolio['positions'][close_symbol]
                                 close_price = close_pos.get('current_price', close_pos.get('entry_price', 0))
                                 if close_price > 0:
-                                    close_result = execute_trade(portfolio, 'SELL', close_symbol, close_price, reason=f"🔄 ROTATION: Making room for {crypto}")
+                                    close_result = execute_trade(portfolio, 'SELL', close_symbol, close_price, 
+                                                                reason=f"ROTATION: Making room for {crypto}")
                                     if close_result['success']:
-                                        log(f"  🔄 {portfolio['name']}: Closed {close_symbol} for rotation -> {crypto}")
+                                        log(f"  [ROTATION] {portfolio['name']}: {close_symbol} -> {crypto}")
                     except Exception as e:
                         log(f"  [ROTATION ERROR] {portfolio['name']}: {e}")
 
